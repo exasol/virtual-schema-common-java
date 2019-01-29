@@ -2,10 +2,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.exasol</groupId>
-    <artifactId>virtualschema-common</artifactId>
-    <version>${product.version}</version>
+    <artifactId>virtual-schema-common-java</artifactId>
+    <version>2.0.0</version>
     <properties>
-        <product.version>1.3.0</product.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
@@ -22,6 +21,10 @@
     </distributionManagement>
     <repositories>
         <repository>
+          <id>maven-central</id>
+          <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+        <repository>
             <id>maven.exasol.com</id>
             <url>https://maven.exasol.com/artifactory/exasol-releases</url>
             <snapshots>
@@ -37,7 +40,6 @@
         </repository>
     </repositories>
     <dependencies>
-        <!-- This contains the api and implementation -->
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.json</artifactId>
