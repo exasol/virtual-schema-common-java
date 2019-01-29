@@ -1,9 +1,9 @@
 #!/bin/bash
-readonly vs_jar_prefix='virtualschema-jdbc-adapter-dist'
+readonly vs_jar_prefix='virtual-schemas-common-java'
 readonly jar_suffix='jar'
 readonly vs_jar_pattern="$vs_jar_prefix-.*\.$jar_suffix"
-readonly root_dir='virtual-schemas'
-readonly master_pom='jdbc-adapter/pom.xml'
+readonly root_dir='virtual-schemas-common-java'
+readonly master_pom='virtual-schemas-common-java/pom.xml'
 readonly file_find_regex='.*\.(md|yaml)'
 readonly script=$(basename $0)
 
