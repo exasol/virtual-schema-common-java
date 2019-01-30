@@ -1,6 +1,5 @@
 package com.exasol.adapter.json;
 
-import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.*;
 import com.exasol.adapter.metadata.DataType.ExaCharset;
 import com.exasol.adapter.metadata.DataType.IntervalType;

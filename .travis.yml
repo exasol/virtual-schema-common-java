@@ -8,8 +8,8 @@ sudo: required
 #  - docker
 
 jdk:
-  -oraclejdk8
-  -openjdk8
+  - openjdk9
+  - openjdk10
 
 before_script: ./tools/version.sh verify
 
