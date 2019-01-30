@@ -1,5 +1,7 @@
 # Common module of Exasol Virtual Schemas Adapters
 
+[![Build Status](https://travis-ci.com/exasol/virtual-schema-common-java.svg?branch=origin)](https://travis-ci.org/exasol/virtual-schema-common-java)
+
 This is one of the modules of Virtual Schemas Adapters.
 The libraries provided by this project are the foundation of the adapter development, i.e. adapters must be implemented on top of them.
 You can find the full description of the project here: https://github.com/exasol/virtual-schemas
