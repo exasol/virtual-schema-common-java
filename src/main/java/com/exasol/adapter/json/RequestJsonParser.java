@@ -22,7 +22,7 @@ public class RequestJsonParser {
 
     private List<TableMetadata> involvedTablesMetadata;
 
-    public AdapterRequest parseRequest(String json) throws Exception {
+    public AdapterRequest parseRequest(String json) throws MetadataException {
         JsonObject root = JsonHelper.getJsonObject(json);
         String requestType = root.getString("type","");
         SchemaMetadataInfo meta = parseMetadataInfo(root);
@@ -68,7 +68,7 @@ public class RequestJsonParser {
             assert(select.getType() == SqlNodeType.SELECT);
             return new PushdownRequest(meta, (SqlStatementSelect)select, involvedTablesMetadata);
         } else {
-            throw new RuntimeException("Request Type not supported: " + requestType);
+            throw new UnsupportedOperationException("Request Type not supported: " + requestType);
         }
     }
 

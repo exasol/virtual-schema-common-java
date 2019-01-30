@@ -24,7 +24,7 @@ public class JsonHelper {
         return Json.createBuilderFactory(config);
     }
 
-    public static JsonObject getJsonObject(String data) throws Exception {
+    public static JsonObject getJsonObject(String data) {
         JsonReader jr = Json.createReader(new StringReader(data));
         JsonObject obj = jr.readObject();
         jr.close();
