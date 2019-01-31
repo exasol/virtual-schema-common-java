@@ -62,7 +62,7 @@ public class RequestJsonParser {
             if (root.containsKey("pushdownRequest")) {
                 pushdownExp = root.getJsonObject("pushdownRequest");
             } else {
-                throw new IllegalArgumentException("Push down expression was not identified.");
+                throw new IllegalArgumentException("Push-down statement missing in adapter request element '/pushdownRequest'.");
             }
             SqlNode select = parseExpression(pushdownExp);
             assert(select.getType() == SqlNodeType.SELECT);
