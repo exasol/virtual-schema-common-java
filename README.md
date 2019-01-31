@@ -12,7 +12,7 @@ SonarCloud results:
 [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=virtual-schema-common-java&metric=sqale_index)](https://sonarcloud.io/dashboard?id=virtual-schema-common-java)
 
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=virtual-schema-common-java&metric=code_smells)](https://sonarcloud.io/dashboard?id=virtual-schema-common-java)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=irtual-schema-common-java&metric=coverage)](https://sonarcloud.io/dashboard?id=virtual-schema-common-java)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=virtual-schema-common-java&metric=coverage)](https://sonarcloud.io/dashboard?id=virtual-schema-common-java)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=virtual-schema-common-java&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=virtual-schema-common-java)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=virtual-schema-common-java&metric=ncloc)](https://sonarcloud.io/dashboard?id=virtual-schema-common-java)
 
