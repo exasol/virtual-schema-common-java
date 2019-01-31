@@ -9,7 +9,6 @@ sudo: required
 
 jdk:
   - openjdk9
-  - openjdk10
 
 addons:
   sonarcloud:
