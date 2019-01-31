@@ -19,9 +19,9 @@ import java.util.List;
 import java.util.Map;
 
 public class RequestJsonParser {
-    
+
     private List<TableMetadata> involvedTablesMetadata;
-    
+
     public AdapterRequest parseRequest(String json) throws Exception {
         JsonObject root = JsonHelper.getJsonObject(json);
         String requestType = root.getString("type","");
@@ -62,7 +62,7 @@ public class RequestJsonParser {
             if (root.containsKey("pushdownRequest")) {
                 pushdownExp = root.getJsonObject("pushdownRequest");
             } else {
-                pushdownExp = root.getJsonObject("pushdownInquiry");    // This is outdated, remove when old versions are no longer used
+                throw new IllegalArgumentException("Push-down statement missing in adapter request element '/pushdownRequest'.");
             }
             SqlNode select = parseExpression(pushdownExp);
             assert(select.getType() == SqlNodeType.SELECT);
@@ -71,7 +71,7 @@ public class RequestJsonParser {
             throw new RuntimeException("Request Type not supported: " + requestType);
         }
     }
-    
+
     private List<TableMetadata> parseInvolvedTableMetadata(JsonArray involvedTables) throws MetadataException {
         List<TableMetadata> tables = new ArrayList<>();
         for (JsonObject table : involvedTables.getValuesAs(JsonObject.class)) {
@@ -86,7 +86,7 @@ public class RequestJsonParser {
         }
         return tables;
     }
-    
+
     private ColumnMetadata parseColumnMetadata(JsonObject column) throws MetadataException {
         String columnName = column.getString("name");
         String adapterNotes = readAdapterNotes(column);
@@ -153,7 +153,7 @@ public class RequestJsonParser {
             throw new MetadataException("Unsupported interval data type encountered: " + intervalType);
         }
     }
-    
+
     private static ExaCharset charSetFromString(String charset) throws MetadataException {
         if (charset.equals("UTF8")) {
             return ExaCharset.UTF8;
@@ -178,7 +178,7 @@ public class RequestJsonParser {
 //            hasGroupBy = select.getString("aggregationType").equals("group_by");
 //        }
         SqlExpressionList groupByClause = parseGroupBy(select.getJsonArray("groupBy"));
-        
+
         // WHERE clause
         SqlNode whereClause = null;
         if (select.containsKey("filter")) {
@@ -198,7 +198,7 @@ public class RequestJsonParser {
         }
         return new SqlStatementSelect(table, selectList, whereClause, groupByClause, having, orderBy, limit);
     }
-    
+
     private List<SqlNode> parseExpressionList(JsonArray array) throws MetadataException {
         assert(array != null);
         List<SqlNode> sqlNodes = new ArrayList<>();
@@ -229,7 +229,7 @@ public class RequestJsonParser {
             return SqlSelectList.createRegularSelectList(selectListElements);
         }
     }
-    
+
     private SqlOrderBy parseOrderBy(JsonArray orderByList) throws MetadataException {
         List<SqlNode> orderByExpressions = new ArrayList<>();
         List<Boolean> isAsc = new ArrayList<>();
@@ -242,7 +242,7 @@ public class RequestJsonParser {
         }
         return new SqlOrderBy(orderByExpressions, isAsc, nullsLast);
     }
-    
+
     private SqlLimit parseLimit(JsonObject limit) {
         int numElements = limit.getInt("numElements");
         int offset = limit.getInt("offset", 0);
@@ -265,7 +265,7 @@ public class RequestJsonParser {
         }
         return new SchemaMetadataInfo(schemaName, schemaAdapterNotes, properties);
     }
-    
+
     private static String readAdapterNotes(JsonObject root) {
         if (root.containsKey("adapterNotes")) {
             JsonValue notes = root.get("adapterNotes");

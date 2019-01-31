@@ -4,9 +4,12 @@ language: java
 # To use Docker's privileged mode, we need to enable sudo.
 sudo: required
 
+#services:
+#  - docker
+
 jdk:
-  -oraclejdk8
-  -openjdk8
+  - openjdk9
+  - openjdk10
 
 before_script: ./tools/version.sh verify
 
