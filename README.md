@@ -16,8 +16,6 @@ SonarCloud results:
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=virtual-schema-common-java&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=virtual-schema-common-java)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=virtual-schema-common-java&metric=ncloc)](https://sonarcloud.io/dashboard?id=virtual-schema-common-java)
 
-<p style="border: 1px solid black;padding: 10px; background-color: #FFFFCC;"><span style="font-size:200%">&#9888;</span> Please note that this is an open source project which is officially supported by Exasol. For any question, you can contact our support team.</p>
-
 This is one of the modules of Virtual Schemas Adapters.
 The libraries provided by this project are the foundation of the adapter development, i.e. adapters must be implemented on top of them.
 You can find the full description of the project here: https://github.com/exasol/virtual-schemas
@@ -42,3 +40,9 @@ Please note that the artifact name changed from "virtualschema-common" to "virtu
 | [Java Hamcrest](http://hamcrest.org/JavaHamcrest/)                           | Checking for conditions in code via matchers           | BSD                           |
 | [JUnit](https://junit.org/junit5)                                            | Unit testing framework                                 | Eclipse Public License 1.0    |
 | [Mockito](http://site.mockito.org/)                                          | Mocking framework                                      | MIT License                   |
+
+## Open Source Project Support
+
+Please note that this is an open source project which is officially supported by Exasol. This module is part of a larger project called [Virtual Schemas](https://github.com/exasol/virtual-schema).
+
+Unless you are writing your own adapter based on this common module here, please check for problem solutions in the master project first.
