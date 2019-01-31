@@ -1,5 +1,6 @@
 package com.exasol.adapter.json;
 
+import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.*;
 import com.exasol.adapter.metadata.DataType.ExaCharset;
 import com.exasol.adapter.metadata.DataType.IntervalType;
@@ -19,10 +20,18 @@ import java.util.List;
 import java.util.Map;
 
 public class RequestJsonParser {
-
+    public static final String PROPERTIES = "properties";
+    public static final String INVOLVED_TABLES = "involvedTables";
+    public static final String DATA_TYPE = "dataType";
+    public static final String ORDER_BY = "orderBy";
+    public static final String EXPRESSION = "expression";
+    public static final String RIGHT = "right";
+    public static final String VALUE = "value";
+    public static final String ARGUMENTS = "arguments";
+    public static final String DISTINCT = "distinct";
     private List<TableMetadata> involvedTablesMetadata;
 
-    public AdapterRequest parseRequest(String json) throws MetadataException {
+    public AdapterRequest parseRequest(String json) throws AdapterException {
         JsonObject root = JsonHelper.getJsonObject(json);
         String requestType = root.getString("type","");
         SchemaMetadataInfo meta = parseMetadataInfo(root);
@@ -41,23 +50,23 @@ public class RequestJsonParser {
                 return new RefreshRequest(meta);
             }
         } else if (requestType.equals("setProperties")) {
-            Map<String, String> properties = new HashMap<String, String>();
-            assert(root.containsKey("properties") && root.get("properties").getValueType() == ValueType.OBJECT);
-            for (Map.Entry<String, JsonValue> entry : root.getJsonObject("properties").entrySet()) {
+            Map<String, String> properties = new HashMap<>();
+            assert(root.containsKey(PROPERTIES) && root.get(PROPERTIES).getValueType() == ValueType.OBJECT);
+            for (Map.Entry<String, JsonValue> entry : root.getJsonObject(PROPERTIES).entrySet()) {
                 String key = entry.getKey();
                 // Null values represent properties which are deleted by the user (might also have never existed actually)
-                if (root.getJsonObject("properties").isNull(key)) {
+                if (root.getJsonObject(PROPERTIES).isNull(key)) {
                     properties.put(key.toUpperCase(), null);
                 } else {
-                    properties.put(key.toUpperCase(), root.getJsonObject("properties").getString(key));
+                    properties.put(key.toUpperCase(), root.getJsonObject(PROPERTIES).getString(key));
                 }
             }
             return new SetPropertiesRequest(meta, properties);
         } else if (requestType.equals("getCapabilities")) {
             return new GetCapabilitiesRequest(meta);
         } else if (requestType.equals("pushdown")) {
-            assert(root.containsKey("involvedTables") && root.get("involvedTables").getValueType() == ValueType.ARRAY);
-            involvedTablesMetadata = parseInvolvedTableMetadata(root.getJsonArray("involvedTables"));
+            assert(root.containsKey(INVOLVED_TABLES) && root.get(INVOLVED_TABLES).getValueType() == ValueType.ARRAY);
+            involvedTablesMetadata = parseInvolvedTableMetadata(root.getJsonArray(INVOLVED_TABLES));
             JsonObject pushdownExp;
             if (root.containsKey("pushdownRequest")) {
                 pushdownExp = root.getJsonObject("pushdownRequest");
@@ -100,7 +109,7 @@ public class RequestJsonParser {
         if (column.containsKey("isIdentity")) {
             isIdentity = column.getBoolean("isIdentity");
         }
-        JsonObject dataType = column.getJsonObject("dataType");
+        JsonObject dataType = column.getJsonObject(DATA_TYPE);
         DataType type = getDataType(dataType);
         return new ColumnMetadata(columnName, adapterNotes, type, isNullable, isIdentity, defaultValue, comment);
     }
@@ -170,13 +179,6 @@ public class RequestJsonParser {
         assert(table.getType() == SqlNodeType.TABLE || table.getType() == SqlNodeType.JOIN);
         // SELECT list
         SqlSelectList selectList = parseSelectList(select.getJsonArray("selectList"));
-        // GROUP BY
-//        boolean hasAggregation = false;
-//        boolean hasGroupBy = false;
-//        if (select.containsKey("aggregationType")) {
-//            hasAggregation = true;
-//            hasGroupBy = select.getString("aggregationType").equals("group_by");
-//        }
         SqlExpressionList groupByClause = parseGroupBy(select.getJsonArray("groupBy"));
 
         // WHERE clause
@@ -189,8 +191,8 @@ public class RequestJsonParser {
             having = parseExpression(select.getJsonObject("having"));
         }
         SqlOrderBy orderBy = null;
-        if (select.containsKey("orderBy")) {
-            orderBy = parseOrderBy(select.getJsonArray("orderBy"));
+        if (select.containsKey(ORDER_BY)) {
+            orderBy = parseOrderBy(select.getJsonArray(ORDER_BY));
         }
         SqlLimit limit = null;
         if (select.containsKey("limit")) {
@@ -223,7 +225,7 @@ public class RequestJsonParser {
             return SqlSelectList.createSelectStarSelectList();
         }
         List<SqlNode> selectListElements = parseExpressionList(selectList);
-        if (selectListElements.size() == 0) {
+        if (selectListElements.isEmpty()) {
             return SqlSelectList.createAnyValueSelectList();
         } else {
             return SqlSelectList.createRegularSelectList(selectListElements);
@@ -236,7 +238,7 @@ public class RequestJsonParser {
         List<Boolean> nullsLast = new ArrayList<>();
         for (int i=0; i<orderByList.size(); ++i) {
             JsonObject orderElem = orderByList.getJsonObject(i);
-            orderByExpressions.add(parseExpression(orderElem.getJsonObject("expression")));
+            orderByExpressions.add(parseExpression(orderElem.getJsonObject(EXPRESSION)));
             isAsc.add(orderElem.getBoolean("isAscending", true));
             nullsLast.add(orderElem.getBoolean("nullsLast", true));
         }
@@ -256,11 +258,11 @@ public class RequestJsonParser {
         }
         String schemaName = meta.getString("name");
         String schemaAdapterNotes = readAdapterNotes(meta);
-        Map<String, String> properties = new HashMap<String, String>();
-        if (meta.getJsonObject("properties") != null) {
-            for (Map.Entry<String, JsonValue> entry : meta.getJsonObject("properties").entrySet()) {
+        Map<String, String> properties = new HashMap<>();
+        if (meta.getJsonObject(PROPERTIES) != null) {
+            for (Map.Entry<String, JsonValue> entry : meta.getJsonObject(PROPERTIES).entrySet()) {
                 String key = entry.getKey();
-                properties.put(key.toUpperCase(), meta.getJsonObject("properties").getString(key));
+                properties.put(key.toUpperCase(), meta.getJsonObject(PROPERTIES).getString(key));
             }
         }
         return new SchemaMetadataInfo(schemaName, schemaAdapterNotes, properties);
@@ -297,7 +299,7 @@ public class RequestJsonParser {
         }
         case JOIN: {
             SqlNode left = parseExpression(exp.getJsonObject("left"));
-            SqlNode right = parseExpression(exp.getJsonObject("right"));
+            SqlNode right = parseExpression(exp.getJsonObject(RIGHT));
             SqlNode condition = parseExpression(exp.getJsonObject("condition"));
             JoinType joinType = fromJoinTypeName(exp.getString("join_type"));
             return new SqlJoin(left, right, condition, joinType);
@@ -313,36 +315,36 @@ public class RequestJsonParser {
             return new SqlLiteralNull();
         }
         case LITERAL_BOOL: {
-            boolean boolVal = exp.getBoolean("value");
+            boolean boolVal = exp.getBoolean(VALUE);
             return new SqlLiteralBool(boolVal);
         }
         case LITERAL_DATE: {
-            String date = exp.getString("value");
+            String date = exp.getString(VALUE);
             return new SqlLiteralDate(date);
         }
         case LITERAL_TIMESTAMP: {
-            String timestamp = exp.getString("value");
+            String timestamp = exp.getString(VALUE);
             return new SqlLiteralTimestamp(timestamp);
         }
         case LITERAL_TIMESTAMPUTC: {
-            String timestampUtc = exp.getString("value");
+            String timestampUtc = exp.getString(VALUE);
             return new SqlLiteralTimestampUtc(timestampUtc);
         }
         case LITERAL_DOUBLE: {
-            String doubleString = exp.getString("value");
+            String doubleString = exp.getString(VALUE);
             return new SqlLiteralDouble(Double.parseDouble(doubleString));
         }
         case LITERAL_EXACTNUMERIC: {
-            BigDecimal exactVal = new BigDecimal( exp.getString("value"));
+            BigDecimal exactVal = new BigDecimal( exp.getString(VALUE));
             return new SqlLiteralExactnumeric(exactVal);
         }
         case LITERAL_STRING: {
-            String stringVal = exp.getString("value");
+            String stringVal = exp.getString(VALUE);
             return new SqlLiteralString(stringVal);
         }
         case LITERAL_INTERVAL: {
-            String intervalVal = exp.getString("value");
-            DataType intervalType = getDataType(exp.getJsonObject("dataType"));
+            String intervalVal = exp.getString(VALUE);
+            DataType intervalType = getDataType(exp.getJsonObject(DATA_TYPE));
             return new SqlLiteralInterval(intervalVal, intervalType);
         }
         case PREDICATE_AND: {
@@ -360,31 +362,31 @@ public class RequestJsonParser {
             return new SqlPredicateOr(orPredicates);
         }
         case PREDICATE_NOT: {
-            SqlNode notExp = parseExpression(exp.getJsonObject("expression"));
+            SqlNode notExp = parseExpression(exp.getJsonObject(EXPRESSION));
             return new SqlPredicateNot(notExp);
         }
         case PREDICATE_EQUAL: {
             SqlNode equalLeft = parseExpression(exp.getJsonObject("left"));
-            SqlNode equalRight = parseExpression(exp.getJsonObject("right"));
+            SqlNode equalRight = parseExpression(exp.getJsonObject(RIGHT));
             return new SqlPredicateEqual(equalLeft, equalRight);
         }
         case PREDICATE_NOTEQUAL: {
             SqlNode notEqualLeft = parseExpression(exp.getJsonObject("left"));
-            SqlNode notEqualRight = parseExpression(exp.getJsonObject("right"));
+            SqlNode notEqualRight = parseExpression(exp.getJsonObject(RIGHT));
             return new SqlPredicateNotEqual(notEqualLeft, notEqualRight);
         }
         case PREDICATE_LESS: {
             SqlNode lessLeft = parseExpression(exp.getJsonObject("left"));
-            SqlNode lessRight = parseExpression(exp.getJsonObject("right"));
+            SqlNode lessRight = parseExpression(exp.getJsonObject(RIGHT));
             return new SqlPredicateLess(lessLeft, lessRight);
         }
         case PREDICATE_LESSEQUAL: {
             SqlNode lessEqLeft = parseExpression(exp.getJsonObject("left"));
-            SqlNode lessEqRight = parseExpression(exp.getJsonObject("right"));
+            SqlNode lessEqRight = parseExpression(exp.getJsonObject(RIGHT));
             return new SqlPredicateLessEqual(lessEqLeft, lessEqRight);
         }
         case PREDICATE_LIKE: {
-            SqlNode likeLeft = parseExpression(exp.getJsonObject("expression"));
+            SqlNode likeLeft = parseExpression(exp.getJsonObject(EXPRESSION));
             SqlNode likePattern = parseExpression(exp.getJsonObject("pattern"));
             if (exp.containsKey("escapeChar")) {
                 SqlNode escapeChar = parseExpression(exp.getJsonObject("escapeChar"));
@@ -393,30 +395,30 @@ public class RequestJsonParser {
             return new SqlPredicateLike(likeLeft, likePattern);
         }
         case PREDICATE_LIKE_REGEXP: {
-            SqlNode likeRegexpLeft = parseExpression(exp.getJsonObject("expression"));
+            SqlNode likeRegexpLeft = parseExpression(exp.getJsonObject(EXPRESSION));
             SqlNode likeRegexpPattern = parseExpression(exp.getJsonObject("pattern"));
             return new SqlPredicateLikeRegexp(likeRegexpLeft, likeRegexpPattern);
         }
         case PREDICATE_BETWEEN: {
-            SqlNode betweenExp = parseExpression(exp.getJsonObject("expression"));
+            SqlNode betweenExp = parseExpression(exp.getJsonObject(EXPRESSION));
             SqlNode betweenLeft = parseExpression(exp.getJsonObject("left"));
-            SqlNode betweenRight = parseExpression(exp.getJsonObject("right"));
+            SqlNode betweenRight = parseExpression(exp.getJsonObject(RIGHT));
             return new SqlPredicateBetween(betweenExp, betweenLeft, betweenRight);
         }
         case PREDICATE_IN_CONSTLIST: {
-            SqlNode inExp = parseExpression(exp.getJsonObject("expression"));
+            SqlNode inExp = parseExpression(exp.getJsonObject(EXPRESSION));
             List<SqlNode> inArguments = new ArrayList<>();
-            for (JsonObject pred : exp.getJsonArray("arguments").getValuesAs(JsonObject.class)) {
+            for (JsonObject pred : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
                 inArguments.add(parseExpression(pred));
             }
             return new SqlPredicateInConstList(inExp, inArguments);
         }
         case PREDICATE_IS_NULL: {
-            SqlNode isnullExp = parseExpression(exp.getJsonObject("expression"));
+            SqlNode isnullExp = parseExpression(exp.getJsonObject(EXPRESSION));
             return new SqlPredicateIsNull(isnullExp);
         }
         case PREDICATE_IS_NOT_NULL: {
-            SqlNode isNotnullExp = parseExpression(exp.getJsonObject("expression"));
+            SqlNode isNotnullExp = parseExpression(exp.getJsonObject(EXPRESSION));
             return new SqlPredicateIsNotNull(isNotnullExp);
         }
         case FUNCTION_SCALAR: {
@@ -427,7 +429,7 @@ public class RequestJsonParser {
                 hasVariableInputArgs = exp.getBoolean("variableInputArgs");
             }
             List<SqlNode> arguments = new ArrayList<>();
-            for (JsonObject argument : exp.getJsonArray("arguments").getValuesAs(JsonObject.class)) {
+            for (JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
                 arguments.add(parseExpression(argument));
             }
             if (!hasVariableInputArgs) {
@@ -448,8 +450,8 @@ public class RequestJsonParser {
         case FUNCTION_SCALAR_EXTRACT: {
             String toExtract = exp.getString("toExtract");
             List<SqlNode> extractArguments = new ArrayList<>();
-            if (exp.containsKey("arguments")) {
-                for (JsonObject argument : exp.getJsonArray("arguments").getValuesAs(JsonObject.class)) {
+            if (exp.containsKey(ARGUMENTS)) {
+                for (JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
                     extractArguments.add(parseExpression(argument));
                 }
             }
@@ -459,8 +461,8 @@ public class RequestJsonParser {
             List<SqlNode> caseArguments = new ArrayList<>();
             List<SqlNode> caseResults = new ArrayList<>();
             SqlNode caseBasis = null;
-            if (exp.containsKey("arguments")) {
-                for (JsonObject argument : exp.getJsonArray("arguments").getValuesAs(JsonObject.class)) {
+            if (exp.containsKey(ARGUMENTS)) {
+                for (JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
                     caseArguments.add(parseExpression(argument));
                 }
             }
@@ -475,10 +477,10 @@ public class RequestJsonParser {
             return new SqlFunctionScalarCase(caseArguments, caseResults, caseBasis);
         }
         case FUNCTION_SCALAR_CAST: {
-            DataType castDataType = getDataType(exp.getJsonObject("dataType"));
+            DataType castDataType = getDataType(exp.getJsonObject(DATA_TYPE));
             List<SqlNode> castArguments = new ArrayList<>();
-            if (exp.containsKey("arguments")) {
-                for (JsonObject argument : exp.getJsonArray("arguments").getValuesAs(JsonObject.class)) {
+            if (exp.containsKey(ARGUMENTS)) {
+                for (JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
                     castArguments.add(parseExpression(argument));
                 }
             }
@@ -488,11 +490,11 @@ public class RequestJsonParser {
             String setFunctionName = exp.getString("name");
             List<SqlNode> setArguments = new ArrayList<>();
             boolean distinct = false;
-            if (exp.containsKey("distinct")) {
-                distinct = exp.getBoolean("distinct");
+            if (exp.containsKey(DISTINCT)) {
+                distinct = exp.getBoolean(DISTINCT);
             }
-            if (exp.containsKey("arguments")) {
-                for (JsonObject argument : exp.getJsonArray("arguments").getValuesAs(JsonObject.class)) {
+            if (exp.containsKey(ARGUMENTS)) {
+                for (JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
                     setArguments.add(parseExpression(argument));
                 }
             }
@@ -502,17 +504,17 @@ public class RequestJsonParser {
             String functionName = exp.getString("name");
             List<SqlNode> setArguments = new ArrayList<>();
             boolean distinct = false;
-            if (exp.containsKey("distinct")) {
-                distinct = exp.getBoolean("distinct");
+            if (exp.containsKey(DISTINCT)) {
+                distinct = exp.getBoolean(DISTINCT);
             }
-            if (exp.containsKey("arguments")) {
-                for (JsonObject argument : exp.getJsonArray("arguments").getValuesAs(JsonObject.class)) {
+            if (exp.containsKey(ARGUMENTS)) {
+                for (JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
                     setArguments.add(parseExpression(argument));
                 }
             }
             SqlOrderBy orderBy = null;
-            if (exp.containsKey("orderBy")) {
-                orderBy = parseOrderBy(exp.getJsonArray("orderBy"));
+            if (exp.containsKey(ORDER_BY)) {
+                orderBy = parseOrderBy(exp.getJsonArray(ORDER_BY));
             }
             String separator = null;
             if (exp.containsKey("separator")) {
@@ -522,7 +524,7 @@ public class RequestJsonParser {
                     setArguments, orderBy, distinct, separator);
         }
         default:
-            throw new RuntimeException("Unknown node type: " + typeName);
+            throw new IllegalArgumentException("Unknown node type: " + typeName);
         }
     }
 

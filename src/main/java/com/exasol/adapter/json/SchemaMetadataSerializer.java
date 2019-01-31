@@ -1,17 +1,22 @@
 package com.exasol.adapter.json;
 
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonBuilderFactory;
-import javax.json.JsonObjectBuilder;
-
 import com.exasol.adapter.metadata.ColumnMetadata;
 import com.exasol.adapter.metadata.SchemaMetadata;
 import com.exasol.adapter.metadata.TableMetadata;
 import com.exasol.utils.JsonHelper;
 
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonBuilderFactory;
+import javax.json.JsonObjectBuilder;
+
 public class SchemaMetadataSerializer {
-    
+    public static final String ADAPTER_NOTES = "adapterNotes";
+
+    private SchemaMetadataSerializer() {
+        //Intentionally left blank
+    }
+
     public static JsonObjectBuilder serialize(SchemaMetadata schema) {
         JsonBuilderFactory factory = JsonHelper.getBuilderFactory();
         JsonObjectBuilder root = factory.createObjectBuilder();
@@ -20,10 +25,10 @@ public class SchemaMetadataSerializer {
             tablesBuilder.add(serializeTableMetadata(table, factory.createObjectBuilder()));
         }
         root.add("tables", tablesBuilder);
-        root.add("adapterNotes", schema.getAdapterNotes());
+        root.add(ADAPTER_NOTES, schema.getAdapterNotes());
         return root;
     }
-    
+
     private static JsonObjectBuilder serializeTableMetadata(TableMetadata table, JsonObjectBuilder tableBuilder) {
         tableBuilder.add("type", "table");
         tableBuilder.add("name", table.getName());
@@ -38,7 +43,7 @@ public class SchemaMetadataSerializer {
         tableBuilder.add("columns", columnsBuilder);
         return tableBuilder;
     }
-    
+
     private static JsonObjectBuilder serializeColumnMetadata(ColumnMetadata column, JsonObjectBuilder columnBuilder) {
         columnBuilder.add("name", column.getName());
         columnBuilder.add("adapterNotes", column.getAdapterNotes());

@@ -10,23 +10,24 @@ import com.exasol.adapter.metadata.DataType.IntervalType;
 
 public class SqlDataTypeJsonSerializer {
 
+    private SqlDataTypeJsonSerializer(){
+        //Intentionally left blank.
+    }
+
     public static JsonObjectBuilder serialize(DataType dataType) {
         JsonObjectBuilder root = Json.createObjectBuilder()
                 .add("type", exaTypeAsString(dataType.getExaDataType()));
-        
+
         switch (dataType.getExaDataType()) {
         case UNSUPPORTED:
-            throw new RuntimeException("Unsupported Data Type, should never happen");
+            throw new IllegalArgumentException("Unsupported Data Type, should never happen");
         case DECIMAL:
             root.add("precision", dataType.getPrecision());
             root.add("scale", dataType.getScale());
             break;
         case DOUBLE:
             break;
-        case VARCHAR:
-            root.add("size", dataType.getSize());
-            root.add("characterSet", exaCharSetAsString(dataType.getCharset()));
-            break;
+        case VARCHAR: //falling through intentionally
         case CHAR:
             root.add("size", dataType.getSize());
             root.add("characterSet", exaCharSetAsString(dataType.getCharset()));
@@ -49,9 +50,9 @@ public class SqlDataTypeJsonSerializer {
             }
             break;
         default:
-            throw new RuntimeException("Unexpected Data Type: " + dataType.getExaDataType());
+            throw new IllegalArgumentException("Unexpected Data Type: " + dataType.getExaDataType());
         }
-        
+
         return root;
     }
 
@@ -81,7 +82,7 @@ public class SqlDataTypeJsonSerializer {
             return "unknown";
         }
     }
-    
+
     private static String exaCharSetAsString(ExaCharset charset) {
         switch (charset) {
         case UTF8:
@@ -89,10 +90,10 @@ public class SqlDataTypeJsonSerializer {
         case ASCII:
             return "ASCII";
         default:
-            throw new RuntimeException("Unexpected Charset: " + charset);
+            throw new IllegalArgumentException("Unexpected Charset: " + charset);
         }
     }
-    
+
     private static String intervalTypeAsString(IntervalType intervalType) {
         switch (intervalType) {
         case DAY_TO_SECOND:
@@ -100,8 +101,8 @@ public class SqlDataTypeJsonSerializer {
         case YEAR_TO_MONTH:
             return "YEAR TO MONTH";
         default:
-            throw new RuntimeException("Unexpected IntervalType: " + intervalType);
+            throw new IllegalArgumentException("Unexpected IntervalType: " + intervalType);
         }
     }
-    
+
 }
