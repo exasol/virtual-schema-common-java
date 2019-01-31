@@ -19,5 +19,4 @@ addons:
 before_script: ./tools/version.sh verify
 
 script:
-  - mvn package
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
