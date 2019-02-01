@@ -5,23 +5,19 @@ import com.exasol.adapter.AdapterException;
 import java.util.Collections;
 import java.util.List;
 
-import static com.exasol.adapter.sql.SqlArgumentValidator.validateSqlFunctionArguments;
-
 public class SqlFunctionScalarExtract extends SqlNode {
     private static final String EXTRACT = "EXTRACT";
     private String toExtract;
     private List<SqlNode> arguments;
 
     public SqlFunctionScalarExtract(String toExtract, List<SqlNode> arguments) {
-        validateSqlFunctionArguments(arguments, "SqlFunctionScalarExtract");
+        SqlArgumentValidator.validateSqlFunctionArguments(arguments, SqlFunctionScalarExtract.class);
         this.arguments = arguments;
         this.toExtract = toExtract;
         for (SqlNode node : this.arguments) {
             node.setParent(this);
         }
     }
-
-
 
     public String getToExtract() {
         return toExtract;

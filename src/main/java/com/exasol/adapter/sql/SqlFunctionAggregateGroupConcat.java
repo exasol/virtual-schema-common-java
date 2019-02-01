@@ -5,8 +5,6 @@ import com.exasol.adapter.AdapterException;
 import java.util.Collections;
 import java.util.List;
 
-import static com.exasol.adapter.sql.SqlArgumentValidator.validateSqlFunctionArguments;
-
 public class SqlFunctionAggregateGroupConcat extends SqlNode {
     private AggregateFunction function;
     private boolean distinct;
@@ -17,7 +15,7 @@ public class SqlFunctionAggregateGroupConcat extends SqlNode {
     public SqlFunctionAggregateGroupConcat(AggregateFunction function, List<SqlNode> arguments,
                                            SqlOrderBy orderBy, boolean distinct,
                                            String separator) {
-        validateSqlFunctionArguments(arguments, "SqlFunctionAggregateGroupConcat");
+        SqlArgumentValidator.validateSqlFunctionArguments(arguments, SqlFunctionAggregateGroupConcat.class);
         this.function = function;
         this.distinct = distinct;
         this.arguments = arguments;

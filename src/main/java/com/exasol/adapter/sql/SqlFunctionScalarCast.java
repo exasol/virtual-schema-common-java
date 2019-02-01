@@ -6,14 +6,13 @@ import com.exasol.adapter.metadata.DataType;
 import java.util.Collections;
 import java.util.List;
 
-import static com.exasol.adapter.sql.SqlArgumentValidator.validateSqlFunctionArguments;
 
 public class SqlFunctionScalarCast extends SqlNode {
     private DataType dataType;
     private List<SqlNode> arguments;
 
     public SqlFunctionScalarCast(DataType dataType, List<SqlNode> arguments) {
-        validateSqlFunctionArguments(arguments, "SqlFunctionScalarCast");
+        SqlArgumentValidator.validateSqlFunctionArguments(arguments, SqlFunctionScalarCast.class);
         this.arguments = arguments;
         this.dataType = dataType;
         for (final SqlNode node : this.arguments) {
