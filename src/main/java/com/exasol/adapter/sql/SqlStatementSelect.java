@@ -6,7 +6,6 @@ import com.exasol.adapter.AdapterException;
  * We could consider to apply builder pattern here (if time)
  */
 public class SqlStatementSelect extends SqlStatement {
-
     private SqlNode fromClause;
     private SqlSelectList selectList;
     private SqlNode whereClause;
@@ -23,8 +22,8 @@ public class SqlStatementSelect extends SqlStatement {
         this.having = having;
         this.orderBy = orderBy;
         this.limit = limit;
-        assert(this.fromClause != null);
-        assert(this.selectList != null);
+        assert this.fromClause != null;
+        assert this.selectList != null;
         this.fromClause.setParent(this);
         this.selectList.setParent(this);
 
@@ -132,5 +131,4 @@ public class SqlStatementSelect extends SqlStatement {
     public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
-
 }

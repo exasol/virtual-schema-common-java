@@ -4,7 +4,6 @@ import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.TableMetadata;
 
 public class SqlTable extends SqlNode {
-    
     private String name;
     private String alias;   // what is the exact semantic of this? Currently simply to generate a query with the expected alias.
     private TableMetadata metadata;
@@ -51,5 +50,4 @@ public class SqlTable extends SqlNode {
     public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
-
 }

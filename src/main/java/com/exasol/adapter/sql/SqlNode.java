@@ -6,11 +6,9 @@ import com.exasol.adapter.AdapterException;
  * Node in a graph representing a SQL query.
  */
 public abstract class SqlNode {
-    
     private SqlNode parent;
 
     public abstract SqlNodeType getType();
-
 
     public void setParent(SqlNode parent) {
         this.parent = parent;

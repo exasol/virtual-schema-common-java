@@ -1,7 +1,6 @@
 package com.exasol.utils;
 
-public class SqlTestUtil {
-
+public final class SqlTestUtil {
     private SqlTestUtil(){
         //Intentionally left blank
     }
@@ -14,5 +13,4 @@ public class SqlTestUtil {
                 .replaceAll("\n", " ")
                 .replaceAll("\\s+", " ");
     }
-    
 }

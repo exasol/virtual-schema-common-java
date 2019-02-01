@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class SqlOrderBy extends SqlNode {
-    
     private List<SqlNode> expressions;
     private List<Boolean> isAsc;
 
@@ -78,5 +77,4 @@ public class SqlOrderBy extends SqlNode {
     public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
-
 }

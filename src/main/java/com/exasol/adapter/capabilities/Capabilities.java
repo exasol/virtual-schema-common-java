@@ -7,7 +7,6 @@ import java.util.Set;
  * Manages a set of supported Capabilities
  */
 public class Capabilities {
-
     private Set<MainCapability> mainCapabilities = new HashSet<>();
     private Set<ScalarFunctionCapability> scalarFunctionCaps = new HashSet<>();
     private Set<PredicateCapability> predicateCaps = new HashSet<>();

@@ -1,10 +1,8 @@
 package com.exasol.adapter.sql;
 
-
 import com.exasol.adapter.AdapterException;
 
 public class SqlPredicateBetween extends SqlPredicate {
-
     private SqlNode expression;
     private SqlNode betweenLeft;
     private SqlNode betweenRight;
@@ -51,5 +49,4 @@ public class SqlPredicateBetween extends SqlPredicate {
     public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
-
 }

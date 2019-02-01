@@ -7,9 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
 public class SqlPredicateAnd extends SqlPredicate {
-
     private List<SqlNode> andedPredicates;
 
     public SqlPredicateAnd(List<SqlNode> andedPredicates) {
@@ -48,5 +46,4 @@ public class SqlPredicateAnd extends SqlPredicate {
     public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
-
 }

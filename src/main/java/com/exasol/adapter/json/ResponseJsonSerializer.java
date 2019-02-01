@@ -6,13 +6,11 @@ import com.exasol.utils.JsonHelper;
 
 import javax.json.*;
 
-public class ResponseJsonSerializer {
-
+public final class ResponseJsonSerializer {
     public static final String SCALAR_FUNCTION_PREFIX = "FN_";
     public static final String PREDICATE_PREFIX = "FN_PRED_";
     public static final String AGGREGATE_FUNCTION_PREFIX = "FN_AGG_";
     public static final String LITERAL_PREFIX = "LITERAL_";
-
     private static final String SCHEMA_METADATA = "schemaMetadata";
 
     private ResponseJsonSerializer() {
@@ -88,5 +86,4 @@ public class ResponseJsonSerializer {
         builder.add(SCHEMA_METADATA, SchemaMetadataSerializer.serialize(remoteMeta));
         return builder.build().toString();
     }
-
 }

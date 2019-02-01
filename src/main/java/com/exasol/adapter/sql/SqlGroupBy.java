@@ -38,5 +38,4 @@ public class SqlGroupBy extends SqlExpressionList {
     public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
-
 }

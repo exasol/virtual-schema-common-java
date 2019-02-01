@@ -7,9 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
 public class SqlPredicateInConstList extends SqlPredicate {
-    
     // For <exp> IN (...) this stores <exp>
     private SqlNode expression;
     // Arguments inside the brackets
@@ -59,5 +57,4 @@ public class SqlPredicateInConstList extends SqlPredicate {
     public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
-
 }

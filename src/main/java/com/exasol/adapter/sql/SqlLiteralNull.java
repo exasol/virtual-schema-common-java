@@ -1,6 +1,5 @@
 package com.exasol.adapter.sql;
 
-
 import com.exasol.adapter.AdapterException;
 
 public class SqlLiteralNull extends SqlNode {
@@ -19,5 +18,4 @@ public class SqlLiteralNull extends SqlNode {
     public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
-
 }

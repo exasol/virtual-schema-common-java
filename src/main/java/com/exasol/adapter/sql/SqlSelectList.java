@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SqlSelectList extends SqlExpressionList {
-
     private SqlSelectListType type;
 
     private SqlSelectList(SqlSelectListType type, List<SqlNode> selectList) {
@@ -43,8 +42,6 @@ public class SqlSelectList extends SqlExpressionList {
         }
         return new SqlSelectList(SqlSelectListType.Regular, selectList);
     }
-
-
 
     public boolean isRequestAnyColumn() {
         return type == SqlSelectListType.AnyValue;
@@ -82,5 +79,4 @@ public class SqlSelectList extends SqlExpressionList {
     public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
-
 }

@@ -1,11 +1,9 @@
 package com.exasol.adapter.sql;
 
-
 import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.DataType;
 
 public class SqlLiteralInterval extends SqlNode {
-
     private String value;   // stored as YYYY-MM-DD HH:MI:SS.FF6
     private DataType type;
 
@@ -41,5 +39,4 @@ public class SqlLiteralInterval extends SqlNode {
     public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
-
 }

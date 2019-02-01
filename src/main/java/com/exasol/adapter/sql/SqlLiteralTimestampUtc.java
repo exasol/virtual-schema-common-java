@@ -1,10 +1,8 @@
 package com.exasol.adapter.sql;
 
-
 import com.exasol.adapter.AdapterException;
 
 public class SqlLiteralTimestampUtc extends SqlNode {
-
     private String value;   // stored as YYYY-MM-DD HH:MI:SS.FF6
     
     public SqlLiteralTimestampUtc(String value) {
@@ -29,5 +27,4 @@ public class SqlLiteralTimestampUtc extends SqlNode {
     public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
-
 }

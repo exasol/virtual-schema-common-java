@@ -6,26 +6,17 @@ import com.exasol.adapter.metadata.DataType;
 import java.util.Collections;
 import java.util.List;
 
+import static com.exasol.adapter.sql.SqlArgumentValidator.validateSqlFunctionArguments;
+
 public class SqlFunctionScalarCast extends SqlNode {
     private DataType dataType;
     private List<SqlNode> arguments;
 
     public SqlFunctionScalarCast(DataType dataType, List<SqlNode> arguments) {
-        if (arguments == null) {
-            throw new IllegalArgumentException("SqlFunctionScalarCast constructor expects an argument." +
-                  "But the list is empty.");
-        }
-        if (arguments.size() != 1){
-            throw new IllegalArgumentException("SqlFunctionScalarCast constructor expects exactly one argument." +
-                  "But got " + arguments.size() + "arguments.");
-        }
-        if (arguments.get(0) == null){
-            throw new IllegalArgumentException("SqlFunctionScalarCast constructor expects an argument." +
-                  "But the list is empty.");
-        }
+        validateSqlFunctionArguments(arguments, "SqlFunctionScalarCast");
         this.arguments = arguments;
         this.dataType = dataType;
-        for (SqlNode node : this.arguments) {
+        for (final SqlNode node : this.arguments) {
             node.setParent(this);
         }
     }
@@ -45,8 +36,8 @@ public class SqlFunctionScalarCast extends SqlNode {
 
     @Override
     public String toSimpleSql() {
-        assert(arguments != null);
-        assert(arguments.size() == 1 && arguments.get(0) != null);
+        assert arguments != null;
+        assert arguments.size() == 1 && arguments.get(0) != null;
         return "CAST (" + arguments.get(0).toSimpleSql() + " AS " + getDataType().toString() + ")";
     }
 
@@ -63,5 +54,4 @@ public class SqlFunctionScalarCast extends SqlNode {
     public ScalarFunction getFunction() {
         return ScalarFunction.CAST;
     }
-
 }

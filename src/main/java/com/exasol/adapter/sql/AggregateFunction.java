@@ -9,24 +9,17 @@ public enum AggregateFunction {
     MIN,
     MAX,
     AVG,
-
     MEDIAN,
-
     FIRST_VALUE,
     LAST_VALUE,
-
     STDDEV,
     STDDEV_POP,
     STDDEV_SAMP,
-
     VARIANCE,
     VAR_POP,
     VAR_SAMP,
-
     GROUP_CONCAT(false),
-
     APPROXIMATE_COUNT_DISTINCT,
-
     GEO_INTERSECTION_AGGREGATE,
     GEO_UNION_AGGREGATE;
 
@@ -46,5 +39,4 @@ public enum AggregateFunction {
     AggregateFunction(boolean isSimple) {
         this.isSimple = isSimple;
     }
-
 }

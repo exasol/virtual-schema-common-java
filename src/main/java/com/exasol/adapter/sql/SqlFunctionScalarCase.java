@@ -1,6 +1,5 @@
 package com.exasol.adapter.sql;
 
-
 import com.exasol.adapter.AdapterException;
 
 import java.util.Collections;

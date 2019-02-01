@@ -5,7 +5,6 @@ package com.exasol.adapter.metadata;
  * Represents the metadata of an EXASOL table column.
  */
 public class ColumnMetadata {
-
     private String name;
     private String adapterNotes;
     private DataType type;
@@ -60,5 +59,4 @@ public class ColumnMetadata {
     public String getComment() {
         return comment;
     }
-    
 }

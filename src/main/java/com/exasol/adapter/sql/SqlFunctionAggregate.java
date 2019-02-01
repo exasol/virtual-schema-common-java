@@ -14,7 +14,6 @@ import java.util.List;
  * </p>
  */
 public class SqlFunctionAggregate extends SqlNode {
-
     private AggregateFunction function;
     private boolean distinct;
     private List<SqlNode> arguments;
@@ -38,7 +37,6 @@ public class SqlFunctionAggregate extends SqlNode {
         }
     }
 
-
     public AggregateFunction getFunction() {
         return function;
     }
@@ -58,7 +56,7 @@ public class SqlFunctionAggregate extends SqlNode {
             argumentsSql.add(node.toSimpleSql());
         }
         if (argumentsSql.isEmpty()) {
-            assert (getFunctionName().equalsIgnoreCase("count"));
+            assert getFunctionName().equalsIgnoreCase("count");
             argumentsSql.add("*");
         }
         String distinctSql = "";
@@ -77,5 +75,4 @@ public class SqlFunctionAggregate extends SqlNode {
     public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
-
 }

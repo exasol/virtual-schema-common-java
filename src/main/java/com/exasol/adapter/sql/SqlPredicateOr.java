@@ -6,9 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
 public class SqlPredicateOr extends SqlPredicate {
-
     private List<SqlNode> orPredicates;
 
     public SqlPredicateOr(List<SqlNode> orPredicates) {
@@ -47,5 +45,4 @@ public class SqlPredicateOr extends SqlPredicate {
     public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
-
 }

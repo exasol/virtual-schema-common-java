@@ -2,8 +2,7 @@ package com.exasol.adapter.sql;
 
 import java.util.Map;
 
-public class SqlUtils {
-
+public final class SqlUtils {
     private SqlUtils(){
         //Intentionally left blank
     }
@@ -20,5 +19,4 @@ public class SqlUtils {
             return quoteChar + identifier + quoteChar;
         }
     }
-    
 }

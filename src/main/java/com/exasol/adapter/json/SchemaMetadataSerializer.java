@@ -10,7 +10,7 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonBuilderFactory;
 import javax.json.JsonObjectBuilder;
 
-public class SchemaMetadataSerializer {
+public final class SchemaMetadataSerializer {
     private static final String ADAPTER_NOTES = "adapterNotes";
 
     private SchemaMetadataSerializer() {
@@ -62,5 +62,4 @@ public class SchemaMetadataSerializer {
         }
         return columnBuilder;
     }
-
 }

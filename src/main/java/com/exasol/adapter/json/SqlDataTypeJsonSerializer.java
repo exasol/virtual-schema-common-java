@@ -8,8 +8,7 @@ import com.exasol.adapter.metadata.DataType.ExaCharset;
 import com.exasol.adapter.metadata.DataType.ExaDataType;
 import com.exasol.adapter.metadata.DataType.IntervalType;
 
-public class SqlDataTypeJsonSerializer {
-
+public final class SqlDataTypeJsonSerializer {
     private SqlDataTypeJsonSerializer(){
         //Intentionally left blank.
     }
@@ -104,5 +103,4 @@ public class SqlDataTypeJsonSerializer {
             throw new IllegalArgumentException("Unexpected IntervalType: " + intervalType);
         }
     }
-
 }

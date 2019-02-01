@@ -12,8 +12,7 @@ import java.util.Map;
  * http://docs.oracle.com/javaee/7/api/javax/json/JsonObjectBuilder.html
  * http://docs.oracle.com/javaee/7/api/javax/json/stream/JsonGenerator.html
  */
-public class JsonHelper {
-
+public final class JsonHelper {
     private JsonHelper(){
         //Intentionally left blank
     }
@@ -45,8 +44,7 @@ public class JsonHelper {
         PrintWriter pw = new PrintWriter(strWriter);
         try (JsonWriter jsonWriter = Json.createWriterFactory(config).createWriter(pw)) {
             jsonWriter.writeObject(obj);
-            return strWriter.toString();
         }
+        return strWriter.toString();
     }
-
 }

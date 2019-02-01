@@ -4,7 +4,6 @@ import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.ColumnMetadata;
 
 public class SqlColumn extends SqlNode {
-    
     private int id;
     private ColumnMetadata metadata;
     private String tableName;
@@ -50,5 +49,4 @@ public class SqlColumn extends SqlNode {
     public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
-
 }

@@ -5,39 +5,26 @@ import com.exasol.adapter.AdapterException;
 import java.util.Collections;
 import java.util.List;
 
+import static com.exasol.adapter.sql.SqlArgumentValidator.validateSqlFunctionArguments;
 
 public class SqlFunctionAggregateGroupConcat extends SqlNode {
-
     private AggregateFunction function;
     private boolean distinct;
     private List<SqlNode> arguments;
     private String separator;
     private SqlOrderBy orderBy;
 
-
-
     public SqlFunctionAggregateGroupConcat(AggregateFunction function, List<SqlNode> arguments,
                                            SqlOrderBy orderBy, boolean distinct,
                                            String separator) {
-        if (arguments == null) {
-            throw new IllegalArgumentException("SqlFunctionAggregateGroupConcat constructor expects an argument." +
-                  "But the list is empty.");
-        }
-        if (arguments.size() != 1){
-            throw new IllegalArgumentException("SqlFunctionAggregateGroupConcat constructor expects exactly one argument." +
-                  "But got " + arguments.size() + "arguments.");
-        }
-        if (arguments.get(0) == null){
-            throw new IllegalArgumentException("SqlFunctionAggregateGroupConcat constructor expects an argument." +
-                  "But the list is empty.");
-        }
+        validateSqlFunctionArguments(arguments, "SqlFunctionAggregateGroupConcat");
         this.function = function;
         this.distinct = distinct;
         this.arguments = arguments;
         this.orderBy = orderBy;
         this.separator = separator;
 
-        for (SqlNode node : this.arguments) {
+        for (final SqlNode node : this.arguments) {
             node.setParent(this);
         }
         if (orderBy != null) {
@@ -87,8 +74,8 @@ public class SqlFunctionAggregateGroupConcat extends SqlNode {
         builder.append(getFunctionName());
         builder.append("(");
         builder.append(distinctSql);
-        assert(arguments != null);
-        assert(arguments.size() == 1 && arguments.get(0) != null);
+        assert arguments != null;
+        assert arguments.size() == 1 && arguments.get(0) != null;
         builder.append(arguments.get(0).toSimpleSql());
         if (orderBy != null) {
             builder.append(" ");
@@ -113,5 +100,4 @@ public class SqlFunctionAggregateGroupConcat extends SqlNode {
     public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
-
 }

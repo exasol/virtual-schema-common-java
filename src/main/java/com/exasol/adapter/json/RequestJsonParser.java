@@ -51,7 +51,7 @@ public class RequestJsonParser {
             }
         } else if (requestType.equals("setProperties")) {
             Map<String, String> properties = new HashMap<>();
-            assert(root.containsKey(PROPERTIES) && root.get(PROPERTIES).getValueType() == ValueType.OBJECT);
+            assert root.containsKey(PROPERTIES) && root.get(PROPERTIES).getValueType() == ValueType.OBJECT;
             for (Map.Entry<String, JsonValue> entry : root.getJsonObject(PROPERTIES).entrySet()) {
                 String key = entry.getKey();
                 // Null values represent properties which are deleted by the user (might also have never existed actually)
@@ -65,7 +65,7 @@ public class RequestJsonParser {
         } else if (requestType.equals("getCapabilities")) {
             return new GetCapabilitiesRequest(meta);
         } else if (requestType.equals("pushdown")) {
-            assert(root.containsKey(INVOLVED_TABLES) && root.get(INVOLVED_TABLES).getValueType() == ValueType.ARRAY);
+            assert root.containsKey(INVOLVED_TABLES) && root.get(INVOLVED_TABLES).getValueType() == ValueType.ARRAY;
             involvedTablesMetadata = parseInvolvedTableMetadata(root.getJsonArray(INVOLVED_TABLES));
             JsonObject pushdownExp;
             if (root.containsKey("pushdownRequest")) {
@@ -74,7 +74,7 @@ public class RequestJsonParser {
                 throw new IllegalArgumentException("Push-down statement missing in adapter request element '/pushdownRequest'.");
             }
             SqlNode select = parseExpression(pushdownExp);
-            assert(select.getType() == SqlNodeType.SELECT);
+            assert select.getType() == SqlNodeType.SELECT;
             return new PushdownRequest(meta, (SqlStatementSelect)select, involvedTablesMetadata);
         } else {
             throw new UnsupportedOperationException("Request Type not supported: " + requestType);
@@ -141,7 +141,7 @@ public class RequestJsonParser {
                 int fraction = dataType.getInt("fraction", 3);      // has a default in EXASOL
                 type = DataType.createIntervalDaySecond(precision, fraction);
             } else {
-                assert(intervalType == IntervalType.YEAR_TO_MONTH);
+                assert intervalType == IntervalType.YEAR_TO_MONTH;
                 type = DataType.createIntervalYearMonth(precision);
             }
         } else if (typeName.equals("GEOMETRY")) {
@@ -176,11 +176,10 @@ public class RequestJsonParser {
     private SqlStatementSelect parseSelect(JsonObject select) throws MetadataException {
         // FROM clause
         SqlNode table = parseExpression(select.getJsonObject("from"));
-        assert(table.getType() == SqlNodeType.TABLE || table.getType() == SqlNodeType.JOIN);
+        assert table.getType() == SqlNodeType.TABLE || table.getType() == SqlNodeType.JOIN;
         // SELECT list
         SqlSelectList selectList = parseSelectList(select.getJsonArray("selectList"));
         SqlExpressionList groupByClause = parseGroupBy(select.getJsonArray("groupBy"));
-
         // WHERE clause
         SqlNode whereClause = null;
         if (select.containsKey("filter")) {
@@ -202,7 +201,7 @@ public class RequestJsonParser {
     }
 
     private List<SqlNode> parseExpressionList(JsonArray array) throws MetadataException {
-        assert(array != null);
+        assert array != null;
         List<SqlNode> sqlNodes = new ArrayList<>();
         for (JsonObject expr : array.getValuesAs(JsonObject.class)) {
             SqlNode node = parseExpression(expr);
@@ -434,7 +433,7 @@ public class RequestJsonParser {
             }
             if (!hasVariableInputArgs) {
                 numArgs = exp.getInt("numArgs");    // this is the expected number of arguments for this scalar function
-                assert (numArgs == arguments.size());
+                assert numArgs == arguments.size();
             }
             boolean isInfix = false;
             if (exp.containsKey("infix")) {
@@ -556,7 +555,7 @@ public class RequestJsonParser {
     }
 
     private TableMetadata findInvolvedTableMetadata(String tableName) throws MetadataException {
-        assert(involvedTablesMetadata != null);
+        assert involvedTablesMetadata != null;
         for (TableMetadata tableMetadata : involvedTablesMetadata) {
             if (tableMetadata.getName().equals(tableName)) {
                 return tableMetadata;
