@@ -1,28 +1,27 @@
 package com.exasol.adapter.sql;
 
-
 import com.exasol.adapter.AdapterException;
 
 public class SqlLimit extends SqlNode {
-    
-    int limit;
-    int offset;
-    
+    private int limit;
+    private int offset;
+
     public SqlLimit(int limit) {
         this(limit, 0);
     }
-    
+
     public SqlLimit(int limit, int offset) {
+        if (offset < 0 || limit <0) {
+            throw new IllegalArgumentException("SqlLimit constructor expects offset and limit values to be greater than zero");
+        }
         this.limit = limit;
         this.offset = offset;
-        assert(offset >= 0);
-        assert(limit >= 0);
     }
-    
+
     public int getLimit() {
         return limit;
     }
-    
+
     public int getOffset() {
         return offset;
     }
@@ -57,5 +56,4 @@ public class SqlLimit extends SqlNode {
     public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
-
 }

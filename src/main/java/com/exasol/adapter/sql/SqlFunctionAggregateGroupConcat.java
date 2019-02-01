@@ -5,31 +5,25 @@ import com.exasol.adapter.AdapterException;
 import java.util.Collections;
 import java.util.List;
 
-
 public class SqlFunctionAggregateGroupConcat extends SqlNode {
-
     private AggregateFunction function;
     private boolean distinct;
     private List<SqlNode> arguments;
     private String separator;
     private SqlOrderBy orderBy;
 
-
-
     public SqlFunctionAggregateGroupConcat(AggregateFunction function, List<SqlNode> arguments,
                                            SqlOrderBy orderBy, boolean distinct,
                                            String separator) {
-        assert(arguments != null); // currently the adapter supports only one expression as argument
-        assert(arguments.size() == 1 && arguments.get(0) != null);
+        SqlArgumentValidator.validateSqlFunctionArguments(arguments, SqlFunctionAggregateGroupConcat.class);
         this.function = function;
         this.distinct = distinct;
         this.arguments = arguments;
         this.orderBy = orderBy;
         this.separator = separator;
-        if (this.arguments != null) {
-            for (SqlNode node : this.arguments) {
-                node.setParent(this);
-            }
+
+        for (final SqlNode node : this.arguments) {
+            node.setParent(this);
         }
         if (orderBy != null) {
             orderBy.setParent(this);
@@ -42,14 +36,14 @@ public class SqlFunctionAggregateGroupConcat extends SqlNode {
 
     public List<SqlNode> getArguments() {
         if (arguments == null) {
-            return null;
+            return Collections.emptyList();
         } else {
             return Collections.unmodifiableList(arguments);
         }
     }
 
     public boolean hasOrderBy() {
-        return orderBy != null && orderBy.getExpressions() != null && orderBy.getExpressions().size() > 0;
+        return orderBy != null && orderBy.getExpressions() != null && !orderBy.getExpressions().isEmpty();
     }
 
     public SqlOrderBy getOrderBy() {
@@ -67,7 +61,7 @@ public class SqlFunctionAggregateGroupConcat extends SqlNode {
     public boolean hasDistinct() {
         return distinct;
     }
-    
+
     @Override
     public String toSimpleSql() {
         String distinctSql = "";
@@ -78,8 +72,8 @@ public class SqlFunctionAggregateGroupConcat extends SqlNode {
         builder.append(getFunctionName());
         builder.append("(");
         builder.append(distinctSql);
-        assert(arguments != null);
-        assert(arguments.size() == 1 && arguments.get(0) != null);
+        assert arguments != null;
+        assert arguments.size() == 1 && arguments.get(0) != null;
         builder.append(arguments.get(0).toSimpleSql());
         if (orderBy != null) {
             builder.append(" ");
@@ -104,5 +98,4 @@ public class SqlFunctionAggregateGroupConcat extends SqlNode {
     public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
-
 }

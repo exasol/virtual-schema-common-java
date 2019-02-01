@@ -7,8 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SqlSelectList extends SqlExpressionList {
-
-    SqlSelectListType type;
+    private SqlSelectListType type;
 
     private SqlSelectList(SqlSelectListType type, List<SqlNode> selectList) {
         super(selectList);
@@ -37,12 +36,12 @@ public class SqlSelectList extends SqlExpressionList {
      * @return the new SqlSelectList.
      */
     public static SqlSelectList createRegularSelectList(List<SqlNode> selectList) {
-        assert (selectList != null);
-        assert (selectList.size() > 0);
+        if (selectList == null || selectList.isEmpty()) {
+            throw new IllegalArgumentException("SqlFunctionAggregateGroupConcat constructor expects an argument." +
+                  "But the list is empty.");
+        }
         return new SqlSelectList(SqlSelectListType.Regular, selectList);
     }
-
-
 
     public boolean isRequestAnyColumn() {
         return type == SqlSelectListType.AnyValue;
@@ -80,5 +79,4 @@ public class SqlSelectList extends SqlExpressionList {
     public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
-
 }

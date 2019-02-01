@@ -5,7 +5,6 @@ import com.exasol.adapter.AdapterException;
 import java.math.BigDecimal;
 
 public class SqlLiteralExactnumeric extends SqlNode {
-
     private BigDecimal value;
     
     public SqlLiteralExactnumeric(BigDecimal value) {
@@ -30,5 +29,4 @@ public class SqlLiteralExactnumeric extends SqlNode {
     public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
-
 }

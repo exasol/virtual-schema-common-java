@@ -1,10 +1,8 @@
 package com.exasol.adapter.sql;
 
-
 import com.exasol.adapter.AdapterException;
 
 public class SqlPredicateNot extends SqlPredicate {
-
     private SqlNode expression;
     
     public SqlPredicateNot(SqlNode expression) {
@@ -33,5 +31,4 @@ public class SqlPredicateNot extends SqlPredicate {
     public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
-
 }

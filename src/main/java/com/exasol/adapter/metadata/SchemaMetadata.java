@@ -8,7 +8,6 @@ import java.util.List;
  * when the adapter updates the metadata (during refresh or set property).
  */
 public class SchemaMetadata {
-    
     private String adapterNotes;
     private List<TableMetadata> tables;
     
@@ -24,5 +23,4 @@ public class SchemaMetadata {
     public List<TableMetadata> getTables() {
         return tables;
     }
-    
 }

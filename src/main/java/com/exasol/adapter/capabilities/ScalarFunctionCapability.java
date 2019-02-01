@@ -6,16 +6,13 @@ import com.exasol.adapter.sql.ScalarFunction;
  * List of all scalar functions supported by EXASOL. Note that predicates are handled separately in {@link PredicateCapability}.
  */
 public enum ScalarFunctionCapability {
-    
     // Standard Arithmetic Operators
     ADD,
     SUB,
     MULT,
     FLOAT_DIV,
-
     // Unary prefix operators
     NEG,
-
     // Numeric functions
     ABS,
     ACOS,
@@ -48,7 +45,6 @@ public enum ScalarFunctionCapability {
     TRUNC,
     // Aliases:
     // LOG10 and LOG2 via LN
-    
     // String Functions
     ASCII,
     BIT_LENGTH,
@@ -89,7 +85,6 @@ public enum ScalarFunctionCapability {
     // LEFT via SUBSTR?
     // UCASE via UPPER
     // CHARACTER_LENGTH via LENGTH?
-    
     // Date/Time Functions
     ADD_DAYS,
     ADD_HOURS,
@@ -123,7 +118,6 @@ public enum ScalarFunctionCapability {
     WEEK,
     YEAR,
     YEARS_BETWEEN,
-
     // Geospatial
     // - Point Functions
     ST_X,
@@ -170,7 +164,6 @@ public enum ScalarFunctionCapability {
     ST_TRANSFORM,
     ST_UNION,
     ST_WITHIN,
-    
     // Conversion functions
     CAST,  // Has alias CONVERT
     IS_NUMBER,
@@ -185,7 +178,6 @@ public enum ScalarFunctionCapability {
     TO_YMINTERVAL,
     TO_NUMBER,
     TO_TIMESTAMP,
-
     // Bitwise functions
     BIT_AND,
     BIT_CHECK,
@@ -194,7 +186,6 @@ public enum ScalarFunctionCapability {
     BIT_SET,
     BIT_TO_NUM,
     BIT_XOR,
-
     // Other functions
     CASE,
     CURRENT_SCHEMA,
@@ -208,7 +199,6 @@ public enum ScalarFunctionCapability {
     NULLIFZERO,
     SYS_GUID,
     ZEROIFNULL
-
     // Skipped: Connect-By Functions
     ;
 
@@ -216,6 +206,5 @@ public enum ScalarFunctionCapability {
         // The set of capabilites and functions should be completely equal.
         return ScalarFunction.valueOf(name());
     }
-
 }
 

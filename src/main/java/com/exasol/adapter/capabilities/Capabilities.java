@@ -1,8 +1,5 @@
 package com.exasol.adapter.capabilities;
 
-import com.exasol.adapter.sql.AggregateFunction;
-import com.exasol.adapter.sql.Predicate;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,7 +7,6 @@ import java.util.Set;
  * Manages a set of supported Capabilities
  */
 public class Capabilities {
-    
     private Set<MainCapability> mainCapabilities = new HashSet<>();
     private Set<ScalarFunctionCapability> scalarFunctionCaps = new HashSet<>();
     private Set<PredicateCapability> predicateCaps = new HashSet<>();
@@ -68,15 +64,15 @@ public class Capabilities {
     public void supportAggregateFunction(AggregateFunctionCapability functionType) {
         aggregateFunctionCaps.add(functionType);
     }
-    
+
     public void supportLiteral(LiteralCapability literal) {
         literalCaps.add(literal);
     }
-    
+
     public Set<MainCapability> getMainCapabilities() {
         return mainCapabilities;
     }
-    
+
     public Set<ScalarFunctionCapability> getScalarFunctionCapabilities() {
         return scalarFunctionCaps;
     }
@@ -88,7 +84,7 @@ public class Capabilities {
     public Set<AggregateFunctionCapability> getAggregateFunctionCapabilities() {
         return aggregateFunctionCaps;
     }
-    
+
     public Set<LiteralCapability> getLiteralCapabilities() {
         return literalCaps;
     }

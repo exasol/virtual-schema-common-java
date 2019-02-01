@@ -1,6 +1,21 @@
 package com.exasol.adapter.json;
 
-import static org.junit.Assert.assertTrue;
+import com.exasol.adapter.metadata.ColumnMetadata;
+import com.exasol.adapter.metadata.DataType;
+import com.exasol.adapter.metadata.DataType.ExaCharset;
+import com.exasol.adapter.metadata.SchemaMetadataInfo;
+import com.exasol.adapter.metadata.TableMetadata;
+import com.exasol.adapter.request.AdapterRequest;
+import com.exasol.adapter.request.PushdownRequest;
+import com.exasol.adapter.request.SetPropertiesRequest;
+import com.exasol.adapter.sql.JoinType;
+import com.exasol.adapter.sql.SqlJoin;
+import com.exasol.adapter.sql.SqlNodeType;
+import com.exasol.adapter.sql.SqlStatementSelect;
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
+import org.junit.Test;
+import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -8,30 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.json.JsonObject;
-import javax.json.JsonValue;
-
-import org.junit.Test;
-import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
-
-import com.exasol.adapter.metadata.ColumnMetadata;
-import com.exasol.adapter.metadata.SchemaMetadataInfo;
-import com.exasol.adapter.metadata.DataType;
-import com.exasol.adapter.metadata.TableMetadata;
-import com.exasol.adapter.metadata.DataType.ExaCharset;
-import com.exasol.adapter.request.AdapterRequest;
-import com.exasol.adapter.request.PushdownRequest;
-import com.exasol.adapter.request.SetPropertiesRequest;
-import com.exasol.adapter.sql.JoinType;
-import com.exasol.adapter.sql.SqlJoin;
-import com.exasol.adapter.sql.SqlNode;
-import com.exasol.adapter.sql.SqlNodeType;
-import com.exasol.adapter.sql.SqlPredicate;
-import com.exasol.adapter.sql.SqlPredicateEqual;
-import com.exasol.adapter.sql.SqlStatementSelect;
-import com.exasol.utils.JsonHelper;
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 public class RequestJsonParserTest {
 
@@ -210,18 +203,18 @@ public class RequestJsonParserTest {
 
         SqlStatementSelect select = (SqlStatementSelect) pushdown.getSelect();
         SqlJoin from = (SqlJoin) select.getFromClause();
-        
-        assertTrue(from.getType() == SqlNodeType.JOIN);
-        assertTrue(from.getJoinType() == JoinType.INNER);
-        assertTrue(from.getCondition().getType() == SqlNodeType.PREDICATE_EQUAL);
-        assertTrue(from.getLeft().getType() == SqlNodeType.TABLE);
-        assertTrue(from.getRight().getType() == SqlNodeType.TABLE);
+
+        assertSame(from.getType(), SqlNodeType.JOIN);
+        assertSame(from.getJoinType(), JoinType.INNER);
+        assertSame(from.getCondition().getType(), SqlNodeType.PREDICATE_EQUAL);
+        assertSame(from.getLeft().getType(), SqlNodeType.TABLE);
+        assertSame(from.getRight().getType(), SqlNodeType.TABLE);
     }
     
     /**
      * Without this method we would need to override equals() and .hashcode() for each object, which explodes code and makes it less maintainable
      */
-    public <T> void assertObjectEquals(final T expected, final T actual) {
+    private  <T> void assertObjectEquals(final T expected, final T actual) {
         assertTrue("Expected:\n" + expected + "\nactual:\n" + actual, new ReflectionEquals(actual, (String[])null).matches(expected));
     }
 }

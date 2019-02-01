@@ -5,7 +5,6 @@ import java.util.Map;
 import com.exasol.adapter.metadata.SchemaMetadataInfo;
 
 public class SetPropertiesRequest extends AdapterRequest {
-    
     private Map<String, String> properties;
     
     public SetPropertiesRequest(SchemaMetadataInfo schemaMetadataInfo, Map<String, String> properties) {

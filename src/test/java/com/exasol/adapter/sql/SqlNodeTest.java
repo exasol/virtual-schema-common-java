@@ -6,6 +6,7 @@ import com.exasol.adapter.metadata.DataType.ExaCharset;
 import com.exasol.adapter.metadata.MetadataException;
 import com.exasol.adapter.metadata.TableMetadata;
 import com.exasol.utils.SqlTestUtil;
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 
@@ -43,10 +44,10 @@ public class SqlNodeTest {
                 new SqlColumn(0, clicksMeta.getColumns().get(0)),
                 new SqlFunctionAggregate(AggregateFunction.COUNT, ImmutableList.<SqlNode>of(new SqlColumn(1, clicksMeta.getColumns().get(1))), false)));
         SqlNode whereClause = new SqlPredicateLess(new SqlLiteralExactnumeric(BigDecimal.ONE), new SqlColumn(0, clicksMeta.getColumns().get(0)));
-        SqlExpressionList groupBy = new SqlGroupBy(ImmutableList.<SqlNode>of(new SqlColumn(0, clicksMeta.getColumns().get(0))));
-        SqlNode countUrl = new SqlFunctionAggregate(AggregateFunction.COUNT, ImmutableList.<SqlNode>of(new SqlColumn(1, clicksMeta.getColumns().get(1))), false);
+        SqlExpressionList groupBy = new SqlGroupBy(ImmutableList.of(new SqlColumn(0, clicksMeta.getColumns().get(0))));
+        SqlNode countUrl = new SqlFunctionAggregate(AggregateFunction.COUNT, ImmutableList.of(new SqlColumn(1, clicksMeta.getColumns().get(1))), false);
         SqlNode having = new SqlPredicateLess(new SqlLiteralExactnumeric(BigDecimal.ONE), countUrl);
-        SqlOrderBy orderBy = new SqlOrderBy(ImmutableList.<SqlNode>of(new SqlColumn(0, clicksMeta.getColumns().get(0))), ImmutableList.of(true), ImmutableList.of(true));
+        SqlOrderBy orderBy = new SqlOrderBy(ImmutableList.of(new SqlColumn(0, clicksMeta.getColumns().get(0))), ImmutableList.of(true), ImmutableList.of(true));
         SqlLimit limit = new SqlLimit(10);
         return new SqlStatementSelect(fromClause, selectList, whereClause, groupBy, having, orderBy, limit);
     }

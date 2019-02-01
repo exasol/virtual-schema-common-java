@@ -4,16 +4,13 @@ package com.exasol.adapter.sql;
  * List of all scalar functions supported by EXASOL. Note that predicates are defined separately in {@link Predicate}.
  */
 public enum ScalarFunction {
-
     // Standard Arithmetic Operators
     ADD,
     SUB,
     MULT,
     FLOAT_DIV,
-
     // Unary prefix operators
     NEG,
-
     // Numeric
     ABS,
     ACOS,
@@ -44,7 +41,6 @@ public enum ScalarFunction {
     TAN,
     TANH,
     TRUNC,
-
     // String Functions
     ASCII,
     BIT_LENGTH,
@@ -78,7 +74,6 @@ public enum ScalarFunction {
     UNICODE,
     UNICODECHR,
     UPPER,
-
     // Date/Time Functions
     ADD_DAYS,
     ADD_HOURS,
@@ -112,7 +107,6 @@ public enum ScalarFunction {
     WEEK,
     YEAR,
     YEARS_BETWEEN,
-
     // Geospatial
     ST_X,
     ST_Y,
@@ -154,7 +148,6 @@ public enum ScalarFunction {
     ST_TRANSFORM,
     ST_UNION,
     ST_WITHIN,
-
     // Conversion functions
     CAST(false),
     IS_NUMBER,
@@ -169,7 +162,6 @@ public enum ScalarFunction {
     TO_YMINTERVAL,
     TO_NUMBER,
     TO_TIMESTAMP,
-
     // Bitwise functions
     BIT_AND,
     BIT_CHECK,
@@ -178,7 +170,6 @@ public enum ScalarFunction {
     BIT_SET,
     BIT_TO_NUM,
     BIT_XOR,
-
     // Other Functions
     CASE(false),
     CURRENT_SCHEMA,

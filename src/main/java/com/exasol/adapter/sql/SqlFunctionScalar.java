@@ -12,7 +12,6 @@ import java.util.*;
  * </p>
  */
 public class SqlFunctionScalar extends SqlNode {
-
     private List<SqlNode> arguments;
     private ScalarFunction function;
     private boolean isInfix;
@@ -32,7 +31,7 @@ public class SqlFunctionScalar extends SqlNode {
 
     public List<SqlNode> getArguments() {
         if (arguments == null) {
-            return null;
+            return Collections.emptyList();
         } else {
             return Collections.unmodifiableList(arguments);
         }
@@ -45,11 +44,11 @@ public class SqlFunctionScalar extends SqlNode {
     public String getFunctionName() {
         return function.name();
     }
-    
+
     public int getNumArgs() {
         return getArguments().size();
     }
-    
+
     public boolean isInfix() {
         return isInfix;
     }
@@ -58,7 +57,6 @@ public class SqlFunctionScalar extends SqlNode {
         return isPrefix;
     }
 
-
     @Override
     public String toSimpleSql() {
         List<String> argumentsSql = new ArrayList<>();
@@ -66,8 +64,8 @@ public class SqlFunctionScalar extends SqlNode {
             argumentsSql.add(node.toSimpleSql());
         }
         if (isInfix) {
-            assert(argumentsSql.size()==2);
-            Map<String, String> functionAliases = new HashMap<String, String>();
+            assert argumentsSql.size() == 2;
+            Map<String, String> functionAliases = new HashMap<>();
             functionAliases.put("ADD", "+");
             functionAliases.put("SUB", "-");
             functionAliases.put("MULT", "*");
@@ -78,8 +76,8 @@ public class SqlFunctionScalar extends SqlNode {
             }
             return "(" + argumentsSql.get(0) + " " + realFunctionName + " " + argumentsSql.get(1) + ")";
         } else if (isPrefix) {
-            assert(argumentsSql.size()==1);
-            Map<String, String> functionAliases = new HashMap<String, String>();
+            assert argumentsSql.size() == 1;
+            Map<String, String> functionAliases = new HashMap<>();
             functionAliases.put("NEG", "-");
             String realFunctionName = getFunctionName();
             if (functionAliases.containsKey(getFunctionName())) {
@@ -99,5 +97,4 @@ public class SqlFunctionScalar extends SqlNode {
     public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
-
 }

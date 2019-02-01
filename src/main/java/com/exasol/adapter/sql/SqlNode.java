@@ -2,18 +2,13 @@ package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Node in a graph representing a SQL query.
  */
 public abstract class SqlNode {
-    
     private SqlNode parent;
 
     public abstract SqlNodeType getType();
-
 
     public void setParent(SqlNode parent) {
         this.parent = parent;

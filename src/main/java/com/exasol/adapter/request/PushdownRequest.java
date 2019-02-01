@@ -7,7 +7,6 @@ import com.exasol.adapter.metadata.TableMetadata;
 import com.exasol.adapter.sql.SqlStatement;
 
 public class PushdownRequest extends AdapterRequest {
-    
     private SqlStatement select;
     private List<TableMetadata> involvedTablesMetadata;
     

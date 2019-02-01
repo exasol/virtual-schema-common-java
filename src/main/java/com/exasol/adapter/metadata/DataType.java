@@ -5,10 +5,9 @@ package com.exasol.adapter.metadata;
  * Represents an EXASOL datatype.
  */
 public class DataType {
-
-    public static int maxExasolCharSize = 2000;
-    public static int maxExasolVarcharSize = 2000000;
-    public static int maxExasolDecimalPrecision = 36;
+    public static final int maxExasolCharSize = 2000;
+    public static final int maxExasolVarcharSize = 2000000;
+    public static final int maxExasolDecimalPrecision = 36;
 
     private ExaDataType exaDataType;
     private int precision;

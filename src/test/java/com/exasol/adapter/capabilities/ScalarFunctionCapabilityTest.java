@@ -1,11 +1,9 @@
 package com.exasol.adapter.capabilities;
 
-import com.exasol.adapter.sql.AggregateFunction;
-import com.exasol.adapter.sql.Predicate;
 import com.exasol.adapter.sql.ScalarFunction;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class ScalarFunctionCapabilityTest {

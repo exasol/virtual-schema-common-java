@@ -1,13 +1,8 @@
 package com.exasol.adapter.sql;
 
-
 import com.exasol.adapter.AdapterException;
 
-/**
- *
- */
 public class SqlPredicateLike extends SqlPredicate {
-
     private SqlNode left;
     private SqlNode pattern;
     private SqlNode escapeChar;
@@ -62,5 +57,4 @@ public class SqlPredicateLike extends SqlPredicate {
     public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
-
 }

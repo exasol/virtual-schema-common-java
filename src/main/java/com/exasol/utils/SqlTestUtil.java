@@ -1,6 +1,9 @@
 package com.exasol.utils;
 
-public class SqlTestUtil {
+public final class SqlTestUtil {
+    private SqlTestUtil(){
+        //Intentionally left blank
+    }
     
     /**
      * Convert newlines, tabs, and double whitespaces to whitespaces. At the end only single whitespaces remain.
@@ -10,5 +13,4 @@ public class SqlTestUtil {
                 .replaceAll("\n", " ")
                 .replaceAll("\\s+", " ");
     }
-    
 }

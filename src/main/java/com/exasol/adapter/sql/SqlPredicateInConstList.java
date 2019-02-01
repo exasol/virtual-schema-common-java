@@ -7,13 +7,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
 public class SqlPredicateInConstList extends SqlPredicate {
-    
     // For <exp> IN (...) this stores <exp>
-    SqlNode expression;
+    private SqlNode expression;
     // Arguments inside the brackets
-    List<SqlNode> inArguments;
+    private List<SqlNode> inArguments;
     
     public SqlPredicateInConstList(SqlNode expression, List<SqlNode> inArguments) {
         super(Predicate.IN_CONSTLIST);
@@ -35,7 +33,7 @@ public class SqlPredicateInConstList extends SqlPredicate {
     
     public List<SqlNode> getInArguments() {
         if (inArguments == null) {
-            return null;
+            return Collections.emptyList();
         } else {
             return Collections.unmodifiableList(inArguments);
         }
@@ -59,5 +57,4 @@ public class SqlPredicateInConstList extends SqlPredicate {
     public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
-
 }

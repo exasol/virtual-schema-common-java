@@ -4,9 +4,8 @@ import java.util.Collections;
 import java.util.List;
 
 public abstract class SqlExpressionList extends SqlNode {
-
     private List<SqlNode> expressions;
-    
+
     public SqlExpressionList(List<SqlNode> expressions) {
         this.expressions = expressions;
         if (this.expressions != null) {
@@ -18,10 +17,9 @@ public abstract class SqlExpressionList extends SqlNode {
 
     public List<SqlNode> getExpressions() {
         if (expressions == null) {
-            return null;
+            return Collections.emptyList();
         } else {
             return Collections.unmodifiableList(expressions);
         }
     }
-
 }

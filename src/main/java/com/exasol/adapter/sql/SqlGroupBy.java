@@ -21,7 +21,7 @@ public class SqlGroupBy extends SqlExpressionList {
     public SqlNodeType getType() {
         return SqlNodeType.GROUP_BY;
     }
-    
+
     @Override
     public String toSimpleSql() {
         if (getExpressions().isEmpty()) {
@@ -38,5 +38,4 @@ public class SqlGroupBy extends SqlExpressionList {
     public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
-
 }

@@ -3,7 +3,6 @@ package com.exasol.adapter.sql;
 import com.exasol.adapter.AdapterException;
 
 public class SqlJoin extends SqlNode {
-
     private SqlNode left;
     private SqlNode right;
     private SqlNode condition;
@@ -68,5 +67,4 @@ public class SqlJoin extends SqlNode {
     String toSimpleSql() {
 		return left.toSimpleSql() + " " + joinType.name().replace('_', ' ') + " JOIN "  + right.toSimpleSql() + " ON " + condition.toSimpleSql();
 	}
-
 }

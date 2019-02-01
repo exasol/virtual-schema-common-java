@@ -1,16 +1,13 @@
 package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
-import com.google.common.base.Joiner;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
 public class SqlPredicateOr extends SqlPredicate {
-
-    List<SqlNode> orPredicates;
+    private List<SqlNode> orPredicates;
 
     public SqlPredicateOr(List<SqlNode> orPredicates) {
         super(Predicate.OR);
@@ -24,7 +21,7 @@ public class SqlPredicateOr extends SqlPredicate {
 
     public List<SqlNode> getOrPredicates() {
         if (orPredicates == null) {
-            return null;
+            return Collections.emptyList();
         } else {
             return Collections.unmodifiableList(orPredicates);
         }
@@ -36,7 +33,7 @@ public class SqlPredicateOr extends SqlPredicate {
         for (SqlNode node : orPredicates) {
             operandsSql.add(node.toSimpleSql());
         }
-        return "(" + Joiner.on(" OR ").join(operandsSql) + ")";
+        return "(" + String.join(" OR ", operandsSql) + ")";
     }
 
     @Override
@@ -48,5 +45,4 @@ public class SqlPredicateOr extends SqlPredicate {
     public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
-
 }
