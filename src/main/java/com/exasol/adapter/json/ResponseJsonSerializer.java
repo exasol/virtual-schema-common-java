@@ -12,7 +12,8 @@ public class ResponseJsonSerializer {
     public static final String PREDICATE_PREFIX = "FN_PRED_";
     public static final String AGGREGATE_FUNCTION_PREFIX = "FN_AGG_";
     public static final String LITERAL_PREFIX = "LITERAL_";
-    public static final String SCHEMA_METADATA = "schemaMetadata";
+
+    private static final String SCHEMA_METADATA = "schemaMetadata";
 
     private ResponseJsonSerializer() {
         //Intentionally left blank

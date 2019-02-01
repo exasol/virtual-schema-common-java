@@ -32,7 +32,7 @@ public class SqlFunctionScalar extends SqlNode {
 
     public List<SqlNode> getArguments() {
         if (arguments == null) {
-            return null;
+            return Collections.emptyList();
         } else {
             return Collections.unmodifiableList(arguments);
         }
@@ -45,11 +45,11 @@ public class SqlFunctionScalar extends SqlNode {
     public String getFunctionName() {
         return function.name();
     }
-    
+
     public int getNumArgs() {
         return getArguments().size();
     }
-    
+
     public boolean isInfix() {
         return isInfix;
     }
@@ -66,8 +66,8 @@ public class SqlFunctionScalar extends SqlNode {
             argumentsSql.add(node.toSimpleSql());
         }
         if (isInfix) {
-            assert(argumentsSql.size()==2);
-            Map<String, String> functionAliases = new HashMap<String, String>();
+            assert(argumentsSql.size() == 2);
+            Map<String, String> functionAliases = new HashMap<>();
             functionAliases.put("ADD", "+");
             functionAliases.put("SUB", "-");
             functionAliases.put("MULT", "*");
@@ -78,8 +78,8 @@ public class SqlFunctionScalar extends SqlNode {
             }
             return "(" + argumentsSql.get(0) + " " + realFunctionName + " " + argumentsSql.get(1) + ")";
         } else if (isPrefix) {
-            assert(argumentsSql.size()==1);
-            Map<String, String> functionAliases = new HashMap<String, String>();
+            assert (argumentsSql.size() == 1);
+            Map<String, String> functionAliases = new HashMap<>();
             functionAliases.put("NEG", "-");
             String realFunctionName = getFunctionName();
             if (functionAliases.containsKey(getFunctionName())) {

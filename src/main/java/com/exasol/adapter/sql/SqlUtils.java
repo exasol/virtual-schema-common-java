@@ -4,6 +4,10 @@ import java.util.Map;
 
 public class SqlUtils {
 
+    private SqlUtils(){
+        //Intentionally left blank
+    }
+
     public static String quoteIdentifierIfNeeded(String identifier, Map<String, ?> config) {
         String quoteChar = "\"";
         if (config.containsKey("QUOTE_CHAR")) {

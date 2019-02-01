@@ -9,12 +9,12 @@ import java.util.List;
 
 public class SqlOrderBy extends SqlNode {
     
-    List<SqlNode> expressions;
-    List<Boolean> isAsc;
+    private List<SqlNode> expressions;
+    private List<Boolean> isAsc;
 
     // True, if the desired position of nulls is at the end, false if at beginning.
     // This does not necessarily mean the user explicitly specified NULLS LAST or NULLS FIRST.
-    List<Boolean> nullsLast;
+    private List<Boolean> nullsLast;
     
     public SqlOrderBy(List<SqlNode> expressions, List<Boolean> isAsc, List<Boolean> nullsFirst) {
         this.expressions = expressions;
@@ -29,7 +29,7 @@ public class SqlOrderBy extends SqlNode {
     
     public List<SqlNode> getExpressions() {
         if (expressions == null) {
-            return null;
+            return Collections.emptyList();
         } else {
             return Collections.unmodifiableList(expressions);
         }
@@ -37,7 +37,7 @@ public class SqlOrderBy extends SqlNode {
     
     public List<Boolean> isAscending() {
         if (isAsc == null) {
-            return null;
+            return Collections.emptyList();
         } else {
             return Collections.unmodifiableList(isAsc);
         }
@@ -45,7 +45,7 @@ public class SqlOrderBy extends SqlNode {
     
     public List<Boolean> nullsLast() {
         if (nullsLast == null) {
-            return null;
+            return Collections.emptyList();
         } else {
             return Collections.unmodifiableList(nullsLast);
         }
@@ -58,10 +58,10 @@ public class SqlOrderBy extends SqlNode {
         List<String> sqlOrderElement = new ArrayList<>();
         for (int i = 0; i < expressions.size(); ++i) {
             String elementSql = expressions.get(i).toSimpleSql();
-            if (isAsc.get(i) == false) {
+            if (!isAsc.get(i)) {
                 elementSql += " DESC";
             }
-            if (nullsLast.get(i) == false) {
+            if (!nullsLast.get(i)) {
                 elementSql += " NULLS FIRST";
             }
             sqlOrderElement.add(elementSql);

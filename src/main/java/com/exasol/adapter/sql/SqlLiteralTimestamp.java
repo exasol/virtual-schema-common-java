@@ -17,7 +17,7 @@ public class SqlLiteralTimestamp extends SqlNode {
     
     @Override
     public String toSimpleSql() {
-        return "TIMESTAMP '" + value.toString() + "'";
+        return "TIMESTAMP '" + value + "'";
     }
 
     @Override

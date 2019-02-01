@@ -20,15 +20,15 @@ import java.util.List;
 import java.util.Map;
 
 public class RequestJsonParser {
-    public static final String PROPERTIES = "properties";
-    public static final String INVOLVED_TABLES = "involvedTables";
-    public static final String DATA_TYPE = "dataType";
-    public static final String ORDER_BY = "orderBy";
-    public static final String EXPRESSION = "expression";
-    public static final String RIGHT = "right";
-    public static final String VALUE = "value";
-    public static final String ARGUMENTS = "arguments";
-    public static final String DISTINCT = "distinct";
+    private static final String PROPERTIES = "properties";
+    private static final String INVOLVED_TABLES = "involvedTables";
+    private static final String DATA_TYPE = "dataType";
+    private static final String ORDER_BY = "orderBy";
+    private static final String EXPRESSION = "expression";
+    private static final String RIGHT = "right";
+    private static final String VALUE = "value";
+    private static final String ARGUMENTS = "arguments";
+    private static final String DISTINCT = "distinct";
     private List<TableMetadata> involvedTablesMetadata;
 
     public AdapterRequest parseRequest(String json) throws AdapterException {
@@ -442,7 +442,6 @@ public class RequestJsonParser {
             }
             boolean isPrefix = false;
             if (exp.containsKey("prefix")) {
-                assert (!isPrefix);
                 isPrefix = exp.getBoolean("prefix");
             }
             return new SqlFunctionScalar(fromScalarFunctionName(functionName), arguments, isInfix, isPrefix);

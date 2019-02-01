@@ -14,8 +14,12 @@ import java.util.Map;
  */
 public class JsonHelper {
 
+    private JsonHelper(){
+        //Intentionally left blank
+    }
+
     public static JsonBuilderFactory getBuilderFactory() {
-        Map<String, Object> config = new HashMap<String, Object>();
+        Map<String, Object> config = new HashMap<>();
         return Json.createBuilderFactory(config);
     }
 
@@ -35,7 +39,7 @@ public class JsonHelper {
     }
 
     public static String prettyJson(JsonObject obj) {
-        Map<String, Boolean> config = new HashMap<String, Boolean>();
+        Map<String, Boolean> config = new HashMap<>();
         config.put(JsonGenerator.PRETTY_PRINTING, true);
         StringWriter strWriter = new StringWriter();
         PrintWriter pw = new PrintWriter(strWriter);

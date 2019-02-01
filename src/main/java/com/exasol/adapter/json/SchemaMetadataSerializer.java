@@ -11,7 +11,7 @@ import javax.json.JsonBuilderFactory;
 import javax.json.JsonObjectBuilder;
 
 public class SchemaMetadataSerializer {
-    public static final String ADAPTER_NOTES = "adapterNotes";
+    private static final String ADAPTER_NOTES = "adapterNotes";
 
     private SchemaMetadataSerializer() {
         //Intentionally left blank
@@ -36,7 +36,7 @@ public class SchemaMetadataSerializer {
         for (ColumnMetadata column : table.getColumns()) {
             columnsBuilder.add(serializeColumnMetadata(column, Json.createObjectBuilder()));
         }
-        tableBuilder.add("adapterNotes", table.getAdapterNotes());
+        tableBuilder.add(ADAPTER_NOTES, table.getAdapterNotes());
         if (table.hasComment()) {
             tableBuilder.add("comment", table.getComment());
         }
@@ -46,7 +46,7 @@ public class SchemaMetadataSerializer {
 
     private static JsonObjectBuilder serializeColumnMetadata(ColumnMetadata column, JsonObjectBuilder columnBuilder) {
         columnBuilder.add("name", column.getName());
-        columnBuilder.add("adapterNotes", column.getAdapterNotes());
+        columnBuilder.add(ADAPTER_NOTES, column.getAdapterNotes());
         columnBuilder.add("dataType", SqlDataTypeJsonSerializer.serialize(column.getType()));
         if (!column.isNullable()) {
             columnBuilder.add("isNullable", false);

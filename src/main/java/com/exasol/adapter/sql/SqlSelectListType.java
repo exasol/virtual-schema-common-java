@@ -17,5 +17,5 @@ public enum SqlSelectListType {
     /**
      * The user has to specify the desired elements.
      */
-    Regular;
+    Regular
 }

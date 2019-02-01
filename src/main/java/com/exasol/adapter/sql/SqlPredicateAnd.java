@@ -10,7 +10,7 @@ import java.util.List;
 
 public class SqlPredicateAnd extends SqlPredicate {
 
-    List<SqlNode> andedPredicates;
+    private List<SqlNode> andedPredicates;
 
     public SqlPredicateAnd(List<SqlNode> andedPredicates) {
         super(Predicate.AND);
@@ -24,7 +24,7 @@ public class SqlPredicateAnd extends SqlPredicate {
 
     public List<SqlNode> getAndedPredicates() {
         if (andedPredicates == null) {
-            return null;
+            return Collections.emptyList();
         } else {
             return Collections.unmodifiableList(andedPredicates);
         }

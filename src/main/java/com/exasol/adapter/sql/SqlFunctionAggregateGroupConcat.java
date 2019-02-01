@@ -19,17 +19,26 @@ public class SqlFunctionAggregateGroupConcat extends SqlNode {
     public SqlFunctionAggregateGroupConcat(AggregateFunction function, List<SqlNode> arguments,
                                            SqlOrderBy orderBy, boolean distinct,
                                            String separator) {
-        assert(arguments != null); // currently the adapter supports only one expression as argument
-        assert(arguments.size() == 1 && arguments.get(0) != null);
+        if (arguments == null) {
+            throw new IllegalArgumentException("SqlFunctionAggregateGroupConcat constructor expects an argument." +
+                  "But the list is empty.");
+        }
+        if (arguments.size() != 1){
+            throw new IllegalArgumentException("SqlFunctionAggregateGroupConcat constructor expects exactly one argument." +
+                  "But got " + arguments.size() + "arguments.");
+        }
+        if (arguments.get(0) == null){
+            throw new IllegalArgumentException("SqlFunctionAggregateGroupConcat constructor expects an argument." +
+                  "But the list is empty.");
+        }
         this.function = function;
         this.distinct = distinct;
         this.arguments = arguments;
         this.orderBy = orderBy;
         this.separator = separator;
-        if (this.arguments != null) {
-            for (SqlNode node : this.arguments) {
-                node.setParent(this);
-            }
+
+        for (SqlNode node : this.arguments) {
+            node.setParent(this);
         }
         if (orderBy != null) {
             orderBy.setParent(this);
@@ -42,14 +51,14 @@ public class SqlFunctionAggregateGroupConcat extends SqlNode {
 
     public List<SqlNode> getArguments() {
         if (arguments == null) {
-            return null;
+            return Collections.emptyList();
         } else {
             return Collections.unmodifiableList(arguments);
         }
     }
 
     public boolean hasOrderBy() {
-        return orderBy != null && orderBy.getExpressions() != null && orderBy.getExpressions().size() > 0;
+        return orderBy != null && orderBy.getExpressions() != null && !orderBy.getExpressions().isEmpty();
     }
 
     public SqlOrderBy getOrderBy() {
@@ -67,7 +76,7 @@ public class SqlFunctionAggregateGroupConcat extends SqlNode {
     public boolean hasDistinct() {
         return distinct;
     }
-    
+
     @Override
     public String toSimpleSql() {
         String distinctSql = "";

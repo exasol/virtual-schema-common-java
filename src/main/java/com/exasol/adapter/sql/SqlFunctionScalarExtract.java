@@ -6,17 +6,27 @@ import java.util.Collections;
 import java.util.List;
 
 public class SqlFunctionScalarExtract extends SqlNode {
+    private static final String EXTRACT = "EXTRACT";
     private String toExtract;
     private List<SqlNode> arguments;
 
     public SqlFunctionScalarExtract(String toExtract, List<SqlNode> arguments) {
-        assert(arguments.size() == 1);
+        if (arguments == null) {
+            throw new IllegalArgumentException("SqlFunctionScalarExtract constructor expects an argument." +
+                  "But the list is empty.");
+        }
+        if (arguments.size() != 1){
+            throw new IllegalArgumentException("SqlFunctionScalarExtract constructor expects exactly one argument." +
+                  "But got " + arguments.size() + "arguments.");
+        }
+        if (arguments.get(0) == null){
+            throw new IllegalArgumentException("SqlFunctionScalarExtract constructor expects an argument." +
+                  "But the list is empty.");
+        }
         this.arguments = arguments;
         this.toExtract = toExtract;
-        if (this.arguments != null) {
-            for (SqlNode node : this.arguments) {
-                node.setParent(this);
-            }
+        for (SqlNode node : this.arguments) {
+            node.setParent(this);
         }
     }
 
@@ -27,12 +37,12 @@ public class SqlFunctionScalarExtract extends SqlNode {
 
     public List<SqlNode> getArguments() {
         if (arguments == null) {
-            return null;
+            return Collections.emptyList();
         } else {
             return Collections.unmodifiableList(arguments);
         }
     }
-    
+
     @Override
     public String toSimpleSql() {
         assert(arguments.size() == 1 && arguments.get(0) != null);
@@ -50,7 +60,7 @@ public class SqlFunctionScalarExtract extends SqlNode {
     }
 
     public String getFunctionName() {
-        return "EXTRACT";
+        return EXTRACT;
     }
 
     public ScalarFunction getFunction() {

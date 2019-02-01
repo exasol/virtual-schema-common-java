@@ -32,7 +32,7 @@ public class SqlFunctionScalarCase extends SqlNode {
 
     public List<SqlNode> getArguments() {
         if (arguments == null) {
-            return null;
+            return Collections.emptyList();
         } else {
             return Collections.unmodifiableList(arguments);
         }
@@ -40,7 +40,7 @@ public class SqlFunctionScalarCase extends SqlNode {
 
     public List<SqlNode> getResults() {
         if (results == null) {
-            return null;
+            return Collections.emptyList();
         } else {
             return Collections.unmodifiableList(results);
         }
@@ -63,10 +63,6 @@ public class SqlFunctionScalarCase extends SqlNode {
     @Override
     public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
-    }
-
-    public String getFunctionName() {
-        return "CASE";
     }
 
     public ScalarFunction getFunction() {

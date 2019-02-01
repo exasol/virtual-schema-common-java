@@ -21,7 +21,7 @@ public class SqlGroupBy extends SqlExpressionList {
     public SqlNodeType getType() {
         return SqlNodeType.GROUP_BY;
     }
-    
+
     @Override
     public String toSimpleSql() {
         if (getExpressions().isEmpty()) {

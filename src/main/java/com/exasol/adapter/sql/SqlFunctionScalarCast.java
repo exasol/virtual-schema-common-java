@@ -11,14 +11,22 @@ public class SqlFunctionScalarCast extends SqlNode {
     private List<SqlNode> arguments;
 
     public SqlFunctionScalarCast(DataType dataType, List<SqlNode> arguments) {
-        assert(arguments != null);
-        assert(arguments.size() == 1 && arguments.get(0) != null);
+        if (arguments == null) {
+            throw new IllegalArgumentException("SqlFunctionScalarCast constructor expects an argument." +
+                  "But the list is empty.");
+        }
+        if (arguments.size() != 1){
+            throw new IllegalArgumentException("SqlFunctionScalarCast constructor expects exactly one argument." +
+                  "But got " + arguments.size() + "arguments.");
+        }
+        if (arguments.get(0) == null){
+            throw new IllegalArgumentException("SqlFunctionScalarCast constructor expects an argument." +
+                  "But the list is empty.");
+        }
         this.arguments = arguments;
         this.dataType = dataType;
-        if (this.arguments != null) {
-            for (SqlNode node : this.arguments) {
-                node.setParent(this);
-            }
+        for (SqlNode node : this.arguments) {
+            node.setParent(this);
         }
     }
 
@@ -29,12 +37,12 @@ public class SqlFunctionScalarCast extends SqlNode {
 
     public List<SqlNode> getArguments() {
         if (arguments == null) {
-            return null;
+            return Collections.emptyList();
         } else {
             return Collections.unmodifiableList(arguments);
         }
     }
-    
+
     @Override
     public String toSimpleSql() {
         assert(arguments != null);
@@ -50,10 +58,6 @@ public class SqlFunctionScalarCast extends SqlNode {
     @Override
     public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
-    }
-
-    public String getFunctionName() {
-        return "CAST";
     }
 
     public ScalarFunction getFunction() {
