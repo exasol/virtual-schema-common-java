@@ -1,6 +1,6 @@
 # Common module of Exasol Virtual Schemas Adapters
 
-[![Build Status](https://travis-ci.com/exasol/virtual-schema-common-java.svg?branch=master)](https://travis-ci.org/exasol/virtual-schema-common-java)
+[![Build Status](https://api.travis-ci.org/exasol/virtual-schema-common-java.svg?branch=master)](https://travis-ci.org/exasol/virtual-schema-common-java)
 
 SonarCloud results:
 
