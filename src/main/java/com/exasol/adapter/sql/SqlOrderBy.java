@@ -1,7 +1,6 @@
 package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
-import com.google.common.base.Joiner;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,7 +13,7 @@ public class SqlOrderBy extends SqlNode {
     // True, if the desired position of nulls is at the end, false if at beginning.
     // This does not necessarily mean the user explicitly specified NULLS LAST or NULLS FIRST.
     private List<Boolean> nullsLast;
-    
+
     public SqlOrderBy(List<SqlNode> expressions, List<Boolean> isAsc, List<Boolean> nullsFirst) {
         this.expressions = expressions;
         this.isAsc = isAsc;
@@ -25,7 +24,7 @@ public class SqlOrderBy extends SqlNode {
             }
         }
     }
-    
+
     public List<SqlNode> getExpressions() {
         if (expressions == null) {
             return Collections.emptyList();
@@ -33,7 +32,7 @@ public class SqlOrderBy extends SqlNode {
             return Collections.unmodifiableList(expressions);
         }
     }
-    
+
     public List<Boolean> isAscending() {
         if (isAsc == null) {
             return Collections.emptyList();
@@ -41,7 +40,7 @@ public class SqlOrderBy extends SqlNode {
             return Collections.unmodifiableList(isAsc);
         }
     }
-    
+
     public List<Boolean> nullsLast() {
         if (nullsLast == null) {
             return Collections.emptyList();
@@ -49,7 +48,7 @@ public class SqlOrderBy extends SqlNode {
             return Collections.unmodifiableList(nullsLast);
         }
     }
-    
+
     @Override
     public String toSimpleSql() {
         // ORDER BY <expr> [ASC/DESC] [NULLS FIRST/LAST]
@@ -65,7 +64,7 @@ public class SqlOrderBy extends SqlNode {
             }
             sqlOrderElement.add(elementSql);
         }
-        return "ORDER BY " + Joiner.on(", ").join(sqlOrderElement);
+        return "ORDER BY " + String.join(", ", sqlOrderElement);
     }
 
     @Override

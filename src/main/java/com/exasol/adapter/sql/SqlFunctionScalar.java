@@ -1,7 +1,6 @@
 package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
-import com.google.common.base.Joiner;
 
 import java.util.*;
 
@@ -85,7 +84,7 @@ public class SqlFunctionScalar extends SqlNode {
             }
             return "(" + realFunctionName + argumentsSql.get(1) + ")";
         }
-        return getFunctionName() + "(" + Joiner.on(", ").join(argumentsSql) + ")";
+        return getFunctionName() + "(" + String.join(", ", argumentsSql) + ")";
     }
 
     @Override

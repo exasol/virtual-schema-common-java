@@ -1,7 +1,6 @@
 package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
-import com.google.common.base.Joiner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +30,7 @@ public class SqlGroupBy extends SqlExpressionList {
         for (SqlNode node : getExpressions()) {
             selectElement.add(node.toSimpleSql());
         }
-        return Joiner.on(", ").join(selectElement);
+        return String.join(", ", selectElement);
     }
 
     @Override

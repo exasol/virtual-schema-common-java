@@ -1,7 +1,6 @@
 package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
-import com.google.common.base.Joiner;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -63,7 +62,7 @@ public class SqlFunctionAggregate extends SqlNode {
         if (distinct) {
             distinctSql = "DISTINCT ";
         }
-        return getFunctionName() + "(" + distinctSql + Joiner.on(", ").join(argumentsSql) + ")";
+        return getFunctionName() + "(" + distinctSql + String.join(", ", argumentsSql) + ")";
     }
 
     @Override

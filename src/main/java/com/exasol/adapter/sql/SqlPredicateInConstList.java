@@ -1,7 +1,6 @@
 package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
-import com.google.common.base.Joiner;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,7 +44,7 @@ public class SqlPredicateInConstList extends SqlPredicate {
         for (SqlNode node : inArguments) {
             argumentsSql.add(node.toSimpleSql());
         }
-        return expression.toSimpleSql() + " IN (" + Joiner.on(", ").join(argumentsSql) + ")";
+        return expression.toSimpleSql() + " IN (" + String.join(", ", argumentsSql) + ")";
     }
 
     @Override
