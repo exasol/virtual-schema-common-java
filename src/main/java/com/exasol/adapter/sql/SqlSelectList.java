@@ -1,7 +1,6 @@
 package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
-import com.google.common.base.Joiner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,23 +14,23 @@ public class SqlSelectList extends SqlExpressionList {
     }
 
     /**
-     * Creates a SqlSelectList for SELECT *. See {@link SqlSelectListType#SelectStar}.
+     * Creates a SqlSelectList for SELECT *. See {@link SqlSelectListType#SELECT_STAR}.
      * @return the new SqlSelectList.
      */
     public static SqlSelectList createSelectStarSelectList() {
-        return new SqlSelectList(SqlSelectListType.SelectStar, null);
+        return new SqlSelectList(SqlSelectListType.SELECT_STAR, null);
     }
 
     /**
-     * Creates a SqlSelectList that uses an arbitrary value. See {@link SqlSelectListType#AnyValue}.
+     * Creates a SqlSelectList that uses an arbitrary value. See {@link SqlSelectListType#ANY_VALUE}.
      * @return the new SqlSelectList.
      */
     public static SqlSelectList createAnyValueSelectList() {
-        return new SqlSelectList(SqlSelectListType.AnyValue, null);
+        return new SqlSelectList(SqlSelectListType.ANY_VALUE, null);
     }
 
     /**
-     * Creates a regular SqlSelectList. See {@link SqlSelectListType#Regular}.
+     * Creates a regular SqlSelectList. See {@link SqlSelectListType#REGULAR}.
      * @param selectList The selectList needs at least one element.
      * @return the new SqlSelectList.
      */
@@ -40,18 +39,18 @@ public class SqlSelectList extends SqlExpressionList {
             throw new IllegalArgumentException("SqlFunctionAggregateGroupConcat constructor expects an argument." +
                   "But the list is empty.");
         }
-        return new SqlSelectList(SqlSelectListType.Regular, selectList);
+        return new SqlSelectList(SqlSelectListType.REGULAR, selectList);
     }
 
     public boolean isRequestAnyColumn() {
-        return type == SqlSelectListType.AnyValue;
+        return type == SqlSelectListType.ANY_VALUE;
     }
 
     /**
      * @return true if this is "SELECT *", false otherwise
      */
     public boolean isSelectStar() {
-        return type == SqlSelectListType.SelectStar;
+        return type == SqlSelectListType.SELECT_STAR;
     }
 
     @Override
@@ -72,7 +71,7 @@ public class SqlSelectList extends SqlExpressionList {
         for (SqlNode node : getExpressions()) {
             selectElement.add(node.toSimpleSql());
         }
-        return Joiner.on(", ").join(selectElement);
+        return String.join(", ", selectElement);
     }
 
     @Override

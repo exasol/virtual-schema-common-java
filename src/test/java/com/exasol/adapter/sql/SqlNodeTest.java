@@ -6,7 +6,6 @@ import com.exasol.adapter.metadata.DataType.ExaCharset;
 import com.exasol.adapter.metadata.MetadataException;
 import com.exasol.adapter.metadata.TableMetadata;
 import com.exasol.utils.SqlTestUtil;
-import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 

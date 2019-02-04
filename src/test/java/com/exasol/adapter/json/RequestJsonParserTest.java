@@ -41,7 +41,7 @@ public class RequestJsonParserTest {
         SchemaMetadataInfo expectedSchemaMetaInfo = new SchemaMetadataInfo(
                 "MY_HIVE_VSCHEMA", "{\"lastRefreshed\":\"2015-03-01 12:10:01\",\"key\":\"Any custom schema state here\"}",
                 properties);
-        
+
         List<TableMetadata> expectedInvolvedTablesMetadata = new ArrayList<>();
         String tableName = "CLICKS";
         String tableAdapterNotes = "";
@@ -52,7 +52,7 @@ public class RequestJsonParserTest {
         tableColumns.add(new ColumnMetadata("REQUEST_TIME", "", DataType.createTimestamp(false), true, false, "", ""));
         String tableComment = "";
         expectedInvolvedTablesMetadata.add(new TableMetadata(tableName, tableAdapterNotes, tableColumns, tableComment));
-        
+
         RequestJsonParser parser = new RequestJsonParser();
         AdapterRequest request = parser.parseRequest(json);
         assertObjectEquals(expectedSchemaMetaInfo, request.getSchemaMetadataInfo());
@@ -66,7 +66,7 @@ public class RequestJsonParserTest {
 
         Map<String, String> properties = new HashMap<String, String>();
         SchemaMetadataInfo expectedSchemaMetaInfo = new SchemaMetadataInfo("VS", "", properties);
-        
+
         List<TableMetadata> expectedInvolvedTablesMetadata = new ArrayList<>();
         String tableName = "T1";
         String tableAdapterNotes = "";
@@ -91,7 +91,7 @@ public class RequestJsonParserTest {
         tableColumns.add(new ColumnMetadata("C_INTERVAL_YM_1", "", DataType.createIntervalYearMonth(2), true, false, "", ""));
         tableColumns.add(new ColumnMetadata("C_INTERVAL_YM_2", "", DataType.createIntervalYearMonth(3), true, false, "", ""));
         expectedInvolvedTablesMetadata.add(new TableMetadata(tableName, tableAdapterNotes, tableColumns, tableComment));
-        
+
         RequestJsonParser parser = new RequestJsonParser();
         AdapterRequest request = parser.parseRequest(json);
         assertObjectEquals(expectedSchemaMetaInfo, request.getSchemaMetadataInfo());
@@ -107,13 +107,13 @@ public class RequestJsonParserTest {
         expectedOldSchemaProperties.put("EXISTING_PROP_1", "Old Value 1");
         expectedOldSchemaProperties.put("EXISTING_PROP_2", "Old Value 2");
         SchemaMetadataInfo expectedSchemaMetaInfo = new SchemaMetadataInfo("VS", "", expectedOldSchemaProperties);
-        
+
         Map<String, String> expectedNewProperties = new HashMap<String, String>();
         expectedNewProperties.put("EXISTING_PROP_1", "New Value");
         expectedNewProperties.put("EXISTING_PROP_2", null);
         expectedNewProperties.put("NEW_PROP", "VAL2");
         expectedNewProperties.put("DELETED_PROP_NON_EXISTING", null);
-        
+
         RequestJsonParser parser = new RequestJsonParser();
         AdapterRequest request = parser.parseRequest(json);
         assertObjectEquals(expectedSchemaMetaInfo, request.getSchemaMetadataInfo());
@@ -122,7 +122,7 @@ public class RequestJsonParserTest {
 
     @Test
     public void testSimpleInnerJoinRequest() throws Exception {
-        String req = 
+        String req =
         "{"+
         "\"involvedTables\" :" +
         "            [" +
@@ -196,7 +196,7 @@ public class RequestJsonParserTest {
         "    }," +
         "    \"type\" : \"pushdown\"" +
         "}";
-        
+
         RequestJsonParser parser = new RequestJsonParser();
         AdapterRequest request = parser.parseRequest(req);
         PushdownRequest pushdown = (PushdownRequest) request;
@@ -204,13 +204,13 @@ public class RequestJsonParserTest {
         SqlStatementSelect select = (SqlStatementSelect) pushdown.getSelect();
         SqlJoin from = (SqlJoin) select.getFromClause();
 
-        assertSame(from.getType(), SqlNodeType.JOIN);
-        assertSame(from.getJoinType(), JoinType.INNER);
-        assertSame(from.getCondition().getType(), SqlNodeType.PREDICATE_EQUAL);
-        assertSame(from.getLeft().getType(), SqlNodeType.TABLE);
-        assertSame(from.getRight().getType(), SqlNodeType.TABLE);
+        assertSame(SqlNodeType.JOIN, from.getType());
+        assertSame(JoinType.INNER, from.getJoinType());
+        assertSame(SqlNodeType.PREDICATE_EQUAL, from.getCondition().getType());
+        assertSame(SqlNodeType.TABLE, from.getLeft().getType());
+        assertSame(SqlNodeType.TABLE, from.getRight().getType());
     }
-    
+
     /**
      * Without this method we would need to override equals() and .hashcode() for each object, which explodes code and makes it less maintainable
      */

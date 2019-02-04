@@ -287,242 +287,366 @@ public class RequestJsonParser {
         case SELECT:
             return parseSelect(exp);
         case TABLE: {
-            String tableName = exp.getString("name");
-            TableMetadata tableMetadata = findInvolvedTableMetadata(tableName);
-            if (exp.containsKey("alias")) {
-                String tableAlias = exp.getString("alias");
-                return new SqlTable(tableName, tableAlias, tableMetadata);
-            } else {
-                return new SqlTable(tableName, tableMetadata);
-            }
+            return parseTable(exp);
         }
         case JOIN: {
-            SqlNode left = parseExpression(exp.getJsonObject("left"));
-            SqlNode right = parseExpression(exp.getJsonObject(RIGHT));
-            SqlNode condition = parseExpression(exp.getJsonObject("condition"));
-            JoinType joinType = fromJoinTypeName(exp.getString("join_type"));
-            return new SqlJoin(left, right, condition, joinType);
+            return parseJoin(exp);
         }
         case COLUMN: {
-            int columnId = exp.getInt("columnNr");
-            String columnName = exp.getString("name");
-            String tableName = exp.getString("tableName");
-            ColumnMetadata columnMetadata = findColumnMetadata(tableName, columnName);
-            return new SqlColumn(columnId, columnMetadata, tableName);
+            return parseColumn(exp);
         }
         case LITERAL_NULL: {
-            return new SqlLiteralNull();
+            return parseLiteralNull();
         }
         case LITERAL_BOOL: {
-            boolean boolVal = exp.getBoolean(VALUE);
-            return new SqlLiteralBool(boolVal);
+            return parseLiteralBool(exp);
         }
         case LITERAL_DATE: {
-            String date = exp.getString(VALUE);
-            return new SqlLiteralDate(date);
+            return parseLiteralDate(exp);
         }
         case LITERAL_TIMESTAMP: {
-            String timestamp = exp.getString(VALUE);
-            return new SqlLiteralTimestamp(timestamp);
+            return parseLiteralTimestamp(exp);
         }
         case LITERAL_TIMESTAMPUTC: {
-            String timestampUtc = exp.getString(VALUE);
-            return new SqlLiteralTimestampUtc(timestampUtc);
+            return parseLiteralTimestamputc(exp);
         }
         case LITERAL_DOUBLE: {
-            String doubleString = exp.getString(VALUE);
-            return new SqlLiteralDouble(Double.parseDouble(doubleString));
+            return parseLiteralDouble(exp);
         }
         case LITERAL_EXACTNUMERIC: {
-            BigDecimal exactVal = new BigDecimal( exp.getString(VALUE));
-            return new SqlLiteralExactnumeric(exactVal);
+            return parseLiteralExactNumeric(exp);
         }
         case LITERAL_STRING: {
-            String stringVal = exp.getString(VALUE);
-            return new SqlLiteralString(stringVal);
+            return parseLiteralString(exp);
         }
         case LITERAL_INTERVAL: {
-            String intervalVal = exp.getString(VALUE);
-            DataType intervalType = getDataType(exp.getJsonObject(DATA_TYPE));
-            return new SqlLiteralInterval(intervalVal, intervalType);
+            return parseLiteralInterval(exp);
         }
         case PREDICATE_AND: {
-            List<SqlNode> andedPredicates = new ArrayList<>();
-            for (JsonObject pred : exp.getJsonArray("expressions").getValuesAs(JsonObject.class)) {
-                andedPredicates.add(parseExpression(pred));
-            }
-            return new SqlPredicateAnd(andedPredicates);
+            return parsePredicateAnd(exp);
         }
         case PREDICATE_OR: {
-            List<SqlNode> orPredicates = new ArrayList<>();
-            for (JsonObject pred : exp.getJsonArray("expressions").getValuesAs(JsonObject.class)) {
-                orPredicates.add(parseExpression(pred));
-            }
-            return new SqlPredicateOr(orPredicates);
+            return parsePredicateOr(exp);
         }
         case PREDICATE_NOT: {
-            SqlNode notExp = parseExpression(exp.getJsonObject(EXPRESSION));
-            return new SqlPredicateNot(notExp);
+            return parsePredicateNot(exp);
         }
         case PREDICATE_EQUAL: {
-            SqlNode equalLeft = parseExpression(exp.getJsonObject("left"));
-            SqlNode equalRight = parseExpression(exp.getJsonObject(RIGHT));
-            return new SqlPredicateEqual(equalLeft, equalRight);
+            return parsePredicateEqual(exp);
         }
         case PREDICATE_NOTEQUAL: {
-            SqlNode notEqualLeft = parseExpression(exp.getJsonObject("left"));
-            SqlNode notEqualRight = parseExpression(exp.getJsonObject(RIGHT));
-            return new SqlPredicateNotEqual(notEqualLeft, notEqualRight);
+            return parsePredicateNotEqual(exp);
         }
         case PREDICATE_LESS: {
-            SqlNode lessLeft = parseExpression(exp.getJsonObject("left"));
-            SqlNode lessRight = parseExpression(exp.getJsonObject(RIGHT));
-            return new SqlPredicateLess(lessLeft, lessRight);
+            return parsePredicateLess(exp);
         }
         case PREDICATE_LESSEQUAL: {
-            SqlNode lessEqLeft = parseExpression(exp.getJsonObject("left"));
-            SqlNode lessEqRight = parseExpression(exp.getJsonObject(RIGHT));
-            return new SqlPredicateLessEqual(lessEqLeft, lessEqRight);
+            return parsePredicateLessEqual(exp);
         }
         case PREDICATE_LIKE: {
-            SqlNode likeLeft = parseExpression(exp.getJsonObject(EXPRESSION));
-            SqlNode likePattern = parseExpression(exp.getJsonObject("pattern"));
-            if (exp.containsKey("escapeChar")) {
-                SqlNode escapeChar = parseExpression(exp.getJsonObject("escapeChar"));
-                return new SqlPredicateLike(likeLeft, likePattern, escapeChar);
-            }
-            return new SqlPredicateLike(likeLeft, likePattern);
+            return parsePredicateLike(exp);
         }
         case PREDICATE_LIKE_REGEXP: {
-            SqlNode likeRegexpLeft = parseExpression(exp.getJsonObject(EXPRESSION));
-            SqlNode likeRegexpPattern = parseExpression(exp.getJsonObject("pattern"));
-            return new SqlPredicateLikeRegexp(likeRegexpLeft, likeRegexpPattern);
+            return parsePredicateLikeRegexp(exp);
         }
         case PREDICATE_BETWEEN: {
-            SqlNode betweenExp = parseExpression(exp.getJsonObject(EXPRESSION));
-            SqlNode betweenLeft = parseExpression(exp.getJsonObject("left"));
-            SqlNode betweenRight = parseExpression(exp.getJsonObject(RIGHT));
-            return new SqlPredicateBetween(betweenExp, betweenLeft, betweenRight);
+            return parsePredicateBetween(exp);
         }
         case PREDICATE_IN_CONSTLIST: {
-            SqlNode inExp = parseExpression(exp.getJsonObject(EXPRESSION));
-            List<SqlNode> inArguments = new ArrayList<>();
-            for (JsonObject pred : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
-                inArguments.add(parseExpression(pred));
-            }
-            return new SqlPredicateInConstList(inExp, inArguments);
+            return parsePredicateInConstlist(exp);
         }
         case PREDICATE_IS_NULL: {
-            SqlNode isnullExp = parseExpression(exp.getJsonObject(EXPRESSION));
-            return new SqlPredicateIsNull(isnullExp);
+            return parsePredicateIsNull(exp);
         }
         case PREDICATE_IS_NOT_NULL: {
-            SqlNode isNotnullExp = parseExpression(exp.getJsonObject(EXPRESSION));
-            return new SqlPredicateIsNotNull(isNotnullExp);
+            return parsePredicateIsNotNull(exp);
         }
         case FUNCTION_SCALAR: {
-            String functionName = exp.getString("name");
-            boolean hasVariableInputArgs = false;
-            int numArgs;
-            if (exp.containsKey("variableInputArgs")) {
-                hasVariableInputArgs = exp.getBoolean("variableInputArgs");
-            }
-            List<SqlNode> arguments = new ArrayList<>();
-            for (JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
-                arguments.add(parseExpression(argument));
-            }
-            if (!hasVariableInputArgs) {
-                numArgs = exp.getInt("numArgs");    // this is the expected number of arguments for this scalar function
-                assert numArgs == arguments.size();
-            }
-            boolean isInfix = false;
-            if (exp.containsKey("infix")) {
-                isInfix = exp.getBoolean("infix");
-            }
-            boolean isPrefix = false;
-            if (exp.containsKey("prefix")) {
-                isPrefix = exp.getBoolean("prefix");
-            }
-            return new SqlFunctionScalar(fromScalarFunctionName(functionName), arguments, isInfix, isPrefix);
+            return parseFunctionScalar(exp);
         }
         case FUNCTION_SCALAR_EXTRACT: {
-            String toExtract = exp.getString("toExtract");
-            List<SqlNode> extractArguments = new ArrayList<>();
-            if (exp.containsKey(ARGUMENTS)) {
-                for (JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
-                    extractArguments.add(parseExpression(argument));
-                }
-            }
-            return new SqlFunctionScalarExtract(toExtract, extractArguments);
+            return parseFunctionScalarExtract(exp);
         }
         case FUNCTION_SCALAR_CASE: {
-            List<SqlNode> caseArguments = new ArrayList<>();
-            List<SqlNode> caseResults = new ArrayList<>();
-            SqlNode caseBasis = null;
-            if (exp.containsKey(ARGUMENTS)) {
-                for (JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
-                    caseArguments.add(parseExpression(argument));
-                }
-            }
-            if (exp.containsKey("results")) {
-                for (JsonObject argument : exp.getJsonArray("results").getValuesAs(JsonObject.class)) {
-                    caseResults.add(parseExpression(argument));
-                }
-            }
-            if (exp.containsKey("basis")) {
-                caseBasis = parseExpression(exp.getJsonObject("basis"));
-            }
-            return new SqlFunctionScalarCase(caseArguments, caseResults, caseBasis);
+            return parseFunctionScalarCase(exp);
         }
         case FUNCTION_SCALAR_CAST: {
-            DataType castDataType = getDataType(exp.getJsonObject(DATA_TYPE));
-            List<SqlNode> castArguments = new ArrayList<>();
-            if (exp.containsKey(ARGUMENTS)) {
-                for (JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
-                    castArguments.add(parseExpression(argument));
-                }
-            }
-            return new SqlFunctionScalarCast(castDataType, castArguments);
+            return parseFunctionScalarCast(exp);
         }
         case FUNCTION_AGGREGATE: {
-            String setFunctionName = exp.getString("name");
-            List<SqlNode> setArguments = new ArrayList<>();
-            boolean distinct = false;
-            if (exp.containsKey(DISTINCT)) {
-                distinct = exp.getBoolean(DISTINCT);
-            }
-            if (exp.containsKey(ARGUMENTS)) {
-                for (JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
-                    setArguments.add(parseExpression(argument));
-                }
-            }
-            return new SqlFunctionAggregate(fromAggregationFunctionName(setFunctionName), setArguments, distinct);
+            return parseFunctionAggregate(exp);
         }
         case FUNCTION_AGGREGATE_GROUP_CONCAT: {
-            String functionName = exp.getString("name");
-            List<SqlNode> setArguments = new ArrayList<>();
-            boolean distinct = false;
-            if (exp.containsKey(DISTINCT)) {
-                distinct = exp.getBoolean(DISTINCT);
-            }
-            if (exp.containsKey(ARGUMENTS)) {
-                for (JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
-                    setArguments.add(parseExpression(argument));
-                }
-            }
-            SqlOrderBy orderBy = null;
-            if (exp.containsKey(ORDER_BY)) {
-                orderBy = parseOrderBy(exp.getJsonArray(ORDER_BY));
-            }
-            String separator = null;
-            if (exp.containsKey("separator")) {
-                separator = exp.getString("separator");
-            }
-            return new SqlFunctionAggregateGroupConcat(fromAggregationFunctionName(functionName),
-                    setArguments, orderBy, distinct, separator);
+            return parseFunctionAggregateGroupConcat(exp);
         }
         default:
             throw new IllegalArgumentException("Unknown node type: " + typeName);
+        }
+    }
+
+    private SqlNode parsePredicateIsNotNull(JsonObject exp) throws MetadataException {
+        SqlNode isNotnullExp = parseExpression(exp.getJsonObject(EXPRESSION));
+        return new SqlPredicateIsNotNull(isNotnullExp);
+    }
+
+    private SqlNode parsePredicateIsNull(JsonObject exp) throws MetadataException {
+        SqlNode isnullExp = parseExpression(exp.getJsonObject(EXPRESSION));
+        return new SqlPredicateIsNull(isnullExp);
+    }
+
+    private SqlNode parsePredicateLike(JsonObject exp) throws MetadataException {
+        SqlNode likeLeft = parseExpression(exp.getJsonObject(EXPRESSION));
+        SqlNode likePattern = parseExpression(exp.getJsonObject("pattern"));
+        if (exp.containsKey("escapeChar")) {
+            SqlNode escapeChar = parseExpression(exp.getJsonObject("escapeChar"));
+            return new SqlPredicateLike(likeLeft, likePattern, escapeChar);
+        }
+        return new SqlPredicateLike(likeLeft, likePattern);
+    }
+
+    private SqlNode parsePredicateLessEqual(JsonObject exp) throws MetadataException {
+        SqlNode lessEqLeft = parseExpression(exp.getJsonObject("left"));
+        SqlNode lessEqRight = parseExpression(exp.getJsonObject(RIGHT));
+        return new SqlPredicateLessEqual(lessEqLeft, lessEqRight);
+    }
+
+    private SqlNode parsePredicateLess(JsonObject exp) throws MetadataException {
+        SqlNode lessLeft = parseExpression(exp.getJsonObject("left"));
+        SqlNode lessRight = parseExpression(exp.getJsonObject(RIGHT));
+        return new SqlPredicateLess(lessLeft, lessRight);
+    }
+
+    private SqlNode parsePredicateNotEqual(JsonObject exp) throws MetadataException {
+        SqlNode notEqualLeft = parseExpression(exp.getJsonObject("left"));
+        SqlNode notEqualRight = parseExpression(exp.getJsonObject(RIGHT));
+        return new SqlPredicateNotEqual(notEqualLeft, notEqualRight);
+    }
+
+    private SqlNode parsePredicateEqual(JsonObject exp) throws MetadataException {
+        SqlNode equalLeft = parseExpression(exp.getJsonObject("left"));
+        SqlNode equalRight = parseExpression(exp.getJsonObject(RIGHT));
+        return new SqlPredicateEqual(equalLeft, equalRight);
+    }
+
+    private SqlNode parsePredicateNot(JsonObject exp) throws MetadataException {
+        SqlNode notExp = parseExpression(exp.getJsonObject(EXPRESSION));
+        return new SqlPredicateNot(notExp);
+    }
+
+    private SqlNode parsePredicateOr(JsonObject exp) throws MetadataException {
+        List<SqlNode> orPredicates = new ArrayList<>();
+        for (JsonObject pred : exp.getJsonArray("expressions").getValuesAs(JsonObject.class)) {
+            orPredicates.add(parseExpression(pred));
+        }
+        return new SqlPredicateOr(orPredicates);
+    }
+
+    private SqlNode parsePredicateAnd(JsonObject exp) throws MetadataException {
+        List<SqlNode> andedPredicates = new ArrayList<>();
+        for (JsonObject pred : exp.getJsonArray("expressions").getValuesAs(JsonObject.class)) {
+            andedPredicates.add(parseExpression(pred));
+        }
+        return new SqlPredicateAnd(andedPredicates);
+    }
+
+    private SqlNode parseLiteralInterval(JsonObject exp) throws MetadataException {
+        String intervalVal = exp.getString(VALUE);
+        DataType intervalType = getDataType(exp.getJsonObject(DATA_TYPE));
+        return new SqlLiteralInterval(intervalVal, intervalType);
+    }
+
+    private SqlNode parseLiteralString(JsonObject exp) {
+        String stringVal = exp.getString(VALUE);
+        return new SqlLiteralString(stringVal);
+    }
+
+    private SqlNode parseLiteralExactNumeric(JsonObject exp) {
+        BigDecimal exactVal = new BigDecimal( exp.getString(VALUE));
+        return new SqlLiteralExactnumeric(exactVal);
+    }
+
+    private SqlNode parseLiteralDouble(JsonObject exp) {
+        String doubleString = exp.getString(VALUE);
+        return new SqlLiteralDouble(Double.parseDouble(doubleString));
+    }
+
+    private SqlNode parseLiteralTimestamputc(JsonObject exp) {
+        String timestampUtc = exp.getString(VALUE);
+        return new SqlLiteralTimestampUtc(timestampUtc);
+    }
+
+    private SqlNode parseLiteralTimestamp(JsonObject exp) {
+        String timestamp = exp.getString(VALUE);
+        return new SqlLiteralTimestamp(timestamp);
+    }
+
+    private SqlNode parseLiteralDate(JsonObject exp) {
+        String date = exp.getString(VALUE);
+        return new SqlLiteralDate(date);
+    }
+
+    private SqlNode parseLiteralBool(JsonObject exp) {
+        boolean boolVal = exp.getBoolean(VALUE);
+        return new SqlLiteralBool(boolVal);
+    }
+
+    private SqlNode parseLiteralNull() {
+        return new SqlLiteralNull();
+    }
+
+    private SqlNode parsePredicateLikeRegexp(JsonObject exp) throws MetadataException {
+        SqlNode likeRegexpLeft = parseExpression(exp.getJsonObject(EXPRESSION));
+        SqlNode likeRegexpPattern = parseExpression(exp.getJsonObject("pattern"));
+        return new SqlPredicateLikeRegexp(likeRegexpLeft, likeRegexpPattern);
+    }
+
+    private SqlNode parsePredicateBetween(JsonObject exp) throws MetadataException {
+        SqlNode betweenExp = parseExpression(exp.getJsonObject(EXPRESSION));
+        SqlNode betweenLeft = parseExpression(exp.getJsonObject("left"));
+        SqlNode betweenRight = parseExpression(exp.getJsonObject(RIGHT));
+        return new SqlPredicateBetween(betweenExp, betweenLeft, betweenRight);
+    }
+
+    private SqlNode parsePredicateInConstlist(JsonObject exp) throws MetadataException {
+        SqlNode inExp = parseExpression(exp.getJsonObject(EXPRESSION));
+        List<SqlNode> inArguments = new ArrayList<>();
+        for (JsonObject pred : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
+            inArguments.add(parseExpression(pred));
+        }
+        return new SqlPredicateInConstList(inExp, inArguments);
+    }
+
+    private SqlNode parseFunctionScalar(JsonObject exp) throws MetadataException {
+        String functionName = exp.getString("name");
+        boolean hasVariableInputArgs = false;
+        int numArgs;
+        if (exp.containsKey("variableInputArgs")) {
+            hasVariableInputArgs = exp.getBoolean("variableInputArgs");
+        }
+        List<SqlNode> arguments = new ArrayList<>();
+        for (JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
+            arguments.add(parseExpression(argument));
+        }
+        if (!hasVariableInputArgs) {
+            numArgs = exp.getInt("numArgs");    // this is the expected number of arguments for this scalar function
+            assert numArgs == arguments.size();
+        }
+        boolean isInfix = false;
+        if (exp.containsKey("infix")) {
+            isInfix = exp.getBoolean("infix");
+        }
+        boolean isPrefix = false;
+        if (exp.containsKey("prefix")) {
+            isPrefix = exp.getBoolean("prefix");
+        }
+        return new SqlFunctionScalar(fromScalarFunctionName(functionName), arguments, isInfix, isPrefix);
+    }
+
+    private SqlNode parseFunctionScalarExtract(JsonObject exp) throws MetadataException {
+        String toExtract = exp.getString("toExtract");
+        List<SqlNode> extractArguments = new ArrayList<>();
+        if (exp.containsKey(ARGUMENTS)) {
+            for (JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
+                extractArguments.add(parseExpression(argument));
+            }
+        }
+        return new SqlFunctionScalarExtract(toExtract, extractArguments);
+    }
+
+    private SqlNode parseFunctionScalarCase(JsonObject exp) throws MetadataException {
+        List<SqlNode> caseArguments = new ArrayList<>();
+        List<SqlNode> caseResults = new ArrayList<>();
+        SqlNode caseBasis = null;
+        if (exp.containsKey(ARGUMENTS)) {
+            for (JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
+                caseArguments.add(parseExpression(argument));
+            }
+        }
+        if (exp.containsKey("results")) {
+            for (JsonObject argument : exp.getJsonArray("results").getValuesAs(JsonObject.class)) {
+                caseResults.add(parseExpression(argument));
+            }
+        }
+        if (exp.containsKey("basis")) {
+            caseBasis = parseExpression(exp.getJsonObject("basis"));
+        }
+        return new SqlFunctionScalarCase(caseArguments, caseResults, caseBasis);
+    }
+
+    private SqlNode parseFunctionScalarCast(JsonObject exp) throws MetadataException {
+        DataType castDataType = getDataType(exp.getJsonObject(DATA_TYPE));
+        List<SqlNode> castArguments = new ArrayList<>();
+        if (exp.containsKey(ARGUMENTS)) {
+            for (JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
+                castArguments.add(parseExpression(argument));
+            }
+        }
+        return new SqlFunctionScalarCast(castDataType, castArguments);
+    }
+
+    private SqlNode parseFunctionAggregate(JsonObject exp) throws MetadataException {
+        String setFunctionName = exp.getString("name");
+        List<SqlNode> setArguments = new ArrayList<>();
+        boolean distinct = false;
+        if (exp.containsKey(DISTINCT)) {
+            distinct = exp.getBoolean(DISTINCT);
+        }
+        if (exp.containsKey(ARGUMENTS)) {
+            for (JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
+                setArguments.add(parseExpression(argument));
+            }
+        }
+        return new SqlFunctionAggregate(fromAggregationFunctionName(setFunctionName), setArguments, distinct);
+    }
+
+    private SqlNode parseFunctionAggregateGroupConcat(JsonObject exp) throws MetadataException {
+        String functionName = exp.getString("name");
+        List<SqlNode> setArguments = new ArrayList<>();
+        boolean distinct = false;
+        if (exp.containsKey(DISTINCT)) {
+            distinct = exp.getBoolean(DISTINCT);
+        }
+        if (exp.containsKey(ARGUMENTS)) {
+            for (JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
+                setArguments.add(parseExpression(argument));
+            }
+        }
+        SqlOrderBy orderBy = null;
+        if (exp.containsKey(ORDER_BY)) {
+            orderBy = parseOrderBy(exp.getJsonArray(ORDER_BY));
+        }
+        String separator = null;
+        if (exp.containsKey("separator")) {
+            separator = exp.getString("separator");
+        }
+        return new SqlFunctionAggregateGroupConcat(fromAggregationFunctionName(functionName),
+                setArguments, orderBy, distinct, separator);
+    }
+
+    private SqlNode parseColumn(JsonObject exp) throws MetadataException {
+        int columnId = exp.getInt("columnNr");
+        String columnName = exp.getString("name");
+        String tableName = exp.getString("tableName");
+        ColumnMetadata columnMetadata = findColumnMetadata(tableName, columnName);
+        return new SqlColumn(columnId, columnMetadata, tableName);
+    }
+
+    private SqlNode parseJoin(JsonObject exp) throws MetadataException {
+        SqlNode left = parseExpression(exp.getJsonObject("left"));
+        SqlNode right = parseExpression(exp.getJsonObject(RIGHT));
+        SqlNode condition = parseExpression(exp.getJsonObject("condition"));
+        JoinType joinType = fromJoinTypeName(exp.getString("join_type"));
+        return new SqlJoin(left, right, condition, joinType);
+    }
+
+    private SqlNode parseTable(JsonObject exp) throws MetadataException {
+        String tableName = exp.getString("name");
+        TableMetadata tableMetadata = findInvolvedTableMetadata(tableName);
+        if (exp.containsKey("alias")) {
+            String tableAlias = exp.getString("alias");
+            return new SqlTable(tableName, tableAlias, tableMetadata);
+        } else {
+            return new SqlTable(tableName, tableMetadata);
         }
     }
 

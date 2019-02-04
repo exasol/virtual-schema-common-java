@@ -1,7 +1,6 @@
 package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
-import com.google.common.base.Joiner;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,7 +33,7 @@ public class SqlPredicateAnd extends SqlPredicate {
         for (SqlNode node : andedPredicates) {
             operandsSql.add(node.toSimpleSql());
         }
-        return "(" + Joiner.on(" AND ").join(operandsSql) + ")";
+        return "(" + String.join(" AND ", operandsSql) + ")";
     }
 
     @Override
