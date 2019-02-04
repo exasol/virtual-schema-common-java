@@ -3,12 +3,12 @@ package com.exasol.adapter.sql;
 import com.exasol.adapter.AdapterException;
 
 public class SqlJoin extends SqlNode {
-    private SqlNode left;
-    private SqlNode right;
-    private SqlNode condition;
-    private JoinType joinType;
+    private final SqlNode left;
+    private final SqlNode right;
+    private final SqlNode condition;
+    private final JoinType joinType;
 
-    public SqlJoin(SqlNode left, SqlNode right, SqlNode condition, JoinType joinType)
+    public SqlJoin(final SqlNode left, final SqlNode right, final SqlNode condition, final JoinType joinType)
     {
         this.left = left;
         if (this.left != null) {
@@ -59,7 +59,7 @@ public class SqlJoin extends SqlNode {
     }
 
     @Override
-    public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
+    public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
 

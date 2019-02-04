@@ -18,18 +18,18 @@ public final class JsonHelper {
     }
 
     public static JsonBuilderFactory getBuilderFactory() {
-        Map<String, Object> config = new HashMap<>();
+        final Map<String, Object> config = new HashMap<>();
         return Json.createBuilderFactory(config);
     }
 
-    public static JsonObject getJsonObject(String data) {
-        JsonReader jr = Json.createReader(new StringReader(data));
-        JsonObject obj = jr.readObject();
+    public static JsonObject getJsonObject(final String data) {
+        final JsonReader jr = Json.createReader(new StringReader(data));
+        final JsonObject obj = jr.readObject();
         jr.close();
         return obj;
     }
 
-    public static String getKeyAsString(JsonObject obj, String key, String defaultValue) {
+    public static String getKeyAsString(final JsonObject obj, final String key, final String defaultValue) {
         String value = defaultValue;
         if (obj.containsKey(key)) {
             value = obj.get(key).toString();
@@ -37,12 +37,12 @@ public final class JsonHelper {
         return value;
     }
 
-    public static String prettyJson(JsonObject obj) {
-        Map<String, Boolean> config = new HashMap<>();
+    public static String prettyJson(final JsonObject obj) {
+        final Map<String, Boolean> config = new HashMap<>();
         config.put(JsonGenerator.PRETTY_PRINTING, true);
-        StringWriter strWriter = new StringWriter();
-        PrintWriter pw = new PrintWriter(strWriter);
-        try (JsonWriter jsonWriter = Json.createWriterFactory(config).createWriter(pw)) {
+        final StringWriter strWriter = new StringWriter();
+        final PrintWriter pw = new PrintWriter(strWriter);
+        try (final JsonWriter jsonWriter = Json.createWriterFactory(config).createWriter(pw)) {
             jsonWriter.writeObject(obj);
         }
         return strWriter.toString();

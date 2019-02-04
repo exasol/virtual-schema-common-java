@@ -31,18 +31,18 @@ public class RequestJsonParser {
     private static final String DISTINCT = "distinct";
     private List<TableMetadata> involvedTablesMetadata;
 
-    public AdapterRequest parseRequest(String json) throws AdapterException {
-        JsonObject root = JsonHelper.getJsonObject(json);
-        String requestType = root.getString("type","");
-        SchemaMetadataInfo meta = parseMetadataInfo(root);
+    public AdapterRequest parseRequest(final String json) throws AdapterException {
+        final JsonObject root = JsonHelper.getJsonObject(json);
+        final String requestType = root.getString("type","");
+        final SchemaMetadataInfo meta = parseMetadataInfo(root);
         if (requestType.equals("createVirtualSchema")) {
             return new CreateVirtualSchemaRequest(meta);
         } else if (requestType.equals("dropVirtualSchema")) {
             return new DropVirtualSchemaRequest(meta);
         } else if (requestType.equals("refresh")) {
             if (root.containsKey("requestedTables")) {
-                List<String> tables = new ArrayList<>();
-                for (JsonString table : root.getJsonArray("requestedTables").getValuesAs(JsonString.class)) {
+                final List<String> tables = new ArrayList<>();
+                for (final JsonString table : root.getJsonArray("requestedTables").getValuesAs(JsonString.class)) {
                     tables.add(table.getString());
                 }
                 return new RefreshRequest(meta, tables);
@@ -50,10 +50,10 @@ public class RequestJsonParser {
                 return new RefreshRequest(meta);
             }
         } else if (requestType.equals("setProperties")) {
-            Map<String, String> properties = new HashMap<>();
+            final Map<String, String> properties = new HashMap<>();
             assert root.containsKey(PROPERTIES) && root.get(PROPERTIES).getValueType() == ValueType.OBJECT;
-            for (Map.Entry<String, JsonValue> entry : root.getJsonObject(PROPERTIES).entrySet()) {
-                String key = entry.getKey();
+            for (final Map.Entry<String, JsonValue> entry : root.getJsonObject(PROPERTIES).entrySet()) {
+                final String key = entry.getKey();
                 // Null values represent properties which are deleted by the user (might also have never existed actually)
                 if (root.getJsonObject(PROPERTIES).isNull(key)) {
                     properties.put(key.toUpperCase(), null);
@@ -67,13 +67,13 @@ public class RequestJsonParser {
         } else if (requestType.equals("pushdown")) {
             assert root.containsKey(INVOLVED_TABLES) && root.get(INVOLVED_TABLES).getValueType() == ValueType.ARRAY;
             involvedTablesMetadata = parseInvolvedTableMetadata(root.getJsonArray(INVOLVED_TABLES));
-            JsonObject pushdownExp;
+            final JsonObject pushdownExp;
             if (root.containsKey("pushdownRequest")) {
                 pushdownExp = root.getJsonObject("pushdownRequest");
             } else {
                 throw new IllegalArgumentException("Push-down statement missing in adapter request element '/pushdownRequest'.");
             }
-            SqlNode select = parseExpression(pushdownExp);
+            final SqlNode select = parseExpression(pushdownExp);
             assert select.getType() == SqlNodeType.SELECT;
             return new PushdownRequest(meta, (SqlStatementSelect)select, involvedTablesMetadata);
         } else {
@@ -81,14 +81,14 @@ public class RequestJsonParser {
         }
     }
 
-    private List<TableMetadata> parseInvolvedTableMetadata(JsonArray involvedTables) throws MetadataException {
-        List<TableMetadata> tables = new ArrayList<>();
-        for (JsonObject table : involvedTables.getValuesAs(JsonObject.class)) {
-            String tableName = table.getString("name","");
-            String tableAdapterNotes = readAdapterNotes(table);
-            String tableComment = table.getString("comment", "");
-            List<ColumnMetadata> columns = new ArrayList<>();
-            for (JsonObject column : table.getJsonArray("columns").getValuesAs(JsonObject.class)) {
+    private List<TableMetadata> parseInvolvedTableMetadata(final JsonArray involvedTables) throws MetadataException {
+        final List<TableMetadata> tables = new ArrayList<>();
+        for (final JsonObject table : involvedTables.getValuesAs(JsonObject.class)) {
+            final String tableName = table.getString("name","");
+            final String tableAdapterNotes = readAdapterNotes(table);
+            final String tableComment = table.getString("comment", "");
+            final List<ColumnMetadata> columns = new ArrayList<>();
+            for (final JsonObject column : table.getJsonArray("columns").getValuesAs(JsonObject.class)) {
                 columns.add(parseColumnMetadata(column));
             }
             tables.add(new TableMetadata(tableName, tableAdapterNotes, columns, tableComment));
@@ -96,11 +96,11 @@ public class RequestJsonParser {
         return tables;
     }
 
-    private ColumnMetadata parseColumnMetadata(JsonObject column) throws MetadataException {
-        String columnName = column.getString("name");
-        String adapterNotes = readAdapterNotes(column);
-        String comment = column.getString("comment", "");
-        String defaultValue = column.getString("default", "");
+    private ColumnMetadata parseColumnMetadata(final JsonObject column) throws MetadataException {
+        final String columnName = column.getString("name");
+        final String adapterNotes = readAdapterNotes(column);
+        final String comment = column.getString("comment", "");
+        final String defaultValue = column.getString("default", "");
         boolean isNullable = true;
         if (column.containsKey("isNullable")) {
             isNullable = column.getBoolean("isNullable");
@@ -109,43 +109,43 @@ public class RequestJsonParser {
         if (column.containsKey("isIdentity")) {
             isIdentity = column.getBoolean("isIdentity");
         }
-        JsonObject dataType = column.getJsonObject(DATA_TYPE);
-        DataType type = getDataType(dataType);
+        final JsonObject dataType = column.getJsonObject(DATA_TYPE);
+        final DataType type = getDataType(dataType);
         return new ColumnMetadata(columnName, adapterNotes, type, isNullable, isIdentity, defaultValue, comment);
     }
 
-    private DataType getDataType(JsonObject dataType) throws MetadataException {
-        String typeName = dataType.getString("type").toUpperCase();
+    private DataType getDataType(final JsonObject dataType) throws MetadataException {
+        final String typeName = dataType.getString("type").toUpperCase();
         DataType type = null;
         if (typeName.equals("DECIMAL")) {
             type = DataType.createDecimal(dataType.getInt("precision"), dataType.getInt("scale"));
         } else if (typeName.equals("DOUBLE")) {
             type = DataType.createDouble();
         } else if (typeName.equals("VARCHAR")) {
-            String charSet = dataType.getString("characterSet", "UTF8");
+            final String charSet = dataType.getString("characterSet", "UTF8");
             type = DataType.createVarChar(dataType.getInt("size"), charSetFromString(charSet));
         } else if (typeName.equals("CHAR")) {
-            String charSet = dataType.getString("characterSet", "UTF8");
+            final String charSet = dataType.getString("characterSet", "UTF8");
             type = DataType.createChar(dataType.getInt("size"), charSetFromString(charSet));
         } else if (typeName.equals("BOOLEAN")) {
             type = DataType.createBool();
         } else if (typeName.equals("DATE")) {
             type = DataType.createDate();
         } else if (typeName.equals("TIMESTAMP")) {
-            boolean withLocalTimezone = dataType.getBoolean("withLocalTimeZone", false);
+            final boolean withLocalTimezone = dataType.getBoolean("withLocalTimeZone", false);
             type = DataType.createTimestamp(withLocalTimezone);
         } else if (typeName.equals("INTERVAL")) {
-            int precision = dataType.getInt("precision", 2);    // has a default in EXASOL
-            IntervalType intervalType = intervalTypeFromString(dataType.getString("fromTo"));
+            final int precision = dataType.getInt("precision", 2);    // has a default in EXASOL
+            final IntervalType intervalType = intervalTypeFromString(dataType.getString("fromTo"));
             if (intervalType == IntervalType.DAY_TO_SECOND) {
-                int fraction = dataType.getInt("fraction", 3);      // has a default in EXASOL
+                final int fraction = dataType.getInt("fraction", 3);      // has a default in EXASOL
                 type = DataType.createIntervalDaySecond(precision, fraction);
             } else {
                 assert intervalType == IntervalType.YEAR_TO_MONTH;
                 type = DataType.createIntervalYearMonth(precision);
             }
         } else if (typeName.equals("GEOMETRY")) {
-            int srid = dataType.getInt("srid");
+            final int srid = dataType.getInt("srid");
             type = DataType.createGeometry(srid);
         } else {
             throw new MetadataException("Unsupported data type encountered: " + typeName);
@@ -153,7 +153,7 @@ public class RequestJsonParser {
         return type;
     }
 
-    private static IntervalType intervalTypeFromString(String intervalType) throws MetadataException {
+    private static IntervalType intervalTypeFromString(final String intervalType) throws MetadataException {
         if (intervalType.equals("DAY TO SECONDS")) {
             return IntervalType.DAY_TO_SECOND;
         } else if (intervalType.equals("YEAR TO MONTH")) {
@@ -163,7 +163,7 @@ public class RequestJsonParser {
         }
     }
 
-    private static ExaCharset charSetFromString(String charset) throws MetadataException {
+    private static ExaCharset charSetFromString(final String charset) throws MetadataException {
         if (charset.equals("UTF8")) {
             return ExaCharset.UTF8;
         } else if (charset.equals("ASCII")) {
@@ -173,13 +173,13 @@ public class RequestJsonParser {
         }
     }
 
-    private SqlStatementSelect parseSelect(JsonObject select) throws MetadataException {
+    private SqlStatementSelect parseSelect(final JsonObject select) throws MetadataException {
         // FROM clause
-        SqlNode table = parseExpression(select.getJsonObject("from"));
+        final SqlNode table = parseExpression(select.getJsonObject("from"));
         assert table.getType() == SqlNodeType.TABLE || table.getType() == SqlNodeType.JOIN;
         // SELECT list
-        SqlSelectList selectList = parseSelectList(select.getJsonArray("selectList"));
-        SqlExpressionList groupByClause = parseGroupBy(select.getJsonArray("groupBy"));
+        final SqlSelectList selectList = parseSelectList(select.getJsonArray("selectList"));
+        final SqlExpressionList groupByClause = parseGroupBy(select.getJsonArray("groupBy"));
         // WHERE clause
         SqlNode whereClause = null;
         if (select.containsKey("filter")) {
@@ -200,30 +200,30 @@ public class RequestJsonParser {
         return new SqlStatementSelect(table, selectList, whereClause, groupByClause, having, orderBy, limit);
     }
 
-    private List<SqlNode> parseExpressionList(JsonArray array) throws MetadataException {
+    private List<SqlNode> parseExpressionList(final JsonArray array) throws MetadataException {
         assert array != null;
-        List<SqlNode> sqlNodes = new ArrayList<>();
-        for (JsonObject expr : array.getValuesAs(JsonObject.class)) {
-            SqlNode node = parseExpression(expr);
+        final List<SqlNode> sqlNodes = new ArrayList<>();
+        for (final JsonObject expr : array.getValuesAs(JsonObject.class)) {
+            final SqlNode node = parseExpression(expr);
             sqlNodes.add(node);
         }
         return sqlNodes;
     }
 
-    private SqlGroupBy parseGroupBy(JsonArray groupBy) throws MetadataException {
+    private SqlGroupBy parseGroupBy(final JsonArray groupBy) throws MetadataException {
         if (groupBy == null) {
             return null;
         }
-        List<SqlNode> groupByElements = parseExpressionList(groupBy);
+        final List<SqlNode> groupByElements = parseExpressionList(groupBy);
         return new SqlGroupBy(groupByElements);
     }
 
-    private SqlSelectList parseSelectList(JsonArray selectList) throws MetadataException {
+    private SqlSelectList parseSelectList(final JsonArray selectList) throws MetadataException {
         if (selectList == null) {
             // this is like SELECT *
             return SqlSelectList.createSelectStarSelectList();
         }
-        List<SqlNode> selectListElements = parseExpressionList(selectList);
+        final List<SqlNode> selectListElements = parseExpressionList(selectList);
         if (selectListElements.isEmpty()) {
             return SqlSelectList.createAnyValueSelectList();
         } else {
@@ -231,12 +231,12 @@ public class RequestJsonParser {
         }
     }
 
-    private SqlOrderBy parseOrderBy(JsonArray orderByList) throws MetadataException {
-        List<SqlNode> orderByExpressions = new ArrayList<>();
-        List<Boolean> isAsc = new ArrayList<>();
-        List<Boolean> nullsLast = new ArrayList<>();
+    private SqlOrderBy parseOrderBy(final JsonArray orderByList) throws MetadataException {
+        final List<SqlNode> orderByExpressions = new ArrayList<>();
+        final List<Boolean> isAsc = new ArrayList<>();
+        final List<Boolean> nullsLast = new ArrayList<>();
         for (int i=0; i<orderByList.size(); ++i) {
-            JsonObject orderElem = orderByList.getJsonObject(i);
+            final JsonObject orderElem = orderByList.getJsonObject(i);
             orderByExpressions.add(parseExpression(orderElem.getJsonObject(EXPRESSION)));
             isAsc.add(orderElem.getBoolean("isAscending", true));
             nullsLast.add(orderElem.getBoolean("nullsLast", true));
@@ -244,32 +244,32 @@ public class RequestJsonParser {
         return new SqlOrderBy(orderByExpressions, isAsc, nullsLast);
     }
 
-    private SqlLimit parseLimit(JsonObject limit) {
-        int numElements = limit.getInt("numElements");
-        int offset = limit.getInt("offset", 0);
+    private SqlLimit parseLimit(final JsonObject limit) {
+        final int numElements = limit.getInt("numElements");
+        final int offset = limit.getInt("offset", 0);
         return new SqlLimit(numElements, offset);
     }
 
-    private SchemaMetadataInfo parseMetadataInfo(JsonObject root) {
-        JsonObject meta = root.getJsonObject("schemaMetadataInfo");
+    private SchemaMetadataInfo parseMetadataInfo(final JsonObject root) {
+        final JsonObject meta = root.getJsonObject("schemaMetadataInfo");
         if (meta == null) {
             return null;
         }
-        String schemaName = meta.getString("name");
-        String schemaAdapterNotes = readAdapterNotes(meta);
-        Map<String, String> properties = new HashMap<>();
+        final String schemaName = meta.getString("name");
+        final String schemaAdapterNotes = readAdapterNotes(meta);
+        final Map<String, String> properties = new HashMap<>();
         if (meta.getJsonObject(PROPERTIES) != null) {
-            for (Map.Entry<String, JsonValue> entry : meta.getJsonObject(PROPERTIES).entrySet()) {
-                String key = entry.getKey();
+            for (final Map.Entry<String, JsonValue> entry : meta.getJsonObject(PROPERTIES).entrySet()) {
+                final String key = entry.getKey();
                 properties.put(key.toUpperCase(), meta.getJsonObject(PROPERTIES).getString(key));
             }
         }
         return new SchemaMetadataInfo(schemaName, schemaAdapterNotes, properties);
     }
 
-    private static String readAdapterNotes(JsonObject root) {
+    private static String readAdapterNotes(final JsonObject root) {
         if (root.containsKey("adapterNotes")) {
-            JsonValue notes = root.get("adapterNotes");
+            final JsonValue notes = root.get("adapterNotes");
             if (notes.getValueType() == ValueType.STRING) {
                 // Return unquoted string
                 return ((JsonString)notes).getString();
@@ -280,9 +280,9 @@ public class RequestJsonParser {
         return "";
     }
 
-    private SqlNode parseExpression(JsonObject exp) throws MetadataException {
-        String typeName = exp.getString("type", "");
-        SqlNodeType type = fromTypeName(typeName);
+    private SqlNode parseExpression(final JsonObject exp) throws MetadataException {
+        final String typeName = exp.getString("type", "");
+        final SqlNodeType type = fromTypeName(typeName);
         switch (type) {
         case SELECT:
             return parseSelect(exp);
@@ -384,109 +384,109 @@ public class RequestJsonParser {
         }
     }
 
-    private SqlNode parsePredicateIsNotNull(JsonObject exp) throws MetadataException {
-        SqlNode isNotnullExp = parseExpression(exp.getJsonObject(EXPRESSION));
+    private SqlNode parsePredicateIsNotNull(final JsonObject exp) throws MetadataException {
+        final SqlNode isNotnullExp = parseExpression(exp.getJsonObject(EXPRESSION));
         return new SqlPredicateIsNotNull(isNotnullExp);
     }
 
-    private SqlNode parsePredicateIsNull(JsonObject exp) throws MetadataException {
-        SqlNode isnullExp = parseExpression(exp.getJsonObject(EXPRESSION));
+    private SqlNode parsePredicateIsNull(final JsonObject exp) throws MetadataException {
+        final SqlNode isnullExp = parseExpression(exp.getJsonObject(EXPRESSION));
         return new SqlPredicateIsNull(isnullExp);
     }
 
-    private SqlNode parsePredicateLike(JsonObject exp) throws MetadataException {
-        SqlNode likeLeft = parseExpression(exp.getJsonObject(EXPRESSION));
-        SqlNode likePattern = parseExpression(exp.getJsonObject("pattern"));
+    private SqlNode parsePredicateLike(final JsonObject exp) throws MetadataException {
+        final SqlNode likeLeft = parseExpression(exp.getJsonObject(EXPRESSION));
+        final SqlNode likePattern = parseExpression(exp.getJsonObject("pattern"));
         if (exp.containsKey("escapeChar")) {
-            SqlNode escapeChar = parseExpression(exp.getJsonObject("escapeChar"));
+            final SqlNode escapeChar = parseExpression(exp.getJsonObject("escapeChar"));
             return new SqlPredicateLike(likeLeft, likePattern, escapeChar);
         }
         return new SqlPredicateLike(likeLeft, likePattern);
     }
 
-    private SqlNode parsePredicateLessEqual(JsonObject exp) throws MetadataException {
-        SqlNode lessEqLeft = parseExpression(exp.getJsonObject("left"));
-        SqlNode lessEqRight = parseExpression(exp.getJsonObject(RIGHT));
+    private SqlNode parsePredicateLessEqual(final JsonObject exp) throws MetadataException {
+        final SqlNode lessEqLeft = parseExpression(exp.getJsonObject("left"));
+        final SqlNode lessEqRight = parseExpression(exp.getJsonObject(RIGHT));
         return new SqlPredicateLessEqual(lessEqLeft, lessEqRight);
     }
 
-    private SqlNode parsePredicateLess(JsonObject exp) throws MetadataException {
-        SqlNode lessLeft = parseExpression(exp.getJsonObject("left"));
-        SqlNode lessRight = parseExpression(exp.getJsonObject(RIGHT));
+    private SqlNode parsePredicateLess(final JsonObject exp) throws MetadataException {
+        final SqlNode lessLeft = parseExpression(exp.getJsonObject("left"));
+        final SqlNode lessRight = parseExpression(exp.getJsonObject(RIGHT));
         return new SqlPredicateLess(lessLeft, lessRight);
     }
 
-    private SqlNode parsePredicateNotEqual(JsonObject exp) throws MetadataException {
-        SqlNode notEqualLeft = parseExpression(exp.getJsonObject("left"));
-        SqlNode notEqualRight = parseExpression(exp.getJsonObject(RIGHT));
+    private SqlNode parsePredicateNotEqual(final JsonObject exp) throws MetadataException {
+        final SqlNode notEqualLeft = parseExpression(exp.getJsonObject("left"));
+        final SqlNode notEqualRight = parseExpression(exp.getJsonObject(RIGHT));
         return new SqlPredicateNotEqual(notEqualLeft, notEqualRight);
     }
 
-    private SqlNode parsePredicateEqual(JsonObject exp) throws MetadataException {
-        SqlNode equalLeft = parseExpression(exp.getJsonObject("left"));
-        SqlNode equalRight = parseExpression(exp.getJsonObject(RIGHT));
+    private SqlNode parsePredicateEqual(final JsonObject exp) throws MetadataException {
+        final SqlNode equalLeft = parseExpression(exp.getJsonObject("left"));
+        final SqlNode equalRight = parseExpression(exp.getJsonObject(RIGHT));
         return new SqlPredicateEqual(equalLeft, equalRight);
     }
 
-    private SqlNode parsePredicateNot(JsonObject exp) throws MetadataException {
-        SqlNode notExp = parseExpression(exp.getJsonObject(EXPRESSION));
+    private SqlNode parsePredicateNot(final JsonObject exp) throws MetadataException {
+        final SqlNode notExp = parseExpression(exp.getJsonObject(EXPRESSION));
         return new SqlPredicateNot(notExp);
     }
 
-    private SqlNode parsePredicateOr(JsonObject exp) throws MetadataException {
-        List<SqlNode> orPredicates = new ArrayList<>();
-        for (JsonObject pred : exp.getJsonArray("expressions").getValuesAs(JsonObject.class)) {
+    private SqlNode parsePredicateOr(final JsonObject exp) throws MetadataException {
+        final List<SqlNode> orPredicates = new ArrayList<>();
+        for (final JsonObject pred : exp.getJsonArray("expressions").getValuesAs(JsonObject.class)) {
             orPredicates.add(parseExpression(pred));
         }
         return new SqlPredicateOr(orPredicates);
     }
 
-    private SqlNode parsePredicateAnd(JsonObject exp) throws MetadataException {
-        List<SqlNode> andedPredicates = new ArrayList<>();
-        for (JsonObject pred : exp.getJsonArray("expressions").getValuesAs(JsonObject.class)) {
+    private SqlNode parsePredicateAnd(final JsonObject exp) throws MetadataException {
+        final List<SqlNode> andedPredicates = new ArrayList<>();
+        for (final JsonObject pred : exp.getJsonArray("expressions").getValuesAs(JsonObject.class)) {
             andedPredicates.add(parseExpression(pred));
         }
         return new SqlPredicateAnd(andedPredicates);
     }
 
-    private SqlNode parseLiteralInterval(JsonObject exp) throws MetadataException {
-        String intervalVal = exp.getString(VALUE);
-        DataType intervalType = getDataType(exp.getJsonObject(DATA_TYPE));
+    private SqlNode parseLiteralInterval(final JsonObject exp) throws MetadataException {
+        final String intervalVal = exp.getString(VALUE);
+        final DataType intervalType = getDataType(exp.getJsonObject(DATA_TYPE));
         return new SqlLiteralInterval(intervalVal, intervalType);
     }
 
-    private SqlNode parseLiteralString(JsonObject exp) {
-        String stringVal = exp.getString(VALUE);
+    private SqlNode parseLiteralString(final JsonObject exp) {
+        final String stringVal = exp.getString(VALUE);
         return new SqlLiteralString(stringVal);
     }
 
-    private SqlNode parseLiteralExactNumeric(JsonObject exp) {
-        BigDecimal exactVal = new BigDecimal( exp.getString(VALUE));
+    private SqlNode parseLiteralExactNumeric(final JsonObject exp) {
+        final BigDecimal exactVal = new BigDecimal( exp.getString(VALUE));
         return new SqlLiteralExactnumeric(exactVal);
     }
 
-    private SqlNode parseLiteralDouble(JsonObject exp) {
-        String doubleString = exp.getString(VALUE);
+    private SqlNode parseLiteralDouble(final JsonObject exp) {
+        final String doubleString = exp.getString(VALUE);
         return new SqlLiteralDouble(Double.parseDouble(doubleString));
     }
 
-    private SqlNode parseLiteralTimestamputc(JsonObject exp) {
-        String timestampUtc = exp.getString(VALUE);
+    private SqlNode parseLiteralTimestamputc(final JsonObject exp) {
+        final String timestampUtc = exp.getString(VALUE);
         return new SqlLiteralTimestampUtc(timestampUtc);
     }
 
-    private SqlNode parseLiteralTimestamp(JsonObject exp) {
-        String timestamp = exp.getString(VALUE);
+    private SqlNode parseLiteralTimestamp(final JsonObject exp) {
+        final String timestamp = exp.getString(VALUE);
         return new SqlLiteralTimestamp(timestamp);
     }
 
-    private SqlNode parseLiteralDate(JsonObject exp) {
-        String date = exp.getString(VALUE);
+    private SqlNode parseLiteralDate(final JsonObject exp) {
+        final String date = exp.getString(VALUE);
         return new SqlLiteralDate(date);
     }
 
-    private SqlNode parseLiteralBool(JsonObject exp) {
-        boolean boolVal = exp.getBoolean(VALUE);
+    private SqlNode parseLiteralBool(final JsonObject exp) {
+        final boolean boolVal = exp.getBoolean(VALUE);
         return new SqlLiteralBool(boolVal);
     }
 
@@ -494,37 +494,37 @@ public class RequestJsonParser {
         return new SqlLiteralNull();
     }
 
-    private SqlNode parsePredicateLikeRegexp(JsonObject exp) throws MetadataException {
-        SqlNode likeRegexpLeft = parseExpression(exp.getJsonObject(EXPRESSION));
-        SqlNode likeRegexpPattern = parseExpression(exp.getJsonObject("pattern"));
+    private SqlNode parsePredicateLikeRegexp(final JsonObject exp) throws MetadataException {
+        final SqlNode likeRegexpLeft = parseExpression(exp.getJsonObject(EXPRESSION));
+        final SqlNode likeRegexpPattern = parseExpression(exp.getJsonObject("pattern"));
         return new SqlPredicateLikeRegexp(likeRegexpLeft, likeRegexpPattern);
     }
 
-    private SqlNode parsePredicateBetween(JsonObject exp) throws MetadataException {
-        SqlNode betweenExp = parseExpression(exp.getJsonObject(EXPRESSION));
-        SqlNode betweenLeft = parseExpression(exp.getJsonObject("left"));
-        SqlNode betweenRight = parseExpression(exp.getJsonObject(RIGHT));
+    private SqlNode parsePredicateBetween(final JsonObject exp) throws MetadataException {
+        final SqlNode betweenExp = parseExpression(exp.getJsonObject(EXPRESSION));
+        final SqlNode betweenLeft = parseExpression(exp.getJsonObject("left"));
+        final SqlNode betweenRight = parseExpression(exp.getJsonObject(RIGHT));
         return new SqlPredicateBetween(betweenExp, betweenLeft, betweenRight);
     }
 
-    private SqlNode parsePredicateInConstlist(JsonObject exp) throws MetadataException {
-        SqlNode inExp = parseExpression(exp.getJsonObject(EXPRESSION));
-        List<SqlNode> inArguments = new ArrayList<>();
-        for (JsonObject pred : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
+    private SqlNode parsePredicateInConstlist(final JsonObject exp) throws MetadataException {
+        final SqlNode inExp = parseExpression(exp.getJsonObject(EXPRESSION));
+        final List<SqlNode> inArguments = new ArrayList<>();
+        for (final JsonObject pred : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
             inArguments.add(parseExpression(pred));
         }
         return new SqlPredicateInConstList(inExp, inArguments);
     }
 
-    private SqlNode parseFunctionScalar(JsonObject exp) throws MetadataException {
-        String functionName = exp.getString("name");
+    private SqlNode parseFunctionScalar(final JsonObject exp) throws MetadataException {
+        final String functionName = exp.getString("name");
         boolean hasVariableInputArgs = false;
-        int numArgs;
+        final int numArgs;
         if (exp.containsKey("variableInputArgs")) {
             hasVariableInputArgs = exp.getBoolean("variableInputArgs");
         }
-        List<SqlNode> arguments = new ArrayList<>();
-        for (JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
+        final List<SqlNode> arguments = new ArrayList<>();
+        for (final JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
             arguments.add(parseExpression(argument));
         }
         if (!hasVariableInputArgs) {
@@ -542,28 +542,28 @@ public class RequestJsonParser {
         return new SqlFunctionScalar(fromScalarFunctionName(functionName), arguments, isInfix, isPrefix);
     }
 
-    private SqlNode parseFunctionScalarExtract(JsonObject exp) throws MetadataException {
-        String toExtract = exp.getString("toExtract");
-        List<SqlNode> extractArguments = new ArrayList<>();
+    private SqlNode parseFunctionScalarExtract(final JsonObject exp) throws MetadataException {
+        final String toExtract = exp.getString("toExtract");
+        final List<SqlNode> extractArguments = new ArrayList<>();
         if (exp.containsKey(ARGUMENTS)) {
-            for (JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
+            for (final JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
                 extractArguments.add(parseExpression(argument));
             }
         }
         return new SqlFunctionScalarExtract(toExtract, extractArguments);
     }
 
-    private SqlNode parseFunctionScalarCase(JsonObject exp) throws MetadataException {
-        List<SqlNode> caseArguments = new ArrayList<>();
-        List<SqlNode> caseResults = new ArrayList<>();
+    private SqlNode parseFunctionScalarCase(final JsonObject exp) throws MetadataException {
+        final List<SqlNode> caseArguments = new ArrayList<>();
+        final List<SqlNode> caseResults = new ArrayList<>();
         SqlNode caseBasis = null;
         if (exp.containsKey(ARGUMENTS)) {
-            for (JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
+            for (final JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
                 caseArguments.add(parseExpression(argument));
             }
         }
         if (exp.containsKey("results")) {
-            for (JsonObject argument : exp.getJsonArray("results").getValuesAs(JsonObject.class)) {
+            for (final JsonObject argument : exp.getJsonArray("results").getValuesAs(JsonObject.class)) {
                 caseResults.add(parseExpression(argument));
             }
         }
@@ -573,41 +573,41 @@ public class RequestJsonParser {
         return new SqlFunctionScalarCase(caseArguments, caseResults, caseBasis);
     }
 
-    private SqlNode parseFunctionScalarCast(JsonObject exp) throws MetadataException {
-        DataType castDataType = getDataType(exp.getJsonObject(DATA_TYPE));
-        List<SqlNode> castArguments = new ArrayList<>();
+    private SqlNode parseFunctionScalarCast(final JsonObject exp) throws MetadataException {
+        final DataType castDataType = getDataType(exp.getJsonObject(DATA_TYPE));
+        final List<SqlNode> castArguments = new ArrayList<>();
         if (exp.containsKey(ARGUMENTS)) {
-            for (JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
+            for (final JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
                 castArguments.add(parseExpression(argument));
             }
         }
         return new SqlFunctionScalarCast(castDataType, castArguments);
     }
 
-    private SqlNode parseFunctionAggregate(JsonObject exp) throws MetadataException {
-        String setFunctionName = exp.getString("name");
-        List<SqlNode> setArguments = new ArrayList<>();
+    private SqlNode parseFunctionAggregate(final JsonObject exp) throws MetadataException {
+        final String setFunctionName = exp.getString("name");
+        final List<SqlNode> setArguments = new ArrayList<>();
         boolean distinct = false;
         if (exp.containsKey(DISTINCT)) {
             distinct = exp.getBoolean(DISTINCT);
         }
         if (exp.containsKey(ARGUMENTS)) {
-            for (JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
+            for (final JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
                 setArguments.add(parseExpression(argument));
             }
         }
         return new SqlFunctionAggregate(fromAggregationFunctionName(setFunctionName), setArguments, distinct);
     }
 
-    private SqlNode parseFunctionAggregateGroupConcat(JsonObject exp) throws MetadataException {
-        String functionName = exp.getString("name");
-        List<SqlNode> setArguments = new ArrayList<>();
+    private SqlNode parseFunctionAggregateGroupConcat(final JsonObject exp) throws MetadataException {
+        final String functionName = exp.getString("name");
+        final List<SqlNode> setArguments = new ArrayList<>();
         boolean distinct = false;
         if (exp.containsKey(DISTINCT)) {
             distinct = exp.getBoolean(DISTINCT);
         }
         if (exp.containsKey(ARGUMENTS)) {
-            for (JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
+            for (final JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
                 setArguments.add(parseExpression(argument));
             }
         }
@@ -623,27 +623,27 @@ public class RequestJsonParser {
                 setArguments, orderBy, distinct, separator);
     }
 
-    private SqlNode parseColumn(JsonObject exp) throws MetadataException {
-        int columnId = exp.getInt("columnNr");
-        String columnName = exp.getString("name");
-        String tableName = exp.getString("tableName");
-        ColumnMetadata columnMetadata = findColumnMetadata(tableName, columnName);
+    private SqlNode parseColumn(final JsonObject exp) throws MetadataException {
+        final int columnId = exp.getInt("columnNr");
+        final String columnName = exp.getString("name");
+        final String tableName = exp.getString("tableName");
+        final ColumnMetadata columnMetadata = findColumnMetadata(tableName, columnName);
         return new SqlColumn(columnId, columnMetadata, tableName);
     }
 
-    private SqlNode parseJoin(JsonObject exp) throws MetadataException {
-        SqlNode left = parseExpression(exp.getJsonObject("left"));
-        SqlNode right = parseExpression(exp.getJsonObject(RIGHT));
-        SqlNode condition = parseExpression(exp.getJsonObject("condition"));
-        JoinType joinType = fromJoinTypeName(exp.getString("join_type"));
+    private SqlNode parseJoin(final JsonObject exp) throws MetadataException {
+        final SqlNode left = parseExpression(exp.getJsonObject("left"));
+        final SqlNode right = parseExpression(exp.getJsonObject(RIGHT));
+        final SqlNode condition = parseExpression(exp.getJsonObject("condition"));
+        final JoinType joinType = fromJoinTypeName(exp.getString("join_type"));
         return new SqlJoin(left, right, condition, joinType);
     }
 
-    private SqlNode parseTable(JsonObject exp) throws MetadataException {
-        String tableName = exp.getString("name");
-        TableMetadata tableMetadata = findInvolvedTableMetadata(tableName);
+    private SqlNode parseTable(final JsonObject exp) throws MetadataException {
+        final String tableName = exp.getString("name");
+        final TableMetadata tableMetadata = findInvolvedTableMetadata(tableName);
         if (exp.containsKey("alias")) {
-            String tableAlias = exp.getString("alias");
+            final String tableAlias = exp.getString("alias");
             return new SqlTable(tableName, tableAlias, tableMetadata);
         } else {
             return new SqlTable(tableName, tableMetadata);
@@ -653,34 +653,34 @@ public class RequestJsonParser {
     /**
      * Mapping from join type name (as in json api) to enum
      */
-    private static JoinType fromJoinTypeName(String typeName) {
+    private static JoinType fromJoinTypeName(final String typeName) {
         return Enum.valueOf(JoinType.class, typeName.toUpperCase());
     }
 
     /**
      * Mapping from scalar function name (as in json api) to enum
      */
-    private static ScalarFunction fromScalarFunctionName(String functionName) {
+    private static ScalarFunction fromScalarFunctionName(final String functionName) {
         return Enum.valueOf(ScalarFunction.class, functionName.toUpperCase());
     }
 
     /**
      * Mapping from aggregate function name (as in json api) to enum
      */
-    private static AggregateFunction fromAggregationFunctionName(String functionName) {
+    private static AggregateFunction fromAggregationFunctionName(final String functionName) {
         return Enum.valueOf(AggregateFunction.class, functionName.toUpperCase());
     }
 
     /**
      * Mapping from type name (as in json api) to enum
      */
-    private static SqlNodeType fromTypeName(String typeName) {
+    private static SqlNodeType fromTypeName(final String typeName) {
         return Enum.valueOf(SqlNodeType.class, typeName.toUpperCase());
     }
 
-    private TableMetadata findInvolvedTableMetadata(String tableName) throws MetadataException {
+    private TableMetadata findInvolvedTableMetadata(final String tableName) throws MetadataException {
         assert involvedTablesMetadata != null;
-        for (TableMetadata tableMetadata : involvedTablesMetadata) {
+        for (final TableMetadata tableMetadata : involvedTablesMetadata) {
             if (tableMetadata.getName().equals(tableName)) {
                 return tableMetadata;
             }
@@ -688,9 +688,9 @@ public class RequestJsonParser {
         throw new MetadataException("Could not find table metadata for involved table " + tableName + ". All involved tables: " + involvedTablesMetadata.toString());
     }
 
-    private ColumnMetadata findColumnMetadata(String tableName, String columnName) throws MetadataException {
-        TableMetadata tableMetadata = findInvolvedTableMetadata(tableName);
-        for (ColumnMetadata columnMetadata : tableMetadata.getColumns()) {
+    private ColumnMetadata findColumnMetadata(final String tableName, final String columnName) throws MetadataException {
+        final TableMetadata tableMetadata = findInvolvedTableMetadata(tableName);
+        for (final ColumnMetadata columnMetadata : tableMetadata.getColumns()) {
             if (columnMetadata.getName().equals(columnName)) {
                 return columnMetadata;
             }

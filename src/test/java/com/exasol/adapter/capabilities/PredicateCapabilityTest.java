@@ -10,9 +10,9 @@ public class PredicateCapabilityTest {
     @Test
     public void testCompleteness() {
         // Do we have predicates where we don't have capabilities for?
-        for (Predicate pred : Predicate.values()) {
+        for (final Predicate pred : Predicate.values()) {
             boolean foundCap = false;
-            for (PredicateCapability cap : PredicateCapability.values()) {
+            for (final PredicateCapability cap : PredicateCapability.values()) {
                 if (cap.getPredicate() == pred) {
                     foundCap = true;
                 }
@@ -23,7 +23,7 @@ public class PredicateCapabilityTest {
 
     @Test
     public void testConsistentNaming () {
-        for (PredicateCapability cap : PredicateCapability.values()) {
+        for (final PredicateCapability cap : PredicateCapability.values()) {
             assertTrue(cap.name().startsWith(cap.getPredicate().name()));
         }
     }

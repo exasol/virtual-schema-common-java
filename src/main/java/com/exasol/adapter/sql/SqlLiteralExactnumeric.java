@@ -5,9 +5,9 @@ import com.exasol.adapter.AdapterException;
 import java.math.BigDecimal;
 
 public class SqlLiteralExactnumeric extends SqlNode {
-    private BigDecimal value;
+    private final BigDecimal value;
     
-    public SqlLiteralExactnumeric(BigDecimal value) {
+    public SqlLiteralExactnumeric(final BigDecimal value) {
         this.value = value;
     }
     
@@ -26,7 +26,7 @@ public class SqlLiteralExactnumeric extends SqlNode {
     }
 
     @Override
-    public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
+    public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
 }

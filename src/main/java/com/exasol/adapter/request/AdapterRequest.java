@@ -13,10 +13,10 @@ public class AdapterRequest {
         PUSHDOWN
     }
     
-    private SchemaMetadataInfo schemaMetadataInfo;
-    private AdapterRequestType type;
+    private final SchemaMetadataInfo schemaMetadataInfo;
+    private final AdapterRequestType type;
     
-    AdapterRequest(SchemaMetadataInfo schemaMetadataInfo, AdapterRequestType type) {
+    AdapterRequest(final SchemaMetadataInfo schemaMetadataInfo, final AdapterRequestType type) {
         this.schemaMetadataInfo = schemaMetadataInfo;
         this.type = type;
     }

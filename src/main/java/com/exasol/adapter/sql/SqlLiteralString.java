@@ -3,9 +3,9 @@ package com.exasol.adapter.sql;
 import com.exasol.adapter.AdapterException;
 
 public class SqlLiteralString extends SqlNode {
-    private String value;
+    private final String value;
     
-    public SqlLiteralString(String value) {
+    public SqlLiteralString(final String value) {
         this.value = value;
     }
     
@@ -25,7 +25,7 @@ public class SqlLiteralString extends SqlNode {
     }
 
     @Override
-    public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
+    public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
 }

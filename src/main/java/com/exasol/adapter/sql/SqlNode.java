@@ -10,7 +10,7 @@ public abstract class SqlNode {
 
     public abstract SqlNodeType getType();
 
-    public void setParent(SqlNode parent) {
+    public void setParent(final SqlNode parent) {
         this.parent = parent;
     }
 

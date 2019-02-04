@@ -6,11 +6,11 @@ public class SqlLimit extends SqlNode {
     private int limit;
     private int offset;
 
-    public SqlLimit(int limit) {
+    public SqlLimit(final int limit) {
         this(limit, 0);
     }
 
-    public SqlLimit(int limit, int offset) {
+    public SqlLimit(final int limit, final int offset) {
         if (offset < 0 || limit <0) {
             throw new IllegalArgumentException("SqlLimit constructor expects offset and limit values to be greater than zero");
         }
@@ -30,11 +30,11 @@ public class SqlLimit extends SqlNode {
         return offset != 0;
     }
 
-    public void setLimit(int limit) {
+    public void setLimit(final int limit) {
         this.limit = limit;
     }
 
-    public void setOffset(int offset) {
+    public void setOffset(final int offset) {
         this.offset = offset;
     }
 
@@ -53,7 +53,7 @@ public class SqlLimit extends SqlNode {
     }
 
     @Override
-    public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
+    public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
 }

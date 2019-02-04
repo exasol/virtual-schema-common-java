@@ -8,12 +8,12 @@ import java.util.List;
  * Represents the metadata of an EXASOL table.
  */
 public class TableMetadata {
-    private String name;
-    private String adapterNotes;
-    private List<ColumnMetadata> columns;
-    private String comment;
+    private final String name;
+    private final String adapterNotes;
+    private final List<ColumnMetadata> columns;
+    private final String comment;
     
-    public TableMetadata(String name, String adapterNotes, List<ColumnMetadata> columns, String comment) throws MetadataException {
+    public TableMetadata(final String name, final String adapterNotes, final List<ColumnMetadata> columns, final String comment) throws MetadataException {
         this.name = name;
         this.adapterNotes = adapterNotes;
         this.columns = columns;

@@ -23,7 +23,7 @@ public enum AggregateFunction {
     GEO_INTERSECTION_AGGREGATE,
     GEO_UNION_AGGREGATE;
 
-    private boolean isSimple;
+    private final boolean isSimple;
 
     /**
      * True if the function is simple, i.e. is handled by {@link SqlFunctionAggregate}, and false if it has it's own implementation.
@@ -36,7 +36,7 @@ public enum AggregateFunction {
         this.isSimple = true;
     }
 
-    AggregateFunction(boolean isSimple) {
+    AggregateFunction(final boolean isSimple) {
         this.isSimple = isSimple;
     }
 }

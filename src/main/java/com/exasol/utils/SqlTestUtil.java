@@ -8,7 +8,7 @@ public final class SqlTestUtil {
     /**
      * Convert newlines, tabs, and double whitespaces to whitespaces. At the end only single whitespaces remain.
      */
-    public static String normalizeSql(String sql) {
+    public static String normalizeSql(final String sql) {
         return sql.replaceAll("\t", " ")
                 .replaceAll("\n", " ")
                 .replaceAll("\\s+", " ");
