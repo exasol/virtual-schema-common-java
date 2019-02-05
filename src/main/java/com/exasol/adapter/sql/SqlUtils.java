@@ -7,7 +7,7 @@ public final class SqlUtils {
         //Intentionally left blank
     }
 
-    public static String quoteIdentifierIfNeeded(String identifier, Map<String, ?> config) {
+    public static String quoteIdentifierIfNeeded(final String identifier, final Map<String, ?> config) {
         String quoteChar = "\"";
         if (config.containsKey("QUOTE_CHAR")) {
             quoteChar = config.get("QUOTE_CHAR").toString();

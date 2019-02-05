@@ -7,10 +7,10 @@ import java.util.List;
 
 public class SqlGroupBy extends SqlExpressionList {
 
-    public SqlGroupBy(List<SqlNode> groupByList) {
+    public SqlGroupBy(final List<SqlNode> groupByList) {
         super(groupByList);
         if (this.getExpressions() != null) {
-            for (SqlNode node : this.getExpressions()) {
+            for (final SqlNode node : this.getExpressions()) {
                 node.setParent(this);
             }
         }
@@ -26,15 +26,15 @@ public class SqlGroupBy extends SqlExpressionList {
         if (getExpressions().isEmpty()) {
             return "*";
         }
-        List<String> selectElement = new ArrayList<>();
-        for (SqlNode node : getExpressions()) {
+        final List<String> selectElement = new ArrayList<>();
+        for (final SqlNode node : getExpressions()) {
             selectElement.add(node.toSimpleSql());
         }
         return String.join(", ", selectElement);
     }
 
     @Override
-    public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
+    public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
 }

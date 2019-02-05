@@ -6,15 +6,15 @@ import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.SchemaMetadataInfo;
 
 public class RefreshRequest extends AdapterRequest {
-    private boolean isRefreshForTables;
+    private final boolean isRefreshForTables;
     private List<String> tables;
 
-    public RefreshRequest(SchemaMetadataInfo schemaMetadataInfo) {
+    public RefreshRequest(final SchemaMetadataInfo schemaMetadataInfo) {
         super(schemaMetadataInfo, AdapterRequestType.REFRESH);
         isRefreshForTables = false;
     }
 
-    public RefreshRequest(SchemaMetadataInfo schemaMetadataInfo, List<String> tables) throws AdapterException {
+    public RefreshRequest(final SchemaMetadataInfo schemaMetadataInfo, final List<String> tables) throws AdapterException {
         super(schemaMetadataInfo, AdapterRequestType.REFRESH);
         if (tables == null || tables.isEmpty()) {
             throw new AdapterException("The RefreshRequest constructor expects a list of requested tables, but the list is currently empty.");

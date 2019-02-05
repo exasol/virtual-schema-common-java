@@ -6,15 +6,15 @@ import com.exasol.adapter.AdapterException;
  * We could consider to apply builder pattern here (if time)
  */
 public class SqlStatementSelect extends SqlStatement {
-    private SqlNode fromClause;
-    private SqlSelectList selectList;
-    private SqlNode whereClause;
-    private SqlExpressionList groupBy;
-    private SqlNode having;
-    private SqlOrderBy orderBy;
-    private SqlLimit limit;
+    private final SqlNode fromClause;
+    private final SqlSelectList selectList;
+    private final SqlNode whereClause;
+    private final SqlExpressionList groupBy;
+    private final SqlNode having;
+    private final SqlOrderBy orderBy;
+    private final SqlLimit limit;
     
-    public SqlStatementSelect(SqlNode fromClause, SqlSelectList selectList, SqlNode whereClause, SqlExpressionList groupBy, SqlNode having, SqlOrderBy orderBy, SqlLimit limit) {
+    public SqlStatementSelect(final SqlNode fromClause, final SqlSelectList selectList, final SqlNode whereClause, final SqlExpressionList groupBy, final SqlNode having, final SqlOrderBy orderBy, final SqlLimit limit) {
         this.fromClause = fromClause;
         this.selectList = selectList;
         this.whereClause = whereClause;
@@ -99,7 +99,7 @@ public class SqlStatementSelect extends SqlStatement {
     @Override
     public String toSimpleSql() {
         
-        StringBuilder sql = new StringBuilder();
+        final StringBuilder sql = new StringBuilder();
         sql.append("SELECT ");
         sql.append(selectList.toSimpleSql());
         sql.append(" FROM ");
@@ -128,7 +128,7 @@ public class SqlStatementSelect extends SqlStatement {
     }
 
     @Override
-    public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
+    public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
 }

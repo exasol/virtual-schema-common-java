@@ -184,7 +184,7 @@ public enum ScalarFunction {
     SYS_GUID,
     ZEROIFNULL;
 
-    private boolean isSimple;
+    private final boolean isSimple;
 
     /**
      * True if the function is simple, i.e. is handled by {@link SqlFunctionScalar}, and false if it has it's own implementation.
@@ -197,7 +197,7 @@ public enum ScalarFunction {
         this.isSimple = true;
     }
 
-    ScalarFunction(boolean isSimple) {
+    ScalarFunction(final boolean isSimple) {
         this.isSimple = isSimple;
     }
 }

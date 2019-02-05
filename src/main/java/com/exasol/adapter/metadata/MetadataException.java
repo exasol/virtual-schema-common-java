@@ -4,7 +4,7 @@ import com.exasol.adapter.AdapterException;
 
 public class MetadataException extends AdapterException{
 
-    public MetadataException(String message) {
+    public MetadataException(final String message) {
         super(message);
     }
 }

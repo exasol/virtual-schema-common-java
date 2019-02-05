@@ -3,10 +3,10 @@ package com.exasol.adapter.sql;
 import com.exasol.adapter.AdapterException;
 
 public class SqlPredicateNotEqual extends SqlPredicate {
-    private SqlNode left;
-    private SqlNode right;
+    private final SqlNode left;
+    private final SqlNode right;
     
-    public SqlPredicateNotEqual(SqlNode left, SqlNode right) {
+    public SqlPredicateNotEqual(final SqlNode left, final SqlNode right) {
         super(Predicate.NOTEQUAL);
         this.left = left;
         this.right = right;
@@ -37,7 +37,7 @@ public class SqlPredicateNotEqual extends SqlPredicate {
     }
 
     @Override
-    public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
+    public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
 }

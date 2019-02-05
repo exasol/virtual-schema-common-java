@@ -7,14 +7,14 @@ import java.util.List;
 
 public class SqlFunctionScalarExtract extends SqlNode {
     private static final String EXTRACT = "EXTRACT";
-    private String toExtract;
-    private List<SqlNode> arguments;
+    private final String toExtract;
+    private final List<SqlNode> arguments;
 
-    public SqlFunctionScalarExtract(String toExtract, List<SqlNode> arguments) {
+    public SqlFunctionScalarExtract(final String toExtract, final List<SqlNode> arguments) {
         SqlArgumentValidator.validateSqlFunctionArguments(arguments, SqlFunctionScalarExtract.class);
         this.arguments = arguments;
         this.toExtract = toExtract;
-        for (SqlNode node : this.arguments) {
+        for (final SqlNode node : this.arguments) {
             node.setParent(this);
         }
     }
@@ -43,7 +43,7 @@ public class SqlFunctionScalarExtract extends SqlNode {
     }
 
     @Override
-    public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
+    public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
 

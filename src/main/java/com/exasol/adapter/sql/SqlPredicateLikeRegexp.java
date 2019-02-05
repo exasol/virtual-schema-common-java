@@ -3,10 +3,10 @@ package com.exasol.adapter.sql;
 import com.exasol.adapter.AdapterException;
 
 public class SqlPredicateLikeRegexp extends SqlPredicate {
-    private SqlNode left;
-    private SqlNode pattern;
+    private final SqlNode left;
+    private final SqlNode pattern;
     
-    public SqlPredicateLikeRegexp(SqlNode left, SqlNode pattern) {
+    public SqlPredicateLikeRegexp(final SqlNode left, final SqlNode pattern) {
         super(Predicate.REGEXP_LIKE);
         this.left = left;
         this.pattern = pattern;
@@ -37,7 +37,7 @@ public class SqlPredicateLikeRegexp extends SqlPredicate {
     }
 
     @Override
-    public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
+    public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
 }

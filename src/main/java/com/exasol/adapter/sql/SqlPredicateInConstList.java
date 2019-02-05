@@ -8,11 +8,11 @@ import java.util.List;
 
 public class SqlPredicateInConstList extends SqlPredicate {
     // For <exp> IN (...) this stores <exp>
-    private SqlNode expression;
+    private final SqlNode expression;
     // Arguments inside the brackets
-    private List<SqlNode> inArguments;
+    private final List<SqlNode> inArguments;
     
-    public SqlPredicateInConstList(SqlNode expression, List<SqlNode> inArguments) {
+    public SqlPredicateInConstList(final SqlNode expression, final List<SqlNode> inArguments) {
         super(Predicate.IN_CONSTLIST);
         this.expression = expression;
         this.inArguments = inArguments;
@@ -20,7 +20,7 @@ public class SqlPredicateInConstList extends SqlPredicate {
             this.expression.setParent(this);
         }
         if (this.inArguments != null) {
-            for (SqlNode node : this.inArguments) {
+            for (final SqlNode node : this.inArguments) {
                 node.setParent(this);
             }
         }
@@ -40,8 +40,8 @@ public class SqlPredicateInConstList extends SqlPredicate {
     
     @Override
     public String toSimpleSql() {
-        List<String> argumentsSql = new ArrayList<>();
-        for (SqlNode node : inArguments) {
+        final List<String> argumentsSql = new ArrayList<>();
+        for (final SqlNode node : inArguments) {
             argumentsSql.add(node.toSimpleSql());
         }
         return expression.toSimpleSql() + " IN (" + String.join(", ", argumentsSql) + ")";
@@ -53,7 +53,7 @@ public class SqlPredicateInConstList extends SqlPredicate {
     }
 
     @Override
-    public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
+    public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
 }

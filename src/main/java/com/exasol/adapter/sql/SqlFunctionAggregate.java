@@ -13,16 +13,16 @@ import java.util.List;
  * </p>
  */
 public class SqlFunctionAggregate extends SqlNode {
-    private AggregateFunction function;
-    private boolean distinct;
-    private List<SqlNode> arguments;
+    private final AggregateFunction function;
+    private final boolean distinct;
+    private final List<SqlNode> arguments;
 
-    public SqlFunctionAggregate(AggregateFunction function, List<SqlNode> arguments, boolean distinct) {
+    public SqlFunctionAggregate(final AggregateFunction function, final List<SqlNode> arguments, final boolean distinct) {
         this.arguments = arguments;
         this.function = function;
         this.distinct = distinct;
         if (this.arguments != null) {
-            for (SqlNode node : this.arguments) {
+            for (final SqlNode node : this.arguments) {
                 node.setParent(this);
             }
         }
@@ -50,8 +50,8 @@ public class SqlFunctionAggregate extends SqlNode {
 
     @Override
     public String toSimpleSql() {
-        List<String> argumentsSql = new ArrayList<>();
-        for (SqlNode node : arguments) {
+        final List<String> argumentsSql = new ArrayList<>();
+        for (final SqlNode node : arguments) {
             argumentsSql.add(node.toSimpleSql());
         }
         if (argumentsSql.isEmpty()) {
@@ -71,7 +71,7 @@ public class SqlFunctionAggregate extends SqlNode {
     }
 
     @Override
-    public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
+    public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
 }

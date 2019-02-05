@@ -13,8 +13,8 @@ public final class SqlDataTypeJsonSerializer {
         //Intentionally left blank.
     }
 
-    public static JsonObjectBuilder serialize(DataType dataType) {
-        JsonObjectBuilder root = Json.createObjectBuilder()
+    public static JsonObjectBuilder serialize(final DataType dataType) {
+        final JsonObjectBuilder root = Json.createObjectBuilder()
                 .add("type", exaTypeAsString(dataType.getExaDataType()));
 
         switch (dataType.getExaDataType()) {
@@ -55,7 +55,7 @@ public final class SqlDataTypeJsonSerializer {
         return root;
     }
 
-    private static String exaTypeAsString(ExaDataType dataType) {
+    private static String exaTypeAsString(final ExaDataType dataType) {
         switch (dataType) {
         case UNSUPPORTED:
             return "unsupported";
@@ -82,7 +82,7 @@ public final class SqlDataTypeJsonSerializer {
         }
     }
 
-    private static String exaCharSetAsString(ExaCharset charset) {
+    private static String exaCharSetAsString(final ExaCharset charset) {
         switch (charset) {
         case UTF8:
             return "UTF8";
@@ -93,7 +93,7 @@ public final class SqlDataTypeJsonSerializer {
         }
     }
 
-    private static String intervalTypeAsString(IntervalType intervalType) {
+    private static String intervalTypeAsString(final IntervalType intervalType) {
         switch (intervalType) {
         case DAY_TO_SECOND:
             return "DAY TO SECONDS";

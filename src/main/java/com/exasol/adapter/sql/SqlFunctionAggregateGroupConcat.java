@@ -6,15 +6,15 @@ import java.util.Collections;
 import java.util.List;
 
 public class SqlFunctionAggregateGroupConcat extends SqlNode {
-    private AggregateFunction function;
-    private boolean distinct;
-    private List<SqlNode> arguments;
-    private String separator;
-    private SqlOrderBy orderBy;
+    private final AggregateFunction function;
+    private final boolean distinct;
+    private final List<SqlNode> arguments;
+    private final String separator;
+    private final SqlOrderBy orderBy;
 
-    public SqlFunctionAggregateGroupConcat(AggregateFunction function, List<SqlNode> arguments,
-                                           SqlOrderBy orderBy, boolean distinct,
-                                           String separator) {
+    public SqlFunctionAggregateGroupConcat(final AggregateFunction function, final List<SqlNode> arguments,
+                                           final SqlOrderBy orderBy, final boolean distinct,
+                                           final String separator) {
         SqlArgumentValidator.validateSqlFunctionArguments(arguments, SqlFunctionAggregateGroupConcat.class);
         this.function = function;
         this.distinct = distinct;
@@ -68,7 +68,7 @@ public class SqlFunctionAggregateGroupConcat extends SqlNode {
         if (distinct) {
             distinctSql = "DISTINCT ";
         }
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append(getFunctionName());
         builder.append("(");
         builder.append(distinctSql);
@@ -95,7 +95,7 @@ public class SqlFunctionAggregateGroupConcat extends SqlNode {
     }
 
     @Override
-    public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
+    public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
 }

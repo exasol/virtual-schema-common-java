@@ -4,7 +4,7 @@ import com.exasol.adapter.metadata.SchemaMetadataInfo;
 
 public class DropVirtualSchemaRequest extends AdapterRequest {
     
-    public DropVirtualSchemaRequest(SchemaMetadataInfo schemaMetadataInfo) {
+    public DropVirtualSchemaRequest(final SchemaMetadataInfo schemaMetadataInfo) {
         super(schemaMetadataInfo, AdapterRequestType.DROP_VIRTUAL_SCHEMA);
     }
 }

@@ -8,10 +8,10 @@ import java.util.List;
  * when the adapter updates the metadata (during refresh or set property).
  */
 public class SchemaMetadata {
-    private String adapterNotes;
-    private List<TableMetadata> tables;
+    private final String adapterNotes;
+    private final List<TableMetadata> tables;
     
-    public SchemaMetadata(String adapterNotes, List<TableMetadata> tables) {
+    public SchemaMetadata(final String adapterNotes, final List<TableMetadata> tables) {
         this.adapterNotes = adapterNotes;
         this.tables = tables;
     }

@@ -3,9 +3,9 @@ package com.exasol.adapter.sql;
 import com.exasol.adapter.AdapterException;
 
 public class SqlLiteralDate extends SqlNode {
-    private String value;   // Stored as YYYY-MM-DD
+    private final String value;   // Stored as YYYY-MM-DD
     
-    public SqlLiteralDate(String value) {
+    public SqlLiteralDate(final String value) {
         this.value = value;
     }
     
@@ -24,7 +24,7 @@ public class SqlLiteralDate extends SqlNode {
     }
 
     @Override
-    public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
+    public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
 }

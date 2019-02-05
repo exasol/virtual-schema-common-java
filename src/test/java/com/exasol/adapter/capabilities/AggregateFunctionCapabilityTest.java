@@ -10,9 +10,9 @@ public class AggregateFunctionCapabilityTest {
     @Test
     public void testCompleteness() {
         // Do we have functions where we don't have capabilities for?
-        for (AggregateFunction func : AggregateFunction.values()) {
+        for (final AggregateFunction func : AggregateFunction.values()) {
             boolean foundCap = false;
-            for (AggregateFunctionCapability cap : AggregateFunctionCapability.values()) {
+            for (final AggregateFunctionCapability cap : AggregateFunctionCapability.values()) {
                 if (cap.getFunction() == func) {
                     foundCap = true;
                 }
@@ -23,7 +23,7 @@ public class AggregateFunctionCapabilityTest {
 
     @Test
     public void testConsistentNaming () {
-        for (AggregateFunctionCapability cap : AggregateFunctionCapability.values()) {
+        for (final AggregateFunctionCapability cap : AggregateFunctionCapability.values()) {
             assertTrue(cap.name().startsWith(cap.getFunction().name()));
         }
     }

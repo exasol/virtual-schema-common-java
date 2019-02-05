@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SqlSelectList extends SqlExpressionList {
-    private SqlSelectListType type;
+    private final SqlSelectListType type;
 
-    private SqlSelectList(SqlSelectListType type, List<SqlNode> selectList) {
+    private SqlSelectList(final SqlSelectListType type, final List<SqlNode> selectList) {
         super(selectList);
         this.type = type;
     }
@@ -34,7 +34,7 @@ public class SqlSelectList extends SqlExpressionList {
      * @param selectList The selectList needs at least one element.
      * @return the new SqlSelectList.
      */
-    public static SqlSelectList createRegularSelectList(List<SqlNode> selectList) {
+    public static SqlSelectList createRegularSelectList(final List<SqlNode> selectList) {
         if (selectList == null || selectList.isEmpty()) {
             throw new IllegalArgumentException("SqlFunctionAggregateGroupConcat constructor expects an argument." +
                   "But the list is empty.");
@@ -67,15 +67,15 @@ public class SqlSelectList extends SqlExpressionList {
         if (isSelectStar()) {
             return "*";
         }
-        List<String> selectElement = new ArrayList<>();
-        for (SqlNode node : getExpressions()) {
+        final List<String> selectElement = new ArrayList<>();
+        for (final SqlNode node : getExpressions()) {
             selectElement.add(node.toSimpleSql());
         }
         return String.join(", ", selectElement);
     }
 
     @Override
-    public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
+    public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
 }
