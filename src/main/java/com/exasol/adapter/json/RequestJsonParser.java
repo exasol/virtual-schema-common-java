@@ -96,16 +96,16 @@ public class RequestJsonParser {
     }
 
     private AdapterRequest setProperties(final JsonObject root, final SchemaMetadataInfo meta) {
+        validateJsonValueType(root, PROPERTIES, ValueType.OBJECT);
         final Map<String, String> properties = new HashMap<>();
-        validateJsonValueType(root, PROPERTIES);
         for (final Map.Entry<String, JsonValue> entry : root.getJsonObject(PROPERTIES).entrySet()) {
             setProperty(root, properties, entry);
         }
         return new SetPropertiesRequest(meta, properties);
     }
 
-    private void validateJsonValueType(final JsonObject root, final String jsonKey) {
-        assert root.containsKey(jsonKey) && root.get(jsonKey).getValueType() == ValueType.ARRAY;
+    private void validateJsonValueType(final JsonObject node, final String jsonKey, final ValueType type) {
+        assert node.containsKey(jsonKey) && node.get(jsonKey).getValueType() == type;
     }
 
     private void setProperty(final JsonObject root, final Map<String, String> properties, final Map.Entry<String, JsonValue> entry) {
@@ -134,7 +134,7 @@ public class RequestJsonParser {
     }
 
     private AdapterRequest pushdown(final JsonObject root, final SchemaMetadataInfo meta) throws MetadataException {
-        validateJsonValueType(root, INVOLVED_TABLES);
+        validateJsonValueType(root, INVOLVED_TABLES, ValueType.ARRAY);
         involvedTablesMetadata = parseInvolvedTableMetadata(root.getJsonArray(INVOLVED_TABLES));
         final JsonObject pushdownExp = getPushDownExpression(root);
         final SqlNode select = parseExpression(pushdownExp);
