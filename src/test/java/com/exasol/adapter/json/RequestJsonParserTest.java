@@ -31,47 +31,47 @@ public class RequestJsonParserTest {
     @Test
     public void testParsePushdownRequest() throws Exception {
         // test resources from src/test/resources are copied to target/test-classes, and this folder is the classpath of the junit test.
-        String file = "target/test-classes/pushdown_request.json";
-        String json = Files.toString(new File(file), Charsets.UTF_8);
+        final String file = "target/test-classes/pushdown_request.json";
+        final String json = Files.toString(new File(file), Charsets.UTF_8);
 
-        Map<String, String> properties = new HashMap<String, String>();
+        final Map<String, String> properties = new HashMap<String, String>();
         properties.put("HIVE_SERVER", "my-hive-server");
         properties.put("HIVE_DB", "my-hive-db");
         properties.put("HIVE_USER", "my-hive-user");
-        SchemaMetadataInfo expectedSchemaMetaInfo = new SchemaMetadataInfo(
+        final SchemaMetadataInfo expectedSchemaMetaInfo = new SchemaMetadataInfo(
                 "MY_HIVE_VSCHEMA", "{\"lastRefreshed\":\"2015-03-01 12:10:01\",\"key\":\"Any custom schema state here\"}",
                 properties);
 
-        List<TableMetadata> expectedInvolvedTablesMetadata = new ArrayList<>();
-        String tableName = "CLICKS";
-        String tableAdapterNotes = "";
-        List<ColumnMetadata> tableColumns = new ArrayList<>();
+        final List<TableMetadata> expectedInvolvedTablesMetadata = new ArrayList<>();
+        final String tableName = "CLICKS";
+        final String tableAdapterNotes = "";
+        final List<ColumnMetadata> tableColumns = new ArrayList<>();
         tableColumns.add(new ColumnMetadata("ID", "", DataType.createDecimal(22, 0), true, false, "", ""));
         tableColumns.add(new ColumnMetadata("USER_ID", "", DataType.createDecimal(18, 0), true, false, "", ""));
         tableColumns.add(new ColumnMetadata("URL", "", DataType.createVarChar(1000, ExaCharset.UTF8), true, false, "", ""));
         tableColumns.add(new ColumnMetadata("REQUEST_TIME", "", DataType.createTimestamp(false), true, false, "", ""));
-        String tableComment = "";
+        final String tableComment = "";
         expectedInvolvedTablesMetadata.add(new TableMetadata(tableName, tableAdapterNotes, tableColumns, tableComment));
 
-        RequestJsonParser parser = new RequestJsonParser();
-        AdapterRequest request = parser.parseRequest(json);
+        final RequestJsonParser parser = new RequestJsonParser();
+        final AdapterRequest request = parser.parseRequest(json);
         assertObjectEquals(expectedSchemaMetaInfo, request.getSchemaMetadataInfo());
         assertObjectEquals(expectedInvolvedTablesMetadata, ((PushdownRequest)request).getInvolvedTablesMetadata());
     }
 
     @Test
     public void testParsePushdownRequestAllTypes() throws Exception {
-        String file = "target/test-classes/pushdown_request_alltypes.json";
-        String json = Files.toString(new File(file), Charsets.UTF_8);
+        final String file = "target/test-classes/pushdown_request_alltypes.json";
+        final String json = Files.toString(new File(file), Charsets.UTF_8);
 
-        Map<String, String> properties = new HashMap<String, String>();
-        SchemaMetadataInfo expectedSchemaMetaInfo = new SchemaMetadataInfo("VS", "", properties);
+        final Map<String, String> properties = new HashMap<String, String>();
+        final SchemaMetadataInfo expectedSchemaMetaInfo = new SchemaMetadataInfo("VS", "", properties);
 
-        List<TableMetadata> expectedInvolvedTablesMetadata = new ArrayList<>();
-        String tableName = "T1";
-        String tableAdapterNotes = "";
-        String tableComment = "";
-        List<ColumnMetadata> tableColumns = new ArrayList<>();
+        final List<TableMetadata> expectedInvolvedTablesMetadata = new ArrayList<>();
+        final String tableName = "T1";
+        final String tableAdapterNotes = "";
+        final String tableComment = "";
+        final List<ColumnMetadata> tableColumns = new ArrayList<>();
         tableColumns.add(new ColumnMetadata("C_DECIMAL", "", DataType.createDecimal(18, 2), true, false, "", ""));
         tableColumns.add(new ColumnMetadata("C_DOUBLE", "", DataType.createDouble(), true, false, "", ""));
         tableColumns.add(new ColumnMetadata("C_VARCHAR_UTF8_1", "", DataType.createVarChar(10000, ExaCharset.UTF8), true, false, "", ""));
@@ -92,37 +92,37 @@ public class RequestJsonParserTest {
         tableColumns.add(new ColumnMetadata("C_INTERVAL_YM_2", "", DataType.createIntervalYearMonth(3), true, false, "", ""));
         expectedInvolvedTablesMetadata.add(new TableMetadata(tableName, tableAdapterNotes, tableColumns, tableComment));
 
-        RequestJsonParser parser = new RequestJsonParser();
-        AdapterRequest request = parser.parseRequest(json);
+        final RequestJsonParser parser = new RequestJsonParser();
+        final AdapterRequest request = parser.parseRequest(json);
         assertObjectEquals(expectedSchemaMetaInfo, request.getSchemaMetadataInfo());
         assertObjectEquals(expectedInvolvedTablesMetadata, ((PushdownRequest)request).getInvolvedTablesMetadata());
     }
 
     @Test
     public void testParseSetPropertiesRequest() throws Exception {
-        String file = "target/test-classes/set_properties_request.json";
-        String json = Files.toString(new File(file), Charsets.UTF_8);
+        final String file = "target/test-classes/set_properties_request.json";
+        final String json = Files.toString(new File(file), Charsets.UTF_8);
 
-        Map<String, String> expectedOldSchemaProperties = new HashMap<String, String>();
+        final Map<String, String> expectedOldSchemaProperties = new HashMap<String, String>();
         expectedOldSchemaProperties.put("EXISTING_PROP_1", "Old Value 1");
         expectedOldSchemaProperties.put("EXISTING_PROP_2", "Old Value 2");
-        SchemaMetadataInfo expectedSchemaMetaInfo = new SchemaMetadataInfo("VS", "", expectedOldSchemaProperties);
+        final SchemaMetadataInfo expectedSchemaMetaInfo = new SchemaMetadataInfo("VS", "", expectedOldSchemaProperties);
 
-        Map<String, String> expectedNewProperties = new HashMap<String, String>();
+        final Map<String, String> expectedNewProperties = new HashMap<String, String>();
         expectedNewProperties.put("EXISTING_PROP_1", "New Value");
         expectedNewProperties.put("EXISTING_PROP_2", null);
         expectedNewProperties.put("NEW_PROP", "VAL2");
         expectedNewProperties.put("DELETED_PROP_NON_EXISTING", null);
 
-        RequestJsonParser parser = new RequestJsonParser();
-        AdapterRequest request = parser.parseRequest(json);
+        final RequestJsonParser parser = new RequestJsonParser();
+        final AdapterRequest request = parser.parseRequest(json);
         assertObjectEquals(expectedSchemaMetaInfo, request.getSchemaMetadataInfo());
         assertObjectEquals(expectedNewProperties, ((SetPropertiesRequest)request).getProperties());
     }
 
     @Test
     public void testSimpleInnerJoinRequest() throws Exception {
-        String req =
+        final String req =
         "{"+
         "\"involvedTables\" :" +
         "            [" +
@@ -197,12 +197,12 @@ public class RequestJsonParserTest {
         "    \"type\" : \"pushdown\"" +
         "}";
 
-        RequestJsonParser parser = new RequestJsonParser();
-        AdapterRequest request = parser.parseRequest(req);
-        PushdownRequest pushdown = (PushdownRequest) request;
+        final RequestJsonParser parser = new RequestJsonParser();
+        final AdapterRequest request = parser.parseRequest(req);
+        final PushdownRequest pushdown = (PushdownRequest) request;
 
-        SqlStatementSelect select = (SqlStatementSelect) pushdown.getSelect();
-        SqlJoin from = (SqlJoin) select.getFromClause();
+        final SqlStatementSelect select = (SqlStatementSelect) pushdown.getSelect();
+        final SqlJoin from = (SqlJoin) select.getFromClause();
 
         assertSame(SqlNodeType.JOIN, from.getType());
         assertSame(JoinType.INNER, from.getJoinType());

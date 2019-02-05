@@ -9,11 +9,11 @@ import com.google.common.base.MoreObjects;
  * The metadata are just "for information" for the adapter. These metadata don't contain the table metadata.
  */
 public class SchemaMetadataInfo {
-    private String schemaName;
-    private String adapterNotes;
-    private Map<String, String> properties;
+    private final String schemaName;
+    private final String adapterNotes;
+    private final Map<String, String> properties;
     
-    public SchemaMetadataInfo(String schemaName, String adapterNotes, Map<String, String> properties) {
+    public SchemaMetadataInfo(final String schemaName, final String adapterNotes, final Map<String, String> properties) {
         this.schemaName = schemaName;
         this.adapterNotes = adapterNotes;
         this.properties = properties;

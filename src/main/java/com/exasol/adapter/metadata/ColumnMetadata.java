@@ -5,16 +5,16 @@ package com.exasol.adapter.metadata;
  * Represents the metadata of an EXASOL table column.
  */
 public class ColumnMetadata {
-    private String name;
-    private String adapterNotes;
-    private DataType type;
-    private boolean isNullable; // has a third state "unknown" in jdbc, which has to be mapped by the adapter to yes or no
-    private boolean isIdentity; // auto increment in the sense of jdbc. However, jdbc has a third state ("empty", i.e. could not determine) which is mapped to false here.
-    private String defaultValue;    // special case: "NULL" means SQL's NULL.
-    private String comment; // comes from "REMARKS" field in jdbc
+    private final String name;
+    private final String adapterNotes;
+    private final DataType type;
+    private final boolean isNullable; // has a third state "unknown" in jdbc, which has to be mapped by the adapter to yes or no
+    private final boolean isIdentity; // auto increment in the sense of jdbc. However, jdbc has a third state ("empty", i.e. could not determine) which is mapped to false here.
+    private final String defaultValue;    // special case: "NULL" means SQL's NULL.
+    private final String comment; // comes from "REMARKS" field in jdbc
     // Primary Keys?!?! => Index, Cardinality = num rows
     
-    public ColumnMetadata(String name, String adapterNotes, DataType type, boolean nullable, boolean isIdentity, String defaultValue, String comment) {
+    public ColumnMetadata(final String name, final String adapterNotes, final DataType type, final boolean nullable, final boolean isIdentity, final String defaultValue, final String comment) {
         this.name = name;
         this.adapterNotes = adapterNotes;
         this.type = type;

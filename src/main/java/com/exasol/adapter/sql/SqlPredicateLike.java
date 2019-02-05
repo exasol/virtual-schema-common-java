@@ -3,15 +3,15 @@ package com.exasol.adapter.sql;
 import com.exasol.adapter.AdapterException;
 
 public class SqlPredicateLike extends SqlPredicate {
-    private SqlNode left;
-    private SqlNode pattern;
-    private SqlNode escapeChar;
+    private final SqlNode left;
+    private final SqlNode pattern;
+    private final SqlNode escapeChar;
 
-    public SqlPredicateLike(SqlNode left, SqlNode pattern) {
+    public SqlPredicateLike(final SqlNode left, final SqlNode pattern) {
         this(left, pattern, null);
     }
 
-    public SqlPredicateLike(SqlNode left, SqlNode pattern, SqlNode escapeChar) {
+    public SqlPredicateLike(final SqlNode left, final SqlNode pattern, final SqlNode escapeChar) {
         super(Predicate.LIKE);
         this.left = left;
         this.pattern = pattern;
@@ -54,7 +54,7 @@ public class SqlPredicateLike extends SqlPredicate {
     }
 
     @Override
-    public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
+    public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
 }

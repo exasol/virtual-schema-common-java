@@ -7,13 +7,13 @@ import java.util.Collections;
 import java.util.List;
 
 public class SqlPredicateOr extends SqlPredicate {
-    private List<SqlNode> orPredicates;
+    private final List<SqlNode> orPredicates;
 
-    public SqlPredicateOr(List<SqlNode> orPredicates) {
+    public SqlPredicateOr(final List<SqlNode> orPredicates) {
         super(Predicate.OR);
         this.orPredicates  = orPredicates;
         if (this.orPredicates != null) {
-            for (SqlNode node : this.orPredicates) {
+            for (final SqlNode node : this.orPredicates) {
                 node.setParent(this);
             }
         }
@@ -29,8 +29,8 @@ public class SqlPredicateOr extends SqlPredicate {
 
     @Override
     public String toSimpleSql() {
-        List<String> operandsSql = new ArrayList<>();
-        for (SqlNode node : orPredicates) {
+        final List<String> operandsSql = new ArrayList<>();
+        for (final SqlNode node : orPredicates) {
             operandsSql.add(node.toSimpleSql());
         }
         return "(" + String.join(" OR ", operandsSql) + ")";
@@ -42,7 +42,7 @@ public class SqlPredicateOr extends SqlPredicate {
     }
 
     @Override
-    public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
+    public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
 }

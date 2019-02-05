@@ -3,9 +3,9 @@ package com.exasol.adapter.sql;
 import com.exasol.adapter.AdapterException;
 
 public class SqlPredicateNot extends SqlPredicate {
-    private SqlNode expression;
+    private final SqlNode expression;
     
-    public SqlPredicateNot(SqlNode expression) {
+    public SqlPredicateNot(final SqlNode expression) {
         super(Predicate.NOT);
         this.expression = expression;
         if (this.expression != null) {
@@ -28,7 +28,7 @@ public class SqlPredicateNot extends SqlPredicate {
     }
 
     @Override
-    public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
+    public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
 }

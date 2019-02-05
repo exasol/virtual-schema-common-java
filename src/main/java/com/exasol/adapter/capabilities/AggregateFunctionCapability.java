@@ -42,13 +42,13 @@ public enum AggregateFunctionCapability {
     GEO_UNION_AGGREGATE,
     APPROXIMATE_COUNT_DISTINCT;
 
-    private AggregateFunction function;
+    private final AggregateFunction function;
 
     AggregateFunctionCapability() {
         this.function = AggregateFunction.valueOf(this.name());
     }
 
-    AggregateFunctionCapability(AggregateFunction function) {
+    AggregateFunctionCapability(final AggregateFunction function) {
         this.function = function;
     }
 

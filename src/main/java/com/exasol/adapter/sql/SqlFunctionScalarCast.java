@@ -8,10 +8,10 @@ import java.util.List;
 
 
 public class SqlFunctionScalarCast extends SqlNode {
-    private DataType dataType;
-    private List<SqlNode> arguments;
+    private final DataType dataType;
+    private final List<SqlNode> arguments;
 
-    public SqlFunctionScalarCast(DataType dataType, List<SqlNode> arguments) {
+    public SqlFunctionScalarCast(final DataType dataType, final List<SqlNode> arguments) {
         SqlArgumentValidator.validateSqlFunctionArguments(arguments, SqlFunctionScalarCast.class);
         this.arguments = arguments;
         this.dataType = dataType;
@@ -46,7 +46,7 @@ public class SqlFunctionScalarCast extends SqlNode {
     }
 
     @Override
-    public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
+    public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
 

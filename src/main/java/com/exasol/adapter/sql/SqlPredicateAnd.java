@@ -7,13 +7,13 @@ import java.util.Collections;
 import java.util.List;
 
 public class SqlPredicateAnd extends SqlPredicate {
-    private List<SqlNode> andedPredicates;
+    private final List<SqlNode> andedPredicates;
 
-    public SqlPredicateAnd(List<SqlNode> andedPredicates) {
+    public SqlPredicateAnd(final List<SqlNode> andedPredicates) {
         super(Predicate.AND);
         this.andedPredicates = andedPredicates;
         if (this.andedPredicates != null) {
-            for (SqlNode node : this.andedPredicates) {
+            for (final SqlNode node : this.andedPredicates) {
                 node.setParent(this);
             }
         }
@@ -29,8 +29,8 @@ public class SqlPredicateAnd extends SqlPredicate {
 
     @Override
     public String toSimpleSql() {
-        List<String> operandsSql = new ArrayList<>();
-        for (SqlNode node : andedPredicates) {
+        final List<String> operandsSql = new ArrayList<>();
+        for (final SqlNode node : andedPredicates) {
             operandsSql.add(node.toSimpleSql());
         }
         return "(" + String.join(" AND ", operandsSql) + ")";
@@ -42,7 +42,7 @@ public class SqlPredicateAnd extends SqlPredicate {
     }
 
     @Override
-    public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
+    public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
 }

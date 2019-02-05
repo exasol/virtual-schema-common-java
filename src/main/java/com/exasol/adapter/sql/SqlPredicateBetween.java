@@ -3,11 +3,11 @@ package com.exasol.adapter.sql;
 import com.exasol.adapter.AdapterException;
 
 public class SqlPredicateBetween extends SqlPredicate {
-    private SqlNode expression;
-    private SqlNode betweenLeft;
-    private SqlNode betweenRight;
+    private final SqlNode expression;
+    private final SqlNode betweenLeft;
+    private final SqlNode betweenRight;
     
-    public SqlPredicateBetween(SqlNode expression, SqlNode betweenLeft, SqlNode betweenRight) {
+    public SqlPredicateBetween(final SqlNode expression, final SqlNode betweenLeft, final SqlNode betweenRight) {
         super(Predicate.BETWEEN);
         this.expression = expression;
         this.betweenLeft = betweenLeft;
@@ -46,7 +46,7 @@ public class SqlPredicateBetween extends SqlPredicate {
     }
 
     @Override
-    public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
+    public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
 }

@@ -17,8 +17,8 @@ public final class ResponseJsonSerializer {
         //Intentionally left blank
     }
 
-    public static String makeCreateVirtualSchemaResponse(SchemaMetadata remoteMeta) {
-        JsonObject res = Json.createObjectBuilder()
+    public static String makeCreateVirtualSchemaResponse(final SchemaMetadata remoteMeta) {
+        final JsonObject res = Json.createObjectBuilder()
               .add("type", "createVirtualSchema")
               .add(SCHEMA_METADATA, SchemaMetadataSerializer.serialize(remoteMeta))
               .build();
@@ -26,53 +26,53 @@ public final class ResponseJsonSerializer {
     }
 
     public static String makeDropVirtualSchemaResponse() {
-        JsonBuilderFactory factory = JsonHelper.getBuilderFactory();
-        JsonObject res = factory.createObjectBuilder()
+        final JsonBuilderFactory factory = JsonHelper.getBuilderFactory();
+        final JsonObject res = factory.createObjectBuilder()
               .add("type", "dropVirtualSchema")
               .build();
         return res.toString();
     }
 
-    public static String makeGetCapabilitiesResponse(Capabilities capabilities) {
-        JsonBuilderFactory factory = JsonHelper.getBuilderFactory();
-        JsonObjectBuilder builder = factory.createObjectBuilder()
+    public static String makeGetCapabilitiesResponse(final Capabilities capabilities) {
+        final JsonBuilderFactory factory = JsonHelper.getBuilderFactory();
+        final JsonObjectBuilder builder = factory.createObjectBuilder()
               .add("type", "getCapabilities");
-        JsonArrayBuilder arrayBuilder = factory.createArrayBuilder();
-        for (MainCapability capability : capabilities.getMainCapabilities()) {
-            String capName = capability.name();
+        final JsonArrayBuilder arrayBuilder = factory.createArrayBuilder();
+        for (final MainCapability capability : capabilities.getMainCapabilities()) {
+            final String capName = capability.name();
             arrayBuilder.add(capName);
         }
-        for (ScalarFunctionCapability function : capabilities.getScalarFunctionCapabilities()) {
-            String capName = SCALAR_FUNCTION_PREFIX + function.name();
+        for (final ScalarFunctionCapability function : capabilities.getScalarFunctionCapabilities()) {
+            final String capName = SCALAR_FUNCTION_PREFIX + function.name();
             arrayBuilder.add(capName);
         }
-        for (PredicateCapability predicate : capabilities.getPredicateCapabilities()) {
-            String capName = PREDICATE_PREFIX + predicate.name();
+        for (final PredicateCapability predicate : capabilities.getPredicateCapabilities()) {
+            final String capName = PREDICATE_PREFIX + predicate.name();
             arrayBuilder.add(capName);
         }
-        for (AggregateFunctionCapability function : capabilities.getAggregateFunctionCapabilities()) {
-            String capName = AGGREGATE_FUNCTION_PREFIX + function.name();
+        for (final AggregateFunctionCapability function : capabilities.getAggregateFunctionCapabilities()) {
+            final String capName = AGGREGATE_FUNCTION_PREFIX + function.name();
             arrayBuilder.add(capName);
         }
-        for (LiteralCapability literal : capabilities.getLiteralCapabilities()) {
-            String capName = LITERAL_PREFIX + literal.name();
+        for (final LiteralCapability literal : capabilities.getLiteralCapabilities()) {
+            final String capName = LITERAL_PREFIX + literal.name();
             arrayBuilder.add(capName);
         }
         builder.add("capabilities", arrayBuilder);
         return builder.build().toString();
     }
 
-    public static String makePushdownResponse(String pushdownSql) {
-        JsonBuilderFactory factory = JsonHelper.getBuilderFactory();
-        JsonObject res = factory.createObjectBuilder()
+    public static String makePushdownResponse(final String pushdownSql) {
+        final JsonBuilderFactory factory = JsonHelper.getBuilderFactory();
+        final JsonObject res = factory.createObjectBuilder()
               .add("type", "pushdown")
               .add("sql", pushdownSql)
               .build();
         return res.toString();
     }
 
-    public static String makeSetPropertiesResponse(SchemaMetadata remoteMeta) {
-        JsonObjectBuilder builder = Json.createObjectBuilder();
+    public static String makeSetPropertiesResponse(final SchemaMetadata remoteMeta) {
+        final JsonObjectBuilder builder = Json.createObjectBuilder();
         builder.add("type", "setProperties");
         if (remoteMeta != null) {
             builder.add(SCHEMA_METADATA, SchemaMetadataSerializer.serialize(remoteMeta));
@@ -80,8 +80,8 @@ public final class ResponseJsonSerializer {
         return builder.build().toString();
     }
 
-    public static String makeRefreshResponse(SchemaMetadata remoteMeta) {
-        JsonObjectBuilder builder = Json.createObjectBuilder();
+    public static String makeRefreshResponse(final SchemaMetadata remoteMeta) {
+        final JsonObjectBuilder builder = Json.createObjectBuilder();
         builder.add("type", "refresh");
         builder.add(SCHEMA_METADATA, SchemaMetadataSerializer.serialize(remoteMeta));
         return builder.build().toString();

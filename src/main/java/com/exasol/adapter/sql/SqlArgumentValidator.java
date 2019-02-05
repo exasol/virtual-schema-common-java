@@ -7,7 +7,7 @@ public final class SqlArgumentValidator {
         //Intentionally left blank
     }
 
-    public static void validateSqlFunctionArguments(List<SqlNode> arguments, Class usedClass) {
+    public static void validateSqlFunctionArguments(final List<SqlNode> arguments, final Class usedClass) {
         if (arguments == null) {
             throw new IllegalArgumentException(usedClass.getName() + " constructor expects an argument." + "But the argument is NULL.");
         }

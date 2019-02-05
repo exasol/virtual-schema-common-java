@@ -45,24 +45,24 @@ public class DataType {
     private DataType() {
     }
 
-    public static DataType createVarChar(int size, ExaCharset charset) {
-        DataType type = new DataType();
+    public static DataType createVarChar(final int size, final ExaCharset charset) {
+        final DataType type = new DataType();
         type.exaDataType = ExaDataType.VARCHAR;
         type.size = size;
         type.charset = charset;
         return type;
     }
 
-    public static DataType createChar(int size, ExaCharset charset) {
-        DataType type = new DataType();
+    public static DataType createChar(final int size, final ExaCharset charset) {
+        final DataType type = new DataType();
         type.exaDataType = ExaDataType.CHAR;
         type.size = size;
         type.charset = charset;
         return type;
     }
 
-    public static DataType createDecimal(int precision, int scale) {
-        DataType type = new DataType();
+    public static DataType createDecimal(final int precision, final int scale) {
+        final DataType type = new DataType();
         type.exaDataType = ExaDataType.DECIMAL;
         type.precision = precision;
         type.scale = scale;
@@ -70,39 +70,39 @@ public class DataType {
     }
 
     public static DataType createDouble() {
-        DataType type = new DataType();
+        final DataType type = new DataType();
         type.exaDataType = ExaDataType.DOUBLE;
         return type;
     }
 
     public static DataType createDate() {
-        DataType type = new DataType();
+        final DataType type = new DataType();
         type.exaDataType = ExaDataType.DATE;
         return type;
     }
 
-    public static DataType createTimestamp(boolean withLocalTimezone) {
-        DataType type = new DataType();
+    public static DataType createTimestamp(final boolean withLocalTimezone) {
+        final DataType type = new DataType();
         type.exaDataType = ExaDataType.TIMESTAMP;
         type.withLocalTimezone = withLocalTimezone;
         return type;
     }
 
     public static DataType createBool() {
-        DataType type = new DataType();
+        final DataType type = new DataType();
         type.exaDataType = ExaDataType.BOOLEAN;
         return type;
     }
 
-    public static DataType createGeometry(int srid) {
-        DataType type = new DataType();
+    public static DataType createGeometry(final int srid) {
+        final DataType type = new DataType();
         type.exaDataType = ExaDataType.GEOMETRY;
         type.geometrySrid = srid;
         return type;
     }
 
-    public static DataType createIntervalDaySecond(int precision, int fraction) {
-        DataType type = new DataType();
+    public static DataType createIntervalDaySecond(final int precision, final int fraction) {
+        final DataType type = new DataType();
         type.exaDataType = ExaDataType.INTERVAL;
         type.intervalType = IntervalType.DAY_TO_SECOND;
         type.precision = precision;
@@ -110,8 +110,8 @@ public class DataType {
         return type;
     }
 
-    public static DataType createIntervalYearMonth(int precision) {
-        DataType type = new DataType();
+    public static DataType createIntervalYearMonth(final int precision) {
+        final DataType type = new DataType();
         type.exaDataType = ExaDataType.INTERVAL;
         type.intervalType = IntervalType.YEAR_TO_MONTH;
         type.precision = precision;
@@ -156,7 +156,7 @@ public class DataType {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         switch (exaDataType) {
             case UNSUPPORTED:
                 builder.append("UNSUPPORTED");

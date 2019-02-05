@@ -7,65 +7,65 @@ import java.util.Set;
  * Manages a set of supported Capabilities
  */
 public class Capabilities {
-    private Set<MainCapability> mainCapabilities = new HashSet<>();
-    private Set<ScalarFunctionCapability> scalarFunctionCaps = new HashSet<>();
-    private Set<PredicateCapability> predicateCaps = new HashSet<>();
-    private Set<AggregateFunctionCapability> aggregateFunctionCaps = new HashSet<>();
-    private Set<LiteralCapability> literalCaps = new HashSet<>();
+    private final Set<MainCapability> mainCapabilities = new HashSet<>();
+    private final Set<ScalarFunctionCapability> scalarFunctionCaps = new HashSet<>();
+    private final Set<PredicateCapability> predicateCaps = new HashSet<>();
+    private final Set<AggregateFunctionCapability> aggregateFunctionCaps = new HashSet<>();
+    private final Set<LiteralCapability> literalCaps = new HashSet<>();
 
     public void supportAllCapabilities() {
-        for (MainCapability cap : MainCapability.values()) {
+        for (final MainCapability cap : MainCapability.values()) {
             supportMainCapability(cap);
         }
-        for (ScalarFunctionCapability function : ScalarFunctionCapability.values()) {
+        for (final ScalarFunctionCapability function : ScalarFunctionCapability.values()) {
             supportScalarFunction(function);
         }
-        for (PredicateCapability pred : PredicateCapability.values()) {
+        for (final PredicateCapability pred : PredicateCapability.values()) {
             supportPredicate(pred);
         }
-        for (AggregateFunctionCapability function : AggregateFunctionCapability.values()) {
+        for (final AggregateFunctionCapability function : AggregateFunctionCapability.values()) {
             supportAggregateFunction(function);
         }
-        for (LiteralCapability cap : LiteralCapability.values()) {
+        for (final LiteralCapability cap : LiteralCapability.values()) {
             supportLiteral(cap);
         }
     }
 
-    public void subtractCapabilities(Capabilities capabilitiesToSubtract) {
-        for (MainCapability cap : capabilitiesToSubtract.mainCapabilities) {
+    public void subtractCapabilities(final Capabilities capabilitiesToSubtract) {
+        for (final MainCapability cap : capabilitiesToSubtract.mainCapabilities) {
             mainCapabilities.remove(cap);
         }
-        for (ScalarFunctionCapability cap : capabilitiesToSubtract.getScalarFunctionCapabilities()) {
+        for (final ScalarFunctionCapability cap : capabilitiesToSubtract.getScalarFunctionCapabilities()) {
             scalarFunctionCaps.remove(cap);
         }
-        for (PredicateCapability cap : capabilitiesToSubtract.getPredicateCapabilities()) {
+        for (final PredicateCapability cap : capabilitiesToSubtract.getPredicateCapabilities()) {
             predicateCaps.remove(cap);
         }
-        for (AggregateFunctionCapability cap : capabilitiesToSubtract.getAggregateFunctionCapabilities()) {
+        for (final AggregateFunctionCapability cap : capabilitiesToSubtract.getAggregateFunctionCapabilities()) {
             aggregateFunctionCaps.remove(cap);
         }
-        for (LiteralCapability cap : capabilitiesToSubtract.getLiteralCapabilities()) {
+        for (final LiteralCapability cap : capabilitiesToSubtract.getLiteralCapabilities()) {
             literalCaps.remove(cap);
         }
     }
 
-    public void supportMainCapability(MainCapability cap) {
+    public void supportMainCapability(final MainCapability cap) {
         mainCapabilities.add(cap);
     }
 
-    public void supportScalarFunction(ScalarFunctionCapability functionType) {
+    public void supportScalarFunction(final ScalarFunctionCapability functionType) {
         scalarFunctionCaps.add(functionType);
     }
 
-    public void supportPredicate(PredicateCapability predicate) {
+    public void supportPredicate(final PredicateCapability predicate) {
         predicateCaps.add(predicate);
     }
 
-    public void supportAggregateFunction(AggregateFunctionCapability functionType) {
+    public void supportAggregateFunction(final AggregateFunctionCapability functionType) {
         aggregateFunctionCaps.add(functionType);
     }
 
-    public void supportLiteral(LiteralCapability literal) {
+    public void supportLiteral(final LiteralCapability literal) {
         literalCaps.add(literal);
     }
 

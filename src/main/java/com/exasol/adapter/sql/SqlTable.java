@@ -4,17 +4,17 @@ import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.TableMetadata;
 
 public class SqlTable extends SqlNode {
-    private String name;
-    private String alias;   // what is the exact semantic of this? Currently simply to generate a query with the expected alias.
-    private TableMetadata metadata;
+    private final String name;
+    private final String alias;   // what is the exact semantic of this? Currently simply to generate a query with the expected alias.
+    private final TableMetadata metadata;
 
-    public SqlTable(String name, TableMetadata metadata) {
+    public SqlTable(final String name, final TableMetadata metadata) {
         this.name = name;
         this.alias = name;
         this.metadata = metadata;
     }
 
-    public SqlTable(String name, String alias, TableMetadata metadata) {
+    public SqlTable(final String name, final String alias, final TableMetadata metadata) {
         this.name = name;
         this.alias = alias;
         this.metadata = metadata;
@@ -47,7 +47,7 @@ public class SqlTable extends SqlNode {
     }
 
     @Override
-    public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
+    public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
 }

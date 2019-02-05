@@ -11,9 +11,9 @@ public class ScalarFunctionCapabilityTest {
     @Test
     public void testCompleteness() {
         // Do we have functions where we don't have capabilities for?
-        for (ScalarFunction function : ScalarFunction.values()) {
+        for (final ScalarFunction function : ScalarFunction.values()) {
             boolean foundCap = false;
-            for (ScalarFunctionCapability cap : ScalarFunctionCapability.values()) {
+            for (final ScalarFunctionCapability cap : ScalarFunctionCapability.values()) {
                 if (cap.getFunction() == function) {
                     foundCap = true;
                 }
@@ -24,7 +24,7 @@ public class ScalarFunctionCapabilityTest {
 
     @Test
     public void testConsistentNaming () {
-        for (ScalarFunctionCapability cap : ScalarFunctionCapability.values()) {
+        for (final ScalarFunctionCapability cap : ScalarFunctionCapability.values()) {
             assertEquals(cap.name(), cap.getFunction().name());
         }
     }

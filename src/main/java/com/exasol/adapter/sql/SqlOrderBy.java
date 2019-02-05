@@ -7,19 +7,19 @@ import java.util.Collections;
 import java.util.List;
 
 public class SqlOrderBy extends SqlNode {
-    private List<SqlNode> expressions;
-    private List<Boolean> isAsc;
+    private final List<SqlNode> expressions;
+    private final List<Boolean> isAsc;
 
     // True, if the desired position of nulls is at the end, false if at beginning.
     // This does not necessarily mean the user explicitly specified NULLS LAST or NULLS FIRST.
-    private List<Boolean> nullsLast;
+    private final List<Boolean> nullsLast;
 
-    public SqlOrderBy(List<SqlNode> expressions, List<Boolean> isAsc, List<Boolean> nullsFirst) {
+    public SqlOrderBy(final List<SqlNode> expressions, final List<Boolean> isAsc, final List<Boolean> nullsFirst) {
         this.expressions = expressions;
         this.isAsc = isAsc;
         this.nullsLast = nullsFirst;
         if (this.expressions != null) {
-            for (SqlNode node : this.expressions) {
+            for (final SqlNode node : this.expressions) {
                 node.setParent(this);
             }
         }
@@ -53,7 +53,7 @@ public class SqlOrderBy extends SqlNode {
     public String toSimpleSql() {
         // ORDER BY <expr> [ASC/DESC] [NULLS FIRST/LAST]
         // ASC and NULLS LAST are default
-        List<String> sqlOrderElement = new ArrayList<>();
+        final List<String> sqlOrderElement = new ArrayList<>();
         for (int i = 0; i < expressions.size(); ++i) {
             String elementSql = expressions.get(i).toSimpleSql();
             if (!isAsc.get(i)) {
@@ -73,7 +73,7 @@ public class SqlOrderBy extends SqlNode {
     }
 
     @Override
-    public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
+    public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
 }

@@ -6,21 +6,21 @@ import java.util.Collections;
 import java.util.List;
 
 public class SqlFunctionScalarCase extends SqlNode {
-    private List<SqlNode> arguments;
-    private List<SqlNode> results;
-    private SqlNode basis;
+    private final List<SqlNode> arguments;
+    private final List<SqlNode> results;
+    private final SqlNode basis;
 
-    public SqlFunctionScalarCase(List<SqlNode> arguments, List<SqlNode> results, SqlNode basis) {
+    public SqlFunctionScalarCase(final List<SqlNode> arguments, final List<SqlNode> results, final SqlNode basis) {
         this.arguments = arguments;
         this.results = results;
         this.basis = basis;
         if (this.arguments != null) {
-            for (SqlNode node : this.arguments) {
+            for (final SqlNode node : this.arguments) {
                 node.setParent(this);
             }
         }
         if (this.results != null) {
-            for (SqlNode node : this.results) {
+            for (final SqlNode node : this.results) {
                 node.setParent(this);
             }
         }
@@ -60,7 +60,7 @@ public class SqlFunctionScalarCase extends SqlNode {
     }
 
     @Override
-    public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
+    public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
 

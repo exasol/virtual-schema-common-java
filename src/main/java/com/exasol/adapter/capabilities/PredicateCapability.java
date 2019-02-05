@@ -21,13 +21,13 @@ public enum PredicateCapability {
     IS_NULL,
     IS_NOT_NULL;
 
-    private Predicate predicate;
+    private final Predicate predicate;
 
     PredicateCapability() {
         this.predicate = Predicate.valueOf(name());
     }
 
-    PredicateCapability(Predicate predicate) {
+    PredicateCapability(final Predicate predicate) {
         this.predicate = predicate;
     }
 

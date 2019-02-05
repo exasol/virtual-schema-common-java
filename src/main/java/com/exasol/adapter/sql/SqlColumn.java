@@ -4,16 +4,16 @@ import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.ColumnMetadata;
 
 public class SqlColumn extends SqlNode {
-    private int id;
-    private ColumnMetadata metadata;
+    private final int id;
+    private final ColumnMetadata metadata;
     private String tableName;
 
-    public SqlColumn(int id, ColumnMetadata metadata) {
+    public SqlColumn(final int id, final ColumnMetadata metadata) {
         this.id = id;
         this.metadata = metadata;
     }
 
-    public SqlColumn(int id, ColumnMetadata metadata, String tableName) {
+    public SqlColumn(final int id, final ColumnMetadata metadata, final String tableName) {
         this.id = id;
         this.metadata = metadata;
         this.tableName = tableName;
@@ -46,7 +46,7 @@ public class SqlColumn extends SqlNode {
     }
 
     @Override
-    public <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException {
+    public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
 }

@@ -17,11 +17,11 @@ public final class SchemaMetadataSerializer {
         //Intentionally left blank
     }
 
-    public static JsonObjectBuilder serialize(SchemaMetadata schema) {
-        JsonBuilderFactory factory = JsonHelper.getBuilderFactory();
-        JsonObjectBuilder root = factory.createObjectBuilder();
-        JsonArrayBuilder tablesBuilder = factory.createArrayBuilder();
-        for (TableMetadata table : schema.getTables()) {
+    public static JsonObjectBuilder serialize(final SchemaMetadata schema) {
+        final JsonBuilderFactory factory = JsonHelper.getBuilderFactory();
+        final JsonObjectBuilder root = factory.createObjectBuilder();
+        final JsonArrayBuilder tablesBuilder = factory.createArrayBuilder();
+        for (final TableMetadata table : schema.getTables()) {
             tablesBuilder.add(serializeTableMetadata(table, factory.createObjectBuilder()));
         }
         root.add("tables", tablesBuilder);
@@ -29,11 +29,11 @@ public final class SchemaMetadataSerializer {
         return root;
     }
 
-    private static JsonObjectBuilder serializeTableMetadata(TableMetadata table, JsonObjectBuilder tableBuilder) {
+    private static JsonObjectBuilder serializeTableMetadata(final TableMetadata table, final JsonObjectBuilder tableBuilder) {
         tableBuilder.add("type", "table");
         tableBuilder.add("name", table.getName());
-        JsonArrayBuilder columnsBuilder = Json.createArrayBuilder();
-        for (ColumnMetadata column : table.getColumns()) {
+        final JsonArrayBuilder columnsBuilder = Json.createArrayBuilder();
+        for (final ColumnMetadata column : table.getColumns()) {
             columnsBuilder.add(serializeColumnMetadata(column, Json.createObjectBuilder()));
         }
         tableBuilder.add(ADAPTER_NOTES, table.getAdapterNotes());
@@ -44,7 +44,7 @@ public final class SchemaMetadataSerializer {
         return tableBuilder;
     }
 
-    private static JsonObjectBuilder serializeColumnMetadata(ColumnMetadata column, JsonObjectBuilder columnBuilder) {
+    private static JsonObjectBuilder serializeColumnMetadata(final ColumnMetadata column, final JsonObjectBuilder columnBuilder) {
         columnBuilder.add("name", column.getName());
         columnBuilder.add(ADAPTER_NOTES, column.getAdapterNotes());
         columnBuilder.add("dataType", SqlDataTypeJsonSerializer.serialize(column.getType()));
