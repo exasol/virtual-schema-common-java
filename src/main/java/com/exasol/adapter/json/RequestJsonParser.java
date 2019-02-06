@@ -35,50 +35,121 @@ public class RequestJsonParser {
         final JsonObject root = JsonHelper.getJsonObject(json);
         final String requestType = root.getString("type","");
         final SchemaMetadataInfo meta = parseMetadataInfo(root);
-        if (requestType.equals("createVirtualSchema")) {
-            return new CreateVirtualSchemaRequest(meta);
-        } else if (requestType.equals("dropVirtualSchema")) {
-            return new DropVirtualSchemaRequest(meta);
-        } else if (requestType.equals("refresh")) {
-            if (root.containsKey("requestedTables")) {
-                final List<String> tables = new ArrayList<>();
-                for (final JsonString table : root.getJsonArray("requestedTables").getValuesAs(JsonString.class)) {
-                    tables.add(table.getString());
-                }
-                return new RefreshRequest(meta, tables);
-            } else {
-                return new RefreshRequest(meta);
-            }
-        } else if (requestType.equals("setProperties")) {
-            final Map<String, String> properties = new HashMap<>();
-            assert root.containsKey(PROPERTIES) && root.get(PROPERTIES).getValueType() == ValueType.OBJECT;
-            for (final Map.Entry<String, JsonValue> entry : root.getJsonObject(PROPERTIES).entrySet()) {
-                final String key = entry.getKey();
-                // Null values represent properties which are deleted by the user (might also have never existed actually)
-                if (root.getJsonObject(PROPERTIES).isNull(key)) {
-                    properties.put(key.toUpperCase(), null);
-                } else {
-                    properties.put(key.toUpperCase(), root.getJsonObject(PROPERTIES).getString(key));
-                }
-            }
-            return new SetPropertiesRequest(meta, properties);
-        } else if (requestType.equals("getCapabilities")) {
-            return new GetCapabilitiesRequest(meta);
-        } else if (requestType.equals("pushdown")) {
-            assert root.containsKey(INVOLVED_TABLES) && root.get(INVOLVED_TABLES).getValueType() == ValueType.ARRAY;
-            involvedTablesMetadata = parseInvolvedTableMetadata(root.getJsonArray(INVOLVED_TABLES));
-            final JsonObject pushdownExp;
-            if (root.containsKey("pushdownRequest")) {
-                pushdownExp = root.getJsonObject("pushdownRequest");
-            } else {
-                throw new IllegalArgumentException("Push-down statement missing in adapter request element '/pushdownRequest'.");
-            }
-            final SqlNode select = parseExpression(pushdownExp);
-            assert select.getType() == SqlNodeType.SELECT;
-            return new PushdownRequest(meta, (SqlStatementSelect)select, involvedTablesMetadata);
-        } else {
+        switch (requestType) {
+        case "createVirtualSchema":
+            return createVirtualSchema(meta);
+        case "dropVirtualSchema":
+            return dropVirtualSchema(meta);
+        case "refresh":
+            return refresh(root, meta);
+        case "setProperties":
+            return setProperties(root, meta);
+        case "getCapabilities":
+            return getCapabilities(meta);
+        case "pushdown":
+            return pushdown(root, meta);
+        default:
             throw new UnsupportedOperationException("Request Type not supported: " + requestType);
         }
+    }
+
+    private SchemaMetadataInfo parseMetadataInfo(final JsonObject root) {
+        final JsonObject meta = root.getJsonObject("schemaMetadataInfo");
+        if (meta == null) {
+            return null;
+        }
+        final String schemaName = meta.getString("name");
+        final String schemaAdapterNotes = readAdapterNotes(meta);
+        final Map<String, String> properties = new HashMap<>();
+        if (meta.getJsonObject(PROPERTIES) != null) {
+            for (final Map.Entry<String, JsonValue> entry : meta.getJsonObject(PROPERTIES).entrySet()) {
+                final String key = entry.getKey();
+                setPropertyValue(meta, properties, key);
+            }
+        }
+        return new SchemaMetadataInfo(schemaName, schemaAdapterNotes, properties);
+    }
+
+    private AdapterRequest createVirtualSchema(final SchemaMetadataInfo meta) {
+        return new CreateVirtualSchemaRequest(meta);
+    }
+
+    private AdapterRequest dropVirtualSchema(final SchemaMetadataInfo meta) {
+        return new DropVirtualSchemaRequest(meta);
+    }
+
+    private AdapterRequest refresh(final JsonObject root, final SchemaMetadataInfo meta) throws AdapterException {
+        if (root.containsKey("requestedTables")) {
+            final List<String> tables = getListOfTablesToBeRefreshed(root);
+            return new RefreshRequest(meta, tables);
+        } else {
+            return new RefreshRequest(meta);
+        }
+    }
+
+    private List<String> getListOfTablesToBeRefreshed(final JsonObject root) {
+        final List<String> tables = new ArrayList<>();
+        for (final JsonString table : root.getJsonArray("requestedTables").getValuesAs(JsonString.class)) {
+            tables.add(table.getString());
+        }
+        return tables;
+    }
+
+    private AdapterRequest setProperties(final JsonObject root, final SchemaMetadataInfo meta) {
+        validateJsonValueType(root, PROPERTIES, ValueType.OBJECT);
+        final Map<String, String> properties = new HashMap<>();
+        for (final Map.Entry<String, JsonValue> entry : root.getJsonObject(PROPERTIES).entrySet()) {
+            setProperty(root, properties, entry);
+        }
+        return new SetPropertiesRequest(meta, properties);
+    }
+
+    private void validateJsonValueType(final JsonObject node, final String jsonKey, final ValueType type) {
+        assert node.containsKey(jsonKey) && node.get(jsonKey).getValueType() == type;
+    }
+
+    private void setProperty(final JsonObject root, final Map<String, String> properties, final Map.Entry<String, JsonValue> entry) {
+        final String key = entry.getKey();
+        if (isPropertyUnset(root, key)) {
+            deleteProperty(properties, key);
+        } else {
+            setPropertyValue(root, properties, key);
+        }
+    }
+
+    private void deleteProperty(final Map<String, String> properties, final String key) {
+        properties.put(key.toUpperCase(), null);
+    }
+
+    private boolean isPropertyUnset(final JsonObject root, final String key) {
+        return root.getJsonObject(PROPERTIES).isNull(key);
+    }
+
+    private void setPropertyValue(final JsonObject root, final Map<String, String> properties, final String key) {
+        properties.put(key.toUpperCase(), root.getJsonObject(PROPERTIES).getString(key));
+    }
+
+    private AdapterRequest getCapabilities(final SchemaMetadataInfo meta) {
+        return new GetCapabilitiesRequest(meta);
+    }
+
+    private AdapterRequest pushdown(final JsonObject root, final SchemaMetadataInfo meta) throws MetadataException {
+        validateJsonValueType(root, INVOLVED_TABLES, ValueType.ARRAY);
+        involvedTablesMetadata = parseInvolvedTableMetadata(root.getJsonArray(INVOLVED_TABLES));
+        final JsonObject pushdownExp = getPushDownExpression(root);
+        final SqlNode select = parseExpression(pushdownExp);
+        assert select.getType() == SqlNodeType.SELECT;
+        return new PushdownRequest(meta, (SqlStatementSelect)select, involvedTablesMetadata);
+    }
+
+    private JsonObject getPushDownExpression(final JsonObject root) {
+        final JsonObject pushdownExp;
+        if (root.containsKey("pushdownRequest")) {
+            pushdownExp = root.getJsonObject("pushdownRequest");
+        } else {
+            throw new IllegalArgumentException("Push-down statement missing in adapter request element '/pushdownRequest'.");
+        }
+        return pushdownExp;
     }
 
     private List<TableMetadata> parseInvolvedTableMetadata(final JsonArray involvedTables) throws MetadataException {
@@ -171,113 +242,6 @@ public class RequestJsonParser {
         } else {
             throw new MetadataException("Unsupported charset encountered: " + charset);
         }
-    }
-
-    private SqlStatementSelect parseSelect(final JsonObject select) throws MetadataException {
-        // FROM clause
-        final SqlNode table = parseExpression(select.getJsonObject("from"));
-        assert table.getType() == SqlNodeType.TABLE || table.getType() == SqlNodeType.JOIN;
-        // SELECT list
-        final SqlSelectList selectList = parseSelectList(select.getJsonArray("selectList"));
-        final SqlExpressionList groupByClause = parseGroupBy(select.getJsonArray("groupBy"));
-        // WHERE clause
-        SqlNode whereClause = null;
-        if (select.containsKey("filter")) {
-            whereClause = parseExpression(select.getJsonObject("filter"));
-        }
-        SqlNode having = null;
-        if (select.containsKey("having")) {
-            having = parseExpression(select.getJsonObject("having"));
-        }
-        SqlOrderBy orderBy = null;
-        if (select.containsKey(ORDER_BY)) {
-            orderBy = parseOrderBy(select.getJsonArray(ORDER_BY));
-        }
-        SqlLimit limit = null;
-        if (select.containsKey("limit")) {
-            limit = parseLimit(select.getJsonObject("limit"));
-        }
-        return new SqlStatementSelect(table, selectList, whereClause, groupByClause, having, orderBy, limit);
-    }
-
-    private List<SqlNode> parseExpressionList(final JsonArray array) throws MetadataException {
-        assert array != null;
-        final List<SqlNode> sqlNodes = new ArrayList<>();
-        for (final JsonObject expr : array.getValuesAs(JsonObject.class)) {
-            final SqlNode node = parseExpression(expr);
-            sqlNodes.add(node);
-        }
-        return sqlNodes;
-    }
-
-    private SqlGroupBy parseGroupBy(final JsonArray groupBy) throws MetadataException {
-        if (groupBy == null) {
-            return null;
-        }
-        final List<SqlNode> groupByElements = parseExpressionList(groupBy);
-        return new SqlGroupBy(groupByElements);
-    }
-
-    private SqlSelectList parseSelectList(final JsonArray selectList) throws MetadataException {
-        if (selectList == null) {
-            // this is like SELECT *
-            return SqlSelectList.createSelectStarSelectList();
-        }
-        final List<SqlNode> selectListElements = parseExpressionList(selectList);
-        if (selectListElements.isEmpty()) {
-            return SqlSelectList.createAnyValueSelectList();
-        } else {
-            return SqlSelectList.createRegularSelectList(selectListElements);
-        }
-    }
-
-    private SqlOrderBy parseOrderBy(final JsonArray orderByList) throws MetadataException {
-        final List<SqlNode> orderByExpressions = new ArrayList<>();
-        final List<Boolean> isAsc = new ArrayList<>();
-        final List<Boolean> nullsLast = new ArrayList<>();
-        for (int i=0; i<orderByList.size(); ++i) {
-            final JsonObject orderElem = orderByList.getJsonObject(i);
-            orderByExpressions.add(parseExpression(orderElem.getJsonObject(EXPRESSION)));
-            isAsc.add(orderElem.getBoolean("isAscending", true));
-            nullsLast.add(orderElem.getBoolean("nullsLast", true));
-        }
-        return new SqlOrderBy(orderByExpressions, isAsc, nullsLast);
-    }
-
-    private SqlLimit parseLimit(final JsonObject limit) {
-        final int numElements = limit.getInt("numElements");
-        final int offset = limit.getInt("offset", 0);
-        return new SqlLimit(numElements, offset);
-    }
-
-    private SchemaMetadataInfo parseMetadataInfo(final JsonObject root) {
-        final JsonObject meta = root.getJsonObject("schemaMetadataInfo");
-        if (meta == null) {
-            return null;
-        }
-        final String schemaName = meta.getString("name");
-        final String schemaAdapterNotes = readAdapterNotes(meta);
-        final Map<String, String> properties = new HashMap<>();
-        if (meta.getJsonObject(PROPERTIES) != null) {
-            for (final Map.Entry<String, JsonValue> entry : meta.getJsonObject(PROPERTIES).entrySet()) {
-                final String key = entry.getKey();
-                properties.put(key.toUpperCase(), meta.getJsonObject(PROPERTIES).getString(key));
-            }
-        }
-        return new SchemaMetadataInfo(schemaName, schemaAdapterNotes, properties);
-    }
-
-    private static String readAdapterNotes(final JsonObject root) {
-        if (root.containsKey("adapterNotes")) {
-            final JsonValue notes = root.get("adapterNotes");
-            if (notes.getValueType() == ValueType.STRING) {
-                // Return unquoted string
-                return ((JsonString)notes).getString();
-            } else {
-                return notes.toString();
-            }
-        }
-        return "";
     }
 
     private SqlNode parseExpression(final JsonObject exp) throws MetadataException {
@@ -384,6 +348,142 @@ public class RequestJsonParser {
         }
     }
 
+    private SqlStatementSelect parseSelect(final JsonObject select) throws MetadataException {
+        // FROM clause
+        final SqlNode table = parseExpression(select.getJsonObject("from"));
+        assert table.getType() == SqlNodeType.TABLE || table.getType() == SqlNodeType.JOIN;
+        // SELECT list
+        final SqlSelectList selectList = parseSelectList(select.getJsonArray("selectList"));
+        final SqlExpressionList groupByClause = parseGroupBy(select.getJsonArray("groupBy"));
+        // WHERE clause
+        SqlNode whereClause = null;
+        if (select.containsKey("filter")) {
+            whereClause = parseExpression(select.getJsonObject("filter"));
+        }
+        SqlNode having = null;
+        if (select.containsKey("having")) {
+            having = parseExpression(select.getJsonObject("having"));
+        }
+        SqlOrderBy orderBy = null;
+        if (select.containsKey(ORDER_BY)) {
+            orderBy = parseOrderBy(select.getJsonArray(ORDER_BY));
+        }
+        SqlLimit limit = null;
+        if (select.containsKey("limit")) {
+            limit = parseLimit(select.getJsonObject("limit"));
+        }
+        return new SqlStatementSelect(table, selectList, whereClause, groupByClause, having, orderBy, limit);
+    }
+
+    private SqlNode parseTable(final JsonObject exp) throws MetadataException {
+        final String tableName = exp.getString("name");
+        final TableMetadata tableMetadata = findInvolvedTableMetadata(tableName);
+        if (exp.containsKey("alias")) {
+            final String tableAlias = exp.getString("alias");
+            return new SqlTable(tableName, tableAlias, tableMetadata);
+        } else {
+            return new SqlTable(tableName, tableMetadata);
+        }
+    }
+
+    private SqlNode parseJoin(final JsonObject exp) throws MetadataException {
+        final SqlNode left = parseExpression(exp.getJsonObject("left"));
+        final SqlNode right = parseExpression(exp.getJsonObject(RIGHT));
+        final SqlNode condition = parseExpression(exp.getJsonObject("condition"));
+        final JoinType joinType = fromJoinTypeName(exp.getString("join_type"));
+        return new SqlJoin(left, right, condition, joinType);
+    }
+
+    private SqlNode parseColumn(final JsonObject exp) throws MetadataException {
+        final int columnId = exp.getInt("columnNr");
+        final String columnName = exp.getString("name");
+        final String tableName = exp.getString("tableName");
+        final ColumnMetadata columnMetadata = findColumnMetadata(tableName, columnName);
+        return new SqlColumn(columnId, columnMetadata, tableName);
+    }
+
+    private SqlNode parseLiteralNull() {
+        return new SqlLiteralNull();
+    }
+
+    private SqlNode parseLiteralBool(final JsonObject exp) {
+        final boolean boolVal = exp.getBoolean(VALUE);
+        return new SqlLiteralBool(boolVal);
+    }
+
+    private List<SqlNode> parseExpressionList(final JsonArray array) throws MetadataException {
+        assert array != null;
+        final List<SqlNode> sqlNodes = new ArrayList<>();
+        for (final JsonObject expr : array.getValuesAs(JsonObject.class)) {
+            final SqlNode node = parseExpression(expr);
+            sqlNodes.add(node);
+        }
+        return sqlNodes;
+    }
+
+    private SqlGroupBy parseGroupBy(final JsonArray groupBy) throws MetadataException {
+        if (groupBy == null) {
+            return null;
+        }
+        final List<SqlNode> groupByElements = parseExpressionList(groupBy);
+        return new SqlGroupBy(groupByElements);
+    }
+
+    private SqlNode parseLiteralDate(final JsonObject exp) {
+        final String date = exp.getString(VALUE);
+        return new SqlLiteralDate(date);
+    }
+
+    private SqlSelectList parseSelectList(final JsonArray selectList) throws MetadataException {
+        if (selectList == null) {
+            // this is like SELECT *
+            return SqlSelectList.createSelectStarSelectList();
+        }
+        final List<SqlNode> selectListElements = parseExpressionList(selectList);
+        if (selectListElements.isEmpty()) {
+            return SqlSelectList.createAnyValueSelectList();
+        } else {
+            return SqlSelectList.createRegularSelectList(selectListElements);
+        }
+    }
+
+    private SqlOrderBy parseOrderBy(final JsonArray orderByList) throws MetadataException {
+        final List<SqlNode> orderByExpressions = new ArrayList<>();
+        final List<Boolean> isAsc = new ArrayList<>();
+        final List<Boolean> nullsLast = new ArrayList<>();
+        for (int i=0; i<orderByList.size(); ++i) {
+            final JsonObject orderElem = orderByList.getJsonObject(i);
+            orderByExpressions.add(parseExpression(orderElem.getJsonObject(EXPRESSION)));
+            isAsc.add(orderElem.getBoolean("isAscending", true));
+            nullsLast.add(orderElem.getBoolean("nullsLast", true));
+        }
+        return new SqlOrderBy(orderByExpressions, isAsc, nullsLast);
+    }
+
+    private SqlLimit parseLimit(final JsonObject limit) {
+        final int numElements = limit.getInt("numElements");
+        final int offset = limit.getInt("offset", 0);
+        return new SqlLimit(numElements, offset);
+    }
+
+    private SqlNode parseLiteralTimestamp(final JsonObject exp) {
+        final String timestamp = exp.getString(VALUE);
+        return new SqlLiteralTimestamp(timestamp);
+    }
+
+    private static String readAdapterNotes(final JsonObject root) {
+        if (root.containsKey("adapterNotes")) {
+            final JsonValue notes = root.get("adapterNotes");
+            if (notes.getValueType() == ValueType.STRING) {
+                // Return unquoted string
+                return ((JsonString)notes).getString();
+            } else {
+                return notes.toString();
+            }
+        }
+        return "";
+    }
+
     private SqlNode parsePredicateIsNotNull(final JsonObject exp) throws MetadataException {
         final SqlNode isNotnullExp = parseExpression(exp.getJsonObject(EXPRESSION));
         return new SqlPredicateIsNotNull(isNotnullExp);
@@ -473,25 +573,6 @@ public class RequestJsonParser {
     private SqlNode parseLiteralTimestamputc(final JsonObject exp) {
         final String timestampUtc = exp.getString(VALUE);
         return new SqlLiteralTimestampUtc(timestampUtc);
-    }
-
-    private SqlNode parseLiteralTimestamp(final JsonObject exp) {
-        final String timestamp = exp.getString(VALUE);
-        return new SqlLiteralTimestamp(timestamp);
-    }
-
-    private SqlNode parseLiteralDate(final JsonObject exp) {
-        final String date = exp.getString(VALUE);
-        return new SqlLiteralDate(date);
-    }
-
-    private SqlNode parseLiteralBool(final JsonObject exp) {
-        final boolean boolVal = exp.getBoolean(VALUE);
-        return new SqlLiteralBool(boolVal);
-    }
-
-    private SqlNode parseLiteralNull() {
-        return new SqlLiteralNull();
     }
 
     private SqlNode parsePredicateLikeRegexp(final JsonObject exp) throws MetadataException {
@@ -621,33 +702,6 @@ public class RequestJsonParser {
         }
         return new SqlFunctionAggregateGroupConcat(fromAggregationFunctionName(functionName),
                 setArguments, orderBy, distinct, separator);
-    }
-
-    private SqlNode parseColumn(final JsonObject exp) throws MetadataException {
-        final int columnId = exp.getInt("columnNr");
-        final String columnName = exp.getString("name");
-        final String tableName = exp.getString("tableName");
-        final ColumnMetadata columnMetadata = findColumnMetadata(tableName, columnName);
-        return new SqlColumn(columnId, columnMetadata, tableName);
-    }
-
-    private SqlNode parseJoin(final JsonObject exp) throws MetadataException {
-        final SqlNode left = parseExpression(exp.getJsonObject("left"));
-        final SqlNode right = parseExpression(exp.getJsonObject(RIGHT));
-        final SqlNode condition = parseExpression(exp.getJsonObject("condition"));
-        final JoinType joinType = fromJoinTypeName(exp.getString("join_type"));
-        return new SqlJoin(left, right, condition, joinType);
-    }
-
-    private SqlNode parseTable(final JsonObject exp) throws MetadataException {
-        final String tableName = exp.getString("name");
-        final TableMetadata tableMetadata = findInvolvedTableMetadata(tableName);
-        if (exp.containsKey("alias")) {
-            final String tableAlias = exp.getString("alias");
-            return new SqlTable(tableName, tableAlias, tableMetadata);
-        } else {
-            return new SqlTable(tableName, tableMetadata);
-        }
     }
 
     /**
