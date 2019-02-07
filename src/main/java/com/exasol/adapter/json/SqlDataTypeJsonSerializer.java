@@ -1,21 +1,20 @@
 package com.exasol.adapter.json;
 
-import javax.json.Json;
-import javax.json.JsonObjectBuilder;
-
 import com.exasol.adapter.metadata.DataType;
 import com.exasol.adapter.metadata.DataType.ExaCharset;
 import com.exasol.adapter.metadata.DataType.ExaDataType;
 import com.exasol.adapter.metadata.DataType.IntervalType;
 
+import javax.json.Json;
+import javax.json.JsonObjectBuilder;
+
 public final class SqlDataTypeJsonSerializer {
-    private SqlDataTypeJsonSerializer(){
+    private SqlDataTypeJsonSerializer() {
         //Intentionally left blank.
     }
 
     public static JsonObjectBuilder serialize(final DataType dataType) {
-        final JsonObjectBuilder root = Json.createObjectBuilder()
-                .add("type", exaTypeAsString(dataType.getExaDataType()));
+        final JsonObjectBuilder root = Json.createObjectBuilder().add("type", exaTypeAsString(dataType.getExaDataType()));
 
         switch (dataType.getExaDataType()) {
         case UNSUPPORTED:
@@ -24,19 +23,13 @@ public final class SqlDataTypeJsonSerializer {
             root.add("precision", dataType.getPrecision());
             root.add("scale", dataType.getScale());
             break;
-        case DOUBLE:
-            break;
         case VARCHAR: //falling through intentionally
         case CHAR:
             root.add("size", dataType.getSize());
             root.add("characterSet", exaCharSetAsString(dataType.getCharset()));
             break;
-        case DATE:
-            break;
         case TIMESTAMP:
             root.add("withLocalTimeZone", dataType.isWithLocalTimezone());
-            break;
-        case BOOLEAN:
             break;
         case GEOMETRY:
             root.add("srid", dataType.getGeometrySrid());
@@ -47,6 +40,10 @@ public final class SqlDataTypeJsonSerializer {
             if (dataType.getIntervalType() == IntervalType.DAY_TO_SECOND) {
                 root.add("fraction", dataType.getIntervalFraction());
             }
+            break;
+        case DOUBLE: //falling through intentionally
+        case DATE:
+        case BOOLEAN:
             break;
         default:
             throw new IllegalArgumentException("Unexpected Data Type: " + dataType.getExaDataType());

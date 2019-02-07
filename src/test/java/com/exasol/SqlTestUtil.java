@@ -1,4 +1,4 @@
-package com.exasol.utils;
+package com.exasol;
 
 public final class SqlTestUtil {
     private SqlTestUtil(){
