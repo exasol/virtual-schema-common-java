@@ -18,45 +18,55 @@ class SqlFunctionScalarCaseTest {
 
     @BeforeEach
     void setUp() {
-        arguments = new ArrayList<>();
-        arguments.add(new SqlLiteralNull());
-        results = new ArrayList<>();
-        results.add(new SqlLiteralNull());
-        basis = new SqlLiteralNull();
-        sqlFunctionScalarCase = new SqlFunctionScalarCase(arguments, results, basis);
+        this.arguments = new ArrayList<>();
+        this.arguments.add(new SqlLiteralNull());
+        this.results = new ArrayList<>();
+        this.results.add(new SqlLiteralNull());
+        this.basis = new SqlLiteralNull();
+        this.sqlFunctionScalarCase =
+              new SqlFunctionScalarCase(this.arguments, this.results, this.basis);
     }
 
     @Test
     void testGetArguments() {
-        assertThat(sqlFunctionScalarCase.getArguments(), equalTo(arguments));
-        sqlFunctionScalarCase = new SqlFunctionScalarCase(null, results, new SqlLiteralNull());
-        assertThat(sqlFunctionScalarCase.getArguments(), equalTo(Collections.emptyList()));
+        assertThat(this.sqlFunctionScalarCase.getArguments(), equalTo(this.arguments));
+    }
+
+    @Test
+    void testGetArgumentsEmptyList() {
+        this.sqlFunctionScalarCase =
+              new SqlFunctionScalarCase(null, this.results, new SqlLiteralNull());
+        assertThat(this.sqlFunctionScalarCase.getArguments(), equalTo(Collections.emptyList()));
     }
 
     @Test
     void testGetResults() {
-        assertThat(sqlFunctionScalarCase.getResults(), equalTo(results));
-        sqlFunctionScalarCase = new SqlFunctionScalarCase(null, null, new SqlLiteralNull());
-        assertThat(sqlFunctionScalarCase.getResults(), equalTo(Collections.emptyList()));
+        assertThat(this.sqlFunctionScalarCase.getResults(), equalTo(this.results));
+    }
+
+    @Test
+    void testGetResultsEmptyList() {
+        this.sqlFunctionScalarCase = new SqlFunctionScalarCase(null, null, new SqlLiteralNull());
+        assertThat(this.sqlFunctionScalarCase.getResults(), equalTo(Collections.emptyList()));
     }
 
     @Test
     void testGetBasis() {
-        assertThat(sqlFunctionScalarCase.getBasis(), equalTo(basis));
+        assertThat(this.sqlFunctionScalarCase.getBasis(), equalTo(this.basis));
     }
 
     @Test
     void testToSimpleSql() {
-        assertThat(sqlFunctionScalarCase.toSimpleSql(), equalTo("CASE"));
+        assertThat(this.sqlFunctionScalarCase.toSimpleSql(), equalTo("CASE"));
     }
 
     @Test
     void testGetType() {
-        assertThat(sqlFunctionScalarCase.getType(), equalTo(SqlNodeType.FUNCTION_SCALAR_CASE));
+        assertThat(this.sqlFunctionScalarCase.getType(), equalTo(SqlNodeType.FUNCTION_SCALAR_CASE));
     }
 
     @Test
     void testGetFunction() {
-        assertThat(sqlFunctionScalarCase.getFunction(), equalTo(ScalarFunction.CASE));
+        assertThat(this.sqlFunctionScalarCase.getFunction(), equalTo(ScalarFunction.CASE));
     }
 }

@@ -18,42 +18,42 @@ class SqlTableTest {
 
     @BeforeEach
     void setUp() {
-        sqlTable = new SqlTable(TEST_NAME, TEST_ALIAS, tableMetadata);
+        this.sqlTable = new SqlTable(TEST_NAME, TEST_ALIAS, this.tableMetadata);
     }
 
     @Test
     void testToSimpleSql() {
-        assertThat(sqlTable.toSimpleSql(), equalTo("\"" + TEST_NAME + "\""));
+        assertThat(this.sqlTable.toSimpleSql(), equalTo("\"" + TEST_NAME + "\""));
     }
 
     @Test
     void testGetType() {
-        assertThat(sqlTable.getType(), equalTo(SqlNodeType.TABLE));
+        assertThat(this.sqlTable.getType(), equalTo(SqlNodeType.TABLE));
     }
 
     @Test
     void testHasAliasTrue() {
-        assertTrue(sqlTable.hasAlias());
+        assertTrue(this.sqlTable.hasAlias());
     }
 
     @Test
     void testHasAliasFalse() {
-        sqlTable = new SqlTable(TEST_NAME, TEST_NAME, tableMetadata);
-        assertFalse(sqlTable.hasAlias());
+        this.sqlTable = new SqlTable(TEST_NAME, TEST_NAME, this.tableMetadata);
+        assertFalse(this.sqlTable.hasAlias());
     }
 
     @Test
     void testGetName() {
-        assertThat(sqlTable.getName(), equalTo(TEST_NAME));
+        assertThat(this.sqlTable.getName(), equalTo(TEST_NAME));
     }
 
     @Test
     void testGetAlias() {
-        assertThat(sqlTable.getAlias(), equalTo(TEST_ALIAS));
+        assertThat(this.sqlTable.getAlias(), equalTo(TEST_ALIAS));
     }
 
     @Test
     void testGetMetadata() {
-        assertThat(sqlTable.getMetadata(), equalTo(tableMetadata));
+        assertThat(this.sqlTable.getMetadata(), equalTo(this.tableMetadata));
     }
 }

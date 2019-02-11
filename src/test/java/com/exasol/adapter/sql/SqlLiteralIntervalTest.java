@@ -16,30 +16,37 @@ class SqlLiteralIntervalTest {
 
     @BeforeEach
     void setUp() {
-        dayToSecond = DataType.createIntervalDaySecond(1, 2);
-        yearToMonth = DataType.createIntervalYearMonth(3);
-        sqlLiteralIntervalDayToSecond = new SqlLiteralInterval(VALUE, dayToSecond);
-        sqlLiteralIntervalYearToMonth = new SqlLiteralInterval(VALUE, yearToMonth);
+        this.dayToSecond = DataType.createIntervalDaySecond(1, 2);
+        this.yearToMonth = DataType.createIntervalYearMonth(3);
+        this.sqlLiteralIntervalDayToSecond = new SqlLiteralInterval(VALUE, this.dayToSecond);
+        this.sqlLiteralIntervalYearToMonth = new SqlLiteralInterval(VALUE, this.yearToMonth);
     }
 
     @Test
     void testGetValue() {
-        assertThat(sqlLiteralIntervalDayToSecond.getValue(), equalTo(VALUE));
+        assertThat(this.sqlLiteralIntervalDayToSecond.getValue(), equalTo(VALUE));
     }
 
     @Test
-    void testToSimpleSql() {
-        assertThat(sqlLiteralIntervalDayToSecond.toSimpleSql(), equalTo("INTERVAL '" + VALUE + "' DAY (1) TO SECOND (2)"));
-        assertThat(sqlLiteralIntervalYearToMonth.toSimpleSql(), equalTo("INTERVAL '" + VALUE + "' YEAR (3) TO MONTH"));
+    void testToSimpleSqlDayToSecond() {
+        assertThat(this.sqlLiteralIntervalDayToSecond.toSimpleSql(),
+              equalTo("INTERVAL '" + VALUE + "' DAY (1) TO SECOND (2)"));
+    }
+
+    @Test
+    void testToSimpleSqlYearToMonth() {
+        assertThat(this.sqlLiteralIntervalYearToMonth.toSimpleSql(),
+              equalTo("INTERVAL '" + VALUE + "' YEAR (3) TO MONTH"));
     }
 
     @Test
     void testGetType() {
-        assertThat(sqlLiteralIntervalDayToSecond.getType(), equalTo(SqlNodeType.LITERAL_TIMESTAMP));
+        assertThat(this.sqlLiteralIntervalDayToSecond.getType(),
+              equalTo(SqlNodeType.LITERAL_TIMESTAMP));
     }
 
     @Test
     void testGetDataType() {
-        assertThat(sqlLiteralIntervalDayToSecond.getDataType(), equalTo(dayToSecond));
+        assertThat(this.sqlLiteralIntervalDayToSecond.getDataType(), equalTo(this.dayToSecond));
     }
 }

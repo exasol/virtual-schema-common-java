@@ -33,12 +33,12 @@ class JsonHelperTest {
     private JsonObject expectedJsonObject;
 
     @BeforeEach
-    void SetUp() {
-        when(jsonObject.containsKey(KEY_1)).thenReturn(false);
-        when(jsonObject.containsKey(KEY_2)).thenReturn(true);
-        when(jsonValue.toString()).thenReturn(KEY_2);
-        when(jsonObject.get(KEY_2)).thenReturn(jsonValue);
-        expectedJsonObject = Json.createObjectBuilder()
+    void setUp() {
+        when(this.jsonObject.containsKey(KEY_1)).thenReturn(false);
+        when(this.jsonObject.containsKey(KEY_2)).thenReturn(true);
+        when(this.jsonValue.toString()).thenReturn(KEY_2);
+        when(this.jsonObject.get(KEY_2)).thenReturn(this.jsonValue);
+        this.expectedJsonObject = Json.createObjectBuilder()
               .add("type", "getCapabilities")
               .add("capabilities", "LIMIT")
               .build();
@@ -46,17 +46,21 @@ class JsonHelperTest {
 
     @Test
     void testGetJsonObject() {
-        assertThat(JsonHelper.getJsonObject(JSON), equalTo(expectedJsonObject));
+        assertThat(JsonHelper.getJsonObject(JSON), equalTo(this.expectedJsonObject));
+    }
+
+    @Test
+    void testGetKeyAsStringWithDefaultValue() {
+        assertThat(JsonHelper.getKeyAsString(this.jsonObject, KEY_1, DEFAULT_VALUE), equalTo(DEFAULT_VALUE));
     }
 
     @Test
     void testGetKeyAsString() {
-        assertThat(JsonHelper.getKeyAsString(jsonObject, KEY_1, DEFAULT_VALUE), equalTo(DEFAULT_VALUE));
-        assertThat(JsonHelper.getKeyAsString(jsonObject, KEY_2, DEFAULT_VALUE), equalTo(KEY_2));
+        assertThat(JsonHelper.getKeyAsString(this.jsonObject, KEY_2, DEFAULT_VALUE), equalTo(KEY_2));
     }
 
     @Test
     void testPrettyJson() {
-        assertThat(JsonHelper.prettyJson(expectedJsonObject), equalTo(JSON));
+        assertThat(JsonHelper.prettyJson(this.expectedJsonObject), equalTo(JSON));
     }
 }

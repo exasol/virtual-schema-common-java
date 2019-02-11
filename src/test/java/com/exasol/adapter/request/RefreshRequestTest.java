@@ -24,36 +24,36 @@ import static org.junit.jupiter.api.Assertions.*;
 @RunWith(JUnitPlatform.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 class RefreshRequestTest {
-    @Mock
-    private SchemaMetadataInfo schemaMetadataInfo;
+    @Mock private SchemaMetadataInfo schemaMetadataInfo;
     private RefreshRequest refreshRequest;
     private List<String> tables;
 
     @BeforeEach
-    void SetUp() throws AdapterException {
-        tables = new ArrayList<>();
-        tables.add("TEST_TABLE");
-        refreshRequest = new RefreshRequest(schemaMetadataInfo, tables);
+    void setUp() throws AdapterException {
+        this.tables = new ArrayList<>();
+        this.tables.add("TEST_TABLE");
+        this.refreshRequest = new RefreshRequest(this.schemaMetadataInfo, this.tables);
     }
 
     @Test
-    void testCreateWithEmptyTables() {
-        assertThrows(AdapterException.class, () -> refreshRequest = new RefreshRequest(schemaMetadataInfo, Collections.emptyList()));
+    void testCreateWithEmptyTablesThrowsException() {
+        assertThrows(AdapterException.class, () -> this.refreshRequest =
+              new RefreshRequest(this.schemaMetadataInfo, Collections.emptyList()));
     }
 
     @Test
     void testGetTables() {
-        assertThat(refreshRequest.getTables(), equalTo(tables));
+        assertThat(this.refreshRequest.getTables(), equalTo(this.tables));
     }
 
     @Test
     void testIsRefreshForTablesTrue() {
-        assertTrue(refreshRequest.isRefreshForTables());
+        assertTrue(this.refreshRequest.isRefreshForTables());
     }
 
     @Test
     void testIsRefreshForTablesFalse() {
-        refreshRequest = new RefreshRequest(schemaMetadataInfo);
-        assertFalse(refreshRequest.isRefreshForTables());
+        this.refreshRequest = new RefreshRequest(this.schemaMetadataInfo);
+        assertFalse(this.refreshRequest.isRefreshForTables());
     }
 }

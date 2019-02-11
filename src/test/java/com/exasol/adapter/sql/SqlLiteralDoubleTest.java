@@ -12,22 +12,21 @@ class SqlLiteralDoubleTest {
 
     @BeforeEach
     void setUp() {
-        sqlLiteralDouble = new SqlLiteralDouble(VALUE);
+        this.sqlLiteralDouble = new SqlLiteralDouble(VALUE);
     }
 
     @Test
     void testGetValue() {
-        assertThat(sqlLiteralDouble.getValue(), equalTo(VALUE));
+        assertThat(this.sqlLiteralDouble.getValue(), equalTo(VALUE));
     }
 
     @Test
     void testToSimpleSql() {
-        assertThat(sqlLiteralDouble.toSimpleSql(), equalTo(VALUE.toString()));
+        assertThat(this.sqlLiteralDouble.toSimpleSql(), equalTo("20.1"));
     }
 
     @Test
     void testGetType() {
-        assertThat(sqlLiteralDouble.getType(), equalTo(SqlNodeType.LITERAL_DOUBLE));
+        assertThat(this.sqlLiteralDouble.getType(), equalTo(SqlNodeType.LITERAL_DOUBLE));
     }
-
 }

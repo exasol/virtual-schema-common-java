@@ -14,37 +14,37 @@ class SqlPredicateBetweenTest {
 
     @BeforeEach
     void setUp() {
-        expression = new SqlLiteralNull();
-        betweenLeft = new SqlLiteralBool(true);
-        betweenRight = new SqlLiteralBool(false);
-        sqlPredicateBetween = new SqlPredicateBetween(expression, betweenLeft, betweenRight);
+        this.expression = new SqlLiteralNull();
+        this.betweenLeft = new SqlLiteralBool(true);
+        this.betweenRight = new SqlLiteralBool(false);
+        this.sqlPredicateBetween =
+              new SqlPredicateBetween(this.expression, this.betweenLeft, this.betweenRight);
     }
 
     @Test
     void testToSimpleSql() {
-        assertThat(sqlPredicateBetween.toSimpleSql(),
-              equalTo(expression.toSimpleSql() + " BETWEEN "
-                    + betweenLeft.toSimpleSql() + " AND "
-                    + betweenRight.toSimpleSql()));
+        assertThat(this.sqlPredicateBetween.toSimpleSql(), equalTo(
+              this.expression.toSimpleSql() + " BETWEEN " + this.betweenLeft.toSimpleSql() +
+                    " AND " + this.betweenRight.toSimpleSql()));
     }
 
     @Test
     void testGetType() {
-        assertThat(sqlPredicateBetween.getType(), equalTo(SqlNodeType.PREDICATE_BETWEEN));
+        assertThat(this.sqlPredicateBetween.getType(), equalTo(SqlNodeType.PREDICATE_BETWEEN));
     }
 
     @Test
     void getExpression() {
-        assertThat(sqlPredicateBetween.getExpression(), equalTo(expression));
+        assertThat(this.sqlPredicateBetween.getExpression(), equalTo(this.expression));
     }
 
     @Test
     void getBetweenLeft() {
-        assertThat(sqlPredicateBetween.getBetweenLeft(), equalTo(betweenLeft));
+        assertThat(this.sqlPredicateBetween.getBetweenLeft(), equalTo(this.betweenLeft));
     }
 
     @Test
     void getBetweenRight() {
-        assertThat(sqlPredicateBetween.getBetweenRight(), equalTo(betweenRight));
+        assertThat(this.sqlPredicateBetween.getBetweenRight(), equalTo(this.betweenRight));
     }
 }

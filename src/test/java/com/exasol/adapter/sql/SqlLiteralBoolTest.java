@@ -12,24 +12,24 @@ class SqlLiteralBoolTest {
 
     @BeforeEach
     void setUp() {
-        sqlLiteralBoolTrue = new SqlLiteralBool(true);
-        sqlLiteralBoolFalse = new SqlLiteralBool(false);
+        this.sqlLiteralBoolTrue = new SqlLiteralBool(true);
+        this.sqlLiteralBoolFalse = new SqlLiteralBool(false);
     }
 
     @Test
     void testGetValue() {
-        assertThat(sqlLiteralBoolTrue.getValue(), equalTo(true));
-        assertThat(sqlLiteralBoolFalse.getValue(), equalTo(false));
+        assertThat(this.sqlLiteralBoolTrue.getValue(), equalTo(true));
+        assertThat(this.sqlLiteralBoolFalse.getValue(), equalTo(false));
     }
 
     @Test
     void testToSimpleSql() {
-        assertThat(sqlLiteralBoolTrue.toSimpleSql(), equalTo("true"));
-        assertThat(sqlLiteralBoolFalse.toSimpleSql(), equalTo("false"));
+        assertThat(this.sqlLiteralBoolTrue.toSimpleSql(), equalTo("true"));
+        assertThat(this.sqlLiteralBoolFalse.toSimpleSql(), equalTo("false"));
     }
 
     @Test
     void testGetType() {
-        assertThat(sqlLiteralBoolTrue.getType(), equalTo(SqlNodeType.LITERAL_BOOL));
+        assertThat(this.sqlLiteralBoolTrue.getType(), equalTo(SqlNodeType.LITERAL_BOOL));
     }
 }

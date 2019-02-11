@@ -11,10 +11,12 @@ import java.util.Collections;
 class ResponseJsonSerializerTest {
     @Test
     void testMakeCreateVirtualSchemaResponse() throws JSONException {
-        JSONAssert.assertEquals("{\"type\":\"createVirtualSchema\"," + "\"schemaMetadata" +
-              "\":{\"tables\":[]," + "\"adapterNotes\":\"notes\"}}",
-              ResponseJsonSerializer.makeCreateVirtualSchemaResponse(new SchemaMetadata("notes",
-                    Collections.emptyList())), false);
+        JSONAssert.assertEquals("{\"type\":\"createVirtualSchema\"," //
+                    + "\"schemaMetadata\":{\"tables\":[]," //
+                    + "\"adapterNotes\":\"notes\"}}",//
+              ResponseJsonSerializer.makeCreateVirtualSchemaResponse( //
+                    new SchemaMetadata("notes", //
+                          Collections.emptyList())), false);
     }
 
     @Test
@@ -31,20 +33,28 @@ class ResponseJsonSerializerTest {
         capabilities.supportPredicate(PredicateCapability.EQUAL);
         capabilities.supportScalarFunction(ScalarFunctionCapability.ADD);
         capabilities.supportAggregateFunction(AggregateFunctionCapability.AVG);
-        JSONAssert.assertEquals("{\"type\":\"getCapabilities\"," + "\"capabilities\":[\"LIMIT\"," + "\"LITERAL_DATE\"," + "\"FN_PRED_EQUAL\", " + "\"FN_AGG_AVG\", " + "\"FN_ADD\"]}", ResponseJsonSerializer.makeGetCapabilitiesResponse(capabilities), false);
+        JSONAssert.assertEquals("{\"type\":\"getCapabilities\"," //
+                    + "\"capabilities\":[\"LIMIT\"," //
+                    + "\"LITERAL_DATE\"," //
+                    + "\"FN_PRED_EQUAL\", " //
+                    + "\"FN_AGG_AVG\", " //
+                    + "\"FN_ADD\"]}", //
+              ResponseJsonSerializer.makeGetCapabilitiesResponse(capabilities), false);
     }
 
     @Test
     void testMakePushdownResponse() throws JSONException {
-        JSONAssert.assertEquals("{\"type\":\"pushdown\"," + "\"sql\":\"PUSH DOWN\"}",
+        JSONAssert.assertEquals("{\"type\":\"pushdown\"," //
+                    + "\"sql\":\"PUSH DOWN\"}", //
               ResponseJsonSerializer.makePushdownResponse("PUSH DOWN"), false);
     }
 
     @Test
     void testMakeSetPropertiesResponse() throws JSONException {
-        JSONAssert.assertEquals("{\"type\":\"setProperties\"," + "\"schemaMetadata\":{\"tables" +
-              "\":[]," + "\"adapterNotes\":\"notes\"}}",
-              ResponseJsonSerializer.makeSetPropertiesResponse(new SchemaMetadata("notes",
+        JSONAssert.assertEquals("{\"type\":\"setProperties\"," //
+                    + "\"schemaMetadata\":{\"tables\":[]," //
+                    + "\"adapterNotes\":\"notes\"}}", //
+              ResponseJsonSerializer.makeSetPropertiesResponse(new SchemaMetadata("notes", //
                     Collections.emptyList())), false);
     }
 
@@ -56,6 +66,10 @@ class ResponseJsonSerializerTest {
 
     @Test
     void testMakeRefreshResponse() throws JSONException {
-        JSONAssert.assertEquals("{\"type\":\"refresh\"," + "\"schemaMetadata\":{\"tables\":[]," + "\"adapterNotes\":\"notes\"}}", ResponseJsonSerializer.makeRefreshResponse(new SchemaMetadata("notes", Collections.emptyList())), false);
+        JSONAssert.assertEquals("{\"type\":\"refresh\"," //
+                    + "\"schemaMetadata\":{\"tables\":[],"  //
+                    + "\"adapterNotes\":\"notes\"}}",  //
+              ResponseJsonSerializer.makeRefreshResponse( //
+                    new SchemaMetadata("notes", Collections.emptyList())), false);
     }
 }

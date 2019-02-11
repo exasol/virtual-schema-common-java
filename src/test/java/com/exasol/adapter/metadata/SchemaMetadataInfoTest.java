@@ -9,8 +9,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 class SchemaMetadataInfoTest {
-    public static final String TEST_NAME = "test name";
-    public static final String TEST_ADAPTER_NOTES = "test adapter notes";
+    private static final String TEST_NAME = "test name";
+    private static final String TEST_ADAPTER_NOTES = "test adapter notes";
     private SchemaMetadataInfo schemaMetadataInfo;
 
     @BeforeEach

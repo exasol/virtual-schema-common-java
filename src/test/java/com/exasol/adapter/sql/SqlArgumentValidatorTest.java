@@ -6,31 +6,33 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class SqlArgumentValidatorTest {
     @Test
-    void testValidateSqlFunctionArgumentsNull() {
-        assertThrows(IllegalArgumentException.class, () -> SqlArgumentValidator.validateSqlFunctionArguments(null, SqlFunctionScalar.class));
+    void testValidateSqlFunctionArgumentsNullThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> SqlArgumentValidator
+              .validateSqlFunctionArguments(null, SqlFunctionScalar.class));
     }
 
     @Test
-    void testValidateSqlFunctionArgumentsEmpty() {
-        assertThrows(IllegalArgumentException.class, () -> SqlArgumentValidator.validateSqlFunctionArguments(Collections.emptyList(), SqlFunctionScalar.class));
+    void testValidateSqlFunctionArgumentsEmptyThrowsException() {
+        assertThrows(IllegalArgumentException.class, () -> SqlArgumentValidator
+              .validateSqlFunctionArguments(Collections.emptyList(), SqlFunctionScalar.class));
     }
 
     @Test
-    void testValidateSqlFunctionArgumentsEmptyNode() {
+    void testValidateSqlFunctionArgumentsWithJsonNodeSetToNullThrowsException() {
         final List<SqlNode> arguments = new ArrayList<>();
         arguments.add(null);
-        assertThrows(IllegalArgumentException.class, () -> SqlArgumentValidator.validateSqlFunctionArguments(arguments, SqlFunctionScalar.class));
+        assertThrows(IllegalArgumentException.class, () -> SqlArgumentValidator
+              .validateSqlFunctionArguments(arguments, SqlFunctionScalar.class));
     }
 
     @Test
-    void testValidateSqlFunction() {
+    void testValidateSqlFunctionNoException() {
         final List<SqlNode> arguments = new ArrayList<>();
         arguments.add(new SqlLiteralNull());
-        assertAll(() -> SqlArgumentValidator.validateSqlFunctionArguments(arguments, SqlFunctionScalar.class));
+        SqlArgumentValidator.validateSqlFunctionArguments(arguments, SqlFunctionScalar.class);
     }
 }

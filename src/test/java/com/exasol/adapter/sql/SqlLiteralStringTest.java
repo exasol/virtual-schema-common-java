@@ -12,21 +12,21 @@ class SqlLiteralStringTest {
 
     @BeforeEach
     void setUp() {
-        sqlLiteralString = new SqlLiteralString(VALUE);
+        this.sqlLiteralString = new SqlLiteralString(VALUE);
     }
 
     @Test
     void testGetValue() {
-        assertThat(sqlLiteralString.getValue(), equalTo(VALUE));
+        assertThat(this.sqlLiteralString.getValue(), equalTo(VALUE));
     }
 
     @Test
     void testToSimpleSql() {
-        assertThat(sqlLiteralString.toSimpleSql(), equalTo("'" + VALUE + "'"));
+        assertThat(this.sqlLiteralString.toSimpleSql(), equalTo("'" + VALUE + "'"));
     }
 
     @Test
     void testGetType() {
-        assertThat(sqlLiteralString.getType(), equalTo(SqlNodeType.LITERAL_STRING));
+        assertThat(this.sqlLiteralString.getType(), equalTo(SqlNodeType.LITERAL_STRING));
     }
 }

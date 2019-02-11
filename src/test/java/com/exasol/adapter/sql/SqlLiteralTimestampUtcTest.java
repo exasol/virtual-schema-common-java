@@ -12,21 +12,22 @@ class SqlLiteralTimestampUtcTest {
 
     @BeforeEach
     void setUp() {
-        sqlLiteralTimestampUtc = new SqlLiteralTimestampUtc(VALUE);
+        this.sqlLiteralTimestampUtc = new SqlLiteralTimestampUtc(VALUE);
     }
 
     @Test
     void testGetValue() {
-        assertThat(sqlLiteralTimestampUtc.getValue(), equalTo(VALUE));
+        assertThat(this.sqlLiteralTimestampUtc.getValue(), equalTo(VALUE));
     }
 
     @Test
     void testToSimpleSql() {
-        assertThat(sqlLiteralTimestampUtc.toSimpleSql(), equalTo("TIMESTAMP '" + VALUE + "'"));
+        assertThat(this.sqlLiteralTimestampUtc.toSimpleSql(), equalTo("TIMESTAMP '" + VALUE + "'"));
     }
 
     @Test
     void testGetType() {
-        assertThat(sqlLiteralTimestampUtc.getType(), equalTo(SqlNodeType.LITERAL_TIMESTAMPUTC));
+        assertThat(this.sqlLiteralTimestampUtc.getType(),
+              equalTo(SqlNodeType.LITERAL_TIMESTAMPUTC));
     }
 }

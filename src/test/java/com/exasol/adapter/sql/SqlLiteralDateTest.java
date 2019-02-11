@@ -12,21 +12,21 @@ class SqlLiteralDateTest {
 
     @BeforeEach
     void setUp() {
-        sqlLiteralDate = new SqlLiteralDate(VALUE);
+        this.sqlLiteralDate = new SqlLiteralDate(VALUE);
     }
 
     @Test
     void testGetValue() {
-        assertThat(sqlLiteralDate.getValue(), equalTo(VALUE));
+        assertThat(this.sqlLiteralDate.getValue(), equalTo(VALUE));
     }
 
     @Test
     void testToSimpleSql() {
-        assertThat(sqlLiteralDate.toSimpleSql(), equalTo("DATE '" + VALUE + "'"));
+        assertThat(this.sqlLiteralDate.toSimpleSql(), equalTo("DATE '" + VALUE + "'"));
     }
 
     @Test
     void testGetType() {
-        assertThat(sqlLiteralDate.getType(), equalTo(SqlNodeType.LITERAL_DATE));
+        assertThat(this.sqlLiteralDate.getType(), equalTo(SqlNodeType.LITERAL_DATE));
     }
 }

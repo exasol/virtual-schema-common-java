@@ -11,17 +11,16 @@ class SqlLiteralNullTest {
 
     @BeforeEach
     void setUp() {
-        sqlLiteralNull = new SqlLiteralNull();
+        this.sqlLiteralNull = new SqlLiteralNull();
     }
 
     @Test
     void testToSimpleSql() {
-        assertThat(sqlLiteralNull.toSimpleSql(), equalTo("NULL"));
+        assertThat(this.sqlLiteralNull.toSimpleSql(), equalTo("NULL"));
     }
 
     @Test
     void testGetType() {
-        assertThat(sqlLiteralNull.getType(), equalTo(SqlNodeType.LITERAL_NULL));
+        assertThat(this.sqlLiteralNull.getType(), equalTo(SqlNodeType.LITERAL_NULL));
     }
-
 }

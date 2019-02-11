@@ -12,22 +12,23 @@ class SqlPredicateNotTest {
 
     @BeforeEach
     void setUp() {
-        sqlLiteralNull = new SqlLiteralNull();
-        sqlPredicateNot = new SqlPredicateNot(sqlLiteralNull);
+        this.sqlLiteralNull = new SqlLiteralNull();
+        this.sqlPredicateNot = new SqlPredicateNot(this.sqlLiteralNull);
     }
 
     @Test
     void testToSimpleSql() {
-        assertThat(sqlPredicateNot.toSimpleSql(), equalTo("NOT (" + sqlLiteralNull.toSimpleSql() + ")"));
+        assertThat(this.sqlPredicateNot.toSimpleSql(),
+              equalTo("NOT (" + this.sqlLiteralNull.toSimpleSql() + ")"));
     }
 
     @Test
     void testGetType() {
-        assertThat(sqlPredicateNot.getType(), equalTo(SqlNodeType.PREDICATE_NOT));
+        assertThat(this.sqlPredicateNot.getType(), equalTo(SqlNodeType.PREDICATE_NOT));
     }
 
     @Test
     void getExpression() {
-        assertThat(sqlPredicateNot.getExpression(), equalTo(sqlLiteralNull));
+        assertThat(this.sqlPredicateNot.getExpression(), equalTo(this.sqlLiteralNull));
     }
 }

@@ -18,26 +18,31 @@ class SqlPredicateAndTest {
 
     @BeforeEach
     void setUp() {
-        andedPredicates = new ArrayList<>();
-        andedPredicates.add(new SqlLiteralNull());
-        andedPredicates.add(new SqlLiteralBool(true));
-        sqlPredicateAnd = new SqlPredicateAnd(andedPredicates);
-        sqlPredicateAndWithEmptyList = new SqlPredicateAnd(Collections.emptyList());
+        this.andedPredicates = new ArrayList<>();
+        this.andedPredicates.add(new SqlLiteralNull());
+        this.andedPredicates.add(new SqlLiteralBool(true));
+        this.sqlPredicateAnd = new SqlPredicateAnd(this.andedPredicates);
+        this.sqlPredicateAndWithEmptyList = new SqlPredicateAnd(Collections.emptyList());
     }
 
     @Test
     void testGetAndedPredicates() {
-        assertThat(sqlPredicateAndWithEmptyList.getAndedPredicates(), equalTo(Collections.emptyList()));
-        assertThat(sqlPredicateAnd.getAndedPredicates(), equalTo(andedPredicates));
+        assertThat(this.sqlPredicateAnd.getAndedPredicates(), equalTo(this.andedPredicates));
+    }
+
+    @Test
+    void testGetAndedPredicatesEmptyList() {
+        assertThat(this.sqlPredicateAndWithEmptyList.getAndedPredicates(),
+              equalTo(Collections.emptyList()));
     }
 
     @Test
     void testToSimpleSql() {
-        assertThat(sqlPredicateAnd.toSimpleSql(), equalTo("(NULL AND true)"));
+        assertThat(this.sqlPredicateAnd.toSimpleSql(), equalTo("(NULL AND true)"));
     }
 
     @Test
     void testGetType() {
-        assertThat(sqlPredicateAnd.getType(), equalTo(SqlNodeType.PREDICATE_AND));
+        assertThat(this.sqlPredicateAnd.getType(), equalTo(SqlNodeType.PREDICATE_AND));
     }
 }
