@@ -12,7 +12,7 @@ import javax.json.JsonObject;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,8 +33,8 @@ class SqlDataTypeJsonSerializerTest {
         when(this.dataType.getPrecision()).thenReturn(5);
         when(this.dataType.getScale()).thenReturn(3);
         final JsonObject jsonObject = SqlDataTypeJsonSerializer.serialize(this.dataType).build();
-        assertThat(jsonObject.getInt("precision"), equalTo(5));
-        assertThat(jsonObject.getInt("scale"), equalTo(3));
+        assertAll(() -> assertEquals(5, jsonObject.getInt("precision")),
+              () -> assertEquals(3, jsonObject.getInt("scale")));
     }
 
     @Test
