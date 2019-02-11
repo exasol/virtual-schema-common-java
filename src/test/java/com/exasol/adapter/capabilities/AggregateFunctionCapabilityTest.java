@@ -3,10 +3,9 @@ package com.exasol.adapter.capabilities;
 import com.exasol.adapter.sql.AggregateFunction;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 public class AggregateFunctionCapabilityTest {
-
     @Test
     public void testCompleteness() {
         // Do we have functions where we don't have capabilities for?
@@ -22,7 +21,7 @@ public class AggregateFunctionCapabilityTest {
     }
 
     @Test
-    public void testConsistentNaming () {
+    public void testConsistentNaming() {
         for (final AggregateFunctionCapability cap : AggregateFunctionCapability.values()) {
             assertTrue(cap.name().startsWith(cap.getFunction().name()));
         }

@@ -13,7 +13,7 @@ import java.util.Map;
  * http://docs.oracle.com/javaee/7/api/javax/json/stream/JsonGenerator.html
  */
 public final class JsonHelper {
-    private JsonHelper(){
+    private JsonHelper() {
         //Intentionally left blank
     }
 
@@ -23,10 +23,9 @@ public final class JsonHelper {
     }
 
     public static JsonObject getJsonObject(final String data) {
-        final JsonReader jr = Json.createReader(new StringReader(data));
-        final JsonObject obj = jr.readObject();
-        jr.close();
-        return obj;
+        try (final JsonReader jr = Json.createReader(new StringReader(data))) {
+            return jr.readObject();
+        }
     }
 
     public static String getKeyAsString(final JsonObject obj, final String key, final String defaultValue) {
