@@ -30,8 +30,7 @@ class SqlLiteralNullTest {
     @Test
     void testAccept() throws AdapterException {
         final SqlNodeVisitor<SqlLiteralNull> visitor = mock(SqlNodeVisitor.class);
-        final SqlLiteralNull sqlLiteralNull = new SqlLiteralNull();
-        when(visitor.visit(this.sqlLiteralNull)).thenReturn(sqlLiteralNull);
-        assertThat(this.sqlLiteralNull.accept(visitor), equalTo(sqlLiteralNull));
+        when(visitor.visit(this.sqlLiteralNull)).thenReturn(this.sqlLiteralNull);
+        assertThat(this.sqlLiteralNull.accept(visitor), equalTo(this.sqlLiteralNull));
     }
 }

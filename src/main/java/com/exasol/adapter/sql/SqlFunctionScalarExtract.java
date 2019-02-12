@@ -11,7 +11,8 @@ public class SqlFunctionScalarExtract extends SqlNode {
     private final List<SqlNode> arguments;
 
     public SqlFunctionScalarExtract(final String toExtract, final List<SqlNode> arguments) {
-        SqlArgumentValidator.validateSqlFunctionArguments(arguments, SqlFunctionScalarExtract.class);
+        SqlArgumentValidator
+              .validateSqlFunctionArguments(arguments, SqlFunctionScalarExtract.class);
         this.arguments = arguments;
         this.toExtract = toExtract;
         for (final SqlNode node : this.arguments) {
@@ -20,21 +21,17 @@ public class SqlFunctionScalarExtract extends SqlNode {
     }
 
     public String getToExtract() {
-        return toExtract;
+        return this.toExtract;
     }
 
     public List<SqlNode> getArguments() {
-        if (arguments == null) {
-            return Collections.emptyList();
-        } else {
-            return Collections.unmodifiableList(arguments);
-        }
+        return Collections.unmodifiableList(this.arguments);
     }
 
     @Override
     public String toSimpleSql() {
-        assert arguments.size() == 1 && arguments.get(0) != null;
-        return "EXTRACT (" + toExtract + " FROM " + arguments.get(0).toSimpleSql() + ")";
+        assert this.arguments.size() == 1 && this.arguments.get(0) != null;
+        return "EXTRACT (" + this.toExtract + " FROM " + this.arguments.get(0).toSimpleSql() + ")";
     }
 
     @Override

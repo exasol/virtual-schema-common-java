@@ -61,9 +61,8 @@ class SqlTableTest {
 
     @Test
     void testAccept() throws AdapterException {
-        final SqlNodeVisitor<SqlLiteralNull> visitor = mock(SqlNodeVisitor.class);
-        final SqlLiteralNull sqlLiteralNull = new SqlLiteralNull();
-        when(visitor.visit(this.sqlTable)).thenReturn(sqlLiteralNull);
-        assertThat(this.sqlTable.accept(visitor), equalTo(sqlLiteralNull));
+        final SqlNodeVisitor<SqlTable> visitor = mock(SqlNodeVisitor.class);
+        when(visitor.visit(this.sqlTable)).thenReturn(this.sqlTable);
+        assertThat(this.sqlTable.accept(visitor), equalTo(this.sqlTable));
     }
 }

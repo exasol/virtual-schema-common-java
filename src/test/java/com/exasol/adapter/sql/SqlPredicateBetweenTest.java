@@ -37,25 +37,24 @@ class SqlPredicateBetweenTest {
     }
 
     @Test
-    void getExpression() {
+    void testGetExpression() {
         assertThat(this.sqlPredicateBetween.getExpression(), equalTo(this.expression));
     }
 
     @Test
-    void getBetweenLeft() {
+    void testGetBetweenLeft() {
         assertThat(this.sqlPredicateBetween.getBetweenLeft(), equalTo(this.betweenLeft));
     }
 
     @Test
-    void getBetweenRight() {
+    void testGetBetweenRight() {
         assertThat(this.sqlPredicateBetween.getBetweenRight(), equalTo(this.betweenRight));
     }
 
     @Test
     void testAccept() throws AdapterException {
-        final SqlNodeVisitor<SqlLiteralNull> visitor = mock(SqlNodeVisitor.class);
-        final SqlLiteralNull sqlLiteralNull = new SqlLiteralNull();
-        when(visitor.visit(this.sqlPredicateBetween)).thenReturn(sqlLiteralNull);
-        assertThat(this.sqlPredicateBetween.accept(visitor), equalTo(sqlLiteralNull));
+        final SqlNodeVisitor<SqlPredicateBetween> visitor = mock(SqlNodeVisitor.class);
+        when(visitor.visit(this.sqlPredicateBetween)).thenReturn(this.sqlPredicateBetween);
+        assertThat(this.sqlPredicateBetween.accept(visitor), equalTo(this.sqlPredicateBetween));
     }
 }

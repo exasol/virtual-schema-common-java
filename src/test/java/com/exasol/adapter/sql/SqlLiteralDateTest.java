@@ -35,9 +35,8 @@ class SqlLiteralDateTest {
 
     @Test
     void testAccept() throws AdapterException {
-        final SqlNodeVisitor<SqlLiteralNull> visitor = mock(SqlNodeVisitor.class);
-        final SqlLiteralNull sqlLiteralNull = new SqlLiteralNull();
-        when(visitor.visit(this.sqlLiteralDate)).thenReturn(sqlLiteralNull);
-        assertThat(this.sqlLiteralDate.accept(visitor), equalTo(sqlLiteralNull));
+        final SqlNodeVisitor<SqlLiteralDate> visitor = mock(SqlNodeVisitor.class);
+        when(visitor.visit(this.sqlLiteralDate)).thenReturn(this.sqlLiteralDate);
+        assertThat(this.sqlLiteralDate.accept(visitor), equalTo(this.sqlLiteralDate));
     }
 }

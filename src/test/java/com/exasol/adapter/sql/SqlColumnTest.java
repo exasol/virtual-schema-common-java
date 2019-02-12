@@ -45,10 +45,9 @@ class SqlColumnTest {
 
     @Test
     void testAccept() throws AdapterException {
-        final SqlNodeVisitor<SqlLiteralNull> visitor = mock(SqlNodeVisitor.class);
-        final SqlLiteralNull sqlLiteralNull = new SqlLiteralNull();
-        when(visitor.visit(this.sqlColumn)).thenReturn(sqlLiteralNull);
-        assertThat(this.sqlColumn.accept(visitor), equalTo(sqlLiteralNull));
+        final SqlNodeVisitor<SqlColumn> visitor = mock(SqlNodeVisitor.class);
+        when(visitor.visit(this.sqlColumn)).thenReturn(this.sqlColumn);
+        assertThat(this.sqlColumn.accept(visitor), equalTo(this.sqlColumn));
     }
 
     @Test

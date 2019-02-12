@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -38,9 +37,8 @@ class SqlPredicateIsNullTest {
 
     @Test
     void testAccept() throws AdapterException {
-        final SqlNodeVisitor<SqlLiteralNull> visitor = mock(SqlNodeVisitor.class);
-        final SqlLiteralNull sqlLiteralNull = new SqlLiteralNull();
-        when(visitor.visit(this.sqlPredicateIsNull)).thenReturn(sqlLiteralNull);
-        assertThat(this.sqlPredicateIsNull.accept(visitor), equalTo(sqlLiteralNull));
+        final SqlNodeVisitor<SqlPredicateIsNull> visitor = mock(SqlNodeVisitor.class);
+        when(visitor.visit(this.sqlPredicateIsNull)).thenReturn(this.sqlPredicateIsNull);
+        assertThat(this.sqlPredicateIsNull.accept(visitor), equalTo(this.sqlPredicateIsNull));
     }
 }

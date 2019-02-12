@@ -36,9 +36,8 @@ class SqlLiteralTimestampUtcTest {
 
     @Test
     void testAccept() throws AdapterException {
-        final SqlNodeVisitor<SqlLiteralNull> visitor = mock(SqlNodeVisitor.class);
-        final SqlLiteralNull sqlLiteralNull = new SqlLiteralNull();
-        when(visitor.visit(this.sqlLiteralTimestampUtc)).thenReturn(sqlLiteralNull);
-        assertThat(this.sqlLiteralTimestampUtc.accept(visitor), equalTo(sqlLiteralNull));
+        final SqlNodeVisitor<SqlLiteralTimestampUtc> visitor = mock(SqlNodeVisitor.class);
+        when(visitor.visit(this.sqlLiteralTimestampUtc)).thenReturn(this.sqlLiteralTimestampUtc);
+        assertThat(this.sqlLiteralTimestampUtc.accept(visitor), equalTo(this.sqlLiteralTimestampUtc));
     }
 }

@@ -35,9 +35,8 @@ class SqlLiteralDoubleTest {
 
     @Test
     void testAccept() throws AdapterException {
-        final SqlNodeVisitor<SqlLiteralNull> visitor = mock(SqlNodeVisitor.class);
-        final SqlLiteralNull sqlLiteralNull = new SqlLiteralNull();
-        when(visitor.visit(this.sqlLiteralDouble)).thenReturn(sqlLiteralNull);
-        assertThat(this.sqlLiteralDouble.accept(visitor), equalTo(sqlLiteralNull));
+        final SqlNodeVisitor<SqlLiteralDouble> visitor = mock(SqlNodeVisitor.class);
+        when(visitor.visit(this.sqlLiteralDouble)).thenReturn(this.sqlLiteralDouble);
+        assertThat(this.sqlLiteralDouble.accept(visitor), equalTo(this.sqlLiteralDouble));
     }
 }

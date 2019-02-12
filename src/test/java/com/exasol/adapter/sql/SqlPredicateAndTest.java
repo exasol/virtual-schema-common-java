@@ -24,7 +24,7 @@ class SqlPredicateAndTest {
         this.andedPredicates.add(new SqlLiteralString("value1"));
         this.andedPredicates.add(new SqlLiteralString("value2"));
         this.sqlPredicateAnd = new SqlPredicateAnd(this.andedPredicates);
-        this.sqlPredicateAndWithEmptyList = new SqlPredicateAnd(Collections.emptyList());
+        this.sqlPredicateAndWithEmptyList = new SqlPredicateAnd(null);
     }
 
     @Test
@@ -41,7 +41,6 @@ class SqlPredicateAndTest {
     @Test
     void testToSimpleSql() {
         assertThat(this.sqlPredicateAnd.toSimpleSql(), equalTo("('value1' AND 'value2')"));
-        System.out.println(this.sqlPredicateAnd.toSimpleSql());
     }
 
     @Test
@@ -51,9 +50,8 @@ class SqlPredicateAndTest {
 
     @Test
     void testAccept() throws AdapterException {
-        final SqlNodeVisitor<SqlLiteralNull> visitor = mock(SqlNodeVisitor.class);
-        final SqlLiteralNull sqlLiteralNull = new SqlLiteralNull();
-        when(visitor.visit(this.sqlPredicateAnd)).thenReturn(sqlLiteralNull);
-        assertThat(this.sqlPredicateAnd.accept(visitor), equalTo(sqlLiteralNull));
+        final SqlNodeVisitor<SqlPredicateAnd> visitor = mock(SqlNodeVisitor.class);
+        when(visitor.visit(this.sqlPredicateAnd)).thenReturn(this.sqlPredicateAnd);
+        assertThat(this.sqlPredicateAnd.accept(visitor), equalTo(this.sqlPredicateAnd));
     }
 }
