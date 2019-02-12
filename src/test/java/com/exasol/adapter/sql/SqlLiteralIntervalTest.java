@@ -1,14 +1,17 @@
 package com.exasol.adapter.sql;
 
+import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.DataType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class SqlLiteralIntervalTest {
-    private static final String VALUE = "2019-02-07";
+    private static final String VALUE = "5";
     private SqlLiteralInterval sqlLiteralIntervalDayToSecond;
     private SqlLiteralInterval sqlLiteralIntervalYearToMonth;
     private DataType dayToSecond;
@@ -48,5 +51,13 @@ class SqlLiteralIntervalTest {
     @Test
     void testGetDataType() {
         assertThat(this.sqlLiteralIntervalDayToSecond.getDataType(), equalTo(this.dayToSecond));
+    }
+
+    @Test
+    void testAccept() throws AdapterException {
+        final SqlNodeVisitor<SqlLiteralNull> visitor = mock(SqlNodeVisitor.class);
+        final SqlLiteralNull sqlLiteralNull = new SqlLiteralNull();
+        when(visitor.visit(this.sqlLiteralIntervalDayToSecond)).thenReturn(sqlLiteralNull);
+        assertThat(this.sqlLiteralIntervalDayToSecond.accept(visitor), equalTo(sqlLiteralNull));
     }
 }

@@ -1,5 +1,6 @@
 package com.exasol.adapter.sql;
 
+import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.TableMetadata;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,9 +9,10 @@ import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class SqlTableTest {
-    private static final String VALUE = "2019-02-07";
     private static final String TEST_NAME = "test name";
     private static final String TEST_ALIAS = "test alias";
     private SqlTable sqlTable;
@@ -55,5 +57,13 @@ class SqlTableTest {
     @Test
     void testGetMetadata() {
         assertThat(this.sqlTable.getMetadata(), equalTo(this.tableMetadata));
+    }
+
+    @Test
+    void testAccept() throws AdapterException {
+        final SqlNodeVisitor<SqlLiteralNull> visitor = mock(SqlNodeVisitor.class);
+        final SqlLiteralNull sqlLiteralNull = new SqlLiteralNull();
+        when(visitor.visit(this.sqlTable)).thenReturn(sqlLiteralNull);
+        assertThat(this.sqlTable.accept(visitor), equalTo(sqlLiteralNull));
     }
 }

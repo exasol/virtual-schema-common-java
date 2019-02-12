@@ -1,10 +1,13 @@
 package com.exasol.adapter.sql;
 
+import com.exasol.adapter.AdapterException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class SqlLiteralBoolTest {
     private SqlLiteralBool sqlLiteralBoolTrue;
@@ -31,5 +34,13 @@ class SqlLiteralBoolTest {
     @Test
     void testGetType() {
         assertThat(this.sqlLiteralBoolTrue.getType(), equalTo(SqlNodeType.LITERAL_BOOL));
+    }
+
+    @Test
+    void testAccept() throws AdapterException {
+        final SqlNodeVisitor<SqlLiteralNull> visitor = mock(SqlNodeVisitor.class);
+        final SqlLiteralNull sqlLiteralNull = new SqlLiteralNull();
+        when(visitor.visit(this.sqlLiteralBoolFalse)).thenReturn(sqlLiteralNull);
+        assertThat(this.sqlLiteralBoolFalse.accept(visitor), equalTo(sqlLiteralNull));
     }
 }
