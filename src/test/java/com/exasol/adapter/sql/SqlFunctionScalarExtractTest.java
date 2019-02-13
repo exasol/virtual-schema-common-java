@@ -38,7 +38,7 @@ class SqlFunctionScalarExtractTest {
     }
 
     @Test
-    void testGetArgumentsEmptyListThrowsException() {
+    void testGetArgumentsWithNullAsArgumentList() {
         assertThrows(IllegalArgumentException.class, () -> this.sqlFunctionScalarExtract =
               new SqlFunctionScalarExtract(this.TEST_STRING_TO_EXTRACT, null));
     }

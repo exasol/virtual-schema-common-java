@@ -34,7 +34,7 @@ class SqlFunctionScalarCastTest {
     }
 
     @Test
-    void testGetArgumentsEmptyListThrowsException() {
+    void testGetArgumentsWithNullAsArgumentList() {
         assertThrows(IllegalArgumentException.class,
               () -> this.sqlFunctionScalarCast = new SqlFunctionScalarCast(this.dataType, null));
     }
