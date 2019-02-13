@@ -2,7 +2,7 @@ package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
 
-public class SqlPredicateEqual extends AbstractSqlPredicateEquality {
+public class SqlPredicateEqual extends AbstractSqlBinaryEquality {
     public SqlPredicateEqual(final SqlNode left, final SqlNode right) {
         super(Predicate.EQUAL, left, right);
     }

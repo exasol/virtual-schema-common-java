@@ -2,7 +2,7 @@ package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
 
-public class SqlPredicateLess extends AbstractSqlPredicateEquality {
+public class SqlPredicateLess extends AbstractSqlBinaryEquality {
     public SqlPredicateLess(final SqlNode left, final SqlNode right) {
         super(Predicate.LESS, left, right);
     }

@@ -1,10 +1,10 @@
 package com.exasol.adapter.sql;
 
-public abstract class AbstractSqlPredicateEquality extends SqlPredicate {
+public abstract class AbstractSqlBinaryEquality extends SqlPredicate {
     private final SqlNode left;
     private final SqlNode right;
 
-    public AbstractSqlPredicateEquality(final Predicate function, final SqlNode left,
+    public AbstractSqlBinaryEquality(final Predicate function, final SqlNode left,
           final SqlNode right) {
         super(function);
         this.left = left;
@@ -14,7 +14,6 @@ public abstract class AbstractSqlPredicateEquality extends SqlPredicate {
         }
         if (this.right != null) {
             this.right.setParent(this);
-
         }
     }
 
