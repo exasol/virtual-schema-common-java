@@ -2,33 +2,14 @@ package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
 
-public class SqlPredicateEqual extends SqlPredicate {
-    private final SqlNode left;
-    private final SqlNode right;
-    
+public class SqlPredicateEqual extends AbstractSqlBinaryEquality {
     public SqlPredicateEqual(final SqlNode left, final SqlNode right) {
-        super(Predicate.EQUAL);
-        this.left = left;
-        this.right = right;
-        if (this.left != null) {
-            this.left.setParent(this);
-        }
-        if (this.right != null) {
-            this.right.setParent(this);
-        }
+        super(Predicate.EQUAL, left, right);
     }
-    
-    public SqlNode getLeft() {
-        return left;
-    }
-    
-    public SqlNode getRight() {
-        return right;
-    }
-    
+
     @Override
     public String toSimpleSql() {
-        return left.toSimpleSql() + " = " + right.toSimpleSql();
+        return super.toSimpleSql(" = ");
     }
 
     @Override

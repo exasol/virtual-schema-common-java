@@ -135,11 +135,11 @@ public class RequestJsonParser {
 
     private AdapterRequest pushdown(final JsonObject root, final SchemaMetadataInfo meta) throws MetadataException {
         validateJsonValueType(root, INVOLVED_TABLES, ValueType.ARRAY);
-        involvedTablesMetadata = parseInvolvedTableMetadata(root.getJsonArray(INVOLVED_TABLES));
+        this.involvedTablesMetadata = parseInvolvedTableMetadata(root.getJsonArray(INVOLVED_TABLES));
         final JsonObject pushdownExp = getPushDownExpression(root);
         final SqlNode select = parseExpression(pushdownExp);
         assert select.getType() == SqlNodeType.SELECT;
-        return new PushdownRequest(meta, (SqlStatementSelect)select, involvedTablesMetadata);
+        return new PushdownRequest(meta, (SqlStatementSelect)select, this.involvedTablesMetadata);
     }
 
     private JsonObject getPushDownExpression(final JsonObject root) {
@@ -250,99 +250,68 @@ public class RequestJsonParser {
         switch (type) {
         case SELECT:
             return parseSelect(exp);
-        case TABLE: {
+        case TABLE:
             return parseTable(exp);
-        }
-        case JOIN: {
+        case JOIN:
             return parseJoin(exp);
-        }
-        case COLUMN: {
+        case COLUMN:
             return parseColumn(exp);
-        }
-        case LITERAL_NULL: {
+        case LITERAL_NULL:
             return parseLiteralNull();
-        }
-        case LITERAL_BOOL: {
+        case LITERAL_BOOL:
             return parseLiteralBool(exp);
-        }
-        case LITERAL_DATE: {
+        case LITERAL_DATE:
             return parseLiteralDate(exp);
-        }
-        case LITERAL_TIMESTAMP: {
+        case LITERAL_TIMESTAMP:
             return parseLiteralTimestamp(exp);
-        }
-        case LITERAL_TIMESTAMPUTC: {
+        case LITERAL_TIMESTAMPUTC:
             return parseLiteralTimestamputc(exp);
-        }
-        case LITERAL_DOUBLE: {
+        case LITERAL_DOUBLE:
             return parseLiteralDouble(exp);
-        }
-        case LITERAL_EXACTNUMERIC: {
+        case LITERAL_EXACTNUMERIC:
             return parseLiteralExactNumeric(exp);
-        }
-        case LITERAL_STRING: {
+        case LITERAL_STRING:
             return parseLiteralString(exp);
-        }
-        case LITERAL_INTERVAL: {
+        case LITERAL_INTERVAL:
             return parseLiteralInterval(exp);
-        }
-        case PREDICATE_AND: {
+        case PREDICATE_AND:
             return parsePredicateAnd(exp);
-        }
-        case PREDICATE_OR: {
+        case PREDICATE_OR:
             return parsePredicateOr(exp);
-        }
-        case PREDICATE_NOT: {
+        case PREDICATE_NOT:
             return parsePredicateNot(exp);
-        }
-        case PREDICATE_EQUAL: {
+        case PREDICATE_EQUAL:
             return parsePredicateEqual(exp);
-        }
-        case PREDICATE_NOTEQUAL: {
+        case PREDICATE_NOTEQUAL:
             return parsePredicateNotEqual(exp);
-        }
-        case PREDICATE_LESS: {
+        case PREDICATE_LESS:
             return parsePredicateLess(exp);
-        }
-        case PREDICATE_LESSEQUAL: {
+        case PREDICATE_LESSEQUAL:
             return parsePredicateLessEqual(exp);
-        }
-        case PREDICATE_LIKE: {
+        case PREDICATE_LIKE:
             return parsePredicateLike(exp);
-        }
-        case PREDICATE_LIKE_REGEXP: {
+        case PREDICATE_LIKE_REGEXP:
             return parsePredicateLikeRegexp(exp);
-        }
-        case PREDICATE_BETWEEN: {
+        case PREDICATE_BETWEEN:
             return parsePredicateBetween(exp);
-        }
-        case PREDICATE_IN_CONSTLIST: {
+        case PREDICATE_IN_CONSTLIST:
             return parsePredicateInConstlist(exp);
-        }
-        case PREDICATE_IS_NULL: {
+        case PREDICATE_IS_NULL:
             return parsePredicateIsNull(exp);
-        }
-        case PREDICATE_IS_NOT_NULL: {
+        case PREDICATE_IS_NOT_NULL:
             return parsePredicateIsNotNull(exp);
-        }
-        case FUNCTION_SCALAR: {
+        case FUNCTION_SCALAR:
             return parseFunctionScalar(exp);
-        }
-        case FUNCTION_SCALAR_EXTRACT: {
+        case FUNCTION_SCALAR_EXTRACT:
             return parseFunctionScalarExtract(exp);
-        }
-        case FUNCTION_SCALAR_CASE: {
+        case FUNCTION_SCALAR_CASE:
             return parseFunctionScalarCase(exp);
-        }
-        case FUNCTION_SCALAR_CAST: {
+        case FUNCTION_SCALAR_CAST:
             return parseFunctionScalarCast(exp);
-        }
-        case FUNCTION_AGGREGATE: {
+        case FUNCTION_AGGREGATE:
             return parseFunctionAggregate(exp);
-        }
-        case FUNCTION_AGGREGATE_GROUP_CONCAT: {
+        case FUNCTION_AGGREGATE_GROUP_CONCAT:
             return parseFunctionAggregateGroupConcat(exp);
-        }
         default:
             throw new IllegalArgumentException("Unknown node type: " + typeName);
         }
@@ -733,13 +702,14 @@ public class RequestJsonParser {
     }
 
     private TableMetadata findInvolvedTableMetadata(final String tableName) throws MetadataException {
-        assert involvedTablesMetadata != null;
-        for (final TableMetadata tableMetadata : involvedTablesMetadata) {
+        assert this.involvedTablesMetadata != null;
+        for (final TableMetadata tableMetadata : this.involvedTablesMetadata) {
             if (tableMetadata.getName().equals(tableName)) {
                 return tableMetadata;
             }
         }
-        throw new MetadataException("Could not find table metadata for involved table " + tableName + ". All involved tables: " + involvedTablesMetadata.toString());
+        throw new MetadataException("Could not find table metadata for involved table " + tableName + ". All involved tables: " +
+              this.involvedTablesMetadata.toString());
     }
 
     private ColumnMetadata findColumnMetadata(final String tableName, final String columnName) throws MetadataException {
@@ -749,6 +719,7 @@ public class RequestJsonParser {
                 return columnMetadata;
             }
         }
-        throw new MetadataException("Could not find column metadata for involved table " + tableName + " and column + " + columnName + ". All involved tables: " + involvedTablesMetadata.toString());
+        throw new MetadataException("Could not find column metadata for involved table " + tableName + " and column + " + columnName + ". All involved tables: " +
+              this.involvedTablesMetadata.toString());
     }
 }
