@@ -1,10 +1,13 @@
 package com.exasol.adapter.sql;
 
+import com.exasol.adapter.AdapterException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class SqlPredicateBetweenTest {
     private SqlPredicateBetween sqlPredicateBetween;
@@ -14,9 +17,9 @@ class SqlPredicateBetweenTest {
 
     @BeforeEach
     void setUp() {
-        this.expression = new SqlLiteralNull();
-        this.betweenLeft = new SqlLiteralBool(true);
-        this.betweenRight = new SqlLiteralBool(false);
+        this.expression = new SqlLiteralDouble(12.0);
+        this.betweenLeft = new SqlLiteralDouble(11.0);
+        this.betweenRight = new SqlLiteralDouble(13.0);
         this.sqlPredicateBetween =
               new SqlPredicateBetween(this.expression, this.betweenLeft, this.betweenRight);
     }
@@ -34,17 +37,24 @@ class SqlPredicateBetweenTest {
     }
 
     @Test
-    void getExpression() {
+    void testGetExpression() {
         assertThat(this.sqlPredicateBetween.getExpression(), equalTo(this.expression));
     }
 
     @Test
-    void getBetweenLeft() {
+    void testGetBetweenLeft() {
         assertThat(this.sqlPredicateBetween.getBetweenLeft(), equalTo(this.betweenLeft));
     }
 
     @Test
-    void getBetweenRight() {
+    void testGetBetweenRight() {
         assertThat(this.sqlPredicateBetween.getBetweenRight(), equalTo(this.betweenRight));
+    }
+
+    @Test
+    void testAccept() throws AdapterException {
+        final SqlNodeVisitor<SqlPredicateBetween> visitor = mock(SqlNodeVisitor.class);
+        when(visitor.visit(this.sqlPredicateBetween)).thenReturn(this.sqlPredicateBetween);
+        assertThat(this.sqlPredicateBetween.accept(visitor), equalTo(this.sqlPredicateBetween));
     }
 }

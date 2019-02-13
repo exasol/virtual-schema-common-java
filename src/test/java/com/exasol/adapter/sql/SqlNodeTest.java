@@ -16,7 +16,6 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 public class SqlNodeTest {
-    
     @Test
     public void testToSimpleSql() throws MetadataException {
         final SqlNode node = getTestSqlNode();

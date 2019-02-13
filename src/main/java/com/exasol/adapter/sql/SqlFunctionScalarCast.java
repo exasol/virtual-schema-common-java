@@ -6,7 +6,6 @@ import com.exasol.adapter.metadata.DataType;
 import java.util.Collections;
 import java.util.List;
 
-
 public class SqlFunctionScalarCast extends SqlNode {
     private final DataType dataType;
     private final List<SqlNode> arguments;
@@ -21,23 +20,19 @@ public class SqlFunctionScalarCast extends SqlNode {
     }
 
     public DataType getDataType() {
-        return dataType;
+        return this.dataType;
     }
 
-
     public List<SqlNode> getArguments() {
-        if (arguments == null) {
-            return Collections.emptyList();
-        } else {
-            return Collections.unmodifiableList(arguments);
-        }
+        return Collections.unmodifiableList(this.arguments);
     }
 
     @Override
     public String toSimpleSql() {
-        assert arguments != null;
-        assert arguments.size() == 1 && arguments.get(0) != null;
-        return "CAST (" + arguments.get(0).toSimpleSql() + " AS " + getDataType().toString() + ")";
+        assert this.arguments != null;
+        assert this.arguments.size() == 1 && this.arguments.get(0) != null;
+        return "CAST (" + this.arguments.get(0).toSimpleSql() + " AS " + getDataType().toString() +
+              ")";
     }
 
     @Override

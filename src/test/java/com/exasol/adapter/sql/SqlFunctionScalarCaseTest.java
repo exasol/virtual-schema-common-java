@@ -1,5 +1,6 @@
 package com.exasol.adapter.sql;
 
+import com.exasol.adapter.AdapterException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -9,6 +10,8 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class SqlFunctionScalarCaseTest {
     private SqlFunctionScalarCase sqlFunctionScalarCase;
@@ -68,5 +71,12 @@ class SqlFunctionScalarCaseTest {
     @Test
     void testGetFunction() {
         assertThat(this.sqlFunctionScalarCase.getFunction(), equalTo(ScalarFunction.CASE));
+    }
+
+    @Test
+    void testAccept() throws AdapterException {
+        final SqlNodeVisitor<SqlFunctionScalarCase> visitor = mock(SqlNodeVisitor.class);
+        when(visitor.visit(this.sqlFunctionScalarCase)).thenReturn(this.sqlFunctionScalarCase);
+        assertThat(this.sqlFunctionScalarCase.accept(visitor), equalTo(this.sqlFunctionScalarCase));
     }
 }
