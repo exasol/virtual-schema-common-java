@@ -3,11 +3,13 @@ package com.exasol.adapter.sql;
 import java.util.Map;
 
 public final class SqlUtils {
-    private SqlUtils(){
+    private SqlUtils() {
         //Intentionally left blank
     }
 
-    public static String quoteIdentifierIfNeeded(final String identifier, final Map<String, ?> config) {
+    @SuppressWarnings("squid:S1157")
+    public static String quoteIdentifierIfNeeded(final String identifier,
+          final Map<String, ?> config) {
         String quoteChar = "\"";
         if (config.containsKey("QUOTE_CHAR")) {
             quoteChar = config.get("QUOTE_CHAR").toString();
