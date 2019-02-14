@@ -12,34 +12,36 @@ public class SchemaMetadataInfo {
     private final String schemaName;
     private final String adapterNotes;
     private final Map<String, String> properties;
-    
+
     public SchemaMetadataInfo(final String schemaName, final String adapterNotes, final Map<String, String> properties) {
         this.schemaName = schemaName;
         this.adapterNotes = adapterNotes;
         this.properties = properties;
     }
-    
+
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-            .add("schemaName", schemaName)
-            .add("adapterNotes", adapterNotes)
-            .add("properties", properties)
+            .add("schemaName", this.schemaName)
+            .add("adapterNotes", this.adapterNotes)
+            .add("properties", this.properties)
             .toString();
     }
-    
+
     public String getSchemaName() {
-        return schemaName;
+        return this.schemaName;
     }
-    
+
     public String getAdapterNotes() {
-        return adapterNotes;
+        return this.adapterNotes;
     }
 
     /**
      * \note Keys are case-insensitive and stored upper case
+     *
+     * @return map with schema properties
      */
     public Map<String, String> getProperties() {
-        return properties;
+        return this.properties;
     }
 }

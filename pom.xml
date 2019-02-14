@@ -9,6 +9,26 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
     </properties>
+    <licenses>
+        <license>
+            <name>MIT</name>
+            <url>https://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Exasol</name>
+            <email>opensource@exasol.com</email>
+            <organization>Exasol AG</organization>
+            <organizationUrl>https://www.exasol.com/</organizationUrl>
+        </developer>
+    </developers>
+    <scm>
+        <connection>scm:git:https://github.com/exasol/virtual-schema-common-java.git</connection>
+        <developerConnection>scm:git:https://github.com/exasol/virtual-schema-common-java.git</developerConnection>
+        <url>https://github.com/exasol/virtual-schema-common-java</url>
+    </scm>
     <distributionManagement>
         <repository>
             <id>maven.exasol.com</id>
@@ -137,6 +157,44 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M3</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <charset>UTF-8</charset>
+                    <doclint></doclint>
+                    <serialwarn>true</serialwarn>
+                    <failOnError>true</failOnError>
+                    <failOnWarnings>true</failOnWarnings>
+                </configuration>
             </plugin>
         </plugins>
     </build>
