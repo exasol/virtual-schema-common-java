@@ -41,7 +41,7 @@
     </distributionManagement>
     <repositories>
         <repository>
-            <id>maven-central</id>
+            <id>ossrh</id>
             <url>https://repo.maven.apache.org/maven2</url>
         </repository>
         <repository>
