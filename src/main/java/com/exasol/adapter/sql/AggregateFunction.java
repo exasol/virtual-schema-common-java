@@ -28,7 +28,7 @@ public enum AggregateFunction {
     /**
      * True if the function is simple, i.e. is handled by {@link SqlFunctionAggregate}, and false if it has it's own implementation.
      *
-     * @return if the function is simple
+     * @return <code>true</code> if the function is simple
      */
     public boolean isSimple() {
         return this.isSimple;
