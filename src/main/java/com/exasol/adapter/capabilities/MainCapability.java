@@ -22,7 +22,7 @@ public enum MainCapability {
      * Support filter expressions. Additional capabilities are required
      * depending on the expression.
      *
-     * <p>Example: SELECT * FROM t WHERE a>2</p>
+     * <p>Example: SELECT * FROM t WHERE a&gt;2</p>
      */
     FILTER_EXPRESSIONS,
     /**
@@ -57,7 +57,7 @@ public enum MainCapability {
      * Support aggregations with a having clause. Additional capabilities might
      * be required depending on the expression.
      *
-     * <p>Example: SELECT a, min(b) FROM t GROUP BY a HAVING min(b) > 10;</p>
+     * <p>Example: SELECT a, min(b) FROM t GROUP BY a HAVING min(b)&gt;10;</p>
      */
     AGGREGATE_HAVING,
     /**
