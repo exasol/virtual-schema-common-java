@@ -10,20 +10,14 @@ public class SqlColumn extends SqlNode {
     private String tableAlias;
 
     public SqlColumn(final int id, final ColumnMetadata metadata) {
-        this.id = id;
-        this.metadata = metadata;
-        this.tableName = null;
-        this.tableAlias = null;
+        this(id, metadata, null, null);
     }
 
     public SqlColumn(final int id, final ColumnMetadata metadata, final String tableName) {
-        this.id = id;
-        this.metadata = metadata;
-        this.tableName = tableName;
-        this.tableAlias = null;
+        this(id, metadata, tableName, null);
     }
 
-    public SqlColumn(int id, ColumnMetadata metadata, String tableName, String tableAlias) {
+    public SqlColumn(final int id, final ColumnMetadata metadata, final String tableName, final String tableAlias) {
         this.id = id;
         this.metadata = metadata;
         this.tableName = tableName;
