@@ -368,7 +368,12 @@ public class RequestJsonParser {
         final String columnName = exp.getString("name");
         final String tableName = exp.getString("tableName");
         final ColumnMetadata columnMetadata = findColumnMetadata(tableName, columnName);
-        return new SqlColumn(columnId, columnMetadata, tableName);
+        if (exp.containsKey("tableAlias")) {
+            String tableAlias = exp.getString("tableAlias");
+            return new SqlColumn(columnId, columnMetadata, tableName, tableAlias);
+        } else {
+            return new SqlColumn(columnId, columnMetadata, tableName);
+        }
     }
 
     private SqlNode parseLiteralNull() {
