@@ -7,16 +7,21 @@ public class SqlColumn extends SqlNode {
     private final int id;
     private final ColumnMetadata metadata;
     private String tableName;
+    private String tableAlias;
 
     public SqlColumn(final int id, final ColumnMetadata metadata) {
-        this.id = id;
-        this.metadata = metadata;
+        this(id, metadata, null, null);
     }
 
     public SqlColumn(final int id, final ColumnMetadata metadata, final String tableName) {
+        this(id, metadata, tableName, null);
+    }
+
+    public SqlColumn(final int id, final ColumnMetadata metadata, final String tableName, final String tableAlias) {
         this.id = id;
         this.metadata = metadata;
         this.tableName = tableName;
+        this.tableAlias = tableAlias;
     }
     
     public int getId() {
@@ -33,6 +38,12 @@ public class SqlColumn extends SqlNode {
 
     public String getTableName() {
         return tableName;
+    }
+
+    public boolean hasTableAlias() { return this.tableAlias != null; }
+
+    public String getTableAlias() {
+        return tableAlias;
     }
     
     @Override
