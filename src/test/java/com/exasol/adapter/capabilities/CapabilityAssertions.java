@@ -31,27 +31,32 @@ public final class CapabilityAssertions {
 
     public static void assertCapabilitesContainAllOf(final Capabilities capabilities,
             final MainCapability... expectedCapabilities) {
-        assertThat(capabilities.getMainCapabilities(), containsInAnyOrder(expectedCapabilities));
+        assertThat("Contains main capabilities", capabilities.getMainCapabilities(),
+                containsInAnyOrder(expectedCapabilities));
     }
 
     public static void assertCapabilitesContainAllOf(final Capabilities capabilities,
             final LiteralCapability... expectedCapabilities) {
-        assertThat(capabilities.getLiteralCapabilities(), containsInAnyOrder(expectedCapabilities));
+        assertThat("Contains literal capabilities", capabilities.getLiteralCapabilities(),
+                containsInAnyOrder(expectedCapabilities));
     }
 
     public static void assertCapabilitesContainAllOf(final Capabilities capabilities,
             final PredicateCapability... expectedCapabilities) {
-        assertThat(capabilities.getPredicateCapabilities(), containsInAnyOrder(expectedCapabilities));
+        assertThat("Contains predicate capabilities", capabilities.getPredicateCapabilities(),
+                containsInAnyOrder(expectedCapabilities));
     }
 
     public static void assertCapabilitesContainAllOf(final Capabilities capabilities,
             final ScalarFunctionCapability... expectedCapabilities) {
-        assertThat(capabilities.getScalarFunctionCapabilities(), containsInAnyOrder(expectedCapabilities));
+        assertThat("Contains scalar function capabilities", capabilities.getScalarFunctionCapabilities(),
+                containsInAnyOrder(expectedCapabilities));
     }
 
     public static void assertCapabilitesContainAllOf(final Capabilities capabilities,
             final AggregateFunctionCapability... expectedCapabilities) {
-        assertThat(capabilities.getAggregateFunctionCapabilities(), containsInAnyOrder(expectedCapabilities));
+        assertThat("Contains aggregate function capabilities", capabilities.getAggregateFunctionCapabilities(),
+                containsInAnyOrder(expectedCapabilities));
     }
 
 }
