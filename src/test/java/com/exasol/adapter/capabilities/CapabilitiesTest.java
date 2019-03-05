@@ -1,8 +1,6 @@
 package com.exasol.adapter.capabilities;
 
 import static com.exasol.adapter.capabilities.CapabilityAssertions.*;
-import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +29,7 @@ class CapabilitiesTest {
         final MainCapability[] expectedCapabilities = { MainCapability.AGGREGATE_GROUP_BY_COLUMN,
                 MainCapability.AGGREGATE_GROUP_BY_EXPRESSION };
         final Capabilities capabilities = this.builder.addMain(expectedCapabilities).build();
-        assertAll(() -> assertThat(capabilities.getMainCapabilities(), containsInAnyOrder(expectedCapabilities)), //
+        assertAll(() -> assertCapabilitesContainAllOf(capabilities, expectedCapabilities), //
                 () -> assertEmptyLiteralCapabilities(capabilities), //
                 () -> assertEmptyPredicateCapabilities(capabilities), //
                 () -> assertEmptyScalarFunctionCapabilities(capabilities), //
@@ -43,7 +41,7 @@ class CapabilitiesTest {
         final LiteralCapability[] expectedCapabilities = { LiteralCapability.BOOL, LiteralCapability.DATE };
         final Capabilities capabilities = this.builder.addLiteral(expectedCapabilities).build();
         assertAll(() -> assertEmptyMainCapabilities(capabilities), //
-                () -> assertThat(capabilities.getLiteralCapabilities(), containsInAnyOrder(expectedCapabilities)), //
+                () -> assertCapabilitesContainAllOf(capabilities, expectedCapabilities), //
                 () -> assertEmptyPredicateCapabilities(capabilities), //
                 () -> assertEmptyScalarFunctionCapabilities(capabilities), //
                 () -> assertEmptyAggregateFunctionCapatilities(capabilities));
@@ -55,7 +53,7 @@ class CapabilitiesTest {
         final Capabilities capabilities = this.builder.addPredicate(expectedCapabilities).build();
         assertAll(() -> assertEmptyMainCapabilities(capabilities), //
                 () -> assertEmptyLiteralCapabilities(capabilities), //
-                () -> assertThat(capabilities.getPredicateCapabilities(), containsInAnyOrder(expectedCapabilities)), //
+                () -> assertCapabilitesContainAllOf(capabilities, expectedCapabilities), //
                 () -> assertEmptyScalarFunctionCapabilities(capabilities), //
                 () -> assertEmptyAggregateFunctionCapatilities(capabilities));
     }
@@ -68,8 +66,7 @@ class CapabilitiesTest {
         assertAll(() -> assertEmptyMainCapabilities(capabilities), //
                 () -> assertEmptyLiteralCapabilities(capabilities), //
                 () -> assertEmptyPredicateCapabilities(capabilities), //
-                () -> assertThat(capabilities.getScalarFunctionCapabilities(),
-                        containsInAnyOrder(expectedCapabilities)), //
+                () -> assertCapabilitesContainAllOf(capabilities, expectedCapabilities), //
                 () -> assertEmptyAggregateFunctionCapatilities(capabilities));
     }
 
@@ -82,7 +79,6 @@ class CapabilitiesTest {
                 () -> assertEmptyLiteralCapabilities(capabilities), //
                 () -> assertEmptyPredicateCapabilities(capabilities), //
                 () -> assertEmptyScalarFunctionCapabilities(capabilities), //
-                () -> assertThat(capabilities.getAggregateFunctionCapabilities(),
-                        containsInAnyOrder(expectedCapabilities)));
+                () -> assertCapabilitesContainAllOf(capabilities, expectedCapabilities));
     }
 }
