@@ -1,91 +1,163 @@
 package com.exasol.adapter.capabilities;
 
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Set;
 
 /**
- * Manages a set of supported Capabilities
+ * Manages a set of supported capabilities
  */
 public class Capabilities {
-    private final Set<MainCapability> mainCapabilities = new HashSet<>();
-    private final Set<ScalarFunctionCapability> scalarFunctionCaps = new HashSet<>();
-    private final Set<PredicateCapability> predicateCaps = new HashSet<>();
-    private final Set<AggregateFunctionCapability> aggregateFunctionCaps = new HashSet<>();
-    private final Set<LiteralCapability> literalCaps = new HashSet<>();
+    private final Set<MainCapability> mainCapabilities;
+    private final Set<LiteralCapability> literalCapabilities;
+    private final Set<PredicateCapability> predicateCapabilities;
+    private final Set<ScalarFunctionCapability> scalarFunctionCapabilities;
+    private final Set<AggregateFunctionCapability> aggregateFunctionCapabilities;
 
-    public void supportAllCapabilities() {
-        for (final MainCapability cap : MainCapability.values()) {
-            supportMainCapability(cap);
-        }
-        for (final ScalarFunctionCapability function : ScalarFunctionCapability.values()) {
-            supportScalarFunction(function);
-        }
-        for (final PredicateCapability pred : PredicateCapability.values()) {
-            supportPredicate(pred);
-        }
-        for (final AggregateFunctionCapability function : AggregateFunctionCapability.values()) {
-            supportAggregateFunction(function);
-        }
-        for (final LiteralCapability cap : LiteralCapability.values()) {
-            supportLiteral(cap);
-        }
+    private Capabilities(final Builder builder) {
+        this.mainCapabilities = EnumSet.copyOf(builder.mainCapabilities);
+        this.literalCapabilities = EnumSet.copyOf(builder.literalCapabilities);
+        this.predicateCapabilities = EnumSet.copyOf(builder.predicateCapabilities);
+        this.scalarFunctionCapabilities = EnumSet.copyOf(builder.scalarFunctionCapabilities);
+        this.aggregateFunctionCapabilities = EnumSet.copyOf(builder.aggregateFunctionCapabilities);
     }
 
-    public void subtractCapabilities(final Capabilities capabilitiesToSubtract) {
-        for (final MainCapability cap : capabilitiesToSubtract.mainCapabilities) {
-            mainCapabilities.remove(cap);
-        }
-        for (final ScalarFunctionCapability cap : capabilitiesToSubtract.getScalarFunctionCapabilities()) {
-            scalarFunctionCaps.remove(cap);
-        }
-        for (final PredicateCapability cap : capabilitiesToSubtract.getPredicateCapabilities()) {
-            predicateCaps.remove(cap);
-        }
-        for (final AggregateFunctionCapability cap : capabilitiesToSubtract.getAggregateFunctionCapabilities()) {
-            aggregateFunctionCaps.remove(cap);
-        }
-        for (final LiteralCapability cap : capabilitiesToSubtract.getLiteralCapabilities()) {
-            literalCaps.remove(cap);
-        }
-    }
-
-    public void supportMainCapability(final MainCapability cap) {
-        mainCapabilities.add(cap);
-    }
-
-    public void supportScalarFunction(final ScalarFunctionCapability functionType) {
-        scalarFunctionCaps.add(functionType);
-    }
-
-    public void supportPredicate(final PredicateCapability predicate) {
-        predicateCaps.add(predicate);
-    }
-
-    public void supportAggregateFunction(final AggregateFunctionCapability functionType) {
-        aggregateFunctionCaps.add(functionType);
-    }
-
-    public void supportLiteral(final LiteralCapability literal) {
-        literalCaps.add(literal);
-    }
-
+    /**
+     * Get the Virtual Schema's adapters main capabilities
+     *
+     * @return main capabilities
+     */
     public Set<MainCapability> getMainCapabilities() {
-        return mainCapabilities;
+        return this.mainCapabilities;
     }
 
-    public Set<ScalarFunctionCapability> getScalarFunctionCapabilities() {
-        return scalarFunctionCaps;
-    }
-
-    public Set<PredicateCapability> getPredicateCapabilities() {
-        return predicateCaps;
-    }
-
-    public Set<AggregateFunctionCapability> getAggregateFunctionCapabilities() {
-        return aggregateFunctionCaps;
-    }
-
+    /**
+     * Get the Virtual Schema's adapters literal capabilities
+     *
+     * @return scalar literal capabilities
+     */
     public Set<LiteralCapability> getLiteralCapabilities() {
-        return literalCaps;
+        return this.literalCapabilities;
+    }
+
+    /**
+     * Get the Virtual Schema's adapters predicate capabilities
+     *
+     * @return predicate capabilities
+     */
+    public Set<PredicateCapability> getPredicateCapabilities() {
+        return this.predicateCapabilities;
+    }
+
+    /**
+     * Get the Virtual Schema's adapters scalar function capabilities
+     *
+     * @return scalar function capabilities
+     */
+    public Set<ScalarFunctionCapability> getScalarFunctionCapabilities() {
+        return this.scalarFunctionCapabilities;
+    }
+
+    /**
+     * Get the Virtual Schema's adapters aggregate function capabilities
+     *
+     * @return aggregate function capabilities
+     */
+    public Set<AggregateFunctionCapability> getAggregateFunctionCapabilities() {
+        return this.aggregateFunctionCapabilities;
+    }
+
+    /**
+     * Get a {@link Capabilities} builder
+     *
+     * @return builder instance
+     */
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    /**
+     * Builder for {@link Capabilities}
+     */
+    public static final class Builder {
+        final Set<MainCapability> mainCapabilities = EnumSet.noneOf(MainCapability.class);
+        final Set<LiteralCapability> literalCapabilities = EnumSet.noneOf(LiteralCapability.class);
+        final Set<PredicateCapability> predicateCapabilities = EnumSet.noneOf(PredicateCapability.class);
+        final Set<ScalarFunctionCapability> scalarFunctionCapabilities = EnumSet.noneOf(ScalarFunctionCapability.class);
+        final Set<AggregateFunctionCapability> aggregateFunctionCapabilities = EnumSet
+                .noneOf(AggregateFunctionCapability.class);
+
+        /**
+         * Create new capability instance
+         *
+         * @return new capability instance
+         */
+        public Capabilities build() {
+            return new Capabilities(this);
+        }
+
+        /**
+         * Add one or more main capabilities
+         *
+         * @param capabilities capabilities to be added
+         * @return builder instance for fluent programming
+         */
+        public Builder addMain(final MainCapability... capabilities) {
+            for (final MainCapability capability : capabilities) {
+                this.mainCapabilities.add(capability);
+            }
+            return this;
+        }
+
+        /**
+         * Add one or more literal capabilities
+         *
+         * @param capabilities capabilities to be added
+         * @return builder instance for fluent programming
+         */
+        public Builder addLiteral(final LiteralCapability... capabilities) {
+            for (final LiteralCapability capability : capabilities) {
+                this.literalCapabilities.add(capability);
+            }
+            return this;
+        }
+
+        /**
+         * Add one or more predicate capabilities
+         *
+         * @param capabilities capabilities to be added
+         * @return builder instance for fluent programming
+         */
+        public Builder addPredicate(final PredicateCapability... capabilities) {
+            for (final PredicateCapability capability : capabilities) {
+                this.predicateCapabilities.add(capability);
+            }
+            return this;
+        }
+
+        /**
+         * Add one or more scalar function capabilities
+         *
+         * @param capabilities capabilities to be added
+         * @return builder instance for fluent programming
+         */
+        public Builder addScalarFunction(final ScalarFunctionCapability... capabilities) {
+            for (final ScalarFunctionCapability capability : capabilities) {
+                this.scalarFunctionCapabilities.add(capability);
+            }
+            return this;
+        }
+
+        /**
+         * Add one or more aggregate function capabilities
+         *
+         * @param capabilities capabilities to be added
+         * @return builder instance for fluent programming
+         */
+        public Builder addAggregateFunction(final AggregateFunctionCapability... capabilities) {
+            for (final AggregateFunctionCapability capability : capabilities) {
+                this.aggregateFunctionCapabilities.add(capability);
+            }
+            return this;
+        }
     }
 }
