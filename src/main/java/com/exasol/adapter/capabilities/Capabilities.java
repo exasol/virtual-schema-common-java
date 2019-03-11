@@ -1,5 +1,6 @@
 package com.exasol.adapter.capabilities;
 
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -67,6 +68,31 @@ public class Capabilities {
     }
 
     /**
+     * Removes unsupported capabilities
+     *
+     * @param capabilitiesToExclude unsupported capabilities
+     * @return supported capabilities
+     */
+    public Capabilities subtractCapabilities(final Capabilities capabilitiesToExclude) {
+        final Builder builder = builder();
+        final Set<MainCapability> mainCapabilitiesWithExclusions = this.mainCapabilities;
+        mainCapabilitiesWithExclusions.removeAll(capabilitiesToExclude.getMainCapabilities());
+        final Set<LiteralCapability> literalCapabilitiesWithExclusions = this.literalCapabilities;
+        literalCapabilitiesWithExclusions.removeAll(capabilitiesToExclude.getLiteralCapabilities());
+        final Set<PredicateCapability> predicateCapabilitiesWithExclusions = this.predicateCapabilities;
+        predicateCapabilitiesWithExclusions.removeAll(capabilitiesToExclude.getPredicateCapabilities());
+        final Set<ScalarFunctionCapability> scalarCapabilitiesWithExclusions = this.scalarFunctionCapabilities;
+        scalarCapabilitiesWithExclusions.removeAll(capabilitiesToExclude.getScalarFunctionCapabilities());
+        final Set<AggregateFunctionCapability> aggregateCapabilitiesWithExclusions = this.aggregateFunctionCapabilities;
+        aggregateCapabilitiesWithExclusions.removeAll(capabilitiesToExclude.getAggregateFunctionCapabilities());
+
+        builder.addMain(mainCapabilitiesWithExclusions).addPredicate(predicateCapabilitiesWithExclusions)
+              .addLiteral(literalCapabilitiesWithExclusions).addScalarFunction(scalarCapabilitiesWithExclusions)
+              .addAggregateFunction(aggregateCapabilitiesWithExclusions);
+        return builder.build();
+    }
+
+    /**
      * Get a {@link Capabilities} builder
      *
      * @return builder instance
@@ -83,8 +109,8 @@ public class Capabilities {
         final Set<LiteralCapability> literalCapabilities = EnumSet.noneOf(LiteralCapability.class);
         final Set<PredicateCapability> predicateCapabilities = EnumSet.noneOf(PredicateCapability.class);
         final Set<ScalarFunctionCapability> scalarFunctionCapabilities = EnumSet.noneOf(ScalarFunctionCapability.class);
-        final Set<AggregateFunctionCapability> aggregateFunctionCapabilities = EnumSet
-                .noneOf(AggregateFunctionCapability.class);
+        final Set<AggregateFunctionCapability> aggregateFunctionCapabilities =
+              EnumSet.noneOf(AggregateFunctionCapability.class);
 
         /**
          * Create new capability instance
@@ -102,9 +128,18 @@ public class Capabilities {
          * @return builder instance for fluent programming
          */
         public Builder addMain(final MainCapability... capabilities) {
-            for (final MainCapability capability : capabilities) {
-                this.mainCapabilities.add(capability);
-            }
+            this.mainCapabilities.addAll(Arrays.asList(capabilities));
+            return this;
+        }
+
+        /**
+         * Add one or more main capabilities
+         *
+         * @param capabilities capabilities to be added
+         * @return builder instance for fluent programming
+         */
+        public Builder addMain(final Set<MainCapability> capabilities) {
+            this.mainCapabilities.addAll(capabilities);
             return this;
         }
 
@@ -115,9 +150,18 @@ public class Capabilities {
          * @return builder instance for fluent programming
          */
         public Builder addLiteral(final LiteralCapability... capabilities) {
-            for (final LiteralCapability capability : capabilities) {
-                this.literalCapabilities.add(capability);
-            }
+            this.literalCapabilities.addAll(Arrays.asList(capabilities));
+            return this;
+        }
+
+        /**
+         * Add one or more literal capabilities
+         *
+         * @param capabilities capabilities to be added
+         * @return builder instance for fluent programming
+         */
+        public Builder addLiteral(final Set<LiteralCapability> capabilities) {
+            this.literalCapabilities.addAll(capabilities);
             return this;
         }
 
@@ -128,9 +172,18 @@ public class Capabilities {
          * @return builder instance for fluent programming
          */
         public Builder addPredicate(final PredicateCapability... capabilities) {
-            for (final PredicateCapability capability : capabilities) {
-                this.predicateCapabilities.add(capability);
-            }
+            this.predicateCapabilities.addAll(Arrays.asList(capabilities));
+            return this;
+        }
+
+        /**
+         * Add one or more predicate capabilities
+         *
+         * @param capabilities capabilities to be added
+         * @return builder instance for fluent programming
+         */
+        public Builder addPredicate(final Set<PredicateCapability> capabilities) {
+            this.predicateCapabilities.addAll(capabilities);
             return this;
         }
 
@@ -141,9 +194,18 @@ public class Capabilities {
          * @return builder instance for fluent programming
          */
         public Builder addScalarFunction(final ScalarFunctionCapability... capabilities) {
-            for (final ScalarFunctionCapability capability : capabilities) {
-                this.scalarFunctionCapabilities.add(capability);
-            }
+            this.scalarFunctionCapabilities.addAll(Arrays.asList(capabilities));
+            return this;
+        }
+
+        /**
+         * Add one or more scalar function capabilities
+         *
+         * @param capabilities capabilities to be added
+         * @return builder instance for fluent programming
+         */
+        public Builder addScalarFunction(final Set<ScalarFunctionCapability> capabilities) {
+            this.scalarFunctionCapabilities.addAll(capabilities);
             return this;
         }
 
@@ -154,9 +216,18 @@ public class Capabilities {
          * @return builder instance for fluent programming
          */
         public Builder addAggregateFunction(final AggregateFunctionCapability... capabilities) {
-            for (final AggregateFunctionCapability capability : capabilities) {
-                this.aggregateFunctionCapabilities.add(capability);
-            }
+            this.aggregateFunctionCapabilities.addAll(Arrays.asList(capabilities));
+            return this;
+        }
+
+        /**
+         * Add one or more aggregate function capabilities
+         *
+         * @param capabilities capabilities to be added
+         * @return builder instance for fluent programming
+         */
+        public Builder addAggregateFunction(final Set<AggregateFunctionCapability> capabilities) {
+            this.aggregateFunctionCapabilities.addAll(capabilities);
             return this;
         }
     }
