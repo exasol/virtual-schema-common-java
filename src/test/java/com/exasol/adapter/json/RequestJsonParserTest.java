@@ -14,7 +14,7 @@ import com.exasol.adapter.sql.SqlNodeType;
 import com.exasol.adapter.sql.SqlStatementSelect;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.internal.matchers.apachecommons.ReflectionEquals;
 
 import java.io.File;
@@ -26,10 +26,9 @@ import java.util.Map;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-public class RequestJsonParserTest {
-
+class RequestJsonParserTest {
     @Test
-    public void testParsePushdownRequest() throws Exception {
+    void testParsePushdownRequest() throws Exception {
         // test resources from src/test/resources are copied to target/test-classes, and this folder is the classpath of the junit test.
         final String file = "target/test-classes/pushdown_request.json";
         final String json = Files.toString(new File(file), Charsets.UTF_8);
@@ -60,7 +59,7 @@ public class RequestJsonParserTest {
     }
 
     @Test
-    public void testParsePushdownRequestAllTypes() throws Exception {
+    void testParsePushdownRequestAllTypes() throws Exception {
         final String file = "target/test-classes/pushdown_request_alltypes.json";
         final String json = Files.toString(new File(file), Charsets.UTF_8);
 
@@ -99,7 +98,7 @@ public class RequestJsonParserTest {
     }
 
     @Test
-    public void testParseSetPropertiesRequest() throws Exception {
+    void testParseSetPropertiesRequest() throws Exception {
         final String file = "target/test-classes/set_properties_request.json";
         final String json = Files.toString(new File(file), Charsets.UTF_8);
 
@@ -121,7 +120,7 @@ public class RequestJsonParserTest {
     }
 
     @Test
-    public void testSimpleInnerJoinRequest() throws Exception {
+    void testSimpleInnerJoinRequest() throws Exception {
         final String req =
         "{"+
         "\"involvedTables\" :" +
@@ -211,9 +210,6 @@ public class RequestJsonParserTest {
         assertSame(SqlNodeType.TABLE, from.getRight().getType());
     }
 
-    /**
-     * Without this method we would need to override equals() and .hashcode() for each object, which explodes code and makes it less maintainable
-     */
     private  <T> void assertObjectEquals(final T expected, final T actual) {
         assertTrue("Expected:\n" + expected + "\nactual:\n" + actual, new ReflectionEquals(actual, (String[])null).matches(expected));
     }
