@@ -4,9 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static com.exasol.adapter.capabilities.CapabilityAssertions.*;
-import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 class CapabilitiesTest {
@@ -115,22 +115,13 @@ class CapabilitiesTest {
         final Capabilities capabilitiesWithExclusion = capabilities.subtractCapabilities(capabilitiesToExclude);
         assertAll(() -> assertThat(capabilitiesWithExclusion.getMainCapabilities(),
               contains(MainCapability.AGGREGATE_GROUP_BY_EXPRESSION)),
-              () -> assertThat(capabilitiesWithExclusion.getMainCapabilities(),
-                    not(contains(MainCapability.AGGREGATE_GROUP_BY_COLUMN))),
-              () -> assertThat(capabilitiesWithExclusion.getLiteralCapabilities(), contains(LiteralCapability.DOUBLE)),
               () -> assertThat(capabilitiesWithExclusion.getLiteralCapabilities(),
-                    not(contains(LiteralCapability.DATE))),
+                    containsInAnyOrder(LiteralCapability.DOUBLE)),
               () -> assertThat(capabilitiesWithExclusion.getPredicateCapabilities(),
-                    contains(PredicateCapability.BETWEEN)),
-              () -> assertThat(capabilitiesWithExclusion.getPredicateCapabilities(),
-                    not(contains(PredicateCapability.EQUAL))),
+                    containsInAnyOrder(PredicateCapability.BETWEEN)),
               () -> assertThat(capabilitiesWithExclusion.getScalarFunctionCapabilities(),
-                    contains(ScalarFunctionCapability.ABS)),
-              () -> assertThat(capabilitiesWithExclusion.getScalarFunctionCapabilities(),
-                    not(contains(ScalarFunctionCapability.ADD))),
+                    containsInAnyOrder(ScalarFunctionCapability.ABS)),
               () -> assertThat(capabilitiesWithExclusion.getAggregateFunctionCapabilities(),
-                    contains(AggregateFunctionCapability.AVG)),
-              () -> assertThat(capabilitiesWithExclusion.getAggregateFunctionCapabilities(),
-                    not(contains(AggregateFunctionCapability.APPROXIMATE_COUNT_DISTINCT))));
+                    containsInAnyOrder(AggregateFunctionCapability.AVG)));
     }
 }
