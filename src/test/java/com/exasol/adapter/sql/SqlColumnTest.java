@@ -5,8 +5,6 @@ import com.exasol.adapter.metadata.ColumnMetadata;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
@@ -18,14 +16,14 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@RunWith(JUnitPlatform.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 class SqlColumnTest {
     private static final int ID = 1;
     private static final String TABLE_NAME = "table_name";
     private static final String METADATA_TEST_NAME = "metadata_test_name";
     private SqlColumn sqlColumn;
-    @Mock private ColumnMetadata columnMetadata;
+    @Mock
+    private ColumnMetadata columnMetadata;
 
     @BeforeEach
     void setUp() {

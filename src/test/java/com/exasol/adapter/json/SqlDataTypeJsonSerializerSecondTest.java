@@ -3,8 +3,6 @@ package com.exasol.adapter.json;
 import com.exasol.adapter.metadata.DataType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -16,15 +14,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@RunWith(JUnitPlatform.class)
-class SqlDataTypeJsonSerializerTest {
-    @Mock DataType dataType;
+class SqlDataTypeJsonSerializerSecondTest {
+    @Mock
+    DataType dataType;
 
     @Test
     void testSerializeUnsupportedThrowsException() {
         when(this.dataType.getExaDataType()).thenReturn(DataType.ExaDataType.UNSUPPORTED);
-        assertThrows(IllegalArgumentException.class,
-              () -> SqlDataTypeJsonSerializer.serialize(this.dataType));
+        assertThrows(IllegalArgumentException.class, () -> SqlDataTypeJsonSerializer.serialize(this.dataType));
     }
 
     @Test
