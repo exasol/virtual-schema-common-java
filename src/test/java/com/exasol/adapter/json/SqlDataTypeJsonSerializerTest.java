@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class SqlDataTypeJsonSerializerSecondTest {
+class SqlDataTypeJsonSerializerTest {
     @Mock
     DataType dataType;
 
@@ -32,34 +32,6 @@ class SqlDataTypeJsonSerializerSecondTest {
         final JsonObject jsonObject = SqlDataTypeJsonSerializer.serialize(this.dataType).build();
         assertAll(() -> assertEquals(5, jsonObject.getInt("precision")),
               () -> assertEquals(3, jsonObject.getInt("scale")));
-    }
-
-    @Test
-    void testSerializeDoubleNoException() {
-        when(this.dataType.getExaDataType()).thenReturn(DataType.ExaDataType.DOUBLE);
-        SqlDataTypeJsonSerializer.serialize(this.dataType);
-    }
-
-    @Test
-    void testSerializeDateNoException() {
-        when(this.dataType.getExaDataType()).thenReturn(DataType.ExaDataType.DATE);
-        SqlDataTypeJsonSerializer.serialize(this.dataType);
-    }
-
-    @Test
-    void testSerializeBooleanNoException() {
-        when(this.dataType.getExaDataType()).thenReturn(DataType.ExaDataType.BOOLEAN);
-        SqlDataTypeJsonSerializer.serialize(this.dataType);
-    }
-
-    @Test
-    void testSerializeVarcharNoException() {
-        serializeCharOrVarchar(DataType.ExaDataType.VARCHAR);
-    }
-
-    @Test
-    void testSerializeCharNoException() {
-        serializeCharOrVarchar(DataType.ExaDataType.CHAR);
     }
 
     private void serializeCharOrVarchar(final DataType.ExaDataType exaDataType) {

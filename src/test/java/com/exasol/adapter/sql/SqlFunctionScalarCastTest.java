@@ -18,7 +18,6 @@ class SqlFunctionScalarCastTest {
     private SqlFunctionScalarCast sqlFunctionScalarCast;
     private List<SqlNode> arguments;
     private DataType dataType;
-    private SqlNode sqlNode;
 
     @BeforeEach
     void setUp() {
