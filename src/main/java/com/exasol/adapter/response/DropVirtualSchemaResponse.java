@@ -6,6 +6,11 @@ import com.exasol.adapter.response.converter.ResponseJsonConverter;
  * Used in overloaded convert() method of {@link ResponseJsonConverter}
  */
 public final class DropVirtualSchemaResponse {
+    /**
+     * Get a {@link DropVirtualSchemaResponse} builder
+     *
+     * @return builder instance
+     */
     public static Builder builder() {
         return new Builder();
     }
