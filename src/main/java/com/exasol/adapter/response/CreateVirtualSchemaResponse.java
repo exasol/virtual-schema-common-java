@@ -1,10 +1,10 @@
 package com.exasol.adapter.response;
 
 import com.exasol.adapter.metadata.SchemaMetadata;
-import com.exasol.adapter.response.converter.ResponseJsonConverter;
 
 /**
- * Used in overloaded convert() method of {@link ResponseJsonConverter}
+ * This class is an abstract representation of a response
+ * created by a Virtual Schema Adapter as result of a request to create a new virtual schema.
  */
 public final class CreateVirtualSchemaResponse {
     private final SchemaMetadata schemaMetadata;
@@ -40,9 +40,10 @@ public final class CreateVirtualSchemaResponse {
         /**
          * Add the Virtual Schema's metadata
          *
+         * @param schemaMetadata Virtual Schema's metadata
          * @return builder instance for fluent programming
          */
-        public Builder addSchemaMetadata(final SchemaMetadata schemaMetadata) {
+        public Builder schemaMetadata(final SchemaMetadata schemaMetadata) {
             this.schemaMetadata = schemaMetadata;
             return this;
         }

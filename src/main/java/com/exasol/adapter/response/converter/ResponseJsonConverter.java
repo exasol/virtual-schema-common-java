@@ -10,7 +10,7 @@ import javax.json.JsonBuilderFactory;
 import javax.json.JsonObject;
 
 /**
- * Converts response into Json format
+ * Converts response into JSON format
  */
 public final class ResponseJsonConverter {
     private static final String SCHEMA_METADATA = "schemaMetadata";
@@ -30,27 +30,27 @@ public final class ResponseJsonConverter {
     }
 
     /**
-     * Converts drop response into a Json format
+     * Converts drop response into a JSON format
      *
      * @param dropResponse instance
-     * @return string representation of a JsonObject
+     * @return string representation of a JSONObject
      */
     @SuppressWarnings("squid:S1172")
     public String convert(final DropVirtualSchemaResponse dropResponse) {
         final JsonBuilderFactory factory = JsonHelper.getBuilderFactory();
-        final JsonObject res = factory.createObjectBuilder().add("type", "dropVirtualSchema").build();
-        return res.toString();
+        final JsonObject response = factory.createObjectBuilder().add("type", "dropVirtualSchema").build();
+        return response.toString();
     }
 
     /**
-     * Converts create response into a Json format
+     * Converts create response into a JSON format
      *
      * @param createResponse instance
-     * @return string representation of a JsonObject
+     * @return string representation of a JSONObject
      */
     public String convert(final CreateVirtualSchemaResponse createResponse) {
-        final JsonObject res = Json.createObjectBuilder().add("type", "createVirtualSchema")
+        final JsonObject response = Json.createObjectBuilder().add("type", "createVirtualSchema")
               .add(SCHEMA_METADATA, SchemaMetadataSerializer.serialize(createResponse.getSchemaMetadata())).build();
-        return res.toString();
+        return response.toString();
     }
 }

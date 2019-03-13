@@ -1,9 +1,8 @@
 package com.exasol.adapter.response;
 
-import com.exasol.adapter.response.converter.ResponseJsonConverter;
-
 /**
- * Used in overloaded convert() method of {@link ResponseJsonConverter}
+ * This class is an abstract representation of a response
+ * created by a Virtual Schema Adapter as result of a request to drop a virtual schema.
  */
 public final class DropVirtualSchemaResponse {
     /**

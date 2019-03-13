@@ -28,7 +28,7 @@ class ResponseJsonConverterTest {
     @Test
     void testMakeCreateVirtualSchemaResponse() throws JSONException {
         final CreateVirtualSchemaResponse.Builder builder = CreateVirtualSchemaResponse.builder();
-        final CreateVirtualSchemaResponse createResponse = builder.addSchemaMetadata(new SchemaMetadata("notes",
+        final CreateVirtualSchemaResponse createResponse = builder.schemaMetadata(new SchemaMetadata("notes",
               Collections.emptyList())).build();
         JSONAssert.assertEquals("{\"type\":\"createVirtualSchema\"," //
                     + "\"schemaMetadata\":{\"tables\":[]," //
