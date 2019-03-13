@@ -3,8 +3,6 @@ package com.exasol.utils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
@@ -19,7 +17,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@RunWith(JUnitPlatform.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 class JsonHelperTest {
     private static final String DEFAULT_VALUE = "default";
@@ -38,10 +35,8 @@ class JsonHelperTest {
         when(this.jsonObject.containsKey(KEY_2)).thenReturn(true);
         when(this.jsonValue.toString()).thenReturn(KEY_2);
         when(this.jsonObject.get(KEY_2)).thenReturn(this.jsonValue);
-        this.expectedJsonObject = Json.createObjectBuilder()
-              .add("type", "getCapabilities")
-              .add("capabilities", "LIMIT")
-              .build();
+        this.expectedJsonObject =
+              Json.createObjectBuilder().add("type", "getCapabilities").add("capabilities", "LIMIT").build();
     }
 
     @Test

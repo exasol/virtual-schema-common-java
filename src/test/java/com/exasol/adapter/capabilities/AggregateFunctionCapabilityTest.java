@@ -1,14 +1,13 @@
 package com.exasol.adapter.capabilities;
 
 import com.exasol.adapter.sql.AggregateFunction;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertTrue;
 
-public class AggregateFunctionCapabilityTest {
+class AggregateFunctionCapabilityTest {
     @Test
-    public void testCompleteness() {
-        // Do we have functions where we don't have capabilities for?
+    void testIfThereAreFunctionsWhereCapabilitiesMissing() {
         for (final AggregateFunction func : AggregateFunction.values()) {
             boolean foundCap = false;
             for (final AggregateFunctionCapability cap : AggregateFunctionCapability.values()) {
@@ -21,10 +20,9 @@ public class AggregateFunctionCapabilityTest {
     }
 
     @Test
-    public void testConsistentNaming() {
+    void testConsistentNaming() {
         for (final AggregateFunctionCapability cap : AggregateFunctionCapability.values()) {
             assertTrue(cap.name().startsWith(cap.getFunction().name()));
         }
     }
-
 }

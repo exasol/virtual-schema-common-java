@@ -1,14 +1,13 @@
 package com.exasol.adapter.capabilities;
 
 import com.exasol.adapter.sql.Predicate;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertTrue;
 
-public class PredicateCapabilityTest {
+class PredicateCapabilityTest {
     @Test
-    public void testCompleteness() {
-        // Do we have predicates where we don't have capabilities for?
+    void testIfThereArePredicatesWhereCapabilitiesMissing() {
         for (final Predicate pred : Predicate.values()) {
             boolean foundCap = false;
             for (final PredicateCapability cap : PredicateCapability.values()) {
@@ -21,10 +20,9 @@ public class PredicateCapabilityTest {
     }
 
     @Test
-    public void testConsistentNaming() {
+    void testConsistentNaming() {
         for (final PredicateCapability cap : PredicateCapability.values()) {
             assertTrue(cap.name().startsWith(cap.getPredicate().name()));
         }
     }
-
 }

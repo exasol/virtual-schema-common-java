@@ -7,7 +7,7 @@ import com.exasol.adapter.metadata.MetadataException;
 import com.exasol.adapter.metadata.TableMetadata;
 import com.exasol.SqlTestUtil;
 import com.google.common.collect.ImmutableList;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -15,9 +15,9 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class SqlNodeTest {
+class SqlNodeTest {
     @Test
-    public void testToSimpleSql() throws MetadataException {
+    void testToSimpleSql() throws MetadataException {
         final SqlNode node = getTestSqlNode();
         final String expectedSql = "SELECT \"USER_ID\", COUNT(\"URL\") FROM \"CLICKS\"" +
         " WHERE 1 < \"USER_ID\"" +
