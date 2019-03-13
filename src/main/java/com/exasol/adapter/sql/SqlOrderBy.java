@@ -9,9 +9,6 @@ import java.util.List;
 public class SqlOrderBy extends SqlNode {
     private final List<SqlNode> expressions;
     private final List<Boolean> isAsc;
-
-    // True, if the desired position of nulls is at the end, false if at beginning.
-    // This does not necessarily mean the user explicitly specified NULLS LAST or NULLS FIRST.
     private final List<Boolean> nullsLast;
 
     public SqlOrderBy(final List<SqlNode> expressions, final List<Boolean> isAsc, final List<Boolean> nullsFirst) {
@@ -26,40 +23,38 @@ public class SqlOrderBy extends SqlNode {
     }
 
     public List<SqlNode> getExpressions() {
-        if (expressions == null) {
+        if (this.expressions == null) {
             return Collections.emptyList();
         } else {
-            return Collections.unmodifiableList(expressions);
+            return Collections.unmodifiableList(this.expressions);
         }
     }
 
     public List<Boolean> isAscending() {
-        if (isAsc == null) {
+        if (this.isAsc == null) {
             return Collections.emptyList();
         } else {
-            return Collections.unmodifiableList(isAsc);
+            return Collections.unmodifiableList(this.isAsc);
         }
     }
 
     public List<Boolean> nullsLast() {
-        if (nullsLast == null) {
+        if (this.nullsLast == null) {
             return Collections.emptyList();
         } else {
-            return Collections.unmodifiableList(nullsLast);
+            return Collections.unmodifiableList(this.nullsLast);
         }
     }
 
     @Override
     public String toSimpleSql() {
-        // ORDER BY <expr> [ASC/DESC] [NULLS FIRST/LAST]
-        // ASC and NULLS LAST are default
         final List<String> sqlOrderElement = new ArrayList<>();
-        for (int i = 0; i < expressions.size(); ++i) {
-            String elementSql = expressions.get(i).toSimpleSql();
-            if (!isAsc.get(i)) {
+        for (int i = 0; i < this.expressions.size(); ++i) {
+            String elementSql = this.expressions.get(i).toSimpleSql();
+            if (!this.isAsc.get(i)) {
                 elementSql += " DESC";
             }
-            if (!nullsLast.get(i)) {
+            if (!this.nullsLast.get(i)) {
                 elementSql += " NULLS FIRST";
             }
             sqlOrderElement.add(elementSql);
