@@ -28,22 +28,22 @@ public class SqlPredicateLike extends SqlPredicate {
     }
     
     public SqlNode getLeft() {
-        return left;
+        return this.left;
     }
     
     public SqlNode getPattern() {
-        return pattern;
+        return this.pattern;
     }
 
     public SqlNode getEscapeChar() {
-        return escapeChar;
+        return this.escapeChar;
     }
     
     @Override
     public String toSimpleSql() {
-        String sql = left.toSimpleSql() + " LIKE " + pattern.toSimpleSql();
-        if (escapeChar != null) {
-            sql += " ESCAPE " + escapeChar;
+        String sql = this.left.toSimpleSql() + " LIKE " + this.pattern.toSimpleSql();
+        if (this.escapeChar != null) {
+            sql += " ESCAPE " + this.escapeChar.toSimpleSql();
         }
         return sql;
     }
