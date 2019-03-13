@@ -7,8 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 class PredicateCapabilityTest {
     @Test
-    void testCompleteness() {
-        // Do we have predicates where we don't have capabilities for?
+    void testIfThereArePredicatesWhereCapabilitiesMissing() {
         for (final Predicate pred : Predicate.values()) {
             boolean foundCap = false;
             for (final PredicateCapability cap : PredicateCapability.values()) {
@@ -26,5 +25,4 @@ class PredicateCapabilityTest {
             assertTrue(cap.name().startsWith(cap.getPredicate().name()));
         }
     }
-
 }

@@ -135,32 +135,80 @@ class RequestJsonParserTest {
 
     @Test
     void testSimpleInnerJoinRequest() throws Exception {
-        final String req = "{" + "\"involvedTables\" :" + "            [" + "                {" +
-              "                    \"columns\" :" + "                    [" + "                        {" +
-              "                            \"dataType\" :" + "                            {" +
-              "                                \"precision\" : 18," + "                                \"scale\" : 0," +
-              "                                \"type\" : \"DECIMAL\"" + "                            }," +
-              "                            \"name\" : \"ID\"" + "                        }" + "                    ]," +
-              "                    \"name\" : \"T1\"" + "                }," + "                {" +
-              "                    \"columns\" :" + "                    [" + "                        {" +
-              "                            \"dataType\" :" + "                            {" +
-              "                                \"precision\" : 18," + "                                \"scale\" : 0," +
-              "                                \"type\" : \"DECIMAL\"" + "                            }," +
-              "                            \"name\" : \"ID\"" + "                        }" + "                    ]," +
-              "                    \"name\" : \"T2\"" + "                }" + "            ]," +
-              "    \"pushdownRequest\" : " + "    {" + "        \"type\" : \"select\"," + "        \"from\" : " +
-              "        {" + "            \"type\": \"join\"," + "            \"join_type\": \"inner\"," +
-              "            \"left\":" + "            {" + "                \"name\" : \"T1\"," +
-              "                \"type\" : \"table\"" + "            }," + "            \"right\":" + "            {" +
-              "                \"name\" : \"T2\"," + "                \"type\" : \"table\"" + "            }," +
-              "            \"condition\":" + "            {" + "                \"left\" :" + "                {" +
-              "                        \"columnNr\" : 0," + "                        \"name\" : \"ID\"," +
-              "                        \"tableName\" : \"T1\"," + "                        \"type\" : \"column\"" +
-              "                }," + "                \"right\" :" + "                {" +
-              "                        \"columnNr\" : 0," + "                        \"name\" : \"ID\"," +
-              "                        \"tableName\" : \"T2\"," + "                        \"type\" : \"column\"" +
-              "                }," + "                \"type\" : \"predicate_equal\"" + "            }" + "        }" +
-              "    }," + "    \"type\" : \"pushdown\"" + "}";
+        final String req = //
+              "{" //
+                    + "\"involvedTables\" :"  //
+                    + "            ["  //
+                    + "                {"  //
+                    + "                    \"columns\" :"  //
+                    + "                    ["  //
+                    + "                        {"  //
+                    + "                            \"dataType\" :"  //
+                    + "                            {"  //
+                    + "                                \"precision\" : 18,"  //
+                    + "                                \"scale\" : 0,"  //
+                    + "                                \"type\" : \"DECIMAL\""  //
+                    + "                            },"  //
+                    + "                            \"name\" : \"ID\""  //
+                    + "                        }"  //
+                    + "                    ],"  //
+                    + "                    \"name\" : \"T1\""  //
+                    + "                },"  //
+                    + "                {"  //
+                    + "                    \"columns\" :"  //
+                    + "                    ["  //
+                    + "                        {"  //
+                    + "                            \"dataType\" :"  //
+                    + "                            {"  //
+                    + "                                \"precision\" : 18,"  //
+                    + "                                \"scale\" : 0,"  //
+                    + "                                \"type\" : \"DECIMAL\""  //
+                    + "                            },"  //
+                    + "                            \"name\" : \"ID\""  //
+                    + "                        }"  // //
+                    + "                    ],"  //
+                    + "                    \"name\" : \"T2\""  //
+                    + "                }"  //
+                    + "            ],"  //
+                    + "    \"pushdownRequest\" : "  //
+                    + "    {"  //
+                    + "        \"type\" : \"select\","  //
+                    + "        \"from\" : "  //
+                    + "        {"  //
+                    + "            \"type\": \"join\","  //
+                    + "            \"join_type\": \"inner\","  //
+                    + "            \"left\":"  //
+                    + "            {"  //
+                    + "                \"name\" : \"T1\","  //
+                    + "                \"type\" : \"table\""  //
+                    + "            },"  //
+                    + "            \"right\":"  //
+                    + "            {"  //
+                    + "                \"name\" : \"T2\"," //
+                    + "                \"type\" : \"table\"" //
+                    + "            },"  //
+                    + "            \"condition\":"  //
+                    + "            {"  //
+                    + "                \"left\" :"  //
+                    + "                {"  //
+                    + "                        \"columnNr\" : 0,"  //
+                    + "                        \"name\" : \"ID\","  //
+                    + "                        \"tableName\" : \"T1\","  //
+                    + "                        \"type\" : \"column\""  //
+                    + "                },"  //
+                    + "                \"right\" :"  //
+                    + "                {" //
+                    + "                        \"columnNr\" : 0,"  //
+                    + "                        \"name\" : \"ID\","  //
+                    + "                        \"tableName\" : \"T2\","  //
+                    + "                        \"type\" : \"column\"" //
+                    + "                },"  //
+                    + "                \"type\" : \"predicate_equal\""  //
+                    + "            }"  //
+                    + "        }"  //
+                    + "    },"  //
+                    + "    \"type\" : \"pushdown\""  //
+                    + "}"; //
 
         final RequestJsonParser parser = new RequestJsonParser();
         final AdapterRequest request = parser.parseRequest(req);

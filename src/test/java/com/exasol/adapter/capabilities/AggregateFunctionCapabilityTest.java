@@ -7,8 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 class AggregateFunctionCapabilityTest {
     @Test
-    void testCompleteness() {
-        // Do we have functions where we don't have capabilities for?
+    void testIfThereAreFunctionsWhereCapabilitiesMissing() {
         for (final AggregateFunction func : AggregateFunction.values()) {
             boolean foundCap = false;
             for (final AggregateFunctionCapability cap : AggregateFunctionCapability.values()) {
@@ -26,5 +25,4 @@ class AggregateFunctionCapabilityTest {
             assertTrue(cap.name().startsWith(cap.getFunction().name()));
         }
     }
-
 }
