@@ -16,7 +16,8 @@ public class SqlFunctionScalar extends SqlNode {
     private final boolean isInfix;
     private final boolean isPrefix;
 
-    public SqlFunctionScalar(final ScalarFunction function, final List<SqlNode> arguments, final boolean isInfix, final boolean isPrefix) {
+    public SqlFunctionScalar(final ScalarFunction function, final List<SqlNode> arguments, final boolean isInfix,
+          final boolean isPrefix) {
         this.arguments = arguments;
         this.function = function;
         this.isInfix = isInfix;
@@ -29,19 +30,19 @@ public class SqlFunctionScalar extends SqlNode {
     }
 
     public List<SqlNode> getArguments() {
-        if (arguments == null) {
+        if (this.arguments == null) {
             return Collections.emptyList();
         } else {
-            return Collections.unmodifiableList(arguments);
+            return Collections.unmodifiableList(this.arguments);
         }
     }
 
     public ScalarFunction getFunction() {
-        return function;
+        return this.function;
     }
 
     public String getFunctionName() {
-        return function.name();
+        return this.function.name();
     }
 
     public int getNumArgs() {
@@ -49,20 +50,20 @@ public class SqlFunctionScalar extends SqlNode {
     }
 
     public boolean isInfix() {
-        return isInfix;
+        return this.isInfix;
     }
 
     public boolean isPrefix() {
-        return isPrefix;
+        return this.isPrefix;
     }
 
     @Override
     public String toSimpleSql() {
         final List<String> argumentsSql = new ArrayList<>();
-        for (final SqlNode node : arguments) {
+        for (final SqlNode node : this.arguments) {
             argumentsSql.add(node.toSimpleSql());
         }
-        if (isInfix) {
+        if (this.isInfix) {
             assert argumentsSql.size() == 2;
             final Map<String, String> functionAliases = new HashMap<>();
             functionAliases.put("ADD", "+");
@@ -74,7 +75,7 @@ public class SqlFunctionScalar extends SqlNode {
                 realFunctionName = functionAliases.get(getFunctionName());
             }
             return "(" + argumentsSql.get(0) + " " + realFunctionName + " " + argumentsSql.get(1) + ")";
-        } else if (isPrefix) {
+        } else if (this.isPrefix) {
             assert argumentsSql.size() == 1;
             final Map<String, String> functionAliases = new HashMap<>();
             functionAliases.put("NEG", "-");
@@ -82,7 +83,7 @@ public class SqlFunctionScalar extends SqlNode {
             if (functionAliases.containsKey(getFunctionName())) {
                 realFunctionName = functionAliases.get(getFunctionName());
             }
-            return "(" + realFunctionName + argumentsSql.get(1) + ")";
+            return "(" + realFunctionName + " " + argumentsSql.get(0) + ")";
         }
         return getFunctionName() + "(" + String.join(", ", argumentsSql) + ")";
     }

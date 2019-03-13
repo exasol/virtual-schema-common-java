@@ -15,7 +15,7 @@ import static org.mockito.Mockito.when;
 
 class SqlFunctionAggregateTest {
     private static final boolean TEST_DISTINCT = true;
-    public static final String TEST_NAME = "test string";
+    private static final String TEST_NAME = "test string";
     private SqlFunctionAggregate sqlFunctionAggregate;
     private List<SqlNode> arguments;
     private AggregateFunction aggregateFunction;

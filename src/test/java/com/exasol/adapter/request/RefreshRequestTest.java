@@ -5,12 +5,8 @@ import com.exasol.adapter.metadata.SchemaMetadataInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,10 +17,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-@RunWith(JUnitPlatform.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 class RefreshRequestTest {
-    @Mock private SchemaMetadataInfo schemaMetadataInfo;
+    @Mock
+    private SchemaMetadataInfo schemaMetadataInfo;
     private RefreshRequest refreshRequest;
     private List<String> tables;
 
@@ -37,8 +32,8 @@ class RefreshRequestTest {
 
     @Test
     void testCreateWithEmptyTablesThrowsException() {
-        assertThrows(AdapterException.class, () -> this.refreshRequest =
-              new RefreshRequest(this.schemaMetadataInfo, Collections.emptyList()));
+        assertThrows(AdapterException.class,
+              () -> this.refreshRequest = new RefreshRequest(this.schemaMetadataInfo, Collections.emptyList()));
     }
 
     @Test

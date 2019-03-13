@@ -3,8 +3,6 @@ package com.exasol.adapter.json;
 import com.exasol.adapter.metadata.DataType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -16,15 +14,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@RunWith(JUnitPlatform.class)
 class SqlDataTypeJsonSerializerTest {
-    @Mock DataType dataType;
+    @Mock
+    DataType dataType;
 
     @Test
     void testSerializeUnsupportedThrowsException() {
         when(this.dataType.getExaDataType()).thenReturn(DataType.ExaDataType.UNSUPPORTED);
-        assertThrows(IllegalArgumentException.class,
-              () -> SqlDataTypeJsonSerializer.serialize(this.dataType));
+        assertThrows(IllegalArgumentException.class, () -> SqlDataTypeJsonSerializer.serialize(this.dataType));
     }
 
     @Test
@@ -35,34 +32,6 @@ class SqlDataTypeJsonSerializerTest {
         final JsonObject jsonObject = SqlDataTypeJsonSerializer.serialize(this.dataType).build();
         assertAll(() -> assertEquals(5, jsonObject.getInt("precision")),
               () -> assertEquals(3, jsonObject.getInt("scale")));
-    }
-
-    @Test
-    void testSerializeDoubleNoException() {
-        when(this.dataType.getExaDataType()).thenReturn(DataType.ExaDataType.DOUBLE);
-        SqlDataTypeJsonSerializer.serialize(this.dataType);
-    }
-
-    @Test
-    void testSerializeDateNoException() {
-        when(this.dataType.getExaDataType()).thenReturn(DataType.ExaDataType.DATE);
-        SqlDataTypeJsonSerializer.serialize(this.dataType);
-    }
-
-    @Test
-    void testSerializeBooleanNoException() {
-        when(this.dataType.getExaDataType()).thenReturn(DataType.ExaDataType.BOOLEAN);
-        SqlDataTypeJsonSerializer.serialize(this.dataType);
-    }
-
-    @Test
-    void testSerializeVarcharNoException() {
-        serializeCharOrVarchar(DataType.ExaDataType.VARCHAR);
-    }
-
-    @Test
-    void testSerializeCharNoException() {
-        serializeCharOrVarchar(DataType.ExaDataType.CHAR);
     }
 
     private void serializeCharOrVarchar(final DataType.ExaDataType exaDataType) {
