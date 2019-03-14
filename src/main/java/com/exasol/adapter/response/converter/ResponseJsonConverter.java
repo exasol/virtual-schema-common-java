@@ -3,6 +3,7 @@ package com.exasol.adapter.response.converter;
 import com.exasol.adapter.json.SchemaMetadataSerializer;
 import com.exasol.adapter.response.CreateVirtualSchemaResponse;
 import com.exasol.adapter.response.DropVirtualSchemaResponse;
+import com.exasol.adapter.response.PushDownResponse;
 import com.exasol.utils.JsonHelper;
 
 import javax.json.Json;
@@ -30,27 +31,46 @@ public final class ResponseJsonConverter {
     }
 
     /**
-     * Converts drop response into a JSON format
+     * Converts drop virtual schema response into a JSON format
      *
      * @param dropResponse instance
      * @return string representation of a JSONObject
      */
     @SuppressWarnings("squid:S1172")
-    public String convert(final DropVirtualSchemaResponse dropResponse) {
+    public String convertDropVirtualSchemaResponse(final DropVirtualSchemaResponse dropResponse) {
         final JsonBuilderFactory factory = JsonHelper.getBuilderFactory();
-        final JsonObject response = factory.createObjectBuilder().add("type", "dropVirtualSchema").build();
+        final JsonObject response = factory.createObjectBuilder() //
+              .add("type", "dropVirtualSchema") //
+              .build();
         return response.toString();
     }
 
     /**
-     * Converts create response into a JSON format
+     * Converts create virtual schema response into a JSON format
      *
      * @param createResponse instance
      * @return string representation of a JSONObject
      */
-    public String convert(final CreateVirtualSchemaResponse createResponse) {
-        final JsonObject response = Json.createObjectBuilder().add("type", "createVirtualSchema")
-              .add(SCHEMA_METADATA, SchemaMetadataSerializer.serialize(createResponse.getSchemaMetadata())).build();
+    public String convertCreateVirtualSchemaResponse(final CreateVirtualSchemaResponse createResponse) {
+        final JsonObject response = Json.createObjectBuilder() //
+              .add("type", "createVirtualSchema") //
+              .add(SCHEMA_METADATA, SchemaMetadataSerializer.serialize(createResponse.getSchemaMetadata())) //
+              .build();
         return response.toString();
+    }
+
+    /**
+     * Converts push down response into a JSON format
+     *
+     * @param pushDownResponse instance
+     * @return string representation of a JSONObject
+     */
+    public String convertPushDownResponse(final PushDownResponse pushDownResponse) {
+        final JsonBuilderFactory factory = JsonHelper.getBuilderFactory();
+        final JsonObject res = factory.createObjectBuilder() //
+              .add("type", "pushdown") //
+              .add("sql", pushDownResponse.getPushDownSql()) //
+              .build();
+        return res.toString();
     }
 }
