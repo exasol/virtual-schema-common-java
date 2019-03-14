@@ -1,8 +1,10 @@
 package com.exasol.adapter.response.converter;
 
+import com.exasol.adapter.capabilities.*;
 import com.exasol.adapter.metadata.SchemaMetadata;
 import com.exasol.adapter.response.CreateVirtualSchemaResponse;
 import com.exasol.adapter.response.DropVirtualSchemaResponse;
+import com.exasol.adapter.response.GetCapabilitiesResponse;
 import com.exasol.adapter.response.PushDownResponse;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,13 +22,6 @@ class ResponseJsonConverterTest {
     }
 
     @Test
-    void testConvertDropVirtualSchemaResponse() throws JSONException {
-        final DropVirtualSchemaResponse dropResponse = DropVirtualSchemaResponse.builder().build();
-        JSONAssert.assertEquals("{\"type\":\"dropVirtualSchema\"}",
-              this.responseJsonConverter.convertDropVirtualSchemaResponse(dropResponse), false);
-    }
-
-    @Test
     void testConvertCreateVirtualSchemaResponse() throws JSONException {
         final CreateVirtualSchemaResponse.Builder builder = CreateVirtualSchemaResponse.builder();
         final CreateVirtualSchemaResponse createResponse =
@@ -38,11 +33,39 @@ class ResponseJsonConverterTest {
     }
 
     @Test
-    void testConvertPushdownResponse() throws JSONException {
+    void testConvertDropVirtualSchemaResponse() throws JSONException {
+        final DropVirtualSchemaResponse dropResponse = DropVirtualSchemaResponse.builder().build();
+        JSONAssert.assertEquals("{\"type\":\"dropVirtualSchema\"}",
+              this.responseJsonConverter.convertDropVirtualSchemaResponse(dropResponse), false);
+    }
+
+    @Test
+    void testConvertPushDownResponse() throws JSONException {
         final PushDownResponse.Builder builder = PushDownResponse.builder();
         final PushDownResponse pushDownResponse = builder.pushDownSql("PUSH DOWN").build();
         JSONAssert.assertEquals("{\"type\":\"pushdown\"," //
                     + "\"sql\":\"PUSH DOWN\"}", //
               this.responseJsonConverter.convertPushDownResponse(pushDownResponse), false);
+    }
+
+    @Test
+    void testConvertGetCapabilitiesResponse() throws JSONException {
+        final Capabilities capabilities = Capabilities.builder() //
+              .addMain(MainCapability.LIMIT) //
+              .addLiteral(LiteralCapability.DATE) //
+              .addPredicate(PredicateCapability.EQUAL) //
+              .addScalarFunction(ScalarFunctionCapability.ADD) //
+              .addAggregateFunction(AggregateFunctionCapability.AVG) //
+              .build();
+        final GetCapabilitiesResponse.Builder builder = GetCapabilitiesResponse.builder();
+        final GetCapabilitiesResponse getCapabilitiesResponse = builder.capabilities(capabilities).build();
+        JSONAssert.assertEquals("{\"type\":\"getCapabilities\"," //
+                    + "\"capabilities\":[\"LIMIT\"," //
+                    + "\"LITERAL_DATE\"," //
+                    + "\"FN_PRED_EQUAL\", " //
+                    + "\"FN_AGG_AVG\", " //
+                    + "\"FN_ADD\"]}", //
+              this.responseJsonConverter.convertGetCapabilitiesResponse(getCapabilitiesResponse),
+              false);
     }
 }
