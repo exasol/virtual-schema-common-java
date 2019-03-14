@@ -1,6 +1,7 @@
 package com.exasol.adapter.response;
 
 import com.exasol.adapter.metadata.SchemaMetadata;
+import com.exasol.adapter.response.converter.ResponseException;
 
 /**
  * This class is an abstract representation of a response
@@ -35,7 +36,7 @@ public final class RefreshResponse {
      * Builder for {@link RefreshResponse}
      */
     public static class Builder {
-        SchemaMetadata schemaMetadata;
+        private SchemaMetadata schemaMetadata;
 
         /**
          * Add the Virtual Schema's metadata
@@ -54,7 +55,15 @@ public final class RefreshResponse {
          * @return new {@link RefreshResponse} instance
          */
         public RefreshResponse build() {
+            validate(this.schemaMetadata);
             return new RefreshResponse(this);
+        }
+
+        private void validate(final SchemaMetadata schemaMetadata) {
+            if (schemaMetadata == null) {
+                throw new ResponseException("SchemaMetadata should be not null. Please, add SchemaMetadata using " //
+                      + "'schemaMetadata(yourSchemaMetadata)' method of this builder before you build.");
+            }
         }
     }
 }
