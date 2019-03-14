@@ -2,13 +2,11 @@ package com.exasol.adapter.response.converter;
 
 import com.exasol.adapter.capabilities.*;
 import com.exasol.adapter.json.SchemaMetadataSerializer;
-import com.exasol.adapter.response.CreateVirtualSchemaResponse;
-import com.exasol.adapter.response.DropVirtualSchemaResponse;
-import com.exasol.adapter.response.GetCapabilitiesResponse;
-import com.exasol.adapter.response.PushDownResponse;
-import com.exasol.utils.JsonHelper;
+import com.exasol.adapter.response.*;
 
-import javax.json.*;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObjectBuilder;
 
 /**
  * Converts response into JSON format
@@ -22,7 +20,6 @@ public final class ResponseJsonConverter {
     private static final ResponseJsonConverter responseJsonConverter = new ResponseJsonConverter();
 
     private ResponseJsonConverter() {
-        //intentionally left blank
     }
 
     /**
@@ -42,11 +39,10 @@ public final class ResponseJsonConverter {
      */
     @SuppressWarnings("squid:S1172")
     public String convertDropVirtualSchemaResponse(final DropVirtualSchemaResponse dropResponse) {
-        final JsonBuilderFactory factory = JsonHelper.getBuilderFactory();
-        final JsonObject response = factory.createObjectBuilder() //
+        return Json.createObjectBuilder() //
               .add("type", "dropVirtualSchema") //
-              .build();
-        return response.toString();
+              .build() //
+              .toString();
     }
 
     /**
@@ -56,11 +52,11 @@ public final class ResponseJsonConverter {
      * @return string representation of a JSON Object
      */
     public String convertCreateVirtualSchemaResponse(final CreateVirtualSchemaResponse createResponse) {
-        final JsonObject response = Json.createObjectBuilder() //
+        return Json.createObjectBuilder() //
               .add("type", "createVirtualSchema") //
               .add(SCHEMA_METADATA, SchemaMetadataSerializer.serialize(createResponse.getSchemaMetadata())) //
-              .build();
-        return response.toString();
+              .build() //
+              .toString();
     }
 
     /**
@@ -70,12 +66,11 @@ public final class ResponseJsonConverter {
      * @return string representation of a JSON Object
      */
     public String convertPushDownResponse(final PushDownResponse pushDownResponse) {
-        final JsonBuilderFactory factory = JsonHelper.getBuilderFactory();
-        final JsonObject res = factory.createObjectBuilder() //
+        return Json.createObjectBuilder() //
               .add("type", "pushdown") //
               .add("sql", pushDownResponse.getPushDownSql()) //
-              .build();
-        return res.toString();
+              .build() //
+              .toString();
     }
 
     /**
@@ -85,9 +80,8 @@ public final class ResponseJsonConverter {
      * @return string representation of a JSON Object
      */
     public String convertGetCapabilitiesResponse(final GetCapabilitiesResponse getCapabilitiesResponse) {
-        final JsonBuilderFactory factory = JsonHelper.getBuilderFactory();
-        final JsonObjectBuilder builder = factory.createObjectBuilder().add("type", "getCapabilities");
-        final JsonArrayBuilder arrayBuilder = factory.createArrayBuilder();
+        final JsonObjectBuilder builder = Json.createObjectBuilder().add("type", "getCapabilities");
+        final JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
         final Capabilities capabilities = getCapabilitiesResponse.getCapabilities();
         for (final MainCapability capability : capabilities.getMainCapabilities()) {
             final String capName = capability.name();
@@ -111,5 +105,19 @@ public final class ResponseJsonConverter {
         }
         builder.add("capabilities", arrayBuilder);
         return builder.build().toString();
+    }
+
+    /**
+     * Converts refresh response into a JSON format
+     *
+     * @param refreshResponse instance
+     * @return string representation of a JSON Object
+     */
+    public String convertRefreshResponse(final RefreshResponse refreshResponse) {
+        return Json.createObjectBuilder() //
+              .add("type", "refresh") //
+              .add(SCHEMA_METADATA, SchemaMetadataSerializer.serialize(refreshResponse.getSchemaMetadata())) //
+              .build() //
+              .toString();
     }
 }

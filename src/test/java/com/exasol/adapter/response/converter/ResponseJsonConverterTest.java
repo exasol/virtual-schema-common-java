@@ -2,10 +2,7 @@ package com.exasol.adapter.response.converter;
 
 import com.exasol.adapter.capabilities.*;
 import com.exasol.adapter.metadata.SchemaMetadata;
-import com.exasol.adapter.response.CreateVirtualSchemaResponse;
-import com.exasol.adapter.response.DropVirtualSchemaResponse;
-import com.exasol.adapter.response.GetCapabilitiesResponse;
-import com.exasol.adapter.response.PushDownResponse;
+import com.exasol.adapter.response.*;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -65,7 +62,18 @@ class ResponseJsonConverterTest {
                     + "\"FN_PRED_EQUAL\", " //
                     + "\"FN_AGG_AVG\", " //
                     + "\"FN_ADD\"]}", //
-              this.responseJsonConverter.convertGetCapabilitiesResponse(getCapabilitiesResponse),
-              false);
+              this.responseJsonConverter.convertGetCapabilitiesResponse(getCapabilitiesResponse), false);
+    }
+
+    @Test
+    void testMakeRefreshResponse() throws JSONException {
+        final RefreshResponse.Builder builder = RefreshResponse.builder();
+        final RefreshResponse refreshResponse =
+              builder.schemaMetadata(new SchemaMetadata("notes", Collections.emptyList())).build();
+        JSONAssert.assertEquals("{\"type\":\"refresh\"," //
+                    + "\"schemaMetadata\":{\"tables\":[]," //
+                    + "\"adapterNotes\":\"notes\"}}", //
+              this.responseJsonConverter.convertRefreshResponse( //
+                    refreshResponse), false);
     }
 }

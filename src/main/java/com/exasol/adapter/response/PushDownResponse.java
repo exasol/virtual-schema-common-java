@@ -21,9 +21,9 @@ public final class PushDownResponse {
     }
 
     /**
-     * Get push down sql
+     * Get push down SQL
      *
-     * @return push down sql string
+     * @return push down SQL string
      */
     public String getPushDownSql() {
         return this.pushDownSql;
@@ -36,9 +36,9 @@ public final class PushDownResponse {
         private String pushDownSql;
 
         /**
-         * Add push down sql
+         * Add push down SQL
          *
-         * @param pushDownSql sql string
+         * @param pushDownSql SQL string
          * @return builder instance for fluent programming
          */
         public Builder pushDownSql(final String pushDownSql) {
