@@ -66,7 +66,7 @@ class ResponseJsonConverterTest {
     }
 
     @Test
-    void testMakeRefreshResponse() throws JSONException {
+    void testConvertRefreshResponse() throws JSONException {
         final RefreshResponse.Builder builder = RefreshResponse.builder();
         final RefreshResponse refreshResponse =
               builder.schemaMetadata(new SchemaMetadata("notes", Collections.emptyList())).build();
@@ -75,5 +75,24 @@ class ResponseJsonConverterTest {
                     + "\"adapterNotes\":\"notes\"}}", //
               this.responseJsonConverter.convertRefreshResponse( //
                     refreshResponse), false);
+    }
+
+    @Test
+    void testConvertSetPropertiesResponse() throws JSONException {
+        final SetPropertiesResponse.Builder builder = SetPropertiesResponse.builder();
+        final SetPropertiesResponse setPropertiesResponse =
+              builder.schemaMetadata(new SchemaMetadata("notes", Collections.emptyList())).build();
+        JSONAssert.assertEquals("{\"type\":\"setProperties\"," //
+                    + "\"schemaMetadata\":{\"tables\":[]," //
+                    + "\"adapterNotes\":\"notes\"}}", //
+              this.responseJsonConverter.convertSetPropertiesResponse(setPropertiesResponse), false);
+    }
+
+    @Test
+    void testConvertSetPropertiesResponseWhenMetadataIsNull() throws JSONException {
+        final SetPropertiesResponse.Builder builder = SetPropertiesResponse.builder();
+        final SetPropertiesResponse setPropertiesResponse = builder.build();
+        JSONAssert.assertEquals("{\"type\":\"setProperties\"}",
+              this.responseJsonConverter.convertSetPropertiesResponse(setPropertiesResponse), false);
     }
 }

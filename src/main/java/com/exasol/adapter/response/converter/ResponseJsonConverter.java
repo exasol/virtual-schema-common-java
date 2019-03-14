@@ -120,4 +120,13 @@ public final class ResponseJsonConverter {
               .build() //
               .toString();
     }
+
+    public String convertSetPropertiesResponse(final SetPropertiesResponse setPropertiesResponse) {
+        final JsonObjectBuilder builder = Json.createObjectBuilder();
+        builder.add("type", "setProperties");
+        if (setPropertiesResponse.getSchemaMetadata() != null) {
+            builder.add(SCHEMA_METADATA, SchemaMetadataSerializer.serialize(setPropertiesResponse.getSchemaMetadata()));
+        }
+        return builder.build().toString();
+    }
 }
