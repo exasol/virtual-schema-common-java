@@ -6,7 +6,7 @@ import com.exasol.adapter.metadata.SchemaMetadata;
  * This class is an abstract representation of a response
  * created by a Virtual Schema Adapter.
  */
-public class AbstractResponse {
+class AbstractResponse {
     private final SchemaMetadata schemaMetadata;
 
     AbstractResponse(final SchemaMetadata schemaMetadata) {

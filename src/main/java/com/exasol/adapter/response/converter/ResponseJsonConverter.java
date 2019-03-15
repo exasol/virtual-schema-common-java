@@ -83,28 +83,48 @@ public final class ResponseJsonConverter {
         final JsonObjectBuilder builder = Json.createObjectBuilder().add("type", "getCapabilities");
         final JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
         final Capabilities capabilities = getCapabilitiesResponse.getCapabilities();
-        for (final MainCapability capability : capabilities.getMainCapabilities()) {
-            final String capName = capability.name();
-            arrayBuilder.add(capName);
-        }
-        for (final ScalarFunctionCapability function : capabilities.getScalarFunctionCapabilities()) {
-            final String capName = SCALAR_FUNCTION_PREFIX + function.name();
-            arrayBuilder.add(capName);
-        }
-        for (final PredicateCapability predicate : capabilities.getPredicateCapabilities()) {
-            final String capName = PREDICATE_PREFIX + predicate.name();
-            arrayBuilder.add(capName);
-        }
-        for (final AggregateFunctionCapability function : capabilities.getAggregateFunctionCapabilities()) {
-            final String capName = AGGREGATE_FUNCTION_PREFIX + function.name();
-            arrayBuilder.add(capName);
-        }
+        addMainCapabilitiesToBuilder(arrayBuilder, capabilities);
+        addScalarFunctionCapabilitiesToBuilder(arrayBuilder, capabilities);
+        addPredicateCapabilitiesToBuilder(arrayBuilder, capabilities);
+        addAggregateCapabilitiesToBuilder(arrayBuilder, capabilities);
+        addLiteralCapabilitiesToBuilder(arrayBuilder, capabilities);
+        builder.add("capabilities", arrayBuilder);
+        return builder.build().toString();
+    }
+
+    private void addLiteralCapabilitiesToBuilder(final JsonArrayBuilder arrayBuilder, final Capabilities capabilities) {
         for (final LiteralCapability literal : capabilities.getLiteralCapabilities()) {
             final String capName = LITERAL_PREFIX + literal.name();
             arrayBuilder.add(capName);
         }
-        builder.add("capabilities", arrayBuilder);
-        return builder.build().toString();
+    }
+
+    private void addAggregateCapabilitiesToBuilder(final JsonArrayBuilder arrayBuilder, final Capabilities capabilities) {
+        for (final AggregateFunctionCapability function : capabilities.getAggregateFunctionCapabilities()) {
+            final String capName = AGGREGATE_FUNCTION_PREFIX + function.name();
+            arrayBuilder.add(capName);
+        }
+    }
+
+    private void addPredicateCapabilitiesToBuilder(final JsonArrayBuilder arrayBuilder, final Capabilities capabilities) {
+        for (final PredicateCapability predicate : capabilities.getPredicateCapabilities()) {
+            final String capName = PREDICATE_PREFIX + predicate.name();
+            arrayBuilder.add(capName);
+        }
+    }
+
+    private void addScalarFunctionCapabilitiesToBuilder(final JsonArrayBuilder arrayBuilder, final Capabilities capabilities) {
+        for (final ScalarFunctionCapability function : capabilities.getScalarFunctionCapabilities()) {
+            final String capName = SCALAR_FUNCTION_PREFIX + function.name();
+            arrayBuilder.add(capName);
+        }
+    }
+
+    private void addMainCapabilitiesToBuilder(final JsonArrayBuilder arrayBuilder, final Capabilities capabilities) {
+        for (final MainCapability capability : capabilities.getMainCapabilities()) {
+            final String capName = capability.name();
+            arrayBuilder.add(capName);
+        }
     }
 
     /**
