@@ -2,7 +2,7 @@ package com.exasol.adapter.response;
 
 import com.exasol.adapter.metadata.SchemaMetadata;
 
-public class SetPropertiesResponse {
+public final class SetPropertiesResponse {
     private final SchemaMetadata schemaMetadata;
 
     private SetPropertiesResponse(final Builder builder) {

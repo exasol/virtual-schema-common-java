@@ -27,6 +27,7 @@ public final class DropVirtualSchemaResponse {
          *
          * @return new {@link DropVirtualSchemaResponse} instance
          */
+        @SuppressWarnings("squid:S2440")
         public DropVirtualSchemaResponse build() {
             return new DropVirtualSchemaResponse();
         }

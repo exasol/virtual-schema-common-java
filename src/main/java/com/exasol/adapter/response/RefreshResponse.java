@@ -7,11 +7,9 @@ import com.exasol.adapter.response.converter.ResponseException;
  * This class is an abstract representation of a response
  * created by a Virtual Schema Adapter as result of a request to refresh the virtual schema.
  */
-public final class RefreshResponse {
-    private final SchemaMetadata schemaMetadata;
-
+public final class RefreshResponse extends AbstractResponse {
     private RefreshResponse(final Builder builder) {
-        this.schemaMetadata = builder.schemaMetadata;
+        super(builder.schemaMetadata);
     }
 
     /**
@@ -21,15 +19,6 @@ public final class RefreshResponse {
      */
     public static Builder builder() {
         return new Builder();
-    }
-
-    /**
-     * Get the Virtual Schema's refresh metadata
-     *
-     * @return schema metadata
-     */
-    public SchemaMetadata getSchemaMetadata() {
-        return this.schemaMetadata;
     }
 
     /**
