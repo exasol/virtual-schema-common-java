@@ -23,9 +23,9 @@ public final class ResponseJsonConverter {
     }
 
     /**
-     * Returns instance of {@link DropVirtualSchemaResponse} singleton class
+     * Returns instance of {@link ResponseJsonConverter} singleton class
      *
-     * @return {@link DropVirtualSchemaResponse} instance
+     * @return {@link ResponseJsonConverter} instance
      */
     public static ResponseJsonConverter getInstance() {
         return responseJsonConverter;
@@ -121,6 +121,12 @@ public final class ResponseJsonConverter {
               .toString();
     }
 
+    /**
+     * Converts set properties response into a JSON format
+     *
+     * @param setPropertiesResponse instance
+     * @return string representation of a JSON Object
+     */
     public String convertSetPropertiesResponse(final SetPropertiesResponse setPropertiesResponse) {
         final JsonObjectBuilder builder = Json.createObjectBuilder();
         builder.add("type", "setProperties");

@@ -25,7 +25,7 @@ public final class CreateVirtualSchemaResponse extends AbstractResponse {
      * Builder for {@link CreateVirtualSchemaResponse}
      */
     public static class Builder {
-        SchemaMetadata schemaMetadata;
+        private SchemaMetadata schemaMetadata;
 
         /**
          * Add the Virtual Schema's metadata

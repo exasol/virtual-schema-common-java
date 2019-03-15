@@ -2,11 +2,13 @@ package com.exasol.adapter.response;
 
 import com.exasol.adapter.metadata.SchemaMetadata;
 
-public final class SetPropertiesResponse {
-    private final SchemaMetadata schemaMetadata;
-
+/**
+ * This class is an abstract representation of a response
+ * created by a Virtual Schema Adapter as result of a request to set properties.
+ */
+public final class SetPropertiesResponse extends AbstractResponse {
     private SetPropertiesResponse(final Builder builder) {
-        this.schemaMetadata = builder.schemaMetadata;
+        super(builder.schemaMetadata);
     }
 
     /**
@@ -19,19 +21,10 @@ public final class SetPropertiesResponse {
     }
 
     /**
-     * Get the Virtual Schema's set properties metadata
-     *
-     * @return schema metadata
-     */
-    public SchemaMetadata getSchemaMetadata() {
-        return this.schemaMetadata;
-    }
-
-    /**
      * Builder for {@link SetPropertiesResponse}
      */
     public static class Builder {
-        SchemaMetadata schemaMetadata;
+        private SchemaMetadata schemaMetadata;
 
         /**
          * Add the Virtual Schema's metadata

@@ -14,7 +14,7 @@ public class AbstractResponse {
     }
 
     /**
-     * Get the Virtual Schema's refresh metadata
+     * Get the Virtual Schema's metadata
      *
      * @return schema metadata
      */
