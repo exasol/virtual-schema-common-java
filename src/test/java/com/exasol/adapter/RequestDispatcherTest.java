@@ -8,8 +8,7 @@ import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.exasol.ExaMetadata;
-import com.exasol.adapter.request.CreateVirtualSchemaRequest;
-import com.exasol.adapter.request.DropVirtualSchemaRequest;
+import com.exasol.adapter.request.*;
 
 @ExtendWith(MockitoExtension.class)
 class RequestDispatcherTest {
@@ -30,6 +29,14 @@ class RequestDispatcherTest {
     }
 
     @Test
+    void testDispatchCreateVirtualSchemaRequest() throws AdapterException {
+        final String rawRequest = "{ \"type\" : \"createVirtualSchema\", " + SCHEMA_METADATA_INFO + "}";
+        RequestDispatcher.adapterCall(this.metadata, rawRequest);
+        verify(this.adapterMock).createVirtualSchema(ArgumentMatchers.any(),
+                ArgumentMatchers.any(CreateVirtualSchemaRequest.class));
+    }
+
+    @Test
     void testDispatchDropVirtualSchemaRequest() throws AdapterException {
         final String rawRequest = "{ \"type\" : \"dropVirtualSchema\", " + SCHEMA_METADATA_INFO + "}";
         RequestDispatcher.adapterCall(this.metadata, rawRequest);
@@ -38,10 +45,32 @@ class RequestDispatcherTest {
     }
 
     @Test
-    void testDispatchCreateVirtualSchemaRequest() throws AdapterException {
-        final String rawRequest = "{ \"type\" : \"createVirtualSchema\", " + SCHEMA_METADATA_INFO + "}";
+    void testRefreshRequest() throws AdapterException {
+        final String rawRequest = "{ \"type\" : \"refresh\", " + SCHEMA_METADATA_INFO + "}";
         RequestDispatcher.adapterCall(this.metadata, rawRequest);
-        verify(this.adapterMock).createVirtualSchema(ArgumentMatchers.any(),
-                ArgumentMatchers.any(CreateVirtualSchemaRequest.class));
+        verify(this.adapterMock).refresh(ArgumentMatchers.any(), ArgumentMatchers.any(RefreshRequest.class));
+    }
+
+    @Test
+    void testSetPropertiesRequest() throws AdapterException {
+        final String rawRequest = "{ \"type\" : \"setProperties\", " + SCHEMA_METADATA_INFO + "}";
+        RequestDispatcher.adapterCall(this.metadata, rawRequest);
+        verify(this.adapterMock).setProperties(ArgumentMatchers.any(),
+                ArgumentMatchers.any(SetPropertiesRequest.class));
+    }
+
+    @Test
+    void testGetCapabilitiesRequest() throws AdapterException {
+        final String rawRequest = "{ \"type\" : \"getCapabilities\", " + SCHEMA_METADATA_INFO + "}";
+        RequestDispatcher.adapterCall(this.metadata, rawRequest);
+        verify(this.adapterMock).getCapabilities(ArgumentMatchers.any(),
+                ArgumentMatchers.any(GetCapabilitiesRequest.class));
+    }
+
+    @Test
+    void testPushdownRequest() throws AdapterException {
+        final String rawRequest = "{ \"type\" : \"pushdown\", " + SCHEMA_METADATA_INFO + "}";
+        RequestDispatcher.adapterCall(this.metadata, rawRequest);
+        verify(this.adapterMock).pushdown(ArgumentMatchers.any(), ArgumentMatchers.any(PushdownRequest.class));
     }
 }

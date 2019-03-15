@@ -44,24 +44,6 @@ public class SchemaMetadataInfoParser extends AbstractRequestParser {
         return root.getString(SCHEMA_NAME_KEY);
     }
 
-    private Map<String, String> parseProperties(final JsonObject root) {
-        if (root.containsKey(PROPERTIES_KEY)) {
-            return convertJsonObjectsToPropertyMap(root);
-        } else {
-            return Collections.emptyMap();
-        }
-    }
-
-    private Map<String, String> convertJsonObjectsToPropertyMap(final JsonObject root) {
-        final Map<String, String> properties;
-        properties = new HashMap<>();
-        final JsonObject jsonProperties = root.getJsonObject(PROPERTIES_KEY);
-        for (final String key : jsonProperties.keySet()) {
-            properties.put(key, jsonProperties.getString(key));
-        }
-        return properties;
-    }
-
     private String parseAdapterNotes(final JsonObject root) {
         if (root.containsKey(ADAPTER_NOTES_KEY)) {
             return root.getJsonObject(ADAPTER_NOTES_KEY).toString();
