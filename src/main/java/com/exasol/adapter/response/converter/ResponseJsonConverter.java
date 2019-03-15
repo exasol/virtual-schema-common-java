@@ -83,44 +83,47 @@ public final class ResponseJsonConverter {
         final JsonObjectBuilder builder = Json.createObjectBuilder().add("type", "getCapabilities");
         final JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
         final Capabilities capabilities = getCapabilitiesResponse.getCapabilities();
-        addMainCapabilitiesToBuilder(arrayBuilder, capabilities);
-        addScalarFunctionCapabilitiesToBuilder(arrayBuilder, capabilities);
-        addPredicateCapabilitiesToBuilder(arrayBuilder, capabilities);
-        addAggregateCapabilitiesToBuilder(arrayBuilder, capabilities);
-        addLiteralCapabilitiesToBuilder(arrayBuilder, capabilities);
+        addMainCapabilitiesToBuilder(capabilities, arrayBuilder);
+        addScalarFunctionCapabilitiesToBuilder(capabilities, arrayBuilder);
+        addPredicateCapabilitiesToBuilder(capabilities, arrayBuilder);
+        addAggregateCapabilitiesToBuilder(capabilities, arrayBuilder);
+        addLiteralCapabilitiesToBuilder(capabilities, arrayBuilder);
         builder.add("capabilities", arrayBuilder);
         return builder.build().toString();
     }
 
-    private void addLiteralCapabilitiesToBuilder(final JsonArrayBuilder arrayBuilder, final Capabilities capabilities) {
+    private void addLiteralCapabilitiesToBuilder(final Capabilities capabilities, final JsonArrayBuilder arrayBuilder) {
         for (final LiteralCapability literal : capabilities.getLiteralCapabilities()) {
             final String capName = LITERAL_PREFIX + literal.name();
             arrayBuilder.add(capName);
         }
     }
 
-    private void addAggregateCapabilitiesToBuilder(final JsonArrayBuilder arrayBuilder, final Capabilities capabilities) {
+    private void addAggregateCapabilitiesToBuilder(final Capabilities capabilities,
+          final JsonArrayBuilder arrayBuilder) {
         for (final AggregateFunctionCapability function : capabilities.getAggregateFunctionCapabilities()) {
             final String capName = AGGREGATE_FUNCTION_PREFIX + function.name();
             arrayBuilder.add(capName);
         }
     }
 
-    private void addPredicateCapabilitiesToBuilder(final JsonArrayBuilder arrayBuilder, final Capabilities capabilities) {
+    private void addPredicateCapabilitiesToBuilder(final Capabilities capabilities,
+          final JsonArrayBuilder arrayBuilder) {
         for (final PredicateCapability predicate : capabilities.getPredicateCapabilities()) {
             final String capName = PREDICATE_PREFIX + predicate.name();
             arrayBuilder.add(capName);
         }
     }
 
-    private void addScalarFunctionCapabilitiesToBuilder(final JsonArrayBuilder arrayBuilder, final Capabilities capabilities) {
+    private void addScalarFunctionCapabilitiesToBuilder(final Capabilities capabilities,
+          final JsonArrayBuilder arrayBuilder) {
         for (final ScalarFunctionCapability function : capabilities.getScalarFunctionCapabilities()) {
             final String capName = SCALAR_FUNCTION_PREFIX + function.name();
             arrayBuilder.add(capName);
         }
     }
 
-    private void addMainCapabilitiesToBuilder(final JsonArrayBuilder arrayBuilder, final Capabilities capabilities) {
+    private void addMainCapabilitiesToBuilder(final Capabilities capabilities, final JsonArrayBuilder arrayBuilder) {
         for (final MainCapability capability : capabilities.getMainCapabilities()) {
             final String capName = capability.name();
             arrayBuilder.add(capName);
