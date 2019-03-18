@@ -13,6 +13,11 @@ final class RequestParserConstants {
     public static final String SCHEMA_NAME_KEY = "name";
     public static final String PUSHDOW_REQUEST_KEY = "pushdownRequest";
     public static final String SCHEMA_METADATA_INFO_KEY = "schemaMetadataInfo";
+    public static final String INVOLVED_TABLES = "involvedTables";
+    public static final String DATA_TYPE = "dataType";
+    public static final String TABLE_NAME_KEY = "name";
+    public static final String TABLE_COMMENT_KEY = "comment";
+    public static final String TABLE_COLUMNS_KEY = "columns";
 
     private RequestParserConstants() {
         // prevent instantiation
