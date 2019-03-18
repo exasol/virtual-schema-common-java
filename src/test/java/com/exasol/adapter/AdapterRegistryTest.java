@@ -1,5 +1,10 @@
 package com.exasol.adapter;
 
+import com.exasol.ExaMetadata;
+import com.exasol.adapter.request.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.hamcrest.collection.IsEmptyCollection.emptyCollectionOf;
@@ -7,11 +12,8 @@ import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInA
 import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
-
 class AdapterRegistryTest {
-    final AdapterRegistry registry = AdapterRegistry.getInstance();
+    private final AdapterRegistry registry = AdapterRegistry.getInstance();
 
     @AfterEach
     void afterEach() {
@@ -59,5 +61,37 @@ class AdapterRegistryTest {
         this.registry.registerAdapter("One", null);
         this.registry.registerAdapter("Two", null);
         assertThat(this.registry.describe(), equalTo("Currently registered Virtual Schema Adapters: \"One\", \"Two\""));
+    }
+
+    private class DummyAdapter implements VirtualSchemaAdapter {
+        @Override
+        public void createVirtualSchema(final ExaMetadata metadata, final CreateVirtualSchemaRequest request) {
+
+        }
+
+        @Override
+        public void dropVirtualSchema(final ExaMetadata metadata, final DropVirtualSchemaRequest request) {
+
+        }
+
+        @Override
+        public void refresh(final ExaMetadata metadata, final RefreshRequest request) {
+
+        }
+
+        @Override
+        public void setProperties(final ExaMetadata metadata, final SetPropertiesRequest request) {
+
+        }
+
+        @Override
+        public void getCapabilities(final ExaMetadata metadata, final GetCapabilitiesRequest request) {
+
+        }
+
+        @Override
+        public void pushdown(final ExaMetadata metadata, final PushdownRequest request) {
+
+        }
     }
 }
