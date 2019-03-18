@@ -1,20 +1,15 @@
 package com.exasol.adapter.json;
 
-import com.exasol.adapter.metadata.ColumnMetadata;
-import com.exasol.adapter.metadata.SchemaMetadata;
-import com.exasol.adapter.metadata.TableMetadata;
-import com.exasol.utils.JsonHelper;
+import javax.json.*;
 
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonBuilderFactory;
-import javax.json.JsonObjectBuilder;
+import com.exasol.adapter.metadata.*;
+import com.exasol.utils.JsonHelper;
 
 public final class SchemaMetadataSerializer {
     private static final String ADAPTER_NOTES = "adapterNotes";
 
     private SchemaMetadataSerializer() {
-        //Intentionally left blank
+        // Intentionally left blank
     }
 
     public static JsonObjectBuilder serialize(final SchemaMetadata schema) {
@@ -29,14 +24,18 @@ public final class SchemaMetadataSerializer {
         return root;
     }
 
-    private static JsonObjectBuilder serializeTableMetadata(final TableMetadata table, final JsonObjectBuilder tableBuilder) {
+    private static JsonObjectBuilder serializeTableMetadata(final TableMetadata table,
+            final JsonObjectBuilder tableBuilder) {
         tableBuilder.add("type", "table");
         tableBuilder.add("name", table.getName());
         final JsonArrayBuilder columnsBuilder = Json.createArrayBuilder();
         for (final ColumnMetadata column : table.getColumns()) {
             columnsBuilder.add(serializeColumnMetadata(column, Json.createObjectBuilder()));
         }
-        tableBuilder.add(ADAPTER_NOTES, table.getAdapterNotes());
+        final String adapterNotes = table.getAdapterNotes();
+        if ((adapterNotes != null) && !adapterNotes.isEmpty()) {
+            tableBuilder.add(ADAPTER_NOTES, adapterNotes);
+        }
         if (table.hasComment()) {
             tableBuilder.add("comment", table.getComment());
         }
@@ -44,7 +43,8 @@ public final class SchemaMetadataSerializer {
         return tableBuilder;
     }
 
-    private static JsonObjectBuilder serializeColumnMetadata(final ColumnMetadata column, final JsonObjectBuilder columnBuilder) {
+    private static JsonObjectBuilder serializeColumnMetadata(final ColumnMetadata column,
+            final JsonObjectBuilder columnBuilder) {
         columnBuilder.add("name", column.getName());
         columnBuilder.add(ADAPTER_NOTES, column.getAdapterNotes());
         columnBuilder.add("dataType", SqlDataTypeJsonSerializer.serialize(column.getType()));

@@ -2,11 +2,14 @@ package com.exasol.adapter.request.parser;
 
 import static com.exasol.adapter.request.parser.RequestParserConstants.*;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 
-import com.exasol.adapter.json.PushdownSqlParser;
 import com.exasol.adapter.metadata.SchemaMetadataInfo;
+import com.exasol.adapter.metadata.TableMetadata;
 import com.exasol.adapter.request.*;
 import com.exasol.adapter.sql.SqlStatement;
 
@@ -21,25 +24,27 @@ public class RequestParser extends AbstractRequestParser {
      * @return parsed request
      * @throws RequestParserException if an unknown request type is encountered
      */
-    public AdapterRequest parse(final String rawRequest) {
+    public AbstractAdapterRequest parse(final String rawRequest) {
         final JsonReader reader = createJsonReader(rawRequest);
         final JsonObject root = reader.readObject();
         final String type = readRequestType(root);
         final SchemaMetadataInfo metadataInfo = readSchemaMetadataInfo(root);
+        final Map<String, String> adapterProperties = parseProperties(root);
+        final String adapterName = parseAdapterName(adapterProperties);
         switch (type) {
         case REQUEST_TYPE_DROP_VIRTUAL_SCHEMA:
-            return new DropVirtualSchemaRequest(metadataInfo);
+            return new DropVirtualSchemaRequest(adapterName, metadataInfo);
         case REQUEST_TYPE_CREATE_VIRTUAL_SCHEMA:
-            return new CreateVirtualSchemaRequest(metadataInfo);
+            return new CreateVirtualSchemaRequest(adapterName, metadataInfo);
         case REQUEST_TYPE_REFRESH:
-            return new RefreshRequest(metadataInfo);
+            return new RefreshRequest(adapterName, metadataInfo);
         case REQUEST_TYPE_SET_PROPERTIES:
-            return new SetPropertiesRequest(metadataInfo, parseProperties(root));
+            return new SetPropertiesRequest(adapterName, metadataInfo, adapterProperties);
         case REQUEST_TYPE_GET_CAPABILITIES:
-            return new GetCapabilitiesRequest(metadataInfo);
+            return new GetCapabilitiesRequest(adapterName, metadataInfo);
         case REQUEST_TYPE_PUSHDOWN:
             final SqlStatement statement = parsePushdownStatement(root);
-            return new PushdownRequest(metadataInfo, statement, null);
+            return new PushDownRequest(adapterName, metadataInfo, statement, null);
         default:
             throw new RequestParserException("Unknown request type \"" + type + "\"");
         }
@@ -56,8 +61,14 @@ public class RequestParser extends AbstractRequestParser {
         return metadataInfo;
     }
 
+    private String parseAdapterName(final Map<String, String> adapterProperties) {
+        final String adapterName = adapterProperties.get(ADPTER_NAME_PROPERTY_KEY);
+        return adapterName;
+    }
+
     private SqlStatement parsePushdownStatement(final JsonObject root) {
-        final PushdownSqlParser pushdownSqlParser = PushdownSqlParser.create();
+        final List<TableMetadata> involvedTables = null;// FIXME: use real involved table data
+        final PushdownSqlParser pushdownSqlParser = PushdownSqlParser.create(involvedTables);
         final JsonObject jsonPushdownStatement = root.getJsonObject(PUSHDOW_REQUEST_KEY);
         return (SqlStatement) pushdownSqlParser.parseExpression(jsonPushdownStatement);
     }

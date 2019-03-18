@@ -1,4 +1,4 @@
-package com.exasol.adapter.json;
+package com.exasol.adapter.request.parser;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import com.exasol.adapter.metadata.DataType.ExaCharset;
 import com.exasol.adapter.metadata.DataType.IntervalType;
 import com.exasol.adapter.sql.*;
 
-public class PushdownSqlParser {
+public class PushdownSqlParser extends AbstractRequestParser {
     private static final String ORDER_BY = "orderBy";
     private static final String EXPRESSION = "expression";
     private static final String RIGHT = "right";
@@ -21,7 +21,11 @@ public class PushdownSqlParser {
     private static final String DISTINCT = "distinct";
     private static final String DATA_TYPE = "dataType";
 
-    private List<TableMetadata> involvedTablesMetadata;
+    private final List<TableMetadata> involvedTablesMetadata;
+
+    private PushdownSqlParser(final List<TableMetadata> involvedTablesMetadata) {
+        this.involvedTablesMetadata = involvedTablesMetadata;
+    }
 
     public SqlNode parseExpression(final JsonObject exp) {
         final String typeName = exp.getString("type", "");
@@ -560,7 +564,7 @@ public class PushdownSqlParser {
      *
      * @return new instance
      */
-    public static PushdownSqlParser create() {
-        return new PushdownSqlParser();
+    public static PushdownSqlParser create(final List<TableMetadata> involvedTableMetadata) {
+        return new PushdownSqlParser(involvedTableMetadata);
     }
 }

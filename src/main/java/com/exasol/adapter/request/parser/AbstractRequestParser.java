@@ -9,8 +9,7 @@ import java.util.*;
 import javax.json.*;
 
 /**
- * Abstract base class for parsers reading fragments of the Virtual Schema
- * requests.
+ * Abstract base class for parsers reading fragments of the Virtual Schema requests.
  */
 class AbstractRequestParser {
     /**
@@ -18,9 +17,8 @@ class AbstractRequestParser {
      *
      * <p>
      * The data stream fed into this reader must be UTF-8 encoded.
-     * 
-     * @param rawRequest raw JSON string representing an adapter request or part
-     *                   thereof
+     *
+     * @param rawRequest raw JSON string representing an adapter request or part thereof
      * @return JSON reader
      */
     protected JsonReader createJsonReader(final String rawRequest) {

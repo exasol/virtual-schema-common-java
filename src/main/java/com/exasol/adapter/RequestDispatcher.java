@@ -2,8 +2,9 @@ package com.exasol.adapter;
 
 import com.exasol.ExaMetadata;
 import com.exasol.adapter.request.*;
-import com.exasol.adapter.request.AdapterRequest.AdapterRequestType;
 import com.exasol.adapter.request.parser.RequestParser;
+import com.exasol.adapter.response.*;
+import com.exasol.adapter.response.converter.ResponseJsonConverter;
 
 /**
  * This class is the main entry point for calls to a Virtual Schema. From here the adapter calls are dispatched to the
@@ -37,29 +38,66 @@ public final class RequestDispatcher {
     private String excecuteAdapterCall(final ExaMetadata metadata, final String rawRequest) throws AdapterException {
         final AdapterRequest request = new RequestParser().parse(rawRequest);
         final AdapterRequestType type = request.getType();
-        final VirtualSchemaAdapter responsibleAdapter = AdapterRegistry.getInstance().getAdapterForName("DUMMY");
+        final VirtualSchemaAdapter adapter = findResponsibleAdapter(request);
         switch (type) {
         case CREATE_VIRTUAL_SCHEMA:
-            responsibleAdapter.createVirtualSchema(metadata, (CreateVirtualSchemaRequest) request);
-            break;
+            return dispatchCreateVirtualSchemaRequestToAdapter(request, adapter, metadata);
         case DROP_VIRTUAL_SCHEMA:
-            responsibleAdapter.dropVirtualSchema(metadata, (DropVirtualSchemaRequest) request);
-            break;
+            return dispatchDropVirtualSchemaRequestToAdapter(request, adapter, metadata);
         case REFRESH:
-            responsibleAdapter.refresh(metadata, (RefreshRequest) request);
-            break;
+            return dispatchRefreshRequestToAdapter(request, adapter, metadata);
         case SET_PROPERTIES:
-            responsibleAdapter.setProperties(metadata, (SetPropertiesRequest) request);
-            break;
+            return dispatchSetPropertiesRequestToAdapter(request, adapter, metadata);
         case GET_CAPABILITIES:
-            responsibleAdapter.getCapabilities(metadata, (GetCapabilitiesRequest) request);
-            break;
+            return dispatchGetCapabilitiesRequestToAdapter(request, adapter, metadata);
         case PUSHDOWN:
-            responsibleAdapter.pushdown(metadata, (PushdownRequest) request);
-            break;
+            return dispatchPushDownRequestToAdapter(request, adapter, metadata);
         default:
-            throw new AdapterException("Unknown adapter request \"" + type + "\".");
+            throw new AdapterException("Unknown adapter request \"" + type
+                    + "\". Check wether versions of Exasol database and Virtual Schema Adapter are compatible.");
         }
-        return null;
+    }
+
+    private VirtualSchemaAdapter findResponsibleAdapter(final AdapterRequest request) {
+        final String name = request.getAdapterName();
+        return AdapterRegistry.getInstance().getAdapterForName(name);
+    }
+
+    private String dispatchCreateVirtualSchemaRequestToAdapter(final AdapterRequest request,
+            final VirtualSchemaAdapter adapter, final ExaMetadata metadata) {
+        final CreateVirtualSchemaResponse response = adapter.createVirtualSchema(metadata,
+                (CreateVirtualSchemaRequest) request);
+        return ResponseJsonConverter.getInstance().convertCreateVirtualSchemaResponse(response);
+    }
+
+    private String dispatchDropVirtualSchemaRequestToAdapter(final AdapterRequest request,
+            final VirtualSchemaAdapter adapter, final ExaMetadata metadata) {
+        final DropVirtualSchemaResponse response = adapter.dropVirtualSchema(metadata,
+                (DropVirtualSchemaRequest) request);
+        return ResponseJsonConverter.getInstance().convertDropVirtualSchemaResponse(response);
+    }
+
+    private String dispatchRefreshRequestToAdapter(final AdapterRequest request, final VirtualSchemaAdapter adapter,
+            final ExaMetadata metadata) {
+        final RefreshResponse response = adapter.refresh(metadata, (RefreshRequest) request);
+        return ResponseJsonConverter.getInstance().convertRefreshResponse(response);
+    }
+
+    private String dispatchSetPropertiesRequestToAdapter(final AdapterRequest request,
+            final VirtualSchemaAdapter adapter, final ExaMetadata metadata) {
+        final SetPropertiesResponse response = adapter.setProperties(metadata, (SetPropertiesRequest) request);
+        return ResponseJsonConverter.getInstance().convertSetPropertiesResponse(response);
+    }
+
+    private String dispatchGetCapabilitiesRequestToAdapter(final AdapterRequest request,
+            final VirtualSchemaAdapter adapter, final ExaMetadata metadata) {
+        final GetCapabilitiesResponse response = adapter.getCapabilities(metadata, (GetCapabilitiesRequest) request);
+        return ResponseJsonConverter.getInstance().convertGetCapabilitiesResponse(response);
+    }
+
+    private String dispatchPushDownRequestToAdapter(final AdapterRequest request, final VirtualSchemaAdapter adapter,
+            final ExaMetadata metadata) {
+        final PushDownResponse response = adapter.pushdown(metadata, (PushDownRequest) request);
+        return ResponseJsonConverter.getInstance().convertPushDownResponse(response);
     }
 }

@@ -1,8 +1,6 @@
 package com.exasol.adapter.capabilities;
 
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Manages a set of supported capabilities
@@ -87,9 +85,18 @@ public class Capabilities {
         aggregateCapabilitiesWithExclusions.removeAll(capabilitiesToExclude.getAggregateFunctionCapabilities());
 
         builder.addMain(mainCapabilitiesWithExclusions).addPredicate(predicateCapabilitiesWithExclusions)
-              .addLiteral(literalCapabilitiesWithExclusions).addScalarFunction(scalarCapabilitiesWithExclusions)
-              .addAggregateFunction(aggregateCapabilitiesWithExclusions);
+                .addLiteral(literalCapabilitiesWithExclusions).addScalarFunction(scalarCapabilitiesWithExclusions)
+                .addAggregateFunction(aggregateCapabilitiesWithExclusions);
         return builder.build();
+    }
+
+    /**
+     * @return <code>true</code> if the object does not contain any capabilities
+     */
+    public boolean isEmpty() {
+        return this.mainCapabilities.isEmpty() && this.literalCapabilities.isEmpty()
+                && this.predicateCapabilities.isEmpty() && this.scalarFunctionCapabilities.isEmpty()
+                && this.aggregateFunctionCapabilities.isEmpty();
     }
 
     /**
@@ -109,8 +116,8 @@ public class Capabilities {
         final Set<LiteralCapability> literalCapabilities = EnumSet.noneOf(LiteralCapability.class);
         final Set<PredicateCapability> predicateCapabilities = EnumSet.noneOf(PredicateCapability.class);
         final Set<ScalarFunctionCapability> scalarFunctionCapabilities = EnumSet.noneOf(ScalarFunctionCapability.class);
-        final Set<AggregateFunctionCapability> aggregateFunctionCapabilities =
-              EnumSet.noneOf(AggregateFunctionCapability.class);
+        final Set<AggregateFunctionCapability> aggregateFunctionCapabilities = EnumSet
+                .noneOf(AggregateFunctionCapability.class);
 
         /**
          * Create new capability instance

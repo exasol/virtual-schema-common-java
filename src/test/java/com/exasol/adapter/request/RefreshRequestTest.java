@@ -1,23 +1,23 @@
 package com.exasol.adapter.request;
 
-import com.exasol.adapter.AdapterException;
-import com.exasol.adapter.metadata.SchemaMetadataInfo;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import com.exasol.adapter.AdapterException;
+import com.exasol.adapter.metadata.SchemaMetadataInfo;
 
 @ExtendWith(MockitoExtension.class)
 class RefreshRequestTest {
+    private static final String ADAPTER_NAME = "THE_NAME";
     @Mock
     private SchemaMetadataInfo schemaMetadataInfo;
     private RefreshRequest refreshRequest;
@@ -27,13 +27,13 @@ class RefreshRequestTest {
     void setUp() throws AdapterException {
         this.tables = new ArrayList<>();
         this.tables.add("TEST_TABLE");
-        this.refreshRequest = new RefreshRequest(this.schemaMetadataInfo, this.tables);
+        this.refreshRequest = new RefreshRequest(ADAPTER_NAME, this.schemaMetadataInfo, this.tables);
     }
 
     @Test
     void testCreateWithEmptyTablesThrowsException() {
-        assertThrows(AdapterException.class,
-              () -> this.refreshRequest = new RefreshRequest(this.schemaMetadataInfo, Collections.emptyList()));
+        assertThrows(AdapterException.class, () -> this.refreshRequest = new RefreshRequest(ADAPTER_NAME,
+                this.schemaMetadataInfo, Collections.emptyList()));
     }
 
     @Test
@@ -48,7 +48,7 @@ class RefreshRequestTest {
 
     @Test
     void testIsRefreshForTablesFalse() {
-        this.refreshRequest = new RefreshRequest(this.schemaMetadataInfo);
+        this.refreshRequest = new RefreshRequest(ADAPTER_NAME, this.schemaMetadataInfo);
         assertFalse(this.refreshRequest.isRefreshForTables());
     }
 }
