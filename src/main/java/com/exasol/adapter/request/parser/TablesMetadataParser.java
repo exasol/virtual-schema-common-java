@@ -12,19 +12,22 @@ import javax.json.JsonValue;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TablesMetadataParser {
-    private static final String INVOLVED_TABLES = "involvedTables";
-    private static final String DATA_TYPE = "dataType";
+import static com.exasol.adapter.request.parser.RequestParserConstants.*;
 
+public class TablesMetadataParser {
     public List<TableMetadata> parse(final JsonObject tablesAsJson) throws MetadataException {
-        final List<TableMetadata> tables = new ArrayList<>();
         final JsonArray jsonArray = tablesAsJson.getJsonArray(INVOLVED_TABLES);
+        return parseTables(jsonArray);
+    }
+
+    private List<TableMetadata> parseTables(final JsonArray jsonArray) throws MetadataException {
+        final List<TableMetadata> tables = new ArrayList<>();
         for (final JsonObject table : jsonArray.getValuesAs(JsonObject.class)) {
-            final String tableName = table.getString("name", "");
+            final String tableName = table.getString(TABLE_NAME_KEY, "");
             final String tableAdapterNotes = readAdapterNotes(table);
-            final String tableComment = table.getString("comment", "");
+            final String tableComment = table.getString(TABLE_COMMENT_KEY, "");
             final List<ColumnMetadata> columns = new ArrayList<>();
-            for (final JsonObject column : table.getJsonArray("columns").getValuesAs(JsonObject.class)) {
+            for (final JsonObject column : table.getJsonArray(TABLE_COLUMNS_KEY).getValuesAs(JsonObject.class)) {
                 columns.add(parseColumnMetadata(column));
             }
             tables.add(new TableMetadata(tableName, tableAdapterNotes, columns, tableComment));
@@ -33,12 +36,12 @@ public class TablesMetadataParser {
     }
 
     private ColumnMetadata parseColumnMetadata(final JsonObject column) {
-        final String columnName = column.getString("name");
+        final String columnName = column.getString(TABLE_NAME_KEY);
         final String adapterNotes = readAdapterNotes(column);
-        final String comment = column.getString("comment", "");
+        final String comment = column.getString(TABLE_COMMENT_KEY, "");
         final String defaultValue = column.getString("default", "");
-        final boolean isNullable = checkIfBooleanValueExists(column, "isNullable");
-        final boolean isIdentity = checkIfBooleanValueExists(column, "isIdentity");
+        final boolean isNullable = applyBooleanValue(column, "isNullable");
+        final boolean isIdentity = applyBooleanValue(column, "isIdentity");
         final JsonObject dataType = column.getJsonObject(DATA_TYPE);
         final DataType type = getDataType(dataType);
         return new ColumnMetadata(columnName, adapterNotes, type, isNullable, isIdentity, defaultValue, comment);
@@ -47,16 +50,20 @@ public class TablesMetadataParser {
     private String readAdapterNotes(final JsonObject root) {
         if (root.containsKey("adapterNotes")) {
             final JsonValue notes = root.get("adapterNotes");
-            if (notes.getValueType() == JsonValue.ValueType.STRING) {
-                return ((JsonString) notes).getString();
-            } else {
-                return notes.toString();
-            }
+            return getAdapterNotesString(notes);
         }
         return "";
     }
 
-    private boolean checkIfBooleanValueExists(final JsonObject column, final String bolleanName) {
+    private String getAdapterNotesString(final JsonValue notes) {
+        if (notes.getValueType() == JsonValue.ValueType.STRING) {
+            return ((JsonString) notes).getString();
+        } else {
+            return notes.toString();
+        }
+    }
+
+    private boolean applyBooleanValue(final JsonObject column, final String bolleanName) {
         if (column.containsKey(bolleanName)) {
             return column.getBoolean(bolleanName);
         }
