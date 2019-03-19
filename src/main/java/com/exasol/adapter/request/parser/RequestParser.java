@@ -67,10 +67,15 @@ public class RequestParser extends AbstractRequestParser {
     }
 
     private SqlStatement parsePushdownStatement(final JsonObject root) {
-        final List<TableMetadata> involvedTables = null;// FIXME: use real involved table data
-        final PushdownSqlParser pushdownSqlParser = PushdownSqlParser.create(involvedTables);
+        final List<TableMetadata> involvedTables = parseInvolvedTables(root);
+        final PushdownSqlParser pushdownSqlParser = PushdownSqlParser.createWithTablesMetadata(involvedTables);
         final JsonObject jsonPushdownStatement = root.getJsonObject(PUSHDOW_REQUEST_KEY);
         return (SqlStatement) pushdownSqlParser.parseExpression(jsonPushdownStatement);
+    }
+
+    private List<TableMetadata> parseInvolvedTables(final JsonObject root) {
+        return TablesMetadataParser.create()
+                .parse(root.getJsonArray(INVOLVED_TABLES_KEY));
     }
 
     /**

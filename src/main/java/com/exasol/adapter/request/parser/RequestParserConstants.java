@@ -14,6 +14,11 @@ final class RequestParserConstants {
     static final String PUSHDOW_REQUEST_KEY = "pushdownRequest";
     static final String SCHEMA_METADATA_INFO_KEY = "schemaMetadataInfo";
     static final String ADPTER_NAME_PROPERTY_KEY = "SQL_DIALECT";
+    static final String INVOLVED_TABLES_KEY = "involvedTables";
+    static final String DATA_TYPE = "dataType";
+    static final String TABLE_NAME_KEY = "name";
+    static final String TABLE_COMMENT_KEY = "comment";
+    static final String TABLE_COLUMNS_KEY = "columns";
 
     private RequestParserConstants() {
         // prevent instantiation

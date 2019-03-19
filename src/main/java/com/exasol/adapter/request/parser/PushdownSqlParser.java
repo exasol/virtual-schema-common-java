@@ -564,7 +564,7 @@ public class PushdownSqlParser extends AbstractRequestParser {
      *
      * @return new instance
      */
-    public static PushdownSqlParser create(final List<TableMetadata> involvedTableMetadata) {
+    public static PushdownSqlParser createWithTablesMetadata(final List<TableMetadata> involvedTableMetadata) {
         return new PushdownSqlParser(involvedTableMetadata);
     }
 }

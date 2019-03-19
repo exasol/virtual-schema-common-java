@@ -11,7 +11,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 class AdapterRegistryTest {
-    final AdapterRegistry registry = AdapterRegistry.getInstance();
+    private final AdapterRegistry registry = AdapterRegistry.getInstance();
 
     @AfterEach
     void afterEach() {

@@ -49,7 +49,7 @@ class RequestDispatcherTest {
         verify(this.adapterMock).createVirtualSchema(any(), any(CreateVirtualSchemaRequest.class));
     }
 
-    private SchemaMetadata createSchemaMetadata(final String rawRequest) throws MetadataException {
+    private SchemaMetadata createSchemaMetadata(final String rawRequest) {
         final List<ColumnMetadata> columns = new ArrayList<>();
         columns.add(new ColumnMetadata("BAR", "", DataType.createDecimal(18, 0), true, false, "", ""));
         final List<TableMetadata> tables = new ArrayList<>();
@@ -110,15 +110,17 @@ class RequestDispatcherTest {
                 + "        {\n" //
                 + "            \"name\" : \"FOO\",\n" //
                 + "            \"columns\" :\n" //
-                + "            {\n" //
-                + "                \"name\" : \"BAR\"," //
-                + "                \"dataType\" :\n" //
+                + "            [\n" //
                 + "                {\n" //
-                + "                    \"type\" : \"DECIMAL\",\n" //
-                + "                    \"precision\" : 18,\n" //
-                + "                    \"scale\" : 0\n" //
+                + "                    \"name\" : \"BAR\"," //
+                + "                    \"dataType\" :\n" //
+                + "                    {\n" //
+                + "                        \"type\" : \"DECIMAL\",\n" //
+                + "                        \"precision\" : 18,\n" //
+                + "                        \"scale\" : 0\n" //
+                + "                    }\n" //
                 + "                }\n" //
-                + "            }\n" //
+                + "            ]\n" //
                 + "        }\n" //
                 + "    ]\n" //
                 + "}";
