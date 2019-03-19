@@ -2,7 +2,6 @@ package com.exasol.adapter.request;
 
 import java.util.List;
 
-import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.SchemaMetadataInfo;
 
 /**
@@ -31,10 +30,10 @@ public class RefreshRequest extends AbstractAdapterRequest {
      * @param tables             tables for which the metadata should be refreshed
      */
     public RefreshRequest(final String adapterName, final SchemaMetadataInfo schemaMetadataInfo,
-            final List<String> tables) throws AdapterException {
+            final List<String> tables) {
         super(adapterName, schemaMetadataInfo, AdapterRequestType.REFRESH);
         if ((tables == null) || tables.isEmpty()) {
-            throw new AdapterException(
+            throw new IllegalArgumentException(
                     "The RefreshRequest constructor expects a list of requested tables, but the list is currently empty.");
         }
         this.isRefreshForTables = true;

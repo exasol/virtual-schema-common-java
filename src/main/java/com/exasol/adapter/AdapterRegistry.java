@@ -3,8 +3,8 @@ package com.exasol.adapter;
 import java.util.*;
 
 /**
- * {@link VirtualSchemaAdapter}s need to be registered in the
- * {@link AdapterRegistry} in order to receive requests from the dispatcher.
+ * {@link VirtualSchemaAdapter}s need to be registered in the {@link AdapterRegistry} in order to receive requests from
+ * the dispatcher.
  */
 public final class AdapterRegistry {
     private static AdapterRegistry instance = new AdapterRegistry();
@@ -56,6 +56,7 @@ public final class AdapterRegistry {
     /**
      * Check if an adapter with the given name is registered
      *
+     * @param name adapter name to be searched for
      * @return <code>true</code> if an adapter is registered under that name
      */
     public boolean hasAdapterWithName(final String name) {

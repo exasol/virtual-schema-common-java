@@ -562,6 +562,7 @@ public class PushdownSqlParser extends AbstractRequestParser {
     /**
      * Create an instance of a {@link PushdownSqlParser}
      *
+     * @param involvedTableMetadata metadata for all tables that are referred to in the push-down request
      * @return new instance
      */
     public static PushdownSqlParser createWithTablesMetadata(final List<TableMetadata> involvedTableMetadata) {

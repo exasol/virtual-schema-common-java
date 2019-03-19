@@ -15,7 +15,7 @@ public class PushDownRequest extends AbstractAdapterRequest {
     private final List<TableMetadata> involvedTablesMetadata;
 
     /**
-     * Create a new request of type {@link PushDownSchemaRequest}
+     * Create a new request of type {@link PushDownRequest}
      *
      * @param adapterName            name of the adapter that should handle the request
      * @param schemaMetadataInfo     schema metadata
