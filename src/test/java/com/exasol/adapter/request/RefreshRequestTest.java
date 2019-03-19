@@ -32,7 +32,7 @@ class RefreshRequestTest {
 
     @Test
     void testCreateWithEmptyTablesThrowsException() {
-        assertThrows(AdapterException.class, () -> this.refreshRequest = new RefreshRequest(ADAPTER_NAME,
+        assertThrows(IllegalArgumentException.class, () -> this.refreshRequest = new RefreshRequest(ADAPTER_NAME,
                 this.schemaMetadataInfo, Collections.emptyList()));
     }
 
