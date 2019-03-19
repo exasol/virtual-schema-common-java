@@ -1,8 +1,9 @@
 package com.exasol.adapter.request.parser;
 
-import static com.exasol.adapter.request.parser.RequestParserConstants.*;
+import static com.exasol.adapter.request.parser.RequestParserConstants.ADAPTER_NOTES_KEY;
+import static com.exasol.adapter.request.parser.RequestParserConstants.SCHEMA_NAME_KEY;
 
-import java.util.*;
+import java.util.Map;
 
 import javax.json.JsonObject;
 import javax.json.JsonReader;
@@ -10,27 +11,26 @@ import javax.json.JsonReader;
 import com.exasol.adapter.metadata.SchemaMetadataInfo;
 
 /**
- * This parser reads the so called Schema Metadata Information sent alongside
- * each request.
+ * This parser reads the so called Schema Metadata Information sent alongside each request.
  */
 public class SchemaMetadataInfoParser extends AbstractRequestParser {
     /**
      * Parse a JSON structure into {@link SchemaMetadataInfo}
      *
-     * @param rawSchemaMetadata excerpt from the adapter request containing the
-     *                          schema metadata info as JSON string
+     * @param rawSchemaMetadata excerpt from the adapter request containing the schema metadata info as JSON string
      * @return parsed {@link SchemaMetadataInfo}
      */
     public SchemaMetadataInfo parse(final String rawSchemaMetadata) {
-        final JsonReader reader = createJsonReader(rawSchemaMetadata);
-        return parse(reader.readObject());
+        try (final JsonReader reader = createJsonReader(rawSchemaMetadata)) {
+            return parse(reader.readObject());
+        }
     }
 
     /**
      * Parse a JSON structure into {@link SchemaMetadataInfo}
      *
-     * @param schemaMetadataInfoObject excerpt from the adapter request containing
-     *                                 the schema metadata info as JSON object
+     * @param schemaMetadataInfoObject excerpt from the adapter request containing the schema metadata info as JSON
+     *                                 object
      * @return parsed {@link SchemaMetadataInfo}
      */
     public SchemaMetadataInfo parse(final JsonObject schemaMetadataInfoObject) {

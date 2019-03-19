@@ -25,7 +25,12 @@ public class RequestParser extends AbstractRequestParser {
      * @throws RequestParserException if an unknown request type is encountered
      */
     public AbstractAdapterRequest parse(final String rawRequest) {
-        final JsonReader reader = createJsonReader(rawRequest);
+        try (final JsonReader reader = createJsonReader(rawRequest)) {
+            return parseFromReader(reader);
+        }
+    }
+
+    private AbstractAdapterRequest parseFromReader(final JsonReader reader) {
         final JsonObject root = reader.readObject();
         final String type = readRequestType(root);
         final SchemaMetadataInfo metadataInfo = readSchemaMetadataInfo(root);
@@ -51,19 +56,16 @@ public class RequestParser extends AbstractRequestParser {
     }
 
     private String readRequestType(final JsonObject root) {
-        final String type = root.getString(ADAPTER_REQUEST_TYPE_KEY);
-        return type;
+        return root.getString(ADAPTER_REQUEST_TYPE_KEY);
     }
 
     private SchemaMetadataInfo readSchemaMetadataInfo(final JsonObject root) {
-        final SchemaMetadataInfo metadataInfo = new SchemaMetadataInfoParser()
+        return new SchemaMetadataInfoParser()
                 .parse(root.getJsonObject(SCHEMA_METADATA_INFO_KEY));
-        return metadataInfo;
     }
 
     private String parseAdapterName(final Map<String, String> adapterProperties) {
-        final String adapterName = adapterProperties.get(ADPTER_NAME_PROPERTY_KEY);
-        return adapterName;
+        return adapterProperties.get(ADPTER_NAME_PROPERTY_KEY);
     }
 
     private SqlStatement parsePushdownStatement(final JsonObject root) {
@@ -74,8 +76,7 @@ public class RequestParser extends AbstractRequestParser {
     }
 
     private List<TableMetadata> parseInvolvedTables(final JsonObject root) {
-        return TablesMetadataParser.create()
-                .parse(root.getJsonArray(INVOLVED_TABLES_KEY));
+        return TablesMetadataParser.create().parse(root.getJsonArray(INVOLVED_TABLES_KEY));
     }
 
     /**

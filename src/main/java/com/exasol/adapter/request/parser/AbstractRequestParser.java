@@ -24,8 +24,7 @@ class AbstractRequestParser {
     protected JsonReader createJsonReader(final String rawRequest) {
         final ByteArrayInputStream rawRequestStream = new ByteArrayInputStream(
                 rawRequest.getBytes(StandardCharsets.UTF_8));
-        final JsonReader reader = Json.createReader(rawRequestStream);
-        return reader;
+        return Json.createReader(rawRequestStream);
     }
 
     protected Map<String, String> parseProperties(final JsonObject root) {
