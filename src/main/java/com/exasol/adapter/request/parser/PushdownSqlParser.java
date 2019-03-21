@@ -320,10 +320,10 @@ public class PushdownSqlParser extends AbstractRequestParser {
             final boolean withLocalTimezone = dataType.getBoolean("withLocalTimeZone", false);
             type = DataType.createTimestamp(withLocalTimezone);
         } else if (typeName.equals("INTERVAL")) {
-            final int precision = dataType.getInt("precision", 2); // has a default in EXASOL
+            final int precision = dataType.getInt("precision", 2);
             final IntervalType intervalType = intervalTypeFromString(dataType.getString("fromTo"));
             if (intervalType == IntervalType.DAY_TO_SECOND) {
-                final int fraction = dataType.getInt("fraction", 3); // has a default in EXASOL
+                final int fraction = dataType.getInt("fraction", 3);
                 type = DataType.createIntervalDaySecond(precision, fraction);
             } else {
                 assert intervalType == IntervalType.YEAR_TO_MONTH;
@@ -414,7 +414,7 @@ public class PushdownSqlParser extends AbstractRequestParser {
             arguments.add(parseExpression(argument));
         }
         if (!hasVariableInputArgs) {
-            numArgs = exp.getInt("numArgs"); // this is the expected number of arguments for this scalar function
+            numArgs = exp.getInt("numArgs");
             assert numArgs == arguments.size();
         }
         boolean isInfix = false;

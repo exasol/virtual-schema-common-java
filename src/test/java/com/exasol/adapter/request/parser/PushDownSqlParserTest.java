@@ -39,10 +39,69 @@ class PushDownSqlParserTest {
     }
 
     @Test
+    void testParseSelectWithGroupBy() {
+        final String sqlAsJson = "{" //
+              + "   \"type\" : \"select\", " //
+              + "   \"aggregationType\" : \"group_by\", " //
+              + "    \"from\" : " //
+              + "   { " //
+              + "        \"type\" : \"table\", " //
+              + "        \"name\" :  \"CLICKS\", " //
+              + "        \"alias\" :  \"A\" " //
+              + "   }, " //
+              + "   \"groupBy\" : [ " //
+              + "   { " //
+              + "        \"type\" : \"column\", " //
+              + "        \"name\" :  \"USER_ID\", " //
+              + "        \"columnNr\" : 1, " //
+              + "        \"tableName\" : \"CLICKS\" " //
+              + "   } " //
+              + "   ] " //
+              + "}";
+
+        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
+            this.jsonObject = jsonReader.readObject();
+        }
+        final SqlStatementSelect sqlStatementSelect =
+              (SqlStatementSelect) this.pushdownSqlParser.parseExpression(this.jsonObject);
+        final SqlGroupBy sqlGroupBy = (SqlGroupBy) sqlStatementSelect.getGroupBy();
+        assertAll(() -> assertThat(sqlGroupBy, instanceOf(SqlGroupBy.class)),
+              () -> assertThat(sqlGroupBy.getType(), equalTo(GROUP_BY)),
+              () -> assertThat(sqlStatementSelect.getType(), equalTo(SELECT)));
+    }
+
+    @Test
+    void testParseSelectWithLimit() {
+        final String sqlAsJson = "{" //
+              + "   \"type\" : \"select\", " //
+              + "    \"from\" : " //
+              + "   { " //
+              + "        \"type\" : \"table\", " //
+              + "        \"name\" :  \"CLICKS\" " //
+              + "   }, " //
+              + "   \"limit\" :  " //
+              + "   { " //
+              + "        \"numElements\" : 10 " //
+              + "   } " //
+              + "}";
+
+        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
+            this.jsonObject = jsonReader.readObject();
+        }
+        final SqlStatementSelect sqlStatementSelect =
+              (SqlStatementSelect) this.pushdownSqlParser.parseExpression(this.jsonObject);
+        final SqlLimit sqlLimit = (SqlLimit) sqlStatementSelect.getLimit();
+        assertAll(() -> assertThat(sqlLimit, instanceOf(SqlLimit.class)),
+              () -> assertThat(sqlLimit.getType(), equalTo(LIMIT)),
+              () -> assertThat(sqlStatementSelect.getType(), equalTo(SELECT)));
+    }
+
+    @Test
     void testParseColumn() {
         final String sqlAsJson = "{" //
               + "   \"type\" : \"column\"," //
               + "   \"name\" : \"USER_ID\"," //
+              + "   \"tableAlias\" : \"A\"," //
               + "   \"columnNr\" : 1, " //
               + "   \"tableName\" : \"CLICKS\" " //
               + "}";
@@ -95,6 +154,25 @@ class PushDownSqlParserTest {
         final SqlLiteralDate sqlLiteralDate = (SqlLiteralDate) this.pushdownSqlParser.parseExpression(this.jsonObject);
         assertAll(() -> assertThat(sqlLiteralDate.getType(), equalTo(LITERAL_DATE)),
               () -> assertThat(sqlLiteralDate.getValue(), equalTo("2015-12-01")));
+    }
+
+    @Test
+    void testParseLiteralIntervalDayToSeconds() {
+        final String sqlAsJson = "{" //
+              + "   \"type\" : \"literal_interval\", " //
+              + "   \"dataType\" : { " //
+              + "        \"type\" : \"INTERVAL\", " //
+              + "        \"fromTo\" :  \"DAY TO SECONDS\"" //
+              + "   }, " //
+              + "   \"value\" : \"2015-12-01\" " //
+              + "}";
+        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
+            this.jsonObject = jsonReader.readObject();
+        }
+        final SqlLiteralInterval sqlLiteralInterval =
+              (SqlLiteralInterval) this.pushdownSqlParser.parseExpression(this.jsonObject);
+        assertAll(() -> assertThat(sqlLiteralInterval.getType(), equalTo(LITERAL_INTERVAL)),
+              () -> assertThat(sqlLiteralInterval.getValue(), equalTo("2015-12-01")));
     }
 
     @Test

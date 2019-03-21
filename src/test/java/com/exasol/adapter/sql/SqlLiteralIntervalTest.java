@@ -45,7 +45,7 @@ class SqlLiteralIntervalTest {
     @Test
     void testGetType() {
         assertThat(this.sqlLiteralIntervalDayToSecond.getType(),
-              equalTo(SqlNodeType.LITERAL_TIMESTAMP));
+              equalTo(SqlNodeType.LITERAL_INTERVAL));
     }
 
     @Test
