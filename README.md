@@ -34,12 +34,13 @@ Please note that the artifact name changed from "virtualschema-common" to "virtu
 
 ### Build Time Dependencies
 
-| Dependency                                                                   | Purpose                                                | License                       |
-|------------------------------------------------------------------------------|--------------------------------------------------------|-------------------------------|
-| [Apache Maven](https://maven.apache.org/)                                    | Build tool                                             | Apache License 2.0            |
-| [Java Hamcrest](http://hamcrest.org/JavaHamcrest/)                           | Checking for conditions in code via matchers           | BSD                           |
-| [JUnit](https://junit.org/junit5)                                            | Unit testing framework                                 | Eclipse Public License 1.0    |
-| [Mockito](http://site.mockito.org/)                                          | Mocking framework                                      | MIT License                   |
+| Dependency                                                                          | Purpose                                                | License                       |
+|-------------------------------------------------------------------------------------|--------------------------------------------------------|-------------------------------|
+| [Apache Maven](https://maven.apache.org/)                                           | Build tool                                             | Apache License 2.0            |
+| [Java Hamcrest](http://hamcrest.org/JavaHamcrest/)                                  | Checking for conditions in code via matchers           | BSD                           |
+| [JUnit](https://junit.org/junit5)                                                   | Unit testing framework                                 | Eclipse Public License 1.0    |
+| [Mockito](http://site.mockito.org/)                                                 | Mocking framework                                      | MIT License                   |
+| [JUnit 5 System Extensions](https://github.com/itsallcode/junit5-system-extensions) | Capturing `STDOUT` and `STDERR`                      | Eclipse Public License 2.0    |
 
 ## Open Source Project Support
 
