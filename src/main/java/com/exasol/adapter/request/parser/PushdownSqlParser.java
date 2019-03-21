@@ -27,74 +27,74 @@ public class PushdownSqlParser extends AbstractRequestParser {
         this.involvedTablesMetadata = involvedTablesMetadata;
     }
 
-    public SqlNode parseExpression(final JsonObject exp) {
-        final String typeName = exp.getString("type", "");
+    public SqlNode parseExpression(final JsonObject expression) {
+        final String typeName = expression.getString("type", "");
         final SqlNodeType type = fromTypeName(typeName);
         switch (type) {
         case SELECT:
-            return parseSelect(exp);
+            return parseSelect(expression);
         case TABLE:
-            return parseTable(exp);
+            return parseTable(expression);
         case JOIN:
-            return parseJoin(exp);
+            return parseJoin(expression);
         case COLUMN:
-            return parseColumn(exp);
+            return parseColumn(expression);
         case LITERAL_NULL:
             return parseLiteralNull();
         case LITERAL_BOOL:
-            return parseLiteralBool(exp);
+            return parseLiteralBool(expression);
         case LITERAL_DATE:
-            return parseLiteralDate(exp);
+            return parseLiteralDate(expression);
         case LITERAL_TIMESTAMP:
-            return parseLiteralTimestamp(exp);
+            return parseLiteralTimestamp(expression);
         case LITERAL_TIMESTAMPUTC:
-            return parseLiteralTimestamputc(exp);
+            return parseLiteralTimestamputc(expression);
         case LITERAL_DOUBLE:
-            return parseLiteralDouble(exp);
+            return parseLiteralDouble(expression);
         case LITERAL_EXACTNUMERIC:
-            return parseLiteralExactNumeric(exp);
+            return parseLiteralExactNumeric(expression);
         case LITERAL_STRING:
-            return parseLiteralString(exp);
+            return parseLiteralString(expression);
         case LITERAL_INTERVAL:
-            return parseLiteralInterval(exp);
+            return parseLiteralInterval(expression);
         case PREDICATE_AND:
-            return parsePredicateAnd(exp);
+            return parsePredicateAnd(expression);
         case PREDICATE_OR:
-            return parsePredicateOr(exp);
+            return parsePredicateOr(expression);
         case PREDICATE_NOT:
-            return parsePredicateNot(exp);
+            return parsePredicateNot(expression);
         case PREDICATE_EQUAL:
-            return parsePredicateEqual(exp);
+            return parsePredicateEqual(expression);
         case PREDICATE_NOTEQUAL:
-            return parsePredicateNotEqual(exp);
+            return parsePredicateNotEqual(expression);
         case PREDICATE_LESS:
-            return parsePredicateLess(exp);
+            return parsePredicateLess(expression);
         case PREDICATE_LESSEQUAL:
-            return parsePredicateLessEqual(exp);
+            return parsePredicateLessEqual(expression);
         case PREDICATE_LIKE:
-            return parsePredicateLike(exp);
+            return parsePredicateLike(expression);
         case PREDICATE_LIKE_REGEXP:
-            return parsePredicateLikeRegexp(exp);
+            return parsePredicateLikeRegexp(expression);
         case PREDICATE_BETWEEN:
-            return parsePredicateBetween(exp);
+            return parsePredicateBetween(expression);
         case PREDICATE_IN_CONSTLIST:
-            return parsePredicateInConstlist(exp);
+            return parsePredicateInConstlist(expression);
         case PREDICATE_IS_NULL:
-            return parsePredicateIsNull(exp);
+            return parsePredicateIsNull(expression);
         case PREDICATE_IS_NOT_NULL:
-            return parsePredicateIsNotNull(exp);
+            return parsePredicateIsNotNull(expression);
         case FUNCTION_SCALAR:
-            return parseFunctionScalar(exp);
+            return parseFunctionScalar(expression);
         case FUNCTION_SCALAR_EXTRACT:
-            return parseFunctionScalarExtract(exp);
+            return parseFunctionScalarExtract(expression);
         case FUNCTION_SCALAR_CASE:
-            return parseFunctionScalarCase(exp);
+            return parseFunctionScalarCase(expression);
         case FUNCTION_SCALAR_CAST:
-            return parseFunctionScalarCast(exp);
+            return parseFunctionScalarCast(expression);
         case FUNCTION_AGGREGATE:
-            return parseFunctionAggregate(exp);
+            return parseFunctionAggregate(expression);
         case FUNCTION_AGGREGATE_GROUP_CONCAT:
-            return parseFunctionAggregateGroupConcat(exp);
+            return parseFunctionAggregateGroupConcat(expression);
         default:
             throw new IllegalArgumentException("Unknown node type: " + typeName);
         }
@@ -163,8 +163,8 @@ public class PushdownSqlParser extends AbstractRequestParser {
         return new SqlLiteralNull();
     }
 
-    private SqlNode parseLiteralBool(final JsonObject exp) {
-        final boolean boolVal = exp.getBoolean(VALUE);
+    private SqlNode parseLiteralBool(final JsonObject expression) {
+        final boolean boolVal = expression.getBoolean(VALUE);
         return new SqlLiteralBool(boolVal);
     }
 
@@ -293,9 +293,9 @@ public class PushdownSqlParser extends AbstractRequestParser {
         return new SqlPredicateAnd(andedPredicates);
     }
 
-    private SqlNode parseLiteralInterval(final JsonObject exp) {
-        final String intervalVal = exp.getString(VALUE);
-        final DataType intervalType = getDataType(exp.getJsonObject(DATA_TYPE));
+    private SqlNode parseLiteralInterval(final JsonObject expression) {
+        final String intervalVal = expression.getString(VALUE);
+        final DataType intervalType = getDataType(expression.getJsonObject(DATA_TYPE));
         return new SqlLiteralInterval(intervalVal, intervalType);
     }
 

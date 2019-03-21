@@ -58,7 +58,8 @@ class SqlFunctionAggregateGroupConcatTest {
 
     @Test
     void testGetType() {
-        assertThat(this.sqlFunctionAggregateGroupConcat.getType(), equalTo(SqlNodeType.FUNCTION_AGGREGATE));
+        assertThat(this.sqlFunctionAggregateGroupConcat.getType(),
+              equalTo(SqlNodeType.FUNCTION_AGGREGATE_GROUP_CONCAT));
     }
 
     @Test

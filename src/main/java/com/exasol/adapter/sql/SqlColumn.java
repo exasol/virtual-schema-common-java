@@ -6,8 +6,8 @@ import com.exasol.adapter.metadata.ColumnMetadata;
 public class SqlColumn extends SqlNode {
     private final int id;
     private final ColumnMetadata metadata;
-    private String tableName;
-    private String tableAlias;
+    private final String tableName;
+    private final String tableAlias;
 
     public SqlColumn(final int id, final ColumnMetadata metadata) {
         this(id, metadata, null, null);
@@ -25,30 +25,30 @@ public class SqlColumn extends SqlNode {
     }
     
     public int getId() {
-        return id;
+        return this.id;
     }
     
     public ColumnMetadata getMetadata() {
-        return metadata;
+        return this.metadata;
     }
     
     public String getName() {
-        return metadata.getName();
+        return this.metadata.getName();
     }
 
     public String getTableName() {
-        return tableName;
+        return this.tableName;
     }
 
     public boolean hasTableAlias() { return this.tableAlias != null; }
 
     public String getTableAlias() {
-        return tableAlias;
+        return this.tableAlias;
     }
     
     @Override
     public String toSimpleSql() {
-        return "\"" + metadata.getName().replace("\"", "\"\"") + "\"";
+        return "\"" + this.metadata.getName().replace("\"", "\"\"") + "\"";
     }
 
     @Override
@@ -59,5 +59,11 @@ public class SqlColumn extends SqlNode {
     @Override
     public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
+    }
+
+    @Override
+    public String toString() {
+        return "SqlColumn{" + "id=" + this.id + ", metadata=" + this.metadata + ", tableName='" + this.tableName + '\'' +
+              ", tableAlias='" + this.tableAlias + '\'' + '}';
     }
 }
