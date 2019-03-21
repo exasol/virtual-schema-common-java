@@ -92,11 +92,11 @@ class RequestDispatcherTest {
     }
 
     @Test
-    void testDispatchPushdownRequest() throws AdapterException {
+    void testDispatchPushDownRequest() throws AdapterException {
         final String rawRequest = "{\n" //
                 + "    \"type\" : \"pushdown\",\n" //
                 + "    " + DEFAULT_REQUEST_PARTS + ",\n" //
-                + "    \"pushdownRequest\" :\n" //
+                + "    \"PushDownRequest\" :\n" //
                 + "    {\n" //
                 + "        \"type\" : \"select\",\n" //
                 + "        \"from\" :\n" //
