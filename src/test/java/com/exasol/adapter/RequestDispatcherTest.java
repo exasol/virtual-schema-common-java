@@ -96,7 +96,7 @@ class RequestDispatcherTest {
         final String rawRequest = "{\n" //
                 + "    \"type\" : \"pushdown\",\n" //
                 + "    " + DEFAULT_REQUEST_PARTS + ",\n" //
-                + "    \"PushDownRequest\" :\n" //
+                + "    \"pushdownRequest\" :\n" //
                 + "    {\n" //
                 + "        \"type\" : \"select\",\n" //
                 + "        \"from\" :\n" //
