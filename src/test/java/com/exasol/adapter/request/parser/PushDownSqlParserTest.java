@@ -295,6 +295,33 @@ class PushDownSqlParserTest {
     }
 
     @Test
+    void testParsePredicateOr() {
+        final String sqlAsJson = "{" //
+              + "   \"type\" : \"predicate_or\", " //
+              + "   \"expressions\" : [ " //
+              + "   { " //
+              + "        \"type\" : \"literal_double\", " //
+              + "        \"value\" : \"1.0\" " //
+              + "   }, " //
+              + "   { " //
+              + "        \"type\" : \"literal_double\", " //
+              + "        \"value\" : \"2.0\" " //
+              + "   } " //
+              + "   ] " //
+              + "}";
+        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
+            this.jsonObject = jsonReader.readObject();
+        }
+        final SqlPredicateOr sqlPredicateAnd = (SqlPredicateOr) this.pushdownSqlParser.parseExpression(this.jsonObject);
+        final List<SqlNode> expressions = sqlPredicateAnd.getOrPredicates();
+        final SqlLiteralDouble sqlLiteralDouble1 = (SqlLiteralDouble) expressions.get(0);
+        final SqlLiteralDouble sqlLiteralDouble2 = (SqlLiteralDouble) expressions.get(1);
+        assertAll(() -> assertThat(sqlPredicateAnd.getType(), equalTo(PREDICATE_OR)),
+              () -> assertThat(sqlLiteralDouble1.getValue(), equalTo(1.0)), //
+              () -> assertThat(sqlLiteralDouble2.getValue(), equalTo(2.0)));
+    }
+
+    @Test
     void testParsePredicateOrEmptyExpressions() {
         final String sqlAsJson = "{" //
               + "   \"type\" : \"predicate_or\", " //
