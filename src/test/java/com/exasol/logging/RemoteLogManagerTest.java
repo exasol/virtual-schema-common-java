@@ -65,15 +65,28 @@ class RemoteLogManagerTest {
                 matchesPattern(TIMESTAMP_PATTERN + " INFO +\\[.*?\\] Attached to output service with log level ALL."));
     }
 
-    private void attachToLogServiceInParallelThread(final String loopBackAddress, final int port) {
-        new Thread(() -> {
-            try {
-                Thread.sleep(100);
-            } catch (final InterruptedException e) {
-                e.printStackTrace();
-            }
+    private Thread attachToLogServiceInParallelThread(final String loopBackAddress, final int port) {
+        final Thread thread = new Thread(() -> {
+            waitForAcceptingSeverSocketToGetReady();
             this.logManager.setupRemoteLogger(loopBackAddress, port, Level.ALL);
-        }).start();
+        });
+        thread.start();
+        return thread;
+    }
+
+    /**
+     * While sleeping in tests is generally not a good idea since it makes the test prone to race conditions, here we do
+     * not have much choice. Thread notification from the accepting thread to the adapter thread does not work because
+     * the <code>accept()</code> method blocks the accepting thread. So we can't send a notification from that thread to
+     * let the adapter thread know that the server socket is ready.
+     */
+    @SuppressWarnings("squid:S2925")
+    private void waitForAcceptingSeverSocketToGetReady() {
+        try {
+            Thread.sleep(100);
+        } catch (final InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private String readLogMessageFromSocket(final Socket socket) throws IOException {
