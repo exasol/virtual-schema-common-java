@@ -55,8 +55,8 @@ public final class RequestDispatcher {
         case PUSHDOWN:
             return dispatchPushDownRequestToAdapter(request, adapter, metadata);
         default:
-            throw new AdapterException("Unknown adapter request \"" + type
-                    + "\". Check wether versions of Exasol database and Virtual Schema Adapter are compatible.");
+            throw new AdapterException("The request dispatcher encountered a request type \"" + type.toString()
+                    + "\" which it does not recognize. Please create an issue ticket quoting this error message.");
         }
     }
 

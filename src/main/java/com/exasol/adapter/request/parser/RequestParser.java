@@ -51,7 +51,8 @@ public class RequestParser extends AbstractRequestParser {
             final SqlStatement statement = parsePushdownStatement(root);
             return new PushDownRequest(adapterName, metadataInfo, statement, null);
         default:
-            throw new RequestParserException("Unknown request type \"" + type + "\"");
+            throw new RequestParserException("Could not parse unknown adapter request type identifier \"" + type
+                    + "\". Check wether versions of Exasol database and Virtual Schema Adapter are compatible.");
         }
     }
 
@@ -60,7 +61,7 @@ public class RequestParser extends AbstractRequestParser {
     }
 
     private SchemaMetadataInfo readSchemaMetadataInfo(final JsonObject root) {
-        JsonObject schemaMetadataInfoAsJson = root.getJsonObject(SCHEMA_METADATA_INFO_KEY);
+        final JsonObject schemaMetadataInfoAsJson = root.getJsonObject(SCHEMA_METADATA_INFO_KEY);
         return new SchemaMetadataInfoParser().parse(schemaMetadataInfoAsJson);
     }
 

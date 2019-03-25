@@ -8,7 +8,7 @@ import com.exasol.adapter.metadata.SchemaMetadataInfo;
  * This class represents a request that tells a Virtual Schema Adapter to present the current metadata
  */
 public class RefreshRequest extends AbstractAdapterRequest {
-    private final boolean isRefreshForTables;
+    private final boolean refreshSelectedTablesOnly;
     private List<String> tables;
 
     /**
@@ -19,7 +19,7 @@ public class RefreshRequest extends AbstractAdapterRequest {
      */
     public RefreshRequest(final String adapterName, final SchemaMetadataInfo schemaMetadataInfo) {
         super(adapterName, schemaMetadataInfo, AdapterRequestType.REFRESH);
-        this.isRefreshForTables = false;
+        this.refreshSelectedTablesOnly = false;
     }
 
     /**
@@ -36,7 +36,7 @@ public class RefreshRequest extends AbstractAdapterRequest {
             throw new IllegalArgumentException(
                     "The RefreshRequest constructor expects a list of requested tables, but the list is currently empty.");
         }
-        this.isRefreshForTables = true;
+        this.refreshSelectedTablesOnly = true;
         this.tables = tables;
     }
 
@@ -52,7 +52,7 @@ public class RefreshRequest extends AbstractAdapterRequest {
     /**
      * @return <code>true</code> if the refresh request is restricted to tables
      */
-    public boolean isRefreshForTables() {
-        return this.isRefreshForTables;
+    public boolean refreshesOnlySelectedTables() {
+        return this.refreshSelectedTablesOnly;
     }
 }

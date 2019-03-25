@@ -43,12 +43,12 @@ class RefreshRequestTest {
 
     @Test
     void testIsRefreshForTablesTrue() {
-        assertTrue(this.refreshRequest.isRefreshForTables());
+        assertTrue(this.refreshRequest.refreshesOnlySelectedTables());
     }
 
     @Test
     void testIsRefreshForTablesFalse() {
         this.refreshRequest = new RefreshRequest(ADAPTER_NAME, this.schemaMetadataInfo);
-        assertFalse(this.refreshRequest.isRefreshForTables());
+        assertFalse(this.refreshRequest.refreshesOnlySelectedTables());
     }
 }
