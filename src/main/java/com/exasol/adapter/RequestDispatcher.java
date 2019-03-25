@@ -78,39 +78,39 @@ public final class RequestDispatcher {
     }
 
     private String dispatchCreateVirtualSchemaRequestToAdapter(final AdapterRequest request,
-            final VirtualSchemaAdapter adapter, final ExaMetadata metadata) {
+            final VirtualSchemaAdapter adapter, final ExaMetadata metadata) throws AdapterException {
         final CreateVirtualSchemaResponse response = adapter.createVirtualSchema(metadata,
                 (CreateVirtualSchemaRequest) request);
         return ResponseJsonConverter.getInstance().convertCreateVirtualSchemaResponse(response);
     }
 
     private String dispatchDropVirtualSchemaRequestToAdapter(final AdapterRequest request,
-            final VirtualSchemaAdapter adapter, final ExaMetadata metadata) {
+            final VirtualSchemaAdapter adapter, final ExaMetadata metadata) throws AdapterException {
         final DropVirtualSchemaResponse response = adapter.dropVirtualSchema(metadata,
                 (DropVirtualSchemaRequest) request);
         return ResponseJsonConverter.getInstance().convertDropVirtualSchemaResponse(response);
     }
 
     private String dispatchRefreshRequestToAdapter(final AdapterRequest request, final VirtualSchemaAdapter adapter,
-            final ExaMetadata metadata) {
+            final ExaMetadata metadata) throws AdapterException {
         final RefreshResponse response = adapter.refresh(metadata, (RefreshRequest) request);
         return ResponseJsonConverter.getInstance().convertRefreshResponse(response);
     }
 
     private String dispatchSetPropertiesRequestToAdapter(final AdapterRequest request,
-            final VirtualSchemaAdapter adapter, final ExaMetadata metadata) {
+            final VirtualSchemaAdapter adapter, final ExaMetadata metadata) throws AdapterException {
         final SetPropertiesResponse response = adapter.setProperties(metadata, (SetPropertiesRequest) request);
         return ResponseJsonConverter.getInstance().convertSetPropertiesResponse(response);
     }
 
     private String dispatchGetCapabilitiesRequestToAdapter(final AdapterRequest request,
-            final VirtualSchemaAdapter adapter, final ExaMetadata metadata) {
+            final VirtualSchemaAdapter adapter, final ExaMetadata metadata) throws AdapterException {
         final GetCapabilitiesResponse response = adapter.getCapabilities(metadata, (GetCapabilitiesRequest) request);
         return ResponseJsonConverter.getInstance().convertGetCapabilitiesResponse(response);
     }
 
     private String dispatchPushDownRequestToAdapter(final AdapterRequest request, final VirtualSchemaAdapter adapter,
-            final ExaMetadata metadata) {
+            final ExaMetadata metadata) throws AdapterException {
         final PushDownResponse response = adapter.pushdown(metadata, (PushDownRequest) request);
         return ResponseJsonConverter.getInstance().convertPushDownResponse(response);
     }
