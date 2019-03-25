@@ -12,18 +12,15 @@ import com.exasol.logging.RemoteLogManager;
  * responsible adapter.
  */
 public final class RequestDispatcher {
-    private static RequestDispatcher instance = new RequestDispatcher(new RemoteLogManager());
+    private static RequestDispatcher instance = new RequestDispatcher();
 
     /**
      * Get the singleton instance of the {@link RequestDispatcher}
      *
      * @return singleton instance
      */
-    public synchronized static RequestDispatcher getInstance() {
+    public static synchronized RequestDispatcher getInstance() {
         return instance;
-    }
-
-    public RequestDispatcher(final RemoteLogManager remoteLogManager) {
     }
 
     /**
