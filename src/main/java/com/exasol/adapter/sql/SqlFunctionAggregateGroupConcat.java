@@ -13,8 +13,7 @@ public class SqlFunctionAggregateGroupConcat extends SqlNode {
     private final SqlOrderBy orderBy;
 
     public SqlFunctionAggregateGroupConcat(final AggregateFunction function, final List<SqlNode> arguments,
-                                           final SqlOrderBy orderBy, final boolean distinct,
-                                           final String separator) {
+          final SqlOrderBy orderBy, final boolean distinct, final String separator) {
         SqlArgumentValidator.validateSqlFunctionArguments(arguments, SqlFunctionAggregateGroupConcat.class);
         this.function = function;
         this.distinct = distinct;
@@ -31,58 +30,58 @@ public class SqlFunctionAggregateGroupConcat extends SqlNode {
     }
 
     public AggregateFunction getFunction() {
-        return function;
+        return this.function;
     }
 
     public List<SqlNode> getArguments() {
-        if (arguments == null) {
+        if (this.arguments == null) {
             return Collections.emptyList();
         } else {
-            return Collections.unmodifiableList(arguments);
+            return Collections.unmodifiableList(this.arguments);
         }
     }
 
     public boolean hasOrderBy() {
-        return orderBy != null && orderBy.getExpressions() != null && !orderBy.getExpressions().isEmpty();
+        return this.orderBy != null && this.orderBy.getExpressions() != null && !this.orderBy.getExpressions().isEmpty();
     }
 
     public SqlOrderBy getOrderBy() {
-        return orderBy;
+        return this.orderBy;
     }
 
     public String getFunctionName() {
-        return function.name();
+        return this.function.name();
     }
 
     public String getSeparator() {
-        return separator;
+        return this.separator;
     }
 
     public boolean hasDistinct() {
-        return distinct;
+        return this.distinct;
     }
 
     @Override
     public String toSimpleSql() {
         String distinctSql = "";
-        if (distinct) {
+        if (this.distinct) {
             distinctSql = "DISTINCT ";
         }
         final StringBuilder builder = new StringBuilder();
         builder.append(getFunctionName());
         builder.append("(");
         builder.append(distinctSql);
-        assert arguments != null;
-        assert arguments.size() == 1 && arguments.get(0) != null;
-        builder.append(arguments.get(0).toSimpleSql());
-        if (orderBy != null) {
+        assert this.arguments != null;
+        assert this.arguments.size() == 1 && this.arguments.get(0) != null;
+        builder.append(this.arguments.get(0).toSimpleSql());
+        if (this.orderBy != null) {
             builder.append(" ");
-            builder.append(orderBy.toSimpleSql());
+            builder.append(this.orderBy.toSimpleSql());
         }
-        if (separator != null) {
+        if (this.separator != null) {
             builder.append(" SEPARATOR ");
             builder.append("'");
-            builder.append(separator);
+            builder.append(this.separator);
             builder.append("'");
         }
         builder.append(")");
@@ -91,7 +90,7 @@ public class SqlFunctionAggregateGroupConcat extends SqlNode {
 
     @Override
     public SqlNodeType getType() {
-        return SqlNodeType.FUNCTION_AGGREGATE;
+        return SqlNodeType.FUNCTION_AGGREGATE_GROUP_CONCAT;
     }
 
     @Override
