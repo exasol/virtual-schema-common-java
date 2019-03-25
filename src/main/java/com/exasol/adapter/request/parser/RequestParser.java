@@ -34,8 +34,8 @@ public class RequestParser extends AbstractRequestParser {
         final JsonObject root = reader.readObject();
         final String type = readRequestType(root);
         final SchemaMetadataInfo metadataInfo = readSchemaMetadataInfo(root);
+        final String adapterName = metadataInfo.getProperty(ADPTER_NAME_PROPERTY_KEY);
         final Map<String, String> adapterProperties = parseProperties(root);
-        final String adapterName = parseAdapterName(adapterProperties);
         switch (type) {
         case REQUEST_TYPE_DROP_VIRTUAL_SCHEMA:
             return new DropVirtualSchemaRequest(adapterName, metadataInfo);
@@ -60,12 +60,8 @@ public class RequestParser extends AbstractRequestParser {
     }
 
     private SchemaMetadataInfo readSchemaMetadataInfo(final JsonObject root) {
-        return new SchemaMetadataInfoParser()
-                .parse(root.getJsonObject(SCHEMA_METADATA_INFO_KEY));
-    }
-
-    private String parseAdapterName(final Map<String, String> adapterProperties) {
-        return adapterProperties.get(ADPTER_NAME_PROPERTY_KEY);
+        JsonObject schemaMetadataInfoAsJson = root.getJsonObject(SCHEMA_METADATA_INFO_KEY);
+        return new SchemaMetadataInfoParser().parse(schemaMetadataInfoAsJson);
     }
 
     private SqlStatement parsePushdownStatement(final JsonObject root) {

@@ -5,21 +5,25 @@ import com.exasol.adapter.request.*;
 import com.exasol.adapter.request.parser.RequestParser;
 import com.exasol.adapter.response.*;
 import com.exasol.adapter.response.converter.ResponseJsonConverter;
+import com.exasol.logging.RemoteLogManager;
 
 /**
  * This class is the main entry point for calls to a Virtual Schema. From here the adapter calls are dispatched to the
  * responsible adapter.
  */
 public final class RequestDispatcher {
-    private static RequestDispatcher instance = new RequestDispatcher();
+    private static RequestDispatcher instance = new RequestDispatcher(new RemoteLogManager());
 
     /**
      * Get the singleton instance of the {@link RequestDispatcher}
      *
      * @return singleton instance
      */
-    public static RequestDispatcher getInstance() {
+    public synchronized static RequestDispatcher getInstance() {
         return instance;
+    }
+
+    public RequestDispatcher(final RemoteLogManager remoteLogManager) {
     }
 
     /**
@@ -37,6 +41,7 @@ public final class RequestDispatcher {
 
     private String excecuteAdapterCall(final ExaMetadata metadata, final String rawRequest) throws AdapterException {
         final AdapterRequest request = new RequestParser().parse(rawRequest);
+        configureAdapterLoggingAccordingToRequestSettings(request);
         final AdapterRequestType type = request.getType();
         final VirtualSchemaAdapter adapter = findResponsibleAdapter(request);
         switch (type) {
@@ -55,6 +60,18 @@ public final class RequestDispatcher {
         default:
             throw new AdapterException("Unknown adapter request \"" + type
                     + "\". Check wether versions of Exasol database and Virtual Schema Adapter are compatible.");
+        }
+    }
+
+    private void configureAdapterLoggingAccordingToRequestSettings(final AdapterRequest request) {
+        final LoggingConfiguration configuration = LoggingConfiguration
+                .parseFromProperties(request.getSchemaMetadataInfo().getProperties());
+        final RemoteLogManager remoteLogManager = new RemoteLogManager();
+        if (configuration.isRemoteLoggingConfigured()) {
+            remoteLogManager.setupRemoteLogger(configuration.getRemoteLoggingHost(),
+                    configuration.getRemoteLoggingPort(), configuration.getLogLevel());
+        } else {
+            remoteLogManager.setupConsoleLogger(configuration.getLogLevel());
         }
     }
 

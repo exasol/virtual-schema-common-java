@@ -8,18 +8,9 @@ import java.util.logging.*;
  * tests.
  */
 public class RemoteLogManager {
-    private static final RemoteLogManager instance = new RemoteLogManager();
     private static final Logger ROOT_LOGGER = LogManager.getLogManager().getLogger("");
-    private static SocketHandler socketHandler = null;
-
-    /**
-     * Get the {@link RemoteLogManager} instance
-     *
-     * @return manager instance
-     */
-    public static RemoteLogManager getInstance() {
-        return instance;
-    }
+    private static final Logger LOGGER = Logger.getLogger(RemoteLogManager.class.getName());
+    private SocketHandler socketHandler = null;
 
     /**
      * Configure the logger to write to the console
@@ -27,6 +18,11 @@ public class RemoteLogManager {
      * @param logLevel from this level on upward messages are logged
      */
     public void setupConsoleLogger(final Level logLevel) {
+        setupRootLoggerForLocalLogging(logLevel);
+        LOGGER.info(() -> "Set up local logging with log level " + logLevel + ".");
+    }
+
+    private void setupRootLoggerForLocalLogging(final Level logLevel) {
         setupRootLogger(new ConsoleHandler(), logLevel);
     }
 
@@ -58,14 +54,14 @@ public class RemoteLogManager {
      */
     public void setupRemoteLogger(final String host, final int port, final Level logLevel) {
         try {
-            if (socketHandler == null) {
-                socketHandler = new SocketHandler(host, port);
+            if (this.socketHandler == null) {
+                this.socketHandler = new SocketHandler(host, port);
             }
-            setupRootLogger(socketHandler, logLevel);
-            ROOT_LOGGER.info(() -> "Attached to output service with log level " + logLevel + ".");
+            setupRootLogger(this.socketHandler, logLevel);
+            LOGGER.info(() -> "Attached to output service with log level " + logLevel + ".");
         } catch (final IOException exception) {
-            setupConsoleLogger(logLevel);
-            ROOT_LOGGER.warning(() -> "Unable to attch to remote log listener on " + host + ":" + port
+            setupRootLoggerForLocalLogging(logLevel);
+            LOGGER.warning(() -> "Unable to attch to remote log listener on " + host + ":" + port
                     + ". Falling back to console log.");
         }
     }
@@ -74,8 +70,8 @@ public class RemoteLogManager {
      * Close remote connections if any
      */
     public void close() {
-        if (socketHandler != null) {
-            socketHandler.close();
+        if (this.socketHandler != null) {
+            this.socketHandler.close();
         }
     }
 }

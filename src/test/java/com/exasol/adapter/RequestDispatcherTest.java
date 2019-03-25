@@ -1,5 +1,6 @@
 package com.exasol.adapter;
 
+import static org.hamcrest.Matchers.matchesPattern;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -9,6 +10,8 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.itsallcode.io.Capturable;
+import org.itsallcode.junit.sysextensions.SystemErrGuard;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -21,9 +24,16 @@ import com.exasol.adapter.request.*;
 import com.exasol.adapter.response.*;
 
 @ExtendWith(MockitoExtension.class)
+@ExtendWith(SystemErrGuard.class)
 class RequestDispatcherTest {
-    private static final String DEFAULT_REQUEST_PARTS = "\"schemaMetadataInfo\" : { \"name\" : \"foo\" }, " //
-            + "\"properties\" : { \"SQL_DIALECT\" : \"DUMMY\" }";
+    private static final String DEFAULT_REQUEST_PARTS = "    \"schemaMetadataInfo\" :\n" //
+            + "    {\n" //
+            + "        \"name\" : \"foo\",\n" //
+            + "        \"properties\" :\n" //
+            + "        {\n" //
+            + "            \"SQL_DIALECT\" : \"DUMMY\"\n" //
+            + "        }\n" //
+            + "    }\n";
     private final ExaMetadata metadata = null;
     @Mock
     private VirtualSchemaAdapter adapterMock;
@@ -41,7 +51,10 @@ class RequestDispatcherTest {
 
     @Test
     void testDispatchCreateVtirtualSchemaRequest() throws AdapterException {
-        final String rawRequest = "{ \"type\" : \"createVirtualSchema\", " + DEFAULT_REQUEST_PARTS + "}";
+        final String rawRequest = "{\n" //
+                + "    \"type\" : \"createVirtualSchema\",\n" //
+                + DEFAULT_REQUEST_PARTS //
+                + "}";
         final SchemaMetadata metadata = createSchemaMetadata(rawRequest);
         when(this.adapterMock.createVirtualSchema(any(), any()))
                 .thenReturn(CreateVirtualSchemaResponse.builder().schemaMetadata(metadata).build());
@@ -132,9 +145,57 @@ class RequestDispatcherTest {
 
     @Test
     void testGetCapabilitiesResponse() throws AdapterException {
-        final String rawRequest = "{ \"type\" : \"getCapabilities\", " + DEFAULT_REQUEST_PARTS + "}";
+        final String rawRequest = "{\n" //
+                + "    \"type\" : \"getCapabilities\",\n" //
+                + DEFAULT_REQUEST_PARTS //
+                + "}";
         when(this.adapterMock.getCapabilities(any(), any())).thenReturn(GetCapabilitiesResponse.builder().build());
         final String response = RequestDispatcher.adapterCall(this.metadata, rawRequest);
         assertThat(response, startsWith("{\"type\":\"getCapabilities\""));
+    }
+
+    @Test
+    void testLoggingSetAccordingProperties(final Capturable stream) throws AdapterException {
+        final String rawRequest = "{\n" //
+                + "    \"type\" : \"createVirtualSchema\",\n" //
+                + "    \"schemaMetadataInfo\" :\n" //
+                + "    {\n" //
+                + "          \"name\" : \"REMOTE_DEBUG_TEST\",\n" //
+                + "          \"properties\" :\n" //
+                + "          {\n" //
+                + "              \"SQL_DIALECT\" : \"DUMMY\",\n" //
+                + "              \"DEBUG_LEVEL\" : \"FINE\"\n" //
+                + "          }\n" //
+                + "    }\n" //
+                + "}";
+        final SchemaMetadata metadata = createSchemaMetadata(rawRequest);
+        when(this.adapterMock.createVirtualSchema(any(), any()))
+                .thenReturn(CreateVirtualSchemaResponse.builder().schemaMetadata(metadata).build());
+        stream.capture();
+        RequestDispatcher.adapterCall(this.metadata, rawRequest);
+        assertThat(stream.getCapturedData(), matchesPattern(".*level FINE\\.\n"));
+    }
+
+    @Test
+    void testRemoteLoggingSetAccordingPropertiesWithUnknownHostAndFallback(final Capturable stream)
+            throws AdapterException {
+        final String rawRequest = "{\n" //
+                + "    \"type\" : \"createVirtualSchema\",\n" //
+                + "    \"schemaMetadataInfo\" :\n" //
+                + "    {\n" //
+                + "          \"name\" : \"REMOTE_DEBUG_TEST\",\n" //
+                + "          \"properties\" :\n" //
+                + "          {\n" //
+                + "              \"SQL_DIALECT\" : \"DUMMY\",\n" //
+                + "              \"DEBUG_ADDRESS\" : \"this.host.does.not.exist.exasol.com\"\n" //
+                + "          }\n" //
+                + "    }\n" //
+                + "}";
+        final SchemaMetadata metadata = createSchemaMetadata(rawRequest);
+        when(this.adapterMock.createVirtualSchema(any(), any()))
+                .thenReturn(CreateVirtualSchemaResponse.builder().schemaMetadata(metadata).build());
+        stream.capture();
+        RequestDispatcher.adapterCall(this.metadata, rawRequest);
+        assertThat(stream.getCapturedData(), matchesPattern(".*[Ff]alling back.*\n"));
     }
 }

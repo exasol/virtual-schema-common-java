@@ -6,7 +6,6 @@ import com.exasol.adapter.metadata.SchemaMetadataInfo;
  * Abstract base class for all Virtual Schema Adapter requests
  */
 public abstract class AbstractAdapterRequest implements AdapterRequest {
-
     private final SchemaMetadataInfo schemaMetadataInfo;
     private final AdapterRequestType type;
     private final String adapterName;

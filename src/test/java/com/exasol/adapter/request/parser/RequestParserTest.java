@@ -24,19 +24,22 @@ class RequestParserTest {
 
     @Test
     void testParseThrowsExceptionIfRequestTypeUnknown() {
-        final String rawRequest = "{ \"type\" : \"UNKNOWN\", " + SCHEMA_METADATA_INFO + "}";
+        final String rawRequest = "{ \"type\" : \"UNKNOWN\", \"schemaMetadataInfo\" : { \"name\" : \"foo\" } }";
         assertThrows(RequestParserException.class, () -> this.parser.parse(rawRequest));
     }
 
     @Test
     void testParseAdapterName() {
-        final String rawRequest = "{" //
-                + "    \"type\" : \"setProperties\", " //
-                + "    " + SCHEMA_METADATA_INFO + ", " //
-                + "    \"properties\" :"//
-                + "    {" //
-                + "        \"SQL_DIALECT\" : \"THE_DIALECT\"" //
-                + "    }" //
+        final String rawRequest = "{\n" //
+                + "    \"type\" : \"setProperties\",\n" //
+                + "    \"schemaMetadataInfo\" :\n" //
+                + "    {\n" //
+                + "        \"name\" : \"foo\",\n"//
+                + "        \"properties\" :\n"//
+                + "        {\n" //
+                + "            \"SQL_DIALECT\" : \"THE_DIALECT\"\n" //
+                + "        }\n" //
+                + "    }\n" //
                 + "}";
         final AdapterRequest request = this.parser.parse(rawRequest);
         assertThat(request.getAdapterName(), equalTo("THE_DIALECT"));
