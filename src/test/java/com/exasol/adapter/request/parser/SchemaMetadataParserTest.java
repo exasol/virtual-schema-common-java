@@ -3,6 +3,7 @@ package com.exasol.adapter.request.parser;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayInputStream;
 
@@ -47,5 +48,24 @@ class SchemaMetadataParserTest {
         assertAll(() -> assertThat(metadata.getSchemaName(), equalTo("SCHEMA_NAME")),
                 () -> assertThat(metadata.getProperties(), hasEntry(equalTo("PROP_1"), equalTo("property value 1"))),
                 () -> assertThat(metadata.getAdapterNotes(), startsWith("{\"lastRefreshed")));
+    }
+
+    @Test
+    void testParseAdapterNotesString() {
+        final String rawSchemaMetadata = "{\n" //
+                + "    \"name\": \"SCHEMA_NAME\",\n" //
+                + "    \"adapterNotes\": \"this is a string\"\n" //
+                + "}";
+        final SchemaMetadataInfo metadata = parseSchemaMetadata(rawSchemaMetadata);
+        assertThat(metadata.getAdapterNotes(), equalTo("this is a string"));
+    }
+
+    @Test
+    void testParseAdapterNotesThrowsExceptionIfInteger() {
+        final String rawSchemaMetadata = "{\n" //
+                + "    \"name\": \"SCHEMA_NAME\",\n" //
+                + "    \"adapterNotes\": 0\n" //
+                + "}";
+        assertThrows(IllegalArgumentException.class, () -> parseSchemaMetadata(rawSchemaMetadata));
     }
 }

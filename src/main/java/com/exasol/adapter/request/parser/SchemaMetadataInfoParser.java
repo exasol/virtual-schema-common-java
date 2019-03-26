@@ -5,7 +5,8 @@ import static com.exasol.adapter.request.parser.RequestParserConstants.SCHEMA_NA
 
 import java.util.Map;
 
-import javax.json.JsonObject;
+import javax.json.*;
+import javax.json.JsonValue.ValueType;
 
 import com.exasol.adapter.metadata.SchemaMetadataInfo;
 
@@ -33,7 +34,18 @@ public class SchemaMetadataInfoParser extends AbstractRequestParser {
 
     private String parseAdapterNotes(final JsonObject schemaMetadataInfo) {
         if (schemaMetadataInfo.containsKey(ADAPTER_NOTES_KEY)) {
-            return schemaMetadataInfo.getJsonObject(ADAPTER_NOTES_KEY).toString();
+            final JsonValue adapterNotes = schemaMetadataInfo.get(ADAPTER_NOTES_KEY);
+            final ValueType type = adapterNotes.getValueType();
+            switch (type) {
+            case STRING:
+                return ((JsonString) adapterNotes).getString();
+            case OBJECT:
+                return adapterNotes.toString();
+            default:
+                throw new IllegalArgumentException(
+                        "Error parsing adapter notes. Must be a JSON string or a JSON object but was type \"" + type
+                                + "\".");
+            }
         } else {
             return "";
         }
