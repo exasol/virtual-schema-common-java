@@ -7,12 +7,15 @@ import com.exasol.adapter.response.*;
 import com.exasol.adapter.response.converter.ResponseJsonConverter;
 import com.exasol.logging.RemoteLogManager;
 
+import java.util.logging.Logger;
+
 /**
  * This class is the main entry point for calls to a Virtual Schema. From here the adapter calls are dispatched to the
  * responsible adapter.
  */
 public final class RequestDispatcher {
-    private static RequestDispatcher instance = new RequestDispatcher();
+    private static final RequestDispatcher INSTANCE = new RequestDispatcher();
+    private static final Logger LOGGER = Logger.getLogger(RequestDispatcher.class.getName());
 
     /**
      * Get the singleton instance of the {@link RequestDispatcher}
@@ -20,7 +23,7 @@ public final class RequestDispatcher {
      * @return singleton instance
      */
     public static synchronized RequestDispatcher getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     /**
@@ -33,12 +36,13 @@ public final class RequestDispatcher {
      * @throws AdapterException in case the request type is not recognized
      */
     public static String adapterCall(final ExaMetadata metadata, final String rawRequest) throws AdapterException {
-        return getInstance().excecuteAdapterCall(metadata, rawRequest);
+        return getInstance().executeAdapterCall(metadata, rawRequest);
     }
 
-    private String excecuteAdapterCall(final ExaMetadata metadata, final String rawRequest) throws AdapterException {
+    private String executeAdapterCall(final ExaMetadata metadata, final String rawRequest) throws AdapterException {
         final AdapterRequest request = new RequestParser().parse(rawRequest);
         configureAdapterLoggingAccordingToRequestSettings(request);
+        LOGGER.finer(() -> rawRequest);
         final AdapterRequestType type = request.getType();
         final VirtualSchemaAdapter adapter = findResponsibleAdapter(request);
         switch (type) {
@@ -55,18 +59,19 @@ public final class RequestDispatcher {
         case PUSHDOWN:
             return dispatchPushDownRequestToAdapter(request, adapter, metadata);
         default:
-            throw new AdapterException("The request dispatcher encountered a request type \"" + type.toString()
-                    + "\" which it does not recognize. Please create an issue ticket quoting this error message.");
+            throw new AdapterException("The request dispatcher encountered a request type \"" + type.toString() +
+                  "\" which it does not recognize. Please create an issue ticket quoting this error message.");
         }
     }
 
     private void configureAdapterLoggingAccordingToRequestSettings(final AdapterRequest request) {
-        final LoggingConfiguration configuration = LoggingConfiguration
-                .parseFromProperties(request.getSchemaMetadataInfo().getProperties());
+        final LoggingConfiguration configuration =
+              LoggingConfiguration.parseFromProperties(request.getSchemaMetadataInfo().getProperties());
         final RemoteLogManager remoteLogManager = new RemoteLogManager();
         if (configuration.isRemoteLoggingConfigured()) {
-            remoteLogManager.setupRemoteLogger(configuration.getRemoteLoggingHost(),
-                    configuration.getRemoteLoggingPort(), configuration.getLogLevel());
+            remoteLogManager
+                  .setupRemoteLogger(configuration.getRemoteLoggingHost(), configuration.getRemoteLoggingPort(),
+                        configuration.getLogLevel());
         } else {
             remoteLogManager.setupConsoleLogger(configuration.getLogLevel());
         }
@@ -78,39 +83,39 @@ public final class RequestDispatcher {
     }
 
     private String dispatchCreateVirtualSchemaRequestToAdapter(final AdapterRequest request,
-            final VirtualSchemaAdapter adapter, final ExaMetadata metadata) {
-        final CreateVirtualSchemaResponse response = adapter.createVirtualSchema(metadata,
-                (CreateVirtualSchemaRequest) request);
+          final VirtualSchemaAdapter adapter, final ExaMetadata metadata) throws AdapterException {
+        final CreateVirtualSchemaResponse response =
+              adapter.createVirtualSchema(metadata, (CreateVirtualSchemaRequest) request);
         return ResponseJsonConverter.getInstance().convertCreateVirtualSchemaResponse(response);
     }
 
     private String dispatchDropVirtualSchemaRequestToAdapter(final AdapterRequest request,
-            final VirtualSchemaAdapter adapter, final ExaMetadata metadata) {
-        final DropVirtualSchemaResponse response = adapter.dropVirtualSchema(metadata,
-                (DropVirtualSchemaRequest) request);
+          final VirtualSchemaAdapter adapter, final ExaMetadata metadata) throws AdapterException {
+        final DropVirtualSchemaResponse response =
+              adapter.dropVirtualSchema(metadata, (DropVirtualSchemaRequest) request);
         return ResponseJsonConverter.getInstance().convertDropVirtualSchemaResponse(response);
     }
 
     private String dispatchRefreshRequestToAdapter(final AdapterRequest request, final VirtualSchemaAdapter adapter,
-            final ExaMetadata metadata) {
+          final ExaMetadata metadata) throws AdapterException {
         final RefreshResponse response = adapter.refresh(metadata, (RefreshRequest) request);
         return ResponseJsonConverter.getInstance().convertRefreshResponse(response);
     }
 
     private String dispatchSetPropertiesRequestToAdapter(final AdapterRequest request,
-            final VirtualSchemaAdapter adapter, final ExaMetadata metadata) {
+          final VirtualSchemaAdapter adapter, final ExaMetadata metadata) throws AdapterException {
         final SetPropertiesResponse response = adapter.setProperties(metadata, (SetPropertiesRequest) request);
         return ResponseJsonConverter.getInstance().convertSetPropertiesResponse(response);
     }
 
     private String dispatchGetCapabilitiesRequestToAdapter(final AdapterRequest request,
-            final VirtualSchemaAdapter adapter, final ExaMetadata metadata) {
+          final VirtualSchemaAdapter adapter, final ExaMetadata metadata) throws AdapterException {
         final GetCapabilitiesResponse response = adapter.getCapabilities(metadata, (GetCapabilitiesRequest) request);
         return ResponseJsonConverter.getInstance().convertGetCapabilitiesResponse(response);
     }
 
     private String dispatchPushDownRequestToAdapter(final AdapterRequest request, final VirtualSchemaAdapter adapter,
-            final ExaMetadata metadata) {
+          final ExaMetadata metadata) throws AdapterException {
         final PushDownResponse response = adapter.pushdown(metadata, (PushDownRequest) request);
         return ResponseJsonConverter.getInstance().convertPushDownResponse(response);
     }
