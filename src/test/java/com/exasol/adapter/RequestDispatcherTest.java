@@ -164,7 +164,7 @@ class RequestDispatcherTest {
                 + "          \"properties\" :\n" //
                 + "          {\n" //
                 + "              \"SQL_DIALECT\" : \"DUMMY\",\n" //
-                + "              \"DEBUG_LEVEL\" : \"FINE\"\n" //
+                + "              \"LOG_LEVEL\" : \"FINE\"\n" //
                 + "          }\n" //
                 + "    }\n" //
                 + "}";
