@@ -54,7 +54,10 @@ class RequestParserTest {
                 + "    \"properties\" :" //
                 + "    {" //
                 + "        \"A\" : \"value A\"," //
-                + "        \"B\" : \"value B\"" //
+                + "        \"B\" : 42," //
+                + "        \"PI\" : 3.14," //
+                + "        \"YES\" : true," //
+                + "        \"NO\" : false" //
                 + "    }," //
                 + SCHEMA_METADATA_INFO //
                 + "}";
@@ -62,9 +65,12 @@ class RequestParserTest {
         assertThat("Request class", request, instanceOf(SetPropertiesRequest.class));
         final Map<String, String> properties = ((SetPropertiesRequest) request).getProperties();
         assertAll(() -> assertThat(request.getType(), equalTo(AdapterRequestType.SET_PROPERTIES)),
-                () -> assertThat(properties, aMapWithSize(2)),
+                () -> assertThat(properties, aMapWithSize(5)),
                 () -> assertThat(properties, hasEntry(equalTo("A"), equalTo("value A"))),
-                () -> assertThat(properties, hasEntry(equalTo("B"), equalTo("value B"))));
+                () -> assertThat(properties, hasEntry(equalTo("B"), equalTo("42"))),
+                () -> assertThat(properties, hasEntry(equalTo("PI"), equalTo("3.14"))),
+                () -> assertThat(properties, hasEntry(equalTo("YES"), equalTo("true"))),
+                () -> assertThat(properties, hasEntry(equalTo("NO"), equalTo("false"))));
     }
 
     @Test

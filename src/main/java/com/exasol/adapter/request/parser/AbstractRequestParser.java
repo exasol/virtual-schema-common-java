@@ -5,8 +5,10 @@ import static com.exasol.adapter.request.parser.RequestParserConstants.PROPERTIE
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.Map.Entry;
 
 import javax.json.*;
+import javax.json.JsonValue.ValueType;
 
 /**
  * Abstract base class for parsers reading fragments of the Virtual Schema requests.
@@ -39,9 +41,34 @@ class AbstractRequestParser {
         final Map<String, String> properties;
         properties = new HashMap<>();
         final JsonObject jsonProperties = root.getJsonObject(PROPERTIES_KEY);
-        for (final String key : jsonProperties.keySet()) {
-            properties.put(key, jsonProperties.getString(key));
+        for (final Entry<String, JsonValue> entry : jsonProperties.entrySet()) {
+            addProperty(properties, entry);
         }
         return properties;
+    }
+
+    private void addProperty(final Map<String, String> properties, final Entry<String, JsonValue> entry) {
+        final String key = entry.getKey();
+        final JsonValue value = entry.getValue();
+        final ValueType type = value.getValueType();
+        String stringValue;
+        switch (type) {
+        case STRING:
+            stringValue = ((JsonString) value).getString();
+            break;
+        case NUMBER:
+            stringValue = ((JsonNumber) value).toString();
+            break;
+        case TRUE:
+            stringValue = "true";
+            break;
+        case FALSE:
+            stringValue = "false";
+            break;
+        default:
+            throw new IllegalArgumentException("Unable to parse adapter property value of type \"" + type
+                    + "\". Supported types are strings, booleans and numbers.");
+        }
+        properties.put(key, stringValue);
     }
 }
