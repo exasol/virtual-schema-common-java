@@ -6,11 +6,13 @@ import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.exasol.adapter.metadata.TableMetadata;
 import com.exasol.adapter.request.*;
 
 class RequestParserTest {
@@ -63,5 +65,46 @@ class RequestParserTest {
                 () -> assertThat(properties, aMapWithSize(2)),
                 () -> assertThat(properties, hasEntry(equalTo("A"), equalTo("value A"))),
                 () -> assertThat(properties, hasEntry(equalTo("B"), equalTo("value B"))));
+    }
+
+    @Test
+    void testParsePushDownRequest() {
+        final String rawRequest = "{" //
+                + "    \"type\" : \"pushdown\",\n" //
+                + "    \"pushdownRequest\" :\n" //
+                + "    {\n" //
+                + "        \"type\" : \"select\",\n" //
+                + "        \"from\" :\n" //
+                + "        {\n" //
+                + "            \"name\" : \"FOO\",\n" //
+                + "            \"type\" : \"table\"\n" //
+                + "        }\n" //
+                + "    },\n" //
+                + "    \"involvedTables\" :\n" //
+                + "    [\n" //
+                + "        {\n" //
+                + "            \"name\" : \"FOO\",\n" //
+                + "            \"columns\" :\n" //
+                + "            [\n" //
+                + "                {\n" //
+                + "                    \"name\" : \"BAR\",\n" //
+                + "                    \"dataType\" :\n" //
+                + "                    {\n" //
+                + "                         \"precision\" : 18,\n" //
+                + "                         \"scale\" : 0,\n" //
+                + "                         \"type\" : \"DECIMAL\"\n" //
+                + "                    }\n" //
+                + "                }\n" //
+                + "            ]\n" //
+                + "        }\n" //
+                + "    ],\n" //
+                + SCHEMA_METADATA_INFO //
+                + "}";
+        final AbstractAdapterRequest request = this.parser.parse(rawRequest);
+        assertThat("Request class", request, instanceOf(PushDownRequest.class));
+        final List<TableMetadata> involvedTables = ((PushDownRequest) request).getInvolvedTablesMetadata();
+        assertAll(() -> assertThat(request.getType(), equalTo(AdapterRequestType.PUSHDOWN)),
+                () -> assertThat(involvedTables, iterableWithSize(1)),
+                () -> assertThat(involvedTables.get(0).getName(), equalTo("FOO")));
     }
 }

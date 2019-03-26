@@ -17,7 +17,7 @@ import com.exasol.adapter.sql.SqlStatement;
  * Parser for JSON structures representing a Virtual Schema Adapter request.
  */
 public class RequestParser extends AbstractRequestParser {
-    private static Logger LOGGER = Logger.getLogger(RequestParser.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(RequestParser.class.getName());
 
     /**
      * Parse a JSON string containing a Virtual Schema Adapter request into the abstract representation of that request
@@ -51,11 +51,17 @@ public class RequestParser extends AbstractRequestParser {
             return new GetCapabilitiesRequest(adapterName, metadataInfo);
         case REQUEST_TYPE_PUSHDOWN:
             final SqlStatement statement = parsePushdownStatement(root);
-            return new PushDownRequest(adapterName, metadataInfo, statement, null);
+            final List<TableMetadata> involvedTables = parseInvolvedTablesMetadata(root);
+            return new PushDownRequest(adapterName, metadataInfo, statement, involvedTables);
         default:
             throw new RequestParserException("Could not parse unknown adapter request type identifier \"" + type
                     + "\". Check wether versions of Exasol database and Virtual Schema Adapter are compatible.");
         }
+    }
+
+    private List<TableMetadata> parseInvolvedTablesMetadata(final JsonObject root) {
+        return new TablesMetadataParser()
+                .parse(root.getJsonArray("involvedTables"));
     }
 
     private String extractAdapterNameFromMetadataInfo(final SchemaMetadataInfo metadataInfo) {
