@@ -35,11 +35,7 @@ public final class SqlDataTypeJsonSerializer {
             root.add("srid", dataType.getGeometrySrid());
             break;
         case INTERVAL:
-            root.add("fromTo", intervalTypeAsString(dataType.getIntervalType()));
-            root.add("precision", dataType.getPrecision());
-            if (dataType.getIntervalType() == IntervalType.DAY_TO_SECOND) {
-                root.add("fraction", dataType.getIntervalFraction());
-            }
+            addIntervalToRoot(dataType, root);
             break;
         case DOUBLE: //falling through intentionally
         case DATE:
@@ -50,6 +46,14 @@ public final class SqlDataTypeJsonSerializer {
         }
 
         return root;
+    }
+
+    private static void addIntervalToRoot(final DataType dataType, final JsonObjectBuilder root) {
+        root.add("fromTo", intervalTypeAsString(dataType.getIntervalType()));
+        root.add("precision", dataType.getPrecision());
+        if (dataType.getIntervalType() == IntervalType.DAY_TO_SECOND) {
+            root.add("fraction", dataType.getIntervalFraction());
+        }
     }
 
     private static String exaTypeAsString(final ExaDataType dataType) {

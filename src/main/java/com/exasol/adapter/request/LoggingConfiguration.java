@@ -1,15 +1,15 @@
 package com.exasol.adapter.request;
 
-import static com.exasol.adapter.metadata.SchemaMetadataPropertyConstants.LOG_LEVEL_KEY;
-import static com.exasol.adapter.metadata.SchemaMetadataPropertyConstants.REMOTE_DEBUG_CONFIG_KEY;
-
 import java.util.Map;
 import java.util.logging.Level;
+
+import static com.exasol.adapter.metadata.SchemaMetadataPropertyConstants.LOG_LEVEL_KEY;
+import static com.exasol.adapter.metadata.SchemaMetadataPropertyConstants.REMOTE_DEBUG_CONFIG_KEY;
 
 /**
  * This class represents the logging configuration set in the request properties
  */
-public class LoggingConfiguration {
+public final class LoggingConfiguration {
     private static final int DEFAULT_REMOTE_LOGGING_PORT = 3000;
     private static final Level DEFAULT_LOG_LEVEL = Level.INFO;
     private final boolean logRemotely;
@@ -68,10 +68,10 @@ public class LoggingConfiguration {
      * @throws IllegalArgumentException if any of the logging configuration parameters can't be parsed
      */
     public static LoggingConfiguration parseFromProperties(final Map<String, String> properties) {
-        Level level = parseLogLevel(properties);
-        boolean logRemotely;
-        String host;
-        int port;
+        final Level level = parseLogLevel(properties);
+        final boolean logRemotely;
+        final String host;
+        final int port;
         if (properties.containsKey(REMOTE_DEBUG_CONFIG_KEY)) {
             logRemotely = true;
             final String remoteLoggingAddress = properties.get(REMOTE_DEBUG_CONFIG_KEY);
@@ -92,7 +92,7 @@ public class LoggingConfiguration {
     }
 
     private static Level parseLogLevel(final Map<String, String> properties) {
-        Level level;
+        final Level level;
         if (properties.containsKey(LOG_LEVEL_KEY)) {
             level = Level.parse(properties.get(LOG_LEVEL_KEY));
         } else {

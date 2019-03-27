@@ -5,7 +5,7 @@ import java.util.*;
 /**
  * Manages a set of supported capabilities
  */
-public class Capabilities {
+public final class Capabilities {
     private final Set<MainCapability> mainCapabilities;
     private final Set<LiteralCapability> literalCapabilities;
     private final Set<PredicateCapability> predicateCapabilities;
