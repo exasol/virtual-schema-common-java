@@ -15,14 +15,13 @@ class SqlLiteralIntervalTest {
     private SqlLiteralInterval sqlLiteralIntervalDayToSecond;
     private SqlLiteralInterval sqlLiteralIntervalYearToMonth;
     private DataType dayToSecond;
-    private DataType yearToMonth;
 
     @BeforeEach
     void setUp() {
         this.dayToSecond = DataType.createIntervalDaySecond(1, 2);
-        this.yearToMonth = DataType.createIntervalYearMonth(3);
+        final DataType yearToMonth = DataType.createIntervalYearMonth(3);
         this.sqlLiteralIntervalDayToSecond = new SqlLiteralInterval(VALUE, this.dayToSecond);
-        this.sqlLiteralIntervalYearToMonth = new SqlLiteralInterval(VALUE, this.yearToMonth);
+        this.sqlLiteralIntervalYearToMonth = new SqlLiteralInterval(VALUE, yearToMonth);
     }
 
     @Test
@@ -45,7 +44,7 @@ class SqlLiteralIntervalTest {
     @Test
     void testGetType() {
         assertThat(this.sqlLiteralIntervalDayToSecond.getType(),
-              equalTo(SqlNodeType.LITERAL_TIMESTAMP));
+              equalTo(SqlNodeType.LITERAL_INTERVAL));
     }
 
     @Test

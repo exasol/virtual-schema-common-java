@@ -10,12 +10,12 @@ public class SqlLiteralBool extends SqlNode {
     }
     
     public boolean getValue() {
-        return value;
+        return this.value;
     }
     
     @Override
     public String toSimpleSql() {
-        if (value) {
+        if (this.value) {
             return "true";
         } else {
             return "false";
@@ -30,5 +30,10 @@ public class SqlLiteralBool extends SqlNode {
     @Override
     public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
+    }
+
+    @Override
+    public String toString() {
+        return "SqlLiteralBool{" + "value=" + this.value + '}';
     }
 }

@@ -3,19 +3,22 @@ package com.exasol.adapter.sql;
 import com.exasol.adapter.AdapterException;
 
 public class SqlLiteralTimestamp extends SqlNode {
-    private final String value;   // stored as YYYY-MM-DD HH:MI:SS.FF6
-    
+    private final String value;
+
     public SqlLiteralTimestamp(final String value) {
         this.value = value;
     }
-    
+
+    /**
+     * @return literal timestamp value in format: YYYY-MM-DD HH:MI:SS.FF6
+     */
     public String getValue() {
-        return value;
+        return this.value;
     }
-    
+
     @Override
     public String toSimpleSql() {
-        return "TIMESTAMP '" + value + "'";
+        return "TIMESTAMP '" + this.value + "'";
     }
 
     @Override

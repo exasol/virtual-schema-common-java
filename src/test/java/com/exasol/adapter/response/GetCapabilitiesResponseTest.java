@@ -1,22 +1,23 @@
 package com.exasol.adapter.response;
 
-import com.exasol.adapter.capabilities.Capabilities;
-import com.exasol.adapter.response.converter.ResponseException;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
+
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import com.exasol.adapter.capabilities.Capabilities;
 
 class GetCapabilitiesResponseTest {
     @Test
     void builder() {
         assertThat(GetCapabilitiesResponse.builder().capabilities(Capabilities.builder().build()).build(),
-              instanceOf(GetCapabilitiesResponse.class));
+                instanceOf(GetCapabilitiesResponse.class));
     }
 
     @Test
-    void testGetCapabilitiesResponseThrowsException() {
-        assertThrows(ResponseException.class, GetCapabilitiesResponse.builder()::build);
+    void testGetCapabilitiesResponseHasEmptyListByDefault() {
+        final GetCapabilitiesResponse response = GetCapabilitiesResponse.builder().build();
+        assertThat(response.getCapabilities().isEmpty(), equalTo(true));
     }
 }

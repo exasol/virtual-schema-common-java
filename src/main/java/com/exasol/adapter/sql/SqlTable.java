@@ -5,7 +5,7 @@ import com.exasol.adapter.metadata.TableMetadata;
 
 public class SqlTable extends SqlNode {
     private final String name;
-    private final String alias;   // what is the exact semantic of this? Currently simply to generate a query with the expected alias.
+    private final String alias;
     private final TableMetadata metadata;
 
     public SqlTable(final String name, final TableMetadata metadata) {
@@ -21,24 +21,24 @@ public class SqlTable extends SqlNode {
     }
     
     public boolean hasAlias() {
-        return !name.equals(alias);
+        return !this.name.equals(this.alias);
     }
     
     public String getName() {
-        return name;
+        return this.name;
     }
     
     public String getAlias() {
-        return alias;
+        return this.alias;
     }
     
     public TableMetadata getMetadata() {
-        return metadata;
+        return this.metadata;
     }
     
     @Override
     public String toSimpleSql() {
-        return "\"" + name.replace("\"", "\"\"") + "\"";
+        return "\"" + this.name.replace("\"", "\"\"") + "\"";
     }
 
     @Override

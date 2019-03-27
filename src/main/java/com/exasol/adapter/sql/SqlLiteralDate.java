@@ -3,19 +3,22 @@ package com.exasol.adapter.sql;
 import com.exasol.adapter.AdapterException;
 
 public class SqlLiteralDate extends SqlNode {
-    private final String value;   // Stored as YYYY-MM-DD
+    private final String value;
     
     public SqlLiteralDate(final String value) {
         this.value = value;
     }
-    
+
+    /**
+     * @return literal date value in format: YYYY-MM-DD
+     */
     public String getValue() {
-        return value;
+        return this.value;
     }
     
     @Override
     public String toSimpleSql() {
-        return "DATE '" + value + "'";   // This gets always executed as TO_DATE('2015-02-01','YYYY-MM-DD')
+        return "DATE '" + this.value + "'";
     }
 
     @Override

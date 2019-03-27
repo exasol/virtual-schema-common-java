@@ -4,13 +4,14 @@ import com.exasol.adapter.AdapterException;
 
 /**
  * Implementation of the Visitor pattern for the SqlNode.
- * 
- * Benefit of this Visitor implementation: We get compile time safety that all
- * Visitors have implementations for all SqlNode types.
- * 
- * Drawback of this Visitor implementation: Whenever a new SqlNode gets added,
- * we need to implement it here (should be fine for now). If this becomes to
- * annoying, we can still switch to a visitor pattern using Reflection.
+ *
+ * Benefit of this Visitor implementation: We get compile time safety that all Visitors have implementations for all
+ * SqlNode types.
+ *
+ * Drawback of this Visitor implementation: Whenever a new SqlNode gets added, we need to implement it here (should be
+ * fine for now). If this becomes to annoying, we can still switch to a visitor pattern using Reflection.
+ *
+ * @param <R> node being visited
  */
 public interface SqlNodeVisitor<R> {
 

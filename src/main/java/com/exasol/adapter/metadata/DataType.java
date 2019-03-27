@@ -1,5 +1,6 @@
 package com.exasol.adapter.metadata;
 
+import java.util.Objects;
 
 /**
  * Represents an EXASOL datatype.
@@ -119,108 +120,152 @@ public class DataType {
     }
 
     public ExaDataType getExaDataType() {
-        return exaDataType;
+        return this.exaDataType;
     }
 
     public int getPrecision() {
-        return precision;
+        return this.precision;
     }
 
     public int getScale() {
-        return scale;
+        return this.scale;
     }
 
     public int getSize() {
-        return size;
+        return this.size;
     }
 
     public ExaCharset getCharset() {
-        return charset;
+        return this.charset;
     }
 
     public boolean isWithLocalTimezone() {
-        return withLocalTimezone;
+        return this.withLocalTimezone;
     }
 
     public int getGeometrySrid() {
-        return geometrySrid;
+        return this.geometrySrid;
     }
 
     public IntervalType getIntervalType() {
-        return intervalType;
+        return this.intervalType;
     }
 
     public int getIntervalFraction() {
-        return intervalFraction;
+        return this.intervalFraction;
     }
 
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
-        switch (exaDataType) {
+        switch (this.exaDataType) {
             case UNSUPPORTED:
-                builder.append("UNSUPPORTED");
+                appendOneString(builder, "UNSUPPORTED");
                 break;
             case DECIMAL:
-                builder.append("DECIMAL(");
-                builder.append(precision);
-                builder.append(", ");
-                builder.append(scale);
-                builder.append(")");
+                appendDecimal(builder);
                 break;
             case DOUBLE:
-                builder.append("DOUBLE");
+                appendOneString(builder, "DOUBLE");
                 break;
             case VARCHAR:
-                builder.append("VARCHAR(");
-                builder.append(size);
-                builder.append(") ");
-                builder.append(charset.toString());
+                appendLiteralValue(builder, "VARCHAR");
                 break;
             case CHAR:
-                builder.append("CHAR(");
-                builder.append(size);
-                builder.append(") ");
-                builder.append(charset.toString());
+                appendLiteralValue(builder, "CHAR");
                 break;
             case DATE:
-                builder.append("DATE");
+                appendOneString(builder, "DATE");
                 break;
             case TIMESTAMP:
-                builder.append("TIMESTAMP");
-                if (withLocalTimezone) {
-                    builder.append(" WITH LOCAL TIME ZONE");
-                }
+                appendTimestamp(builder);
                 break;
             case BOOLEAN:
-                builder.append("BOOLEAN");
+                appendOneString(builder, "BOOLEAN");
                 break;
             case GEOMETRY:
-                builder.append("GEOMETRY");
-                builder.append("(");
-                builder.append(geometrySrid);
-                builder.append(")");
+                appendGeometry(builder);
                 break;
             case INTERVAL:
-                builder.append("INTERVAL ");
-                if (intervalType == IntervalType.YEAR_TO_MONTH) {
-                    builder.append("YEAR");
-                    builder.append(" (");
-                    builder.append(precision);
-                    builder.append(")");
-                    builder.append(" TO MONTH");
-                } else {
-                    builder.append("DAY");
-                    builder.append(" (");
-                    builder.append(precision);
-                    builder.append(")");
-                    builder.append(" TO SECOND");
-                    builder.append(" (");
-                    builder.append(intervalFraction);
-                    builder.append(")");
-                }
+                appendInterval(builder);
                 break;
         }
         return builder.toString();
+    }
+
+    private void appendInterval(final StringBuilder builder) {
+        builder.append("INTERVAL ");
+        if (this.intervalType == IntervalType.YEAR_TO_MONTH) {
+            builder.append("YEAR");
+            builder.append(" (");
+            builder.append(this.precision);
+            builder.append(")");
+            builder.append(" TO MONTH");
+        } else {
+            builder.append("DAY");
+            builder.append(" (");
+            builder.append(this.precision);
+            builder.append(")");
+            builder.append(" TO SECOND");
+            builder.append(" (");
+            builder.append(this.intervalFraction);
+            builder.append(")");
+        }
+    }
+
+    private void appendGeometry(final StringBuilder builder) {
+        builder.append("GEOMETRY");
+        builder.append("(");
+        builder.append(this.geometrySrid);
+        builder.append(")");
+    }
+
+    private void appendTimestamp(final StringBuilder builder) {
+        builder.append("TIMESTAMP");
+        if (this.withLocalTimezone) {
+            builder.append(" WITH LOCAL TIME ZONE");
+        }
+    }
+
+    private void appendLiteralValue(final StringBuilder builder, final String toAppend) {
+        builder.append(toAppend);
+        builder.append("(");
+        builder.append(this.size);
+        builder.append(") ");
+        builder.append(this.charset.toString());
+    }
+
+    private void appendDecimal(final StringBuilder builder) {
+        builder.append("DECIMAL(");
+        builder.append(this.precision);
+        builder.append(", ");
+        builder.append(this.scale);
+        builder.append(")");
+    }
+
+    private void appendOneString(final StringBuilder builder, final String toAppend) {
+        builder.append(toAppend);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final DataType dataType = (DataType) o;
+        return this.precision == dataType.precision && this.scale == dataType.scale && this.size == dataType.size &&
+              this.withLocalTimezone == dataType.withLocalTimezone && this.geometrySrid == dataType.geometrySrid &&
+              this.intervalFraction == dataType.intervalFraction && this.exaDataType == dataType.exaDataType &&
+              this.charset == dataType.charset && this.intervalType == dataType.intervalType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects
+              .hash(this.exaDataType, this.precision, this.scale, this.size, this.charset, this.withLocalTimezone,
+                    this.geometrySrid, this.intervalType, this.intervalFraction);
     }
 }

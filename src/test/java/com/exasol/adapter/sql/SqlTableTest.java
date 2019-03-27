@@ -1,7 +1,6 @@
 package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
-import com.exasol.adapter.metadata.TableMetadata;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,11 +15,10 @@ class SqlTableTest {
     private static final String TEST_NAME = "test name";
     private static final String TEST_ALIAS = "test alias";
     private SqlTable sqlTable;
-    private TableMetadata tableMetadata;
 
     @BeforeEach
     void setUp() {
-        this.sqlTable = new SqlTable(TEST_NAME, TEST_ALIAS, this.tableMetadata);
+        this.sqlTable = new SqlTable(TEST_NAME, TEST_ALIAS, null);
     }
 
     @Test
@@ -40,7 +38,7 @@ class SqlTableTest {
 
     @Test
     void testHasAliasFalse() {
-        this.sqlTable = new SqlTable(TEST_NAME, TEST_NAME, this.tableMetadata);
+        this.sqlTable = new SqlTable(TEST_NAME, TEST_NAME, null);
         assertFalse(this.sqlTable.hasAlias());
     }
 
@@ -56,7 +54,7 @@ class SqlTableTest {
 
     @Test
     void testGetMetadata() {
-        assertThat(this.sqlTable.getMetadata(), equalTo(this.tableMetadata));
+        assertThat(this.sqlTable.getMetadata(), equalTo(null));
     }
 
     @Test

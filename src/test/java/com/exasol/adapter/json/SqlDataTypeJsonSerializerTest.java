@@ -1,17 +1,18 @@
 package com.exasol.adapter.json;
 
-import com.exasol.adapter.metadata.DataType;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
+
+import javax.json.JsonObject;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.json.JsonObject;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import com.exasol.adapter.metadata.DataType;
 
 @ExtendWith(MockitoExtension.class)
 class SqlDataTypeJsonSerializerTest {
@@ -31,16 +32,7 @@ class SqlDataTypeJsonSerializerTest {
         when(this.dataType.getScale()).thenReturn(3);
         final JsonObject jsonObject = SqlDataTypeJsonSerializer.serialize(this.dataType).build();
         assertAll(() -> assertEquals(5, jsonObject.getInt("precision")),
-              () -> assertEquals(3, jsonObject.getInt("scale")));
-    }
-
-    private void serializeCharOrVarchar(final DataType.ExaDataType exaDataType) {
-        when(this.dataType.getExaDataType()).thenReturn(exaDataType);
-        when(this.dataType.getSize()).thenReturn(2);
-        when(this.dataType.getCharset()).thenReturn(DataType.ExaCharset.UTF8);
-        final JsonObject jsonObject = SqlDataTypeJsonSerializer.serialize(this.dataType).build();
-        assertThat(jsonObject.getInt("size"), equalTo(2));
-        assertThat(jsonObject.getString("characterSet"), equalTo("UTF8"));
+                () -> assertEquals(3, jsonObject.getInt("scale")));
     }
 
     @Test

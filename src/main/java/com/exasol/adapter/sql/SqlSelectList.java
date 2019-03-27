@@ -5,7 +5,7 @@ import com.exasol.adapter.AdapterException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SqlSelectList extends SqlExpressionList {
+public final class SqlSelectList extends SqlExpressionList {
     private final SqlSelectListType type;
 
     private SqlSelectList(final SqlSelectListType type, final List<SqlNode> selectList) {
@@ -43,14 +43,14 @@ public class SqlSelectList extends SqlExpressionList {
     }
 
     public boolean isRequestAnyColumn() {
-        return type == SqlSelectListType.ANY_VALUE;
+        return this.type == SqlSelectListType.ANY_VALUE;
     }
 
     /**
      * @return true if this is "SELECT *", false otherwise
      */
     public boolean isSelectStar() {
-        return type == SqlSelectListType.SELECT_STAR;
+        return this.type == SqlSelectListType.SELECT_STAR;
     }
 
     @Override

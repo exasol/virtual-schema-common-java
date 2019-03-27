@@ -4,35 +4,38 @@ import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.DataType;
 
 public class SqlLiteralInterval extends SqlNode {
-    private final String value;   // stored as YYYY-MM-DD HH:MI:SS.FF6
+    private final String value;
     private final DataType type;
 
     public SqlLiteralInterval(final String value, final DataType type) {
         this.value = value;
         this.type = type;
     }
-    
+
+    /**
+     * @return literal interval value in format: YYYY-MM-DD HH:MI:SS.FF6
+     */
     public String getValue() {
-        return value;
+        return this.value;
     }
 
     public DataType getDataType() {
-        return type;
+        return this.type;
     }
 
     @Override
     public String toSimpleSql() {
-        if (type.getIntervalType() == DataType.IntervalType.YEAR_TO_MONTH) {
-            return "INTERVAL '" + value + "' YEAR (" + type.getPrecision() + ") TO MONTH";
+        if (this.type.getIntervalType() == DataType.IntervalType.YEAR_TO_MONTH) {
+            return "INTERVAL '" + this.value + "' YEAR (" + this.type.getPrecision() + ") TO MONTH";
         } else {
-            return "INTERVAL '" + value + "' DAY (" + type.getPrecision()
-                    + ") TO SECOND (" + type.getIntervalFraction() + ")";
+            return "INTERVAL '" + this.value + "' DAY (" + this.type.getPrecision()
+                    + ") TO SECOND (" + this.type.getIntervalFraction() + ")";
         }
     }
 
     @Override
     public SqlNodeType getType() {
-        return SqlNodeType.LITERAL_TIMESTAMP;
+        return SqlNodeType.LITERAL_INTERVAL;
     }
 
     @Override

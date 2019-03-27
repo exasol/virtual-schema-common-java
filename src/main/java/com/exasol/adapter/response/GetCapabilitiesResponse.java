@@ -1,11 +1,10 @@
 package com.exasol.adapter.response;
 
 import com.exasol.adapter.capabilities.Capabilities;
-import com.exasol.adapter.response.converter.ResponseException;
 
 /**
- * This class is an abstract representation of a response
- * created by a Virtual Schema Adapter as result of a request to get capabilities.
+ * This class is an abstract representation of a response created by a Virtual Schema Adapter as result of a request to
+ * get capabilities.
  */
 public final class GetCapabilitiesResponse {
     private final Capabilities capabilities;
@@ -55,15 +54,10 @@ public final class GetCapabilitiesResponse {
          * @return new {@link GetCapabilitiesResponse} instance
          */
         public GetCapabilitiesResponse build() {
-            validate(this.capabilities);
-            return new GetCapabilitiesResponse(this);
-        }
-
-        private void validate(final Capabilities capabilities) {
-            if (capabilities == null) {
-                throw new ResponseException("Capabilities should be not null. Please, add Capabilities using "  //
-                      + "'capabilities(yourCapabilities)' method of this builder before you build.");
+            if (this.capabilities == null) {
+                this.capabilities = Capabilities.builder().build();
             }
+            return new GetCapabilitiesResponse(this);
         }
     }
 }
