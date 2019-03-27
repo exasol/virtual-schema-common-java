@@ -13,8 +13,9 @@ public class SqlStatementSelect extends SqlStatement {
     private final SqlNode having;
     private final SqlOrderBy orderBy;
     private final SqlLimit limit;
-    
-    public SqlStatementSelect(final SqlNode fromClause, final SqlSelectList selectList, final SqlNode whereClause, final SqlExpressionList groupBy, final SqlNode having, final SqlOrderBy orderBy, final SqlLimit limit) {
+
+    public SqlStatementSelect(final SqlNode fromClause, final SqlSelectList selectList, final SqlNode whereClause,
+          final SqlExpressionList groupBy, final SqlNode having, final SqlOrderBy orderBy, final SqlLimit limit) {
         this.fromClause = fromClause;
         this.selectList = selectList;
         this.whereClause = whereClause;
@@ -43,81 +44,86 @@ public class SqlStatementSelect extends SqlStatement {
             this.limit.setParent(this);
         }
     }
-    
+
     public boolean hasProjection() {
-        return selectList != null;
+        return this.selectList != null;
     }
-    
+
     public boolean hasGroupBy() {
-        return groupBy != null;
+        return this.groupBy != null;
     }
-    
+
     public boolean hasHaving() {
-        return having != null;
+        return this.having != null;
     }
-    
+
     public boolean hasFilter() {
-        return whereClause != null;
+        return this.whereClause != null;
     }
-    
+
     public boolean hasOrderBy() {
-        return orderBy != null;
+        return this.orderBy != null;
     }
-    
+
     public boolean hasLimit() {
-        return limit != null;
+        return this.limit != null;
     }
-    
+
     public SqlNode getFromClause() {
-        return fromClause;
+        return this.fromClause;
     }
-    
+
     public SqlSelectList getSelectList() {
-        return selectList;
+        return this.selectList;
     }
-    
+
     public SqlNode getWhereClause() {
-        return whereClause;
+        return this.whereClause;
     }
-    
+
     public SqlExpressionList getGroupBy() {
-        return groupBy;
+        return this.groupBy;
     }
-    
+
     public SqlNode getHaving() {
-        return having;
+        return this.having;
     }
 
     public SqlOrderBy getOrderBy() {
-        return orderBy;
+        return this.orderBy;
     }
-    
+
     public SqlLimit getLimit() {
-        return limit;
+        return this.limit;
     }
-    
+
     @Override
     public String toSimpleSql() {
-        
+
         final StringBuilder sql = new StringBuilder();
         sql.append("SELECT ");
-        sql.append(selectList.toSimpleSql());
+        sql.append(this.selectList.toSimpleSql());
         sql.append(" FROM ");
-        sql.append(fromClause.toSimpleSql());
+        sql.append(this.fromClause.toSimpleSql());
         if (hasFilter()) {
-            sql.append(" WHERE " + whereClause.toSimpleSql());
+            sql.append(" WHERE ");
+            sql.append(this.whereClause.toSimpleSql());
         }
         if (hasGroupBy()) {
-            sql.append(" GROUP BY " + groupBy.toSimpleSql());
+            sql.append(" GROUP BY ");
+            sql.append(this.groupBy.toSimpleSql());
         }
         if (hasHaving()) {
-            sql.append(" HAVING " + having.toSimpleSql());
+            sql.append(" HAVING ");
+            sql.append(this.having.toSimpleSql());
         }
         if (hasOrderBy()) {
-            sql.append(" " + orderBy.toSimpleSql());
+            sql.append(" ");
+            sql.append(this.orderBy.toSimpleSql());
         }
         if (hasLimit()) {
-            sql.append(" " + limit.toSimpleSql());
+            sql.append(" ");
+            sql.append(this.limit.toSimpleSql());
         }
         return sql.toString();
     }

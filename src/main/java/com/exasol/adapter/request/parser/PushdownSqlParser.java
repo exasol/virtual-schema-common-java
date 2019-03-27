@@ -1,18 +1,19 @@
 package com.exasol.adapter.request.parser;
 
+import com.exasol.adapter.metadata.ColumnMetadata;
+import com.exasol.adapter.metadata.DataType;
+import com.exasol.adapter.metadata.DataType.ExaCharset;
+import com.exasol.adapter.metadata.DataType.IntervalType;
+import com.exasol.adapter.metadata.TableMetadata;
+import com.exasol.adapter.sql.*;
+
+import javax.json.JsonArray;
+import javax.json.JsonObject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-
-import com.exasol.adapter.metadata.*;
-import com.exasol.adapter.metadata.DataType.ExaCharset;
-import com.exasol.adapter.metadata.DataType.IntervalType;
-import com.exasol.adapter.sql.*;
-
-public class PushdownSqlParser extends AbstractRequestParser {
+public final class PushdownSqlParser extends AbstractRequestParser {
     private static final String ORDER_BY = "orderBy";
     private static final String EXPRESSION = "expression";
     private static final String RIGHT = "right";
@@ -30,74 +31,108 @@ public class PushdownSqlParser extends AbstractRequestParser {
     public SqlNode parseExpression(final JsonObject expression) {
         final String typeName = expression.getString("type", "");
         final SqlNodeType type = fromTypeName(typeName);
+        final SqlNode sqlNode;
         switch (type) {
-        case SELECT:
-            return parseSelect(expression);
-        case TABLE:
-            return parseTable(expression);
-        case JOIN:
-            return parseJoin(expression);
-        case COLUMN:
-            return parseColumn(expression);
-        case LITERAL_NULL:
-            return parseLiteralNull();
-        case LITERAL_BOOL:
-            return parseLiteralBool(expression);
-        case LITERAL_DATE:
-            return parseLiteralDate(expression);
-        case LITERAL_TIMESTAMP:
-            return parseLiteralTimestamp(expression);
-        case LITERAL_TIMESTAMPUTC:
-            return parseLiteralTimestamputc(expression);
-        case LITERAL_DOUBLE:
-            return parseLiteralDouble(expression);
-        case LITERAL_EXACTNUMERIC:
-            return parseLiteralExactNumeric(expression);
-        case LITERAL_STRING:
-            return parseLiteralString(expression);
-        case LITERAL_INTERVAL:
-            return parseLiteralInterval(expression);
-        case PREDICATE_AND:
-            return parsePredicateAnd(expression);
-        case PREDICATE_OR:
-            return parsePredicateOr(expression);
-        case PREDICATE_NOT:
-            return parsePredicateNot(expression);
-        case PREDICATE_EQUAL:
-            return parsePredicateEqual(expression);
-        case PREDICATE_NOTEQUAL:
-            return parsePredicateNotEqual(expression);
-        case PREDICATE_LESS:
-            return parsePredicateLess(expression);
-        case PREDICATE_LESSEQUAL:
-            return parsePredicateLessEqual(expression);
-        case PREDICATE_LIKE:
-            return parsePredicateLike(expression);
-        case PREDICATE_LIKE_REGEXP:
-            return parsePredicateLikeRegexp(expression);
-        case PREDICATE_BETWEEN:
-            return parsePredicateBetween(expression);
-        case PREDICATE_IN_CONSTLIST:
-            return parsePredicateInConstlist(expression);
-        case PREDICATE_IS_NULL:
-            return parsePredicateIsNull(expression);
-        case PREDICATE_IS_NOT_NULL:
-            return parsePredicateIsNotNull(expression);
-        case FUNCTION_SCALAR:
-            return parseFunctionScalar(expression);
-        case FUNCTION_SCALAR_EXTRACT:
-            return parseFunctionScalarExtract(expression);
-        case FUNCTION_SCALAR_CASE:
-            return parseFunctionScalarCase(expression);
-        case FUNCTION_SCALAR_CAST:
-            return parseFunctionScalarCast(expression);
-        case FUNCTION_AGGREGATE:
-            return parseFunctionAggregate(expression);
-        case FUNCTION_AGGREGATE_GROUP_CONCAT:
-            return parseFunctionAggregateGroupConcat(expression);
-        default:
-            throw new IllegalArgumentException("Unknown node type: " + typeName);
+            case SELECT:
+                sqlNode = parseSelect(expression);
+                break;
+            case TABLE:
+                sqlNode = parseTable(expression);
+                break;
+            case JOIN:
+                sqlNode = parseJoin(expression);
+                break;
+            case COLUMN:
+                sqlNode = parseColumn(expression);
+                break;
+            case LITERAL_NULL:
+                sqlNode = parseLiteralNull();
+                break;
+            case LITERAL_BOOL:
+                sqlNode = parseLiteralBool(expression);
+                break;
+            case LITERAL_DATE:
+                sqlNode = parseLiteralDate(expression);
+                break;
+            case LITERAL_TIMESTAMP:
+                sqlNode = parseLiteralTimestamp(expression);
+                break;
+            case LITERAL_TIMESTAMPUTC:
+                sqlNode = parseLiteralTimestamputc(expression);
+                break;
+            case LITERAL_DOUBLE:
+                sqlNode = parseLiteralDouble(expression);
+                break;
+            case LITERAL_EXACTNUMERIC:
+                sqlNode = parseLiteralExactNumeric(expression);
+                break;
+            case LITERAL_STRING:
+                sqlNode = parseLiteralString(expression);
+                break;
+            case LITERAL_INTERVAL:
+                sqlNode = parseLiteralInterval(expression);
+                break;
+            case PREDICATE_AND:
+                sqlNode = parsePredicateAnd(expression);
+                break;
+            case PREDICATE_OR:
+                sqlNode = parsePredicateOr(expression);
+                break;
+            case PREDICATE_NOT:
+                sqlNode = parsePredicateNot(expression);
+                break;
+            case PREDICATE_EQUAL:
+                sqlNode = parsePredicateEqual(expression);
+                break;
+            case PREDICATE_NOTEQUAL:
+                sqlNode = parsePredicateNotEqual(expression);
+                break;
+            case PREDICATE_LESS:
+                sqlNode = parsePredicateLess(expression);
+                break;
+            case PREDICATE_LESSEQUAL:
+                sqlNode = parsePredicateLessEqual(expression);
+                break;
+            case PREDICATE_LIKE:
+                sqlNode = parsePredicateLike(expression);
+                break;
+            case PREDICATE_LIKE_REGEXP:
+                sqlNode = parsePredicateLikeRegexp(expression);
+                break;
+            case PREDICATE_BETWEEN:
+                sqlNode = parsePredicateBetween(expression);
+                break;
+            case PREDICATE_IN_CONSTLIST:
+                sqlNode = parsePredicateInConstlist(expression);
+                break;
+            case PREDICATE_IS_NULL:
+                sqlNode = parsePredicateIsNull(expression);
+                break;
+            case PREDICATE_IS_NOT_NULL:
+                sqlNode = parsePredicateIsNotNull(expression);
+                break;
+            case FUNCTION_SCALAR:
+                sqlNode = parseFunctionScalar(expression);
+                break;
+            case FUNCTION_SCALAR_EXTRACT:
+                sqlNode = parseFunctionScalarExtract(expression);
+                break;
+            case FUNCTION_SCALAR_CASE:
+                sqlNode = parseFunctionScalarCase(expression);
+                break;
+            case FUNCTION_SCALAR_CAST:
+                sqlNode = parseFunctionScalarCast(expression);
+                break;
+            case FUNCTION_AGGREGATE:
+                sqlNode = parseFunctionAggregate(expression);
+                break;
+            case FUNCTION_AGGREGATE_GROUP_CONCAT:
+                sqlNode = parseFunctionAggregateGroupConcat(expression);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown node type: " + typeName);
         }
+        return sqlNode;
     }
 
     private SqlStatementSelect parseSelect(final JsonObject select) {
@@ -301,40 +336,80 @@ public class PushdownSqlParser extends AbstractRequestParser {
 
     private DataType getDataType(final JsonObject dataType) {
         final String typeName = dataType.getString("type").toUpperCase();
-        DataType type = null;
-        if (typeName.equals("DECIMAL")) {
-            type = DataType.createDecimal(dataType.getInt("precision"), dataType.getInt("scale"));
-        } else if (typeName.equals("DOUBLE")) {
-            type = DataType.createDouble();
-        } else if (typeName.equals("VARCHAR")) {
-            final String charSet = dataType.getString("characterSet", "UTF8");
-            type = DataType.createVarChar(dataType.getInt("size"), charSetFromString(charSet));
-        } else if (typeName.equals("CHAR")) {
-            final String charSet = dataType.getString("characterSet", "UTF8");
-            type = DataType.createChar(dataType.getInt("size"), charSetFromString(charSet));
-        } else if (typeName.equals("BOOLEAN")) {
-            type = DataType.createBool();
-        } else if (typeName.equals("DATE")) {
-            type = DataType.createDate();
-        } else if (typeName.equals("TIMESTAMP")) {
-            final boolean withLocalTimezone = dataType.getBoolean("withLocalTimeZone", false);
-            type = DataType.createTimestamp(withLocalTimezone);
-        } else if (typeName.equals("INTERVAL")) {
-            final int precision = dataType.getInt("precision", 2);
-            final IntervalType intervalType = intervalTypeFromString(dataType.getString("fromTo"));
-            if (intervalType == IntervalType.DAY_TO_SECOND) {
-                final int fraction = dataType.getInt("fraction", 3);
-                type = DataType.createIntervalDaySecond(precision, fraction);
-            } else {
-                assert intervalType == IntervalType.YEAR_TO_MONTH;
-                type = DataType.createIntervalYearMonth(precision);
-            }
-        } else if (typeName.equals("GEOMETRY")) {
-            final int srid = dataType.getInt("srid");
-            type = DataType.createGeometry(srid);
-        } else {
-            throw new IllegalArgumentException("Unsupported data type encountered: " + typeName);
+        final DataType type;
+        switch (typeName) {
+            case "DECIMAL":
+                type = DataType.createDecimal(dataType.getInt("precision"), dataType.getInt("scale"));
+                break;
+            case "DOUBLE":
+                type = DataType.createDouble();
+                break;
+            case "VARCHAR":
+                type = getVarchar(dataType);
+                break;
+            case "CHAR":
+                type = getChar(dataType);
+                break;
+            case "BOOLEAN":
+                type = DataType.createBool();
+                break;
+            case "DATE":
+                type = DataType.createDate();
+                break;
+            case "TIMESTAMP":
+                type = getTimestamp(dataType);
+                break;
+            case "INTERVAL":
+                type = getInterval(dataType);
+                break;
+            case "GEOMETRY":
+                type = getGeometry(dataType);
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported data type encountered: " + typeName);
         }
+        return type;
+    }
+
+    private DataType getVarchar(final JsonObject dataType) {
+        final DataType type;
+        final String charSet = dataType.getString("characterSet", "UTF8");
+        type = DataType.createVarChar(dataType.getInt("size"), charSetFromString(charSet));
+        return type;
+    }
+
+    private DataType getChar(final JsonObject dataType) {
+        final DataType type;
+        final String charSet = dataType.getString("characterSet", "UTF8");
+        type = DataType.createChar(dataType.getInt("size"), charSetFromString(charSet));
+        return type;
+    }
+
+    private DataType getTimestamp(final JsonObject dataType) {
+        final DataType type;
+        final boolean withLocalTimezone = dataType.getBoolean("withLocalTimeZone", false);
+        type = DataType.createTimestamp(withLocalTimezone);
+        return type;
+    }
+
+    private DataType getInterval(final JsonObject dataType) {
+        final DataType type;
+        final int precision = dataType.getInt("precision", 2);
+        final IntervalType intervalType = intervalTypeFromString(dataType.getString("fromTo"));
+        if (intervalType == IntervalType.DAY_TO_SECOND) {
+            final int fraction = dataType.getInt("fraction", 3);
+            type = DataType.createIntervalDaySecond(precision, fraction);
+        } else {
+            assert intervalType == IntervalType.YEAR_TO_MONTH;
+            type = DataType.createIntervalYearMonth(precision);
+        }
+        return type;
+    }
+
+    private DataType getGeometry(final JsonObject dataType) {
+        final DataType type;
+        final int srid = dataType.getInt("srid");
+        type = DataType.createGeometry(srid);
         return type;
     }
 
@@ -345,7 +420,7 @@ public class PushdownSqlParser extends AbstractRequestParser {
             return ExaCharset.ASCII;
         } else {
             throw new IllegalArgumentException(
-                    "Unsupported charset encountered: " + charset + ". Supported charsets are \"UTF8\" and \"ASCII\".");
+                  "Unsupported charset encountered: " + charset + ". Supported charsets are \"UTF8\" and \"ASCII\".");
         }
     }
 
@@ -355,8 +430,8 @@ public class PushdownSqlParser extends AbstractRequestParser {
         } else if (intervalType.equals("YEAR TO MONTH")) {
             return IntervalType.YEAR_TO_MONTH;
         } else {
-            throw new IllegalArgumentException("Unsupported interval data type encountered: " + intervalType
-                    + " Supported intervals are \"DAY TO SECONDS\" and \"YEAR TO MONTH\".");
+            throw new IllegalArgumentException("Unsupported interval data type encountered: " + intervalType //
+                  + " Supported intervals are \"DAY TO SECONDS\" and \"YEAR TO MONTH\".");
         }
     }
 
@@ -506,7 +581,7 @@ public class PushdownSqlParser extends AbstractRequestParser {
             separator = exp.getString("separator");
         }
         return new SqlFunctionAggregateGroupConcat(fromAggregationFunctionName(functionName), setArguments, orderBy,
-                distinct, separator);
+              distinct, separator);
     }
 
     /**
@@ -544,8 +619,9 @@ public class PushdownSqlParser extends AbstractRequestParser {
                 return tableMetadata;
             }
         }
-        throw new IllegalStateException("Could not find table metadata for involved table " + tableName
-                + ". All involved tables: " + this.involvedTablesMetadata.toString());
+        throw new IllegalStateException(
+              "Could not find table metadata for involved table " + tableName + ". All involved tables: " +
+                    this.involvedTablesMetadata.toString());
     }
 
     private ColumnMetadata findColumnMetadata(final String tableName, final String columnName) {
@@ -555,8 +631,9 @@ public class PushdownSqlParser extends AbstractRequestParser {
                 return columnMetadata;
             }
         }
-        throw new IllegalStateException("Could not find column metadata for involved table " + tableName
-                + " and column + " + columnName + ". All involved tables: " + this.involvedTablesMetadata.toString());
+        throw new IllegalStateException(
+              "Could not find column metadata for involved table " + tableName + " and column + " + columnName +
+                    ". All involved tables: " + this.involvedTablesMetadata.toString());
     }
 
     /**

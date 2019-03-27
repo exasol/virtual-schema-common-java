@@ -17,7 +17,7 @@ import com.exasol.adapter.sql.SqlStatement;
  * Parser for JSON structures representing a Virtual Schema Adapter request.
  */
 public class RequestParser extends AbstractRequestParser {
-    private static Logger LOGGER = Logger.getLogger(RequestParser.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(RequestParser.class.getName());
 
     /**
      * Parse a JSON string containing a Virtual Schema Adapter request into the abstract representation of that request
@@ -54,13 +54,13 @@ public class RequestParser extends AbstractRequestParser {
             return new PushDownRequest(adapterName, metadataInfo, statement, null);
         default:
             throw new RequestParserException("Could not parse unknown adapter request type identifier \"" + type
-                    + "\". Check wether versions of Exasol database and Virtual Schema Adapter are compatible.");
+                    + "\". Check whether versions of Exasol database and Virtual Schema Adapter are compatible.");
         }
     }
 
     private String extractAdapterNameFromMetadataInfo(final SchemaMetadataInfo metadataInfo) {
-        if (metadataInfo.containsProperty(ADPTER_NAME_PROPERTY_KEY)) {
-            return metadataInfo.getProperty(ADPTER_NAME_PROPERTY_KEY);
+        if (metadataInfo.containsProperty(ADAPTER_NAME_PROPERTY_KEY)) {
+            return metadataInfo.getProperty(ADAPTER_NAME_PROPERTY_KEY);
         } else {
             LOGGER.severe("Missing adapter name trying to parse metadata information.");
             return "UNKNOWN";
@@ -76,8 +76,8 @@ public class RequestParser extends AbstractRequestParser {
             final JsonObject schemaMetadataInfoAsJson = root.getJsonObject(SCHEMA_METADATA_INFO_KEY);
             return new SchemaMetadataInfoParser().parse(schemaMetadataInfoAsJson);
         } else {
-            LOGGER.severe("Missing metadata information tryping to parse adapter request.");
-            return new SchemaMetadataInfo("UNKNOWN", "", new HashMap<String, String>());
+            LOGGER.severe("Missing metadata information trying to parse adapter request.");
+            return new SchemaMetadataInfo("UNKNOWN", "", new HashMap<>());
         }
     }
 

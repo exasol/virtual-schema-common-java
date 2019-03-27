@@ -4,7 +4,8 @@ import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.DataType;
 
 public class SqlLiteralInterval extends SqlNode {
-    private final String value;   // stored as YYYY-MM-DD HH:MI:SS.FF6
+    //Format:  YYYY-MM-DD HH:MI:SS.FF6
+    private final String value;
     private final DataType type;
 
     public SqlLiteralInterval(final String value, final DataType type) {

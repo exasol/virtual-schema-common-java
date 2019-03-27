@@ -61,7 +61,7 @@ public class RemoteLogManager {
             LOGGER.info(() -> "Attached to output service with log level " + logLevel + ".");
         } catch (final IOException exception) {
             setupRootLoggerForLocalLogging(logLevel);
-            LOGGER.warning(() -> "Unable to attch to remote log listener on " + host + ":" + port
+            LOGGER.warning(() -> "Unable to attach to remote log listener on " + host + ":" + port
                     + ". Falling back to console log.");
         }
     }

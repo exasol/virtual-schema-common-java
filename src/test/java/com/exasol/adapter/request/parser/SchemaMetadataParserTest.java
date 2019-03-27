@@ -26,8 +26,7 @@ class SchemaMetadataParserTest {
         final JsonReader reader = Json.createReader(new ByteArrayInputStream(rawSchemaMetadata.getBytes()));
         final JsonObject schemaMetadataInfoAsJson = reader.readObject();
         final SchemaMetadataInfoParser parser = new SchemaMetadataInfoParser();
-        final SchemaMetadataInfo metadata = parser.parse(schemaMetadataInfoAsJson);
-        return metadata;
+        return parser.parse(schemaMetadataInfoAsJson);
     }
 
     @Test
