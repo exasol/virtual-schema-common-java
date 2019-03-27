@@ -3,13 +3,15 @@ package com.exasol.adapter.sql;
 import com.exasol.adapter.AdapterException;
 
 public class SqlLiteralDate extends SqlNode {
-    //Format: YYYY-MM-DD
     private final String value;
     
     public SqlLiteralDate(final String value) {
         this.value = value;
     }
-    
+
+    /**
+     * @return literal date value in format: YYYY-MM-DD
+     */
     public String getValue() {
         return this.value;
     }
