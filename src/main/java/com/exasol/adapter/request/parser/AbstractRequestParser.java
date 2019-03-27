@@ -65,9 +65,12 @@ class AbstractRequestParser {
         case FALSE:
             stringValue = "false";
             break;
+        case NULL:
+            stringValue = null;
+            break;
         default:
             throw new IllegalArgumentException("Unable to parse adapter property value of type \"" + type
-                    + "\". Supported types are strings, booleans and numbers.");
+                    + "\". Supported types are strings, booleans, numbers and NULL.");
         }
         properties.put(key, stringValue);
     }
