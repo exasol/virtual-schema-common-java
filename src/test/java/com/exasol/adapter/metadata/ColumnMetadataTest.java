@@ -1,81 +1,122 @@
 package com.exasol.adapter.metadata;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import nl.jqno.equalsverifier.EqualsVerifier;
 
 class ColumnMetadataTest {
-    private static final String TEST_NAME = "testName";
-    private static final String TEST_ADAPTER_NOTES = "testAdapterNotes";
-    private static final boolean NULLABLE = true;
-    private static final boolean IS_IDENTITY = true;
-    private static final String TEST_DEFAULT_VALUE = "testDefaultValue";
-    private static final String TEST_COMMENT = "testComment";
-    private ColumnMetadata columnMetadata;
-    private final DataType dataType = DataType.createDouble();
+    private static final DataType TYPE_DOUBLE = DataType.createDouble();
+    private static final String COLUMN_NAME = "COLUMN_NAME";
+    private ColumnMetadata.Builder builder;
 
     @BeforeEach
     void setUp() {
-        this.columnMetadata =
-              new ColumnMetadata(TEST_NAME, TEST_ADAPTER_NOTES, this.dataType, NULLABLE,
-                    IS_IDENTITY, TEST_DEFAULT_VALUE, TEST_COMMENT);
+        this.builder = ColumnMetadata.builder().name(COLUMN_NAME).type(TYPE_DOUBLE);
+    }
+
+    @Test
+    void testDefaultValues() {
+        final ColumnMetadata metadata = ColumnMetadata.builder().name("FOO").type(DataType.createBool()).build();
+        assertAll(() -> assertThat("adapter notes", metadata.getAdapterNotes(), equalTo("")),
+                () -> assertThat("nullable", metadata.isNullable(), equalTo(true)),
+                () -> assertThat("identity", metadata.isIdentity(), equalTo(false)),
+                () -> assertThat("default value", metadata.getDefaultValue(), equalTo(null)),
+                () -> assertThat("comment", metadata.getComment(), equalTo("")));
+    }
+
+    @Test
+    void testBuildWithoutNameThrowsException() {
+        assertThrows(IllegalStateException.class, () -> ColumnMetadata.builder().type(DataType.createBool()).build());
+    }
+
+    @Test
+    void testBuildWithEmptyNameThrowsException() {
+        assertThrows(IllegalStateException.class,
+                () -> ColumnMetadata.builder().name("").type(DataType.createBool()).build());
+    }
+
+    @Test
+    void testBuildWithoutTypeThrowsException() {
+        assertThrows(IllegalStateException.class, () -> ColumnMetadata.builder().name("The_column_name").build());
     }
 
     @Test
     void testGetName() {
-        assertThat(this.columnMetadata.getName(), equalTo(TEST_NAME));
-    }
-
-    @Test
-    void testGetAdapterNotes() {
-        assertThat(this.columnMetadata.getAdapterNotes(), equalTo(TEST_ADAPTER_NOTES));
+        assertThat(this.builder.build().getName(), equalTo(COLUMN_NAME));
     }
 
     @Test
     void testGetType() {
-        assertThat(this.columnMetadata.getType(), equalTo(this.dataType));
+        assertThat(this.builder.build().getType(), equalTo(TYPE_DOUBLE));
     }
 
     @Test
-    void testIsNullable() {
-        assertThat(this.columnMetadata.isNullable(), equalTo(NULLABLE));
+    void testGetAdapterNotes() {
+        assertThat(this.builder.adapterNotes("notes").build().getAdapterNotes(), equalTo("notes"));
     }
 
     @Test
-    void testIsIdentity() {
-        assertThat(this.columnMetadata.isIdentity(), equalTo(IS_IDENTITY));
+    void testIsNullableFalse() {
+        assertThat(this.builder.nullable(false).build().isNullable(), equalTo(false));
     }
 
     @Test
-    void testHasDefault() {
-        assertThat(this.columnMetadata.hasDefault(), equalTo(true));
+    void testIsIdentityTrue() {
+        assertThat(this.builder.identity(true).build().isIdentity(), equalTo(true));
+    }
+
+    @Test
+    void testHasDefaultTrue() {
+        assertThat(this.builder.defaultValue("default").build().hasDefault(), equalTo(true));
+    }
+
+    @Test
+    void testHasDefaultFalse() {
+        assertThat(this.builder.build().hasDefault(), equalTo(false));
     }
 
     @Test
     void testGetDefaultValue() {
-        assertThat(this.columnMetadata.getDefaultValue(), equalTo(TEST_DEFAULT_VALUE));
+        assertThat(this.builder.defaultValue("another default").build().getDefaultValue(), equalTo("another default"));
     }
 
     @Test
-    void testHasComment() {
-        assertThat(this.columnMetadata.hasComment(), equalTo(true));
+    void testHasCommentTrue() {
+        assertThat(this.builder.comment("comment").build().hasComment(), equalTo(true));
+    }
+
+    @Test
+    void testHasCommentFalse() {
+        assertThat(this.builder.build().hasComment(), equalTo(false));
     }
 
     @Test
     void testGetComment() {
-        assertThat(this.columnMetadata.getComment(), equalTo(TEST_COMMENT));
+        assertThat(this.builder.comment("another comment").build().getComment(), equalTo("another comment"));
     }
 
     @Test
-    void testHasNoDefaultValueAndComment() {
-        final ColumnMetadata columnMetadata2 =
-              new ColumnMetadata(TEST_NAME, TEST_ADAPTER_NOTES, this.dataType, NULLABLE,
-                    IS_IDENTITY, "", "");
-        assertAll(() -> assertFalse(columnMetadata2.hasDefault()),
-              () -> assertFalse(columnMetadata2.hasComment()));
+    void assertToString() {
+        assertThat(this.builder.build().toString(), equalTo(
+                "ColumnMetadata{name=\"COLUMN_NAME\", adapterNotes=\"\", type=DOUBLE, isNullable=true, isIdentity=false}"));
+
+    }
+
+    @Test
+    void assertToStringWithOptionalFields() {
+        assertThat(this.builder.adapterNotes("notes").defaultValue("default").comment("comment").build().toString(),
+                equalTo("ColumnMetadata{name=\"COLUMN_NAME\", adapterNotes=\"notes\", type=DOUBLE, isNullable=true, isIdentity=false, defaultValue=\"default\", comment=\"comment\"}"));
+
+    }
+
+    @Test
+    void testEqualsAndHashContract() {
+        EqualsVerifier.forClass(ColumnMetadata.class).verify();
     }
 }
