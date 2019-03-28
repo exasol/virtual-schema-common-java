@@ -1,34 +1,26 @@
 package com.exasol.adapter.sql;
 
+import com.exasol.adapter.AdapterException;
+import com.exasol.adapter.metadata.ColumnMetadata;
+import com.exasol.adapter.metadata.DataType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
-
-import com.exasol.adapter.AdapterException;
-import com.exasol.adapter.metadata.ColumnMetadata;
-
-@ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 class SqlColumnTest {
     private static final int ID = 1;
     private static final String TABLE_NAME = "table_name";
     private static final String METADATA_TEST_NAME = "metadata_test_name";
     private SqlColumn sqlColumn;
-    @Mock
     private ColumnMetadata columnMetadata;
 
     @BeforeEach
     void setUp() {
-        when(this.columnMetadata.getName()).thenReturn(METADATA_TEST_NAME);
+        this.columnMetadata = ColumnMetadata.builder().name(METADATA_TEST_NAME).type(DataType.createBool()).build();
         this.sqlColumn = new SqlColumn(ID, this.columnMetadata, TABLE_NAME);
     }
 

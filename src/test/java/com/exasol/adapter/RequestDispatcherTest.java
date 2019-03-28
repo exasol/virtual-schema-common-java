@@ -64,7 +64,8 @@ class RequestDispatcherTest {
 
     private SchemaMetadata createSchemaMetadata(final String rawRequest) {
         final List<ColumnMetadata> columns = new ArrayList<>();
-        columns.add(new ColumnMetadata("BAR", "", DataType.createDecimal(18, 0), true, false, "", ""));
+        columns.add(ColumnMetadata.builder().name("BAR").adapterNotes("").type(DataType.createDecimal(18, 0))
+              .nullable(true).identity(false).defaultValue("").comment("").build());
         final List<TableMetadata> tables = new ArrayList<>();
         tables.add(new TableMetadata("FOO", null, columns, ""));
         final SchemaMetadata metadata = new SchemaMetadata(rawRequest, tables);

@@ -15,34 +15,6 @@ public final class ColumnMetadata {
     private final boolean defaultValueExplicitlySet;
     private final String comment;
 
-    /**
-     * Create a new column metadata instance
-     *
-     * @param name         column name
-     * @param adapterNotes notes the adapter associates with the column
-     * @param type         column data type
-     * @param nullable     <code>true</code> if the column is allowed to be <code>NULL</code>
-     * @param isIdentity   <code>true</code> if the column supports auto-incrementing values
-     * @param defaultValue value inserted unless explicitly specified otherwise
-     * @param comment      column description
-     * @deprecated since version 1.9.0 use the builder that comes with this class instead.
-     */
-    @Deprecated
-    public ColumnMetadata(final String name, final String adapterNotes, final DataType type, final boolean nullable,
-            final boolean identity, final String defaultValue, final String comment) {
-        this.name = name;
-        this.adapterNotes = adapterNotes;
-        this.type = type;
-        this.nullable = nullable;
-        this.identity = identity;
-        this.defaultValue = defaultValue;
-        this.comment = comment;
-        // One reason why we should not use this method anymore is that we can't tell whether or not the default
-        // value was explicitly set or not. The reason is that 'null' is a completely valid default values for any
-        // type of column and an empty string at least for CHAR and VARCHAR columns.
-        this.defaultValueExplicitlySet = true;
-    }
-
     private ColumnMetadata(final Builder builder) {
         this.name = builder.name;
         this.adapterNotes = builder.adapterNotes;
