@@ -102,6 +102,12 @@ class ColumnMetadataTest {
     }
 
     @Test
+    void testGetOriginalTypeName() {
+        assertThat(this.builder.originalTypeName("original type").build().getOriginalTypeName(),
+                equalTo("original type"));
+    }
+
+    @Test
     void assertToString() {
         assertThat(this.builder.build().toString(), equalTo(
                 "ColumnMetadata{name=\"COLUMN_NAME\", adapterNotes=\"\", type=DOUBLE, isNullable=true, isIdentity=false}"));

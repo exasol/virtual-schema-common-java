@@ -14,6 +14,7 @@ public final class ColumnMetadata {
     private final String defaultValue;
     private final boolean defaultValueExplicitlySet;
     private final String comment;
+    private final String orginialTypeName;
 
     private ColumnMetadata(final Builder builder) {
         this.name = builder.name;
@@ -24,6 +25,7 @@ public final class ColumnMetadata {
         this.defaultValue = builder.defaultValue;
         this.defaultValueExplicitlySet = builder.defaultValueExplicitlySet;
         this.comment = builder.comment;
+        this.orginialTypeName = builder.originalTypeName;
     }
 
     /**
@@ -107,6 +109,15 @@ public final class ColumnMetadata {
         return this.comment;
     }
 
+    /**
+     * Get the original name of the type as it was used in the JDBC driver of the remote data source
+     *
+     * @return original type name
+     */
+    public String getOriginalTypeName() {
+        return this.orginialTypeName;
+    }
+
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder("ColumnMetadata{name=\"");
@@ -146,13 +157,14 @@ public final class ColumnMetadata {
                 && Objects.equals(this.name, that.name) && Objects.equals(this.adapterNotes, that.adapterNotes)
                 && Objects.equals(this.type, that.type) && Objects.equals(this.defaultValue, that.defaultValue)
                 && Objects.equals(this.defaultValueExplicitlySet, that.defaultValueExplicitlySet)
-                && Objects.equals(this.comment, that.comment);
+                && Objects.equals(this.comment, that.comment)
+                && Objects.equals(this.orginialTypeName, that.orginialTypeName);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(this.name, this.adapterNotes, this.type, this.nullable, this.identity, this.defaultValue,
-                this.defaultValueExplicitlySet, this.comment);
+                this.defaultValueExplicitlySet, this.comment, this.orginialTypeName);
     }
 
     /**
@@ -175,6 +187,7 @@ public final class ColumnMetadata {
         private boolean identity = false;
         private String defaultValue = null;
         private boolean defaultValueExplicitlySet = false;
+        private String originalTypeName = null;
         private String comment = "";
 
         /**
@@ -253,6 +266,17 @@ public final class ColumnMetadata {
          */
         public Builder comment(final String comment) {
             this.comment = comment;
+            return this;
+        }
+
+        /**
+         * Set the original type name
+         *
+         * @param originalTypeName name of the type as used in the JDBC driver of the remote data source
+         * @return builder instance for fluent programming
+         */
+        public Builder originalTypeName(final String originalTypeName) {
+            this.originalTypeName = originalTypeName;
             return this;
         }
 
