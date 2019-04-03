@@ -1,6 +1,6 @@
 package com.exasol.adapter;
 
-import java.util.Map;
+import java.util.*;
 
 /**
  * This class provides access to the user defined adapter properties.
@@ -15,6 +15,15 @@ public class AdapterProperties {
      */
     public AdapterProperties(final Map<String, String> properties) {
         this.properties = properties;
+    }
+
+    /**
+     * Get empty map
+     *
+     * @return empty map
+     */
+    public static Map<String, String> emptyProperties() {
+        return Collections.emptyMap();
     }
 
     /**
@@ -44,5 +53,42 @@ public class AdapterProperties {
      */
     public boolean isEnabled(final String key) {
         return "true".equalsIgnoreCase(this.properties.get(key));
+    }
+
+    /**
+     * Get value for key
+     *
+     * @param key property to search for
+     * @return corresponding value or null it the key-value pair does not exist
+     */
+    public String get(final String key) {
+        return this.properties.get(key);
+    }
+
+    /**
+     * Get set of contained keys
+     *
+     * @return a set view of the keys contained in properties
+     */
+    public Set<String> keySet() {
+        return this.properties.keySet();
+    }
+
+    /**
+     * Get collection of contained values
+     *
+     * @return a collection view of the values contained in properties
+     */
+    public Collection<String> values() {
+        return this.properties.values();
+    }
+
+    /**
+     * Get set of contained entries
+     *
+     * @return a Set view of the mappings contained in properties
+     */
+    public Set<Map.Entry<String, String>> entrySet() {
+        return this.properties.entrySet();
     }
 }
