@@ -22,8 +22,9 @@ public class AdapterProperties {
      *
      * @return empty map
      */
-    public static Map<String, String> emptyProperties() {
-        return Collections.emptyMap();
+    public static AdapterProperties emptyProperties() {
+
+        return new AdapterProperties(Collections.emptyMap());
     }
 
     /**
@@ -90,5 +91,22 @@ public class AdapterProperties {
      */
     public Set<Map.Entry<String, String>> entrySet() {
         return this.properties.entrySet();
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final AdapterProperties that = (AdapterProperties) o;
+        return Objects.equals(this.properties, that.properties);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.properties);
     }
 }

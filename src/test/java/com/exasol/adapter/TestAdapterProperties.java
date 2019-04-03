@@ -114,6 +114,6 @@ class TestAdapterProperties {
 
     @Test
     void testEmptyProperties() {
-        assertTrue(AdapterProperties.emptyProperties().isEmpty());
+        assertThat(AdapterProperties.emptyProperties(), equalTo(new AdapterProperties(Collections.emptyMap())));
     }
 }
