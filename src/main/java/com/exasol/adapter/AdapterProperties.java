@@ -13,6 +13,10 @@ public class AdapterProperties extends AbstractAdapterProperties {
     private static final String PASSWORD_PROPERTY = "PASSWORD";
     private static final String DEBUG_ADDRESS_PROPERTY = "DEBUG_ADDRESS";
     private static final String LOG_LEVEL_PROPERTY = "LOG_LEVEL";
+    private static final String SQL_DIALECT_PROPERTY = "SQL_DIALECT";
+    private static final String EXCLUDED_CAPABILITIES_PROPERTY = "EXCLUDED_CAPABILITIES";
+    private static final String EXCEPTION_HANDLING_PROPERTY = "EXCEPTION_HANDLING";
+    private static final String IGNORE_ERRORS_PROPERTY = "IGNORE_ERRORS";
 
     /**
      * Create a new instance of {@link AdapterProperties}
@@ -94,6 +98,43 @@ public class AdapterProperties extends AbstractAdapterProperties {
     public String getLogLevel() {
         return get(LOG_LEVEL_PROPERTY);
     }
+
+    /**
+     * Get the sql dialect
+     *
+     * @return sql dialect
+     */
+    public String getSqlDialect() {
+        return get(SQL_DIALECT_PROPERTY);
+    }
+
+    /**
+     * Get the excluded capabilities
+     *
+     * @return excluded capabilities
+     */
+    public String getExcludedCapabilities() {
+        return get(EXCLUDED_CAPABILITIES_PROPERTY);
+    }
+
+    /**
+     * Get the exception handling
+     *
+     * @return exception handling
+     */
+    public String getExceptionHandling() {
+        return get(EXCEPTION_HANDLING_PROPERTY);
+    }
+
+    /**
+     * Get a string with a comma-separated list of ignored errors
+     *
+     * @return string with a comma-separated list of ignored errors
+     */
+    public String getIgnoreErrors() {
+        return get(IGNORE_ERRORS_PROPERTY);
+    }
+
 
     /**
      * Get the list of tables for which the metadata will be read from the remote source
