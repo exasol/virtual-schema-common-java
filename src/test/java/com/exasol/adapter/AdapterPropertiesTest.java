@@ -28,23 +28,36 @@ class AdapterPropertiesTest {
     }
 
     @ValueSource(strings = { "CATALOG_NAME", "SCHEMA_NAME", "CONNECTION_NAME", "CONNECTION_STRING", "USERNAME",
-          "PASSWORD", "DEBUG_ADDRESS", "LOG_LEVEL" , "SQL_DIALECT", "EXCLUDED_CAPABILITIES", "EXCEPTION_HANDLING",
-          "IGNORE_ERRORS"})
+            "PASSWORD", "DEBUG_ADDRESS", "LOG_LEVEL", "SQL_DIALECT", "EXCLUDED_CAPABILITIES", "EXCEPTION_HANDLING",
+            "IGNORE_ERRORS" })
     @ParameterizedTest
     void testGetCatalogName(final String property) throws IllegalAccessException, IllegalArgumentException,
             InvocationTargetException, NoSuchMethodException, SecurityException {
         final String expectedValue = property + "_VALUE";
         this.rawProperties.put(property, expectedValue);
-        final AdapterProperties properties = new AdapterProperties(this.rawProperties);
+        final AdapterProperties properties = createProperties();
         final String methodName = "get" + StringUtils.toCamelCase(property);
         final String value = (String) AdapterProperties.class.getMethod(methodName).invoke(properties);
         assertThat(value, equalTo(expectedValue));
     }
 
+    private AdapterProperties createProperties() {
+        return new AdapterProperties(this.rawProperties);
+    }
+
     @Test
     void testGetFilteredTables() {
         this.rawProperties.put(AdapterProperties.TABLE_FILTER_PROPERTY, "Table a,Table B, TABLE  C    ,  table d  ");
-        final AdapterProperties properties = new AdapterProperties(this.rawProperties);
+        final AdapterProperties properties = createProperties();
         assertThat(properties.getFilteredTables(), containsInAnyOrder("Table a", "Table B", "TABLE  C", "table d"));
+    }
+
+    @ValueSource(strings = { "CONNECTION_STRING", "CONNECTION_NAME", "USERNAME", "PASSWORD", "SCHEMA_NAME",
+            "CATALOG_NAME", "TABLE_FILTER" })
+    @ParameterizedTest
+    void testtIsRefreshingVirtualSchemaRequiredTrue(final String propertyName) {
+        this.rawProperties.put(propertyName, "");
+        final AdapterProperties properties = createProperties();
+        assertThat(properties.isRefreshingVirtualSchemaRequired(this.rawProperties), equalTo(true));
     }
 }
