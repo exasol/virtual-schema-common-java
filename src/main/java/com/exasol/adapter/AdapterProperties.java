@@ -1,20 +1,43 @@
 package com.exasol.adapter;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
-/**
- * This class provides access to the user defined adapter properties.
- */
-public class AdapterProperties {
-    private final Map<String, String> properties;
+public class AdapterProperties extends AbstractAdapterProperties {
+    static final String TABLE_FILTER_PROPERTY = "TABLE_FILTER";
+    private static final String CATALOG_NAME_PROPERTY = "CATALOG_NAME";
 
     /**
-     * Create a new instance of {@link AdapterProperties} from a key-value map
+     * Create a new instance of {@link AdapterProperties}
      *
-     * @param properties map of property keys and values
+     * @param properties adapter properties
      */
     public AdapterProperties(final Map<String, String> properties) {
-        this.properties = properties;
+        super(properties);
+    }
+
+    /**
+     * Get the catalog name
+     * 
+     * @return catalog name
+     */
+    public String getCatalogName() {
+        return get(CATALOG_NAME_PROPERTY);
+    }
+
+    /**
+     * Get the list of tables for which the metadata will be read from the remote source
+     *
+     * @return list of tables serving as positive filter criteria
+     */
+    public List<String> getFilteredTables() {
+        if (containsKey(TABLE_FILTER_PROPERTY)) {
+            return Arrays.stream(get(TABLE_FILTER_PROPERTY).split(",")) //
+                    .map(String::trim) //
+                    .collect(Collectors.toList());
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     /**
@@ -22,91 +45,7 @@ public class AdapterProperties {
      *
      * @return empty map
      */
-    public static AdapterProperties emptyProperties() {
-
+    public static AbstractAdapterProperties emptyProperties() {
         return new AdapterProperties(Collections.emptyMap());
-    }
-
-    /**
-     * Check if the properties are empty
-     *
-     * @return <code>true</code> if there are no properties
-     */
-    public boolean isEmpty() {
-        return this.properties.isEmpty();
-    }
-
-    /**
-     * Check if a property with the given key exists
-     *
-     * @param key property to search for
-     * @return <code>true</code> if the property list contains the property with the given key
-     */
-    public boolean containsKey(final String key) {
-        return this.properties.containsKey(key);
-    }
-
-    /**
-     * Check if the switch with the given key is enabled
-     *
-     * @param key switch name
-     * @return <code>true</code> if the switch property exists and is enable
-     */
-    public boolean isEnabled(final String key) {
-        return "true".equalsIgnoreCase(this.properties.get(key));
-    }
-
-    /**
-     * Get value for key
-     *
-     * @param key property to search for
-     * @return corresponding value or null it the key-value pair does not exist
-     */
-    public String get(final String key) {
-        return this.properties.get(key);
-    }
-
-    /**
-     * Get set of contained keys
-     *
-     * @return a set view of the keys contained in properties
-     */
-    public Set<String> keySet() {
-        return this.properties.keySet();
-    }
-
-    /**
-     * Get collection of contained values
-     *
-     * @return a collection view of the values contained in properties
-     */
-    public Collection<String> values() {
-        return this.properties.values();
-    }
-
-    /**
-     * Get set of contained entries
-     *
-     * @return a Set view of the mappings contained in properties
-     */
-    public Set<Map.Entry<String, String>> entrySet() {
-        return this.properties.entrySet();
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        final AdapterProperties that = (AdapterProperties) o;
-        return Objects.equals(this.properties, that.properties);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.properties);
     }
 }
