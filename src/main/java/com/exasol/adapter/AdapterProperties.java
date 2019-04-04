@@ -135,7 +135,6 @@ public class AdapterProperties extends AbstractAdapterProperties {
         return get(IGNORE_ERRORS_PROPERTY);
     }
 
-
     /**
      * Get the list of tables for which the metadata will be read from the remote source
      *
@@ -156,7 +155,7 @@ public class AdapterProperties extends AbstractAdapterProperties {
      *
      * @return empty map
      */
-    public static AbstractAdapterProperties emptyProperties() {
+    public static AdapterProperties emptyProperties() {
         return new AdapterProperties(Collections.emptyMap());
     }
 }
