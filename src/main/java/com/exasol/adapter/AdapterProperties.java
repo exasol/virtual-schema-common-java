@@ -60,9 +60,9 @@ public class AdapterProperties extends AbstractAdapterProperties {
     }
 
     /**
-     * Get the username
+     * Get the user name
      *
-     * @return username
+     * @return user name
      */
     public String getUsername() {
         return get(USERNAME_PROPERTY);
