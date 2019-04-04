@@ -57,7 +57,6 @@ class AdapterPropertiesTest {
     @ParameterizedTest
     void testtIsRefreshingVirtualSchemaRequiredTrue(final String propertyName) {
         this.rawProperties.put(propertyName, "");
-        final AdapterProperties properties = createProperties();
-        assertThat(properties.isRefreshingVirtualSchemaRequired(this.rawProperties), equalTo(true));
+        assertThat(AdapterProperties.isRefreshingVirtualSchemaRequired(this.rawProperties), equalTo(true));
     }
 }

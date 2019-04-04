@@ -156,7 +156,7 @@ public class AdapterProperties extends AbstractAdapterProperties {
      * @param changedProperties map of properties that were changed
      * @return <code>true</code> if any of the changes makes refreshing the virtual schema necessary
      */
-    public boolean isRefreshingVirtualSchemaRequired(final Map<String, String> changedProperties) {
+    public static boolean isRefreshingVirtualSchemaRequired(final Map<String, String> changedProperties) {
         return changedProperties.containsKey(CONNECTION_STRING_PROPERTY) //
                 || changedProperties.containsKey(CONNECTION_NAME_PROPERTY) //
                 || changedProperties.containsKey(USERNAME_PROPERTY) //
