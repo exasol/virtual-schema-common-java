@@ -27,7 +27,8 @@ class AdapterPropertiesTest {
         assertThat(AdapterProperties.emptyProperties(), equalTo(new AdapterProperties(Collections.emptyMap())));
     }
 
-    @ValueSource(strings = { "CATALOG_NAME" })
+    @ValueSource(strings = { "CATALOG_NAME", "SCHEMA_NAME", "CONNECTION_NAME", "CONNECTION_STRING", "USERNAME",
+          "PASSWORD", "DEBUG_ADDRESS", "LOG_LEVEL"})
     @ParameterizedTest
     void testGetCatalogName(final String property) throws IllegalAccessException, IllegalArgumentException,
             InvocationTargetException, NoSuchMethodException, SecurityException {
