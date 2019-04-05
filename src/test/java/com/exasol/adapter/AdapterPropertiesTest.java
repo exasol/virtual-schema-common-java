@@ -28,8 +28,7 @@ class AdapterPropertiesTest {
     }
 
     @ValueSource(strings = { "CATALOG_NAME", "SCHEMA_NAME", "CONNECTION_NAME", "CONNECTION_STRING", "USERNAME",
-            "PASSWORD", "DEBUG_ADDRESS", "LOG_LEVEL", "SQL_DIALECT", "EXCLUDED_CAPABILITIES", "EXCEPTION_HANDLING",
-            "IGNORE_ERRORS" })
+            "PASSWORD", "DEBUG_ADDRESS", "LOG_LEVEL", "SQL_DIALECT", "EXCLUDED_CAPABILITIES", "EXCEPTION_HANDLING" })
     @ParameterizedTest
     void testGetCatalogName(final String property) throws IllegalAccessException, IllegalArgumentException,
             InvocationTargetException, NoSuchMethodException, SecurityException {
@@ -58,5 +57,17 @@ class AdapterPropertiesTest {
     void testtIsRefreshingVirtualSchemaRequiredTrue(final String propertyName) {
         this.rawProperties.put(propertyName, "");
         assertThat(AdapterProperties.isRefreshingVirtualSchemaRequired(this.rawProperties), equalTo(true));
+    }
+
+    @Test
+    void testtIsRefreshingVirtualSchemaRequiredFalse() {
+        assertThat(AdapterProperties.isRefreshingVirtualSchemaRequired(this.rawProperties), equalTo(false));
+    }
+
+    @Test
+    void testGetIgnoredErrors() {
+        this.rawProperties.put("IGNORED_ERRORS", "error A, error B,  error C  ");
+        assertThat((new AdapterProperties(this.rawProperties)).getIgnoredErrors(),
+                containsInAnyOrder("error A", "error B", "error C"));
     }
 }

@@ -5,18 +5,18 @@ import java.util.stream.Collectors;
 
 public class AdapterProperties extends AbstractAdapterProperties {
     static final String TABLE_FILTER_PROPERTY = "TABLE_FILTER";
-    private static final String CATALOG_NAME_PROPERTY = "CATALOG_NAME";
-    private static final String SCHEMA_NAME_PROPERTY = "SCHEMA_NAME";
-    private static final String CONNECTION_NAME_PROPERTY = "CONNECTION_NAME";
-    private static final String CONNECTION_STRING_PROPERTY = "CONNECTION_STRING";
-    private static final String USERNAME_PROPERTY = "USERNAME";
-    private static final String PASSWORD_PROPERTY = "PASSWORD";
-    private static final String DEBUG_ADDRESS_PROPERTY = "DEBUG_ADDRESS";
-    private static final String LOG_LEVEL_PROPERTY = "LOG_LEVEL";
-    private static final String SQL_DIALECT_PROPERTY = "SQL_DIALECT";
-    private static final String EXCLUDED_CAPABILITIES_PROPERTY = "EXCLUDED_CAPABILITIES";
-    private static final String EXCEPTION_HANDLING_PROPERTY = "EXCEPTION_HANDLING";
-    private static final String IGNORE_ERRORS_PROPERTY = "IGNORE_ERRORS";
+    public static final String CATALOG_NAME_PROPERTY = "CATALOG_NAME";
+    public static final String SCHEMA_NAME_PROPERTY = "SCHEMA_NAME";
+    public static final String CONNECTION_NAME_PROPERTY = "CONNECTION_NAME";
+    public static final String CONNECTION_STRING_PROPERTY = "CONNECTION_STRING";
+    public static final String USERNAME_PROPERTY = "USERNAME";
+    public static final String PASSWORD_PROPERTY = "PASSWORD";
+    public static final String DEBUG_ADDRESS_PROPERTY = "DEBUG_ADDRESS";
+    public static final String LOG_LEVEL_PROPERTY = "LOG_LEVEL";
+    public static final String SQL_DIALECT_PROPERTY = "SQL_DIALECT";
+    public static final String EXCLUDED_CAPABILITIES_PROPERTY = "EXCLUDED_CAPABILITIES";
+    public static final String EXCEPTION_HANDLING_PROPERTY = "EXCEPTION_HANDLING";
+    public static final String IGNORE_ERRORS_PROPERTY = "IGNORE_ERRORS";
 
     /**
      * Create a new instance of {@link AdapterProperties}
@@ -127,12 +127,22 @@ public class AdapterProperties extends AbstractAdapterProperties {
     }
 
     /**
-     * Get a string with a comma-separated list of ignored errors
+     * Get the list of ignored errors
      *
-     * @return string with a comma-separated list of ignored errors
+     * @return list of ignored errors
      */
-    public String getIgnoreErrors() {
-        return get(IGNORE_ERRORS_PROPERTY);
+    public List<String> getIgnoredErrors() {
+        return splitCommaSepartedListWithEmptyAsDefault(IGNORE_ERRORS_PROPERTY);
+    }
+
+    private List<String> splitCommaSepartedListWithEmptyAsDefault(final String property) {
+        return containsKey(property) ? splitCommaSeparatedList(get(property)) : Collections.emptyList();
+    }
+
+    private List<String> splitCommaSeparatedList(final String value) {
+        return Arrays.stream(value.split(",")) //
+                .map(String::trim) //
+                .collect(Collectors.toList());
     }
 
     /**
@@ -141,13 +151,7 @@ public class AdapterProperties extends AbstractAdapterProperties {
      * @return list of tables serving as positive filter criteria
      */
     public List<String> getFilteredTables() {
-        if (containsKey(TABLE_FILTER_PROPERTY)) {
-            return Arrays.stream(get(TABLE_FILTER_PROPERTY).split(",")) //
-                    .map(String::trim) //
-                    .collect(Collectors.toList());
-        } else {
-            return Collections.emptyList();
-        }
+        return splitCommaSepartedListWithEmptyAsDefault(TABLE_FILTER_PROPERTY);
     }
 
     /**
