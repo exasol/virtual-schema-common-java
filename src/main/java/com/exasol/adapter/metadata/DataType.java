@@ -3,7 +3,7 @@ package com.exasol.adapter.metadata;
 import java.util.Objects;
 
 /**
- * Represents an EXASOL datatype.
+ * Represents an EXASOL data type.
  */
 public class DataType {
     public static final int MAX_EXASOL_CHAR_SIZE = 2000;
@@ -21,26 +21,15 @@ public class DataType {
     private int intervalFraction;
 
     public enum ExaDataType {
-        UNSUPPORTED,
-        DECIMAL,
-        DOUBLE,
-        VARCHAR,
-        CHAR,
-        DATE,
-        TIMESTAMP,
-        BOOLEAN,
-        GEOMETRY,
-        INTERVAL
+        UNSUPPORTED, DECIMAL, DOUBLE, VARCHAR, CHAR, DATE, TIMESTAMP, BOOLEAN, GEOMETRY, INTERVAL
     }
 
     public enum ExaCharset {
-        UTF8,
-        ASCII
+        UTF8, ASCII
     }
 
     public enum IntervalType {
-        DAY_TO_SECOND,
-        YEAR_TO_MONTH
+        DAY_TO_SECOND, YEAR_TO_MONTH
     }
 
     private DataType() {
@@ -54,12 +43,32 @@ public class DataType {
         return type;
     }
 
+    /**
+     * Create a <code>VARCHAR</code> data type with the maximum size supported by Exasol
+     *
+     * @param charset character set to be used when creating the data type
+     * @return data type
+     */
+    public static DataType createMaximumSizeVarChar(final ExaCharset charset) {
+        return createVarChar(MAX_EXASOL_VARCHAR_SIZE, charset);
+    }
+
     public static DataType createChar(final int size, final ExaCharset charset) {
         final DataType type = new DataType();
         type.exaDataType = ExaDataType.CHAR;
         type.size = size;
         type.charset = charset;
         return type;
+    }
+
+    /**
+     * Create a <code>CHAR</code> data type with the maximum size supported by Exasol
+     *
+     * @param charset character set to be used when creating the data type
+     * @return data type
+     */
+    public static DataType createMaximumSizeChar(final ExaCharset charset) {
+        return createChar(MAX_EXASOL_CHAR_SIZE, charset);
     }
 
     public static DataType createDecimal(final int precision, final int scale) {
@@ -159,36 +168,36 @@ public class DataType {
     public String toString() {
         final StringBuilder builder = new StringBuilder();
         switch (this.exaDataType) {
-            case UNSUPPORTED:
-                appendOneString(builder, "UNSUPPORTED");
-                break;
-            case DECIMAL:
-                appendDecimal(builder);
-                break;
-            case DOUBLE:
-                appendOneString(builder, "DOUBLE");
-                break;
-            case VARCHAR:
-                appendLiteralValue(builder, "VARCHAR");
-                break;
-            case CHAR:
-                appendLiteralValue(builder, "CHAR");
-                break;
-            case DATE:
-                appendOneString(builder, "DATE");
-                break;
-            case TIMESTAMP:
-                appendTimestamp(builder);
-                break;
-            case BOOLEAN:
-                appendOneString(builder, "BOOLEAN");
-                break;
-            case GEOMETRY:
-                appendGeometry(builder);
-                break;
-            case INTERVAL:
-                appendInterval(builder);
-                break;
+        case UNSUPPORTED:
+            appendOneString(builder, "UNSUPPORTED");
+            break;
+        case DECIMAL:
+            appendDecimal(builder);
+            break;
+        case DOUBLE:
+            appendOneString(builder, "DOUBLE");
+            break;
+        case VARCHAR:
+            appendLiteralValue(builder, "VARCHAR");
+            break;
+        case CHAR:
+            appendLiteralValue(builder, "CHAR");
+            break;
+        case DATE:
+            appendOneString(builder, "DATE");
+            break;
+        case TIMESTAMP:
+            appendTimestamp(builder);
+            break;
+        case BOOLEAN:
+            appendOneString(builder, "BOOLEAN");
+            break;
+        case GEOMETRY:
+            appendGeometry(builder);
+            break;
+        case INTERVAL:
+            appendInterval(builder);
+            break;
         }
         return builder.toString();
     }
@@ -252,20 +261,20 @@ public class DataType {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if ((o == null) || (getClass() != o.getClass())) {
             return false;
         }
         final DataType dataType = (DataType) o;
-        return this.precision == dataType.precision && this.scale == dataType.scale && this.size == dataType.size &&
-              this.withLocalTimezone == dataType.withLocalTimezone && this.geometrySrid == dataType.geometrySrid &&
-              this.intervalFraction == dataType.intervalFraction && this.exaDataType == dataType.exaDataType &&
-              this.charset == dataType.charset && this.intervalType == dataType.intervalType;
+        return (this.precision == dataType.precision) && (this.scale == dataType.scale) && (this.size == dataType.size)
+                && (this.withLocalTimezone == dataType.withLocalTimezone)
+                && (this.geometrySrid == dataType.geometrySrid) && (this.intervalFraction == dataType.intervalFraction)
+                && (this.exaDataType == dataType.exaDataType) && (this.charset == dataType.charset)
+                && (this.intervalType == dataType.intervalType);
     }
 
     @Override
     public int hashCode() {
-        return Objects
-              .hash(this.exaDataType, this.precision, this.scale, this.size, this.charset, this.withLocalTimezone,
-                    this.geometrySrid, this.intervalType, this.intervalFraction);
+        return Objects.hash(this.exaDataType, this.precision, this.scale, this.size, this.charset,
+                this.withLocalTimezone, this.geometrySrid, this.intervalType, this.intervalFraction);
     }
 }
