@@ -137,7 +137,7 @@ public enum MainCapability {
     /**
      * Support joins with any conditions.
      *
-     * <code>Example: SELECT * FROM t INNER JOIN u ON t.x != between(u.x, u.y)</code>
+     * <code>Example: SELECT * FROM t INNER JOIN u ON t.x between(u.x, u.y)</code>
      */
     JOIN_CONDITION_ALL
 }
