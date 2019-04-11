@@ -108,36 +108,36 @@ public enum MainCapability {
     /**
      * Support left outer joins.
      *
-     * <code>Example: SELECT * FROM t LEFT OUTER JOIN u ON t.id = u.id;</code>
+     * <code>Example: SELECT * FROM t LEFT OUTER JOIN u ON t.id = u.id</code>
      */
     JOIN_TYPE_LEFT_OUTER,
 
     /**
      * Support right outer joins.
      *
-     * <code>Example: SELECT * FROM t RIGHT OUTER JOIN u ON t.id = u.id;</code>
+     * <code>Example: SELECT * FROM t RIGHT OUTER JOIN u ON t.id = u.id</code>
      */
     JOIN_TYPE_RIGHT_OUTER,
 
     /**
      * Support full outer joins.
      *
-     * <code>Example: SELECT * FROM t FULL OUTER JOIN u ON t.id = u.id;</code>
+     * <code>Example: SELECT * FROM t FULL OUTER JOIN u ON t.id = u.id</code>
      */
     JOIN_TYPE_FULL_OUTER,
 
     /**
      * Support joins with equi-join conditions.
      *
-     * <code>Example: SELECT * FROM t INNER JOIN u ON t.id = u.id;</code>
-     * <code>SELECT * FROM t INNER JOIN u ON t.id = u.id + 3;</code>
+     * <code>Example: SELECT * FROM t INNER JOIN u ON t.id = u.id</code>
+     * <code>SELECT * FROM t INNER JOIN u ON t.id = u.id + 3</code>
      */
     JOIN_CONDITION_EQUI,
 
     /**
      * Support joins with any conditions.
      *
-     * <code>Example: SELECT * FROM t INNER JOIN u ON t.x != between(u.x, u.y) ;</code>
+     * <code>Example: SELECT * FROM t INNER JOIN u ON t.x != between(u.x, u.y)</code>
      */
     JOIN_CONDITION_ALL
 }
