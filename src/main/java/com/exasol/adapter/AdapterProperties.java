@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class AdapterProperties extends AbstractAdapterProperties {
-    static final String TABLE_FILTER_PROPERTY = "TABLE_FILTER";
+    public static final String TABLE_FILTER_PROPERTY = "TABLE_FILTER";
     public static final String CATALOG_NAME_PROPERTY = "CATALOG_NAME";
     public static final String SCHEMA_NAME_PROPERTY = "SCHEMA_NAME";
     public static final String CONNECTION_NAME_PROPERTY = "CONNECTION_NAME";
