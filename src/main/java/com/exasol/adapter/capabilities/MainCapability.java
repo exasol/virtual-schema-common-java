@@ -87,5 +87,57 @@ public enum MainCapability {
      *
      * <p>Example: SELECT * FROM t LIMIT 100 OFFSET 10;</p>
      */
-    LIMIT_WITH_OFFSET
+    LIMIT_WITH_OFFSET,
+
+    /**
+     * Support for joins.
+     * If you don't support this capability no joins will be generated in the pushdown.
+     *
+     * <p>Attention: In order to generate joins in the pushdown you additionally
+     *    have to return at least one capability for join type and join contition.</p>
+     */
+    JOIN,
+
+    /**
+     * Support inner joins.
+     *
+     * <p>Example: SELECT * FROM t INNER JOIN u ON t.id = u.id;</p>
+     */
+    JOIN_TYPE_INNER,
+
+    /**
+     * Support left outer joins.
+     *
+     * <p>Example: SELECT * FROM t LEFT OUTER JOIN u ON t.id = u.id;</p>
+     */
+    JOIN_TYPE_LEFT_OUTER,
+
+    /**
+     * Support right outer joins.
+     *
+     * <p>Example: SELECT * FROM t RIGHT OUTER JOIN u ON t.id = u.id;</p>
+     */
+    JOIN_TYPE_RIGHT_OUTER,
+
+    /**
+     * Support full outer joins.
+     *
+     * <p>Example: SELECT * FROM t FULL OUTER JOIN u ON t.id = u.id;</p>
+     */
+    JOIN_TYPE_FULL_OUTER,
+
+    /**
+     * Support joins with equi conditions.
+     *
+     * <p>Example: SELECT * FROM t INNER JOIN u ON t.id = u.id;</p>
+     * <p>SELECT * FROM t INNER JOIN u ON t.id = u.id + 3;</p>
+     */
+    JOIN_CONDITION_EQUI,
+
+    /**
+     * Support joins with any conditions.
+     *
+     * <p>Example: SELECT * FROM t INNER JOIN u ON t.x != between(u.x, u.y) ;</p>
+     */
+    JOIN_CONDITION_ALL
 }
