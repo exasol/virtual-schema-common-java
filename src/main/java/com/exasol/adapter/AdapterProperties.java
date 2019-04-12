@@ -17,6 +17,7 @@ public class AdapterProperties extends AbstractAdapterProperties {
     public static final String EXCLUDED_CAPABILITIES_PROPERTY = "EXCLUDED_CAPABILITIES";
     public static final String EXCEPTION_HANDLING_PROPERTY = "EXCEPTION_HANDLING";
     public static final String IGNORE_ERRORS_PROPERTY = "IGNORE_ERRORS";
+    public static final String IS_LOCAL_PROPERTY = "IS_LOCAL";
 
     /**
      * Create a new instance of {@link AdapterProperties}
@@ -177,5 +178,15 @@ public class AdapterProperties extends AbstractAdapterProperties {
      */
     public static AdapterProperties emptyProperties() {
         return new AdapterProperties(Collections.emptyMap());
+    }
+
+    /**
+     * Check if the data source is the local Exasol instance
+     *
+     * @return <code>true</code> if the data source and the database containing the Virtual Schema are hosted on the
+     *         same Exasol cluster
+     */
+    public boolean isLocalSource() {
+        return isEnabled(IS_LOCAL_PROPERTY);
     }
 }

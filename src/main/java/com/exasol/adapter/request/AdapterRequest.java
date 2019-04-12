@@ -26,4 +26,11 @@ public interface AdapterRequest {
      * @return adapter name
      */
     public String getAdapterName();
+
+    /**
+     * Get the name of the Virtual Schema that this request is addressing
+     *
+     * @return Virtual Schema name
+     */
+    public String getVirtualSchemaName();
 }

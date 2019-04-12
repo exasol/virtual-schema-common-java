@@ -71,4 +71,26 @@ public class TableMetadata {
     public String getComment() {
         return this.comment;
     }
+
+    /**
+     * Create a human-readable short description of the table
+     *
+     * @return short description
+     */
+    public String describe() {
+        boolean first = true;
+        final StringBuilder builder = new StringBuilder(this.name);
+        builder.append(" (");
+        for (final ColumnMetadata column : this.columns) {
+            if (!first) {
+                builder.append(", ");
+            }
+            builder.append(column.getName());
+            builder.append(" ");
+            builder.append(column.getType().toString());
+            first = false;
+        }
+        builder.append(")");
+        return builder.toString();
+    }
 }

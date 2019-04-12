@@ -72,4 +72,15 @@ class AdapterPropertiesTest {
         assertThat((new AdapterProperties(this.rawProperties)).getIgnoredErrors(),
                 containsInAnyOrder("error A", "error B", "error C"));
     }
+
+    @Test
+    void testIsLocalSourceFalse() {
+        assertThat(AdapterProperties.emptyProperties().isLocalSource(), equalTo(false));
+    }
+
+    @Test
+    void testIsLocalSourceTrue() {
+        this.rawProperties.put(IS_LOCAL_PROPERTY, "true");
+        assertThat(new AdapterProperties(this.rawProperties).isLocalSource(), equalTo(true));
+    }
 }

@@ -31,4 +31,9 @@ public abstract class AbstractAdapterRequest implements AdapterRequest {
     public String getAdapterName() {
         return this.adapterName;
     }
+
+    @Override
+    public String getVirtualSchemaName() {
+        return this.schemaMetadataInfo.getSchemaName();
+    }
 }
