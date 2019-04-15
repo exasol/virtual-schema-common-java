@@ -29,7 +29,7 @@ class AdapterPropertiesTest {
     }
 
     @ValueSource(strings = { CATALOG_NAME_PROPERTY, SCHEMA_NAME_PROPERTY, CONNECTION_NAME_PROPERTY,
-            CONNECTION_STRING_PROPERTY, USERNAME_PROPERTY, PASSWORD_PROPERTY, DEBUG_ADDRESS_PROPERTY,
+            CONNECTION_STRING_PROPERTY, USERNAME_PROPERTY, USER_PWD_PROPERTY, DEBUG_ADDRESS_PROPERTY,
             LOG_LEVEL_PROPERTY, SQL_DIALECT_PROPERTY, EXCLUDED_CAPABILITIES_PROPERTY, EXCEPTION_HANDLING_PROPERTY })
     @ParameterizedTest
     void testGetCatalogName(final String property) throws IllegalAccessException, IllegalArgumentException,
@@ -53,7 +53,7 @@ class AdapterPropertiesTest {
         assertThat(properties.getFilteredTables(), containsInAnyOrder("Table a", "Table B", "TABLE  C", "table d"));
     }
 
-    @ValueSource(strings = { CONNECTION_STRING_PROPERTY, CONNECTION_NAME_PROPERTY, USERNAME_PROPERTY, PASSWORD_PROPERTY,
+    @ValueSource(strings = { CONNECTION_STRING_PROPERTY, CONNECTION_NAME_PROPERTY, USERNAME_PROPERTY, USER_PWD_PROPERTY,
             SCHEMA_NAME_PROPERTY, CATALOG_NAME_PROPERTY, TABLE_FILTER_PROPERTY })
     @ParameterizedTest
     void testtIsRefreshingVirtualSchemaRequiredTrue(final String propertyName) {
