@@ -10,7 +10,7 @@ public class AdapterProperties extends AbstractAdapterProperties {
     public static final String CONNECTION_NAME_PROPERTY = "CONNECTION_NAME";
     public static final String CONNECTION_STRING_PROPERTY = "CONNECTION_STRING";
     public static final String USERNAME_PROPERTY = "USERNAME";
-    public static final String PASSWORD_PROPERTY = "PASSWORD";
+    public static final String USER_PWD_PROPERTY = "PASSWORD";
     public static final String DEBUG_ADDRESS_PROPERTY = "DEBUG_ADDRESS";
     public static final String LOG_LEVEL_PROPERTY = "LOG_LEVEL";
     public static final String SQL_DIALECT_PROPERTY = "SQL_DIALECT";
@@ -79,7 +79,7 @@ public class AdapterProperties extends AbstractAdapterProperties {
      * @return password
      */
     public String getPassword() {
-        return get(PASSWORD_PROPERTY);
+        return get(USER_PWD_PROPERTY);
     }
 
     /**
@@ -165,7 +165,7 @@ public class AdapterProperties extends AbstractAdapterProperties {
         return changedProperties.containsKey(CONNECTION_STRING_PROPERTY) //
                 || changedProperties.containsKey(CONNECTION_NAME_PROPERTY) //
                 || changedProperties.containsKey(USERNAME_PROPERTY) //
-                || changedProperties.containsKey(PASSWORD_PROPERTY) //
+                || changedProperties.containsKey(USER_PWD_PROPERTY) //
                 || changedProperties.containsKey(SCHEMA_NAME_PROPERTY) //
                 || changedProperties.containsKey(CATALOG_NAME_PROPERTY) //
                 || changedProperties.containsKey(TABLE_FILTER_PROPERTY);
