@@ -1,18 +1,18 @@
 package com.exasol.adapter.sql;
 
-import com.exasol.adapter.AdapterException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.exasol.adapter.AdapterException;
 
 class SqlFunctionScalarExtractTest {
     private static final String TEST_STRING_TO_EXTRACT = "SECOND";
@@ -23,8 +23,7 @@ class SqlFunctionScalarExtractTest {
     void setUp() {
         this.arguments = new ArrayList<>();
         this.arguments.add(new SqlLiteralTimestamp("2019-02-12 12:07:00"));
-        this.sqlFunctionScalarExtract =
-              new SqlFunctionScalarExtract(TEST_STRING_TO_EXTRACT, this.arguments);
+        this.sqlFunctionScalarExtract = new SqlFunctionScalarExtract(TEST_STRING_TO_EXTRACT, this.arguments);
     }
 
     @Test
@@ -39,20 +38,19 @@ class SqlFunctionScalarExtractTest {
 
     @Test
     void testGetArgumentsWithNullAsArgumentList() {
-        assertThrows(IllegalArgumentException.class, () -> this.sqlFunctionScalarExtract =
-              new SqlFunctionScalarExtract(this.TEST_STRING_TO_EXTRACT, null));
+        assertThrows(IllegalArgumentException.class, () -> this.sqlFunctionScalarExtract = new SqlFunctionScalarExtract(
+                SqlFunctionScalarExtractTest.TEST_STRING_TO_EXTRACT, null));
     }
 
     @Test
     void testToSimpleSql() {
-        assertThat(this.sqlFunctionScalarExtract.toSimpleSql(), equalTo(
-              "EXTRACT (" + TEST_STRING_TO_EXTRACT + " FROM TIMESTAMP '2019-02-12 12:07:00')"));
+        assertThat(this.sqlFunctionScalarExtract.toSimpleSql(),
+                equalTo("EXTRACT (" + TEST_STRING_TO_EXTRACT + " FROM TIMESTAMP '2019-02-12 12:07:00')"));
     }
 
     @Test
     void testGetType() {
-        assertThat(this.sqlFunctionScalarExtract.getType(),
-              equalTo(SqlNodeType.FUNCTION_SCALAR_EXTRACT));
+        assertThat(this.sqlFunctionScalarExtract.getType(), equalTo(SqlNodeType.FUNCTION_SCALAR_EXTRACT));
     }
 
     @Test
@@ -68,9 +66,7 @@ class SqlFunctionScalarExtractTest {
     @Test
     void testAccept() throws AdapterException {
         final SqlNodeVisitor<SqlFunctionScalarExtract> visitor = mock(SqlNodeVisitor.class);
-        when(visitor.visit(this.sqlFunctionScalarExtract))
-              .thenReturn(this.sqlFunctionScalarExtract);
-        assertThat(this.sqlFunctionScalarExtract.accept(visitor),
-              equalTo(this.sqlFunctionScalarExtract));
+        when(visitor.visit(this.sqlFunctionScalarExtract)).thenReturn(this.sqlFunctionScalarExtract);
+        assertThat(this.sqlFunctionScalarExtract.accept(visitor), equalTo(this.sqlFunctionScalarExtract));
     }
 }

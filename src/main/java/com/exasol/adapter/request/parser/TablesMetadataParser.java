@@ -1,13 +1,17 @@
 package com.exasol.adapter.request.parser;
 
-import static com.exasol.adapter.request.parser.RequestParserConstants.*;
+import com.exasol.adapter.metadata.ColumnMetadata;
+import com.exasol.adapter.metadata.DataType;
+import com.exasol.adapter.metadata.TableMetadata;
 
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonString;
+import javax.json.JsonValue;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.json.*;
-
-import com.exasol.adapter.metadata.*;
+import static com.exasol.adapter.request.parser.RequestParserConstants.*;
 
 /**
  * This class provides a parser for table metadata
@@ -15,7 +19,7 @@ import com.exasol.adapter.metadata.*;
 public class TablesMetadataParser {
     /**
      * Create a new parser for table metadata
-     * 
+     *
      * @param tablesAsJson JSON array of table metadata
      * @return parser instance
      */
@@ -47,7 +51,8 @@ public class TablesMetadataParser {
         final boolean isIdentity = applyBooleanValue(column, "isIdentity");
         final JsonObject dataType = column.getJsonObject(DATA_TYPE);
         final DataType type = getDataType(dataType);
-        return new ColumnMetadata(columnName, adapterNotes, type, isNullable, isIdentity, defaultValue, comment);
+        return ColumnMetadata.builder().name(columnName).adapterNotes(adapterNotes).type(type).nullable(isNullable)
+              .identity(isIdentity).defaultValue(defaultValue).comment(comment).build();
     }
 
     private String readAdapterNotes(final JsonObject root) {
@@ -77,35 +82,35 @@ public class TablesMetadataParser {
         final String typeName = dataType.getString("type").toUpperCase();
         final DataType type;
         switch (typeName) {
-        case "DECIMAL":
-            type = getDecimalDataType(dataType);
-            break;
-        case "DOUBLE":
-            type = getDoubleDataType();
-            break;
-        case "VARCHAR":
-            type = getVarcharDataType(dataType);
-            break;
-        case "CHAR":
-            type = getCharDataType(dataType);
-            break;
-        case "BOOLEAN":
-            type = getBooleanDataType();
-            break;
-        case "DATE":
-            type = getDateDataType();
-            break;
-        case "TIMESTAMP":
-            type = getTimestampDataType(dataType);
-            break;
-        case "INTERVAL":
-            type = getIntervalDataType(dataType);
-            break;
-        case "GEOMETRY":
-            type = getGeometryDataType(dataType);
-            break;
-        default:
-            throw new RequestParserException("Unsupported data type encountered: " + typeName);
+            case "DECIMAL":
+                type = getDecimalDataType(dataType);
+                break;
+            case "DOUBLE":
+                type = getDoubleDataType();
+                break;
+            case "VARCHAR":
+                type = getVarcharDataType(dataType);
+                break;
+            case "CHAR":
+                type = getCharDataType(dataType);
+                break;
+            case "BOOLEAN":
+                type = getBooleanDataType();
+                break;
+            case "DATE":
+                type = getDateDataType();
+                break;
+            case "TIMESTAMP":
+                type = getTimestampDataType(dataType);
+                break;
+            case "INTERVAL":
+                type = getIntervalDataType(dataType);
+                break;
+            case "GEOMETRY":
+                type = getGeometryDataType(dataType);
+                break;
+            default:
+                throw new RequestParserException("Unsupported data type encountered: " + typeName);
         }
         return type;
     }

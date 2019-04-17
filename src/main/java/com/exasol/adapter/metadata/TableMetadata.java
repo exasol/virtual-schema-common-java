@@ -20,12 +20,6 @@ public class TableMetadata {
         this.adapterNotes = adapterNotes;
         this.columns = columns;
         this.comment = comment;
-        if (this.columns.isEmpty()) {
-            throw new IllegalArgumentException(
-                    "A table without columns was encountered: " + this.name + ". This is not supported."
-                            + " Please check if this table has columns. If the table does have columns, the dialect "
-                            + "probably does not properly handle the data types of the columns.");
-        }
     }
 
     @Override
@@ -70,5 +64,27 @@ public class TableMetadata {
 
     public String getComment() {
         return this.comment;
+    }
+
+    /**
+     * Create a human-readable short description of the table
+     *
+     * @return short description
+     */
+    public String describe() {
+        boolean first = true;
+        final StringBuilder builder = new StringBuilder(this.name);
+        builder.append(" (");
+        for (final ColumnMetadata column : this.columns) {
+            if (!first) {
+                builder.append(", ");
+            }
+            builder.append(column.getName());
+            builder.append(" ");
+            builder.append(column.getType().toString());
+            first = false;
+        }
+        builder.append(")");
+        return builder.toString();
     }
 }

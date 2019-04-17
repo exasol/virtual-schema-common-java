@@ -1,12 +1,14 @@
 package com.exasol.adapter;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * {@link VirtualSchemaAdapter}s need to be registered in the {@link AdapterRegistry} in order to receive requests from
  * the dispatcher.
  */
 public final class AdapterRegistry {
+    private static final Logger LOGGER = Logger.getLogger(AdapterRegistry.class.getName());
     private static AdapterRegistry instance = new AdapterRegistry();
     private final Map<String, VirtualSchemaAdapter> registeredAdapters = new HashMap<>();
 
@@ -35,6 +37,7 @@ public final class AdapterRegistry {
      * @param adapter adapter instance
      */
     public void registerAdapter(final String name, final VirtualSchemaAdapter adapter) {
+        LOGGER.fine(() -> "Registering adapter \"" + name + "\" (" + adapter.getClass().getName() + ")");
         this.registeredAdapters.put(name, adapter);
     }
 

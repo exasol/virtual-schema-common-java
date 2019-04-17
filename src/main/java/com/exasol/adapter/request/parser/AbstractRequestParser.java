@@ -6,6 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 
 import javax.json.*;
 import javax.json.JsonValue.ValueType;
@@ -14,6 +15,8 @@ import javax.json.JsonValue.ValueType;
  * Abstract base class for parsers reading fragments of the Virtual Schema requests.
  */
 class AbstractRequestParser {
+    private static final Logger LOGGER = Logger.getLogger(AbstractRequestParser.class.getName());
+
     /**
      * Create a JSON reader for raw request data.
      *
@@ -29,9 +32,9 @@ class AbstractRequestParser {
         return Json.createReader(rawRequestStream);
     }
 
-    protected Map<String, String> parseProperties(final JsonObject root) {
-        if (root.containsKey(PROPERTIES_KEY)) {
-            return convertJsonObjectsToPropertyMap(root);
+    protected Map<String, String> parseProperties(final JsonObject jsonSchemaMedadataInfo) {
+        if (jsonSchemaMedadataInfo.containsKey(PROPERTIES_KEY)) {
+            return convertJsonObjectsToPropertyMap(jsonSchemaMedadataInfo);
         } else {
             return Collections.emptyMap();
         }
@@ -72,6 +75,7 @@ class AbstractRequestParser {
             throw new IllegalArgumentException("Unable to parse adapter property value of type \"" + type
                     + "\". Supported types are strings, booleans, numbers and NULL.");
         }
+        LOGGER.finer(() -> "Parsed property: \"" + key + "\" = \"" + stringValue + "\"");
         properties.put(key, stringValue);
     }
 }

@@ -42,6 +42,7 @@ public final class RequestDispatcher {
     private String executeAdapterCall(final ExaMetadata metadata, final String rawRequest) throws AdapterException {
         final AdapterRequest request = new RequestParser().parse(rawRequest);
         configureAdapterLoggingAccordingToRequestSettings(request);
+        logVersionInformation();
         logRawRequest(rawRequest);
         final AdapterRequestType type = request.getType();
         final VirtualSchemaAdapter adapter = findResponsibleAdapter(request);
@@ -74,6 +75,10 @@ public final class RequestDispatcher {
         } else {
             remoteLogManager.setupConsoleLogger(configuration.getLogLevel());
         }
+    }
+
+    private void logVersionInformation() {
+        LOGGER.info("Loaded versions: virtual-schema-common-java 4.0.0");
     }
 
     private void logRawRequest(final String rawRequest) {

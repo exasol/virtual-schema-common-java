@@ -37,10 +37,11 @@ Please note that the artifact name changed from "virtualschema-common" to "virtu
 | Dependency                                                                          | Purpose                                                | License                       |
 |-------------------------------------------------------------------------------------|--------------------------------------------------------|-------------------------------|
 | [Apache Maven](https://maven.apache.org/)                                           | Build tool                                             | Apache License 2.0            |
-| [Java Hamcrest](http://hamcrest.org/JavaHamcrest/)                                  | Checking for conditions in code via matchers           | BSD                           |
+| [Java Hamcrest](http://hamcrest.org/JavaHamcrest/)                                  | Checking for conditions in code via matchers           | BSD License                   |
 | [JUnit](https://junit.org/junit5)                                                   | Unit testing framework                                 | Eclipse Public License 1.0    |
 | [Mockito](http://site.mockito.org/)                                                 | Mocking framework                                      | MIT License                   |
-| [JUnit 5 System Extensions](https://github.com/itsallcode/junit5-system-extensions) | Capturing `STDOUT` and `STDERR`                      | Eclipse Public License 2.0    |
+| [JUnit 5 System Extensions](https://github.com/itsallcode/junit5-system-extensions) | Capturing `STDOUT` and `STDERR`                        | Eclipse Public License 2.0    |
+| [Equals Verifier](https://jqno.nl/equalsverifier/)                                  | Testing `equals(...)` and `hashCode()` contracts       | Apache License 2.0            |
 
 ## Open Source Project Support
 
