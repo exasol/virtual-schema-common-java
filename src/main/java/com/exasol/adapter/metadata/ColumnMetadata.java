@@ -14,7 +14,7 @@ public final class ColumnMetadata {
     private final String defaultValue;
     private final boolean defaultValueExplicitlySet;
     private final String comment;
-    private final String orginialTypeName;
+    private final String originalTypeName;
 
     private ColumnMetadata(final Builder builder) {
         this.name = builder.name;
@@ -25,7 +25,7 @@ public final class ColumnMetadata {
         this.defaultValue = builder.defaultValue;
         this.defaultValueExplicitlySet = builder.defaultValueExplicitlySet;
         this.comment = builder.comment;
-        this.orginialTypeName = builder.originalTypeName;
+        this.originalTypeName = builder.originalTypeName;
     }
 
     /**
@@ -115,7 +115,7 @@ public final class ColumnMetadata {
      * @return original type name
      */
     public String getOriginalTypeName() {
-        return this.orginialTypeName;
+        return this.originalTypeName;
     }
 
     @Override
@@ -158,13 +158,13 @@ public final class ColumnMetadata {
                 && Objects.equals(this.type, that.type) && Objects.equals(this.defaultValue, that.defaultValue)
                 && Objects.equals(this.defaultValueExplicitlySet, that.defaultValueExplicitlySet)
                 && Objects.equals(this.comment, that.comment)
-                && Objects.equals(this.orginialTypeName, that.orginialTypeName);
+                && Objects.equals(this.originalTypeName, that.originalTypeName);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(this.name, this.adapterNotes, this.type, this.nullable, this.identity, this.defaultValue,
-                this.defaultValueExplicitlySet, this.comment, this.orginialTypeName);
+                this.defaultValueExplicitlySet, this.comment, this.originalTypeName);
     }
 
     /**
