@@ -43,7 +43,7 @@ public abstract class AbstractAdapterProperties {
      * Check if the switch with the given key is enabled
      *
      * @param key switch name
-     * @return <code>true</code> if the switch property exists and is enable
+     * @return <code>true</code> if the switch property exists and is enabled
      */
     public boolean isEnabled(final String key) {
         return "true".equalsIgnoreCase(this.properties.get(key));
@@ -53,7 +53,7 @@ public abstract class AbstractAdapterProperties {
      * Get value for key
      *
      * @param key property to search for
-     * @return corresponding value or null it the key-value pair does not exist
+     * @return corresponding value or <code>null</code> if the key-value pair does not exist
      */
     public String get(final String key) {
         return this.properties.get(key);

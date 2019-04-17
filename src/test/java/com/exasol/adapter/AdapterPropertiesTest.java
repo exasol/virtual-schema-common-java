@@ -56,13 +56,13 @@ class AdapterPropertiesTest {
     @ValueSource(strings = { CONNECTION_STRING_PROPERTY, CONNECTION_NAME_PROPERTY, USERNAME_PROPERTY, PASSWORD_PROPERTY,
             SCHEMA_NAME_PROPERTY, CATALOG_NAME_PROPERTY, TABLE_FILTER_PROPERTY })
     @ParameterizedTest
-    void testtIsRefreshingVirtualSchemaRequiredTrue(final String propertyName) {
+    void testIsRefreshingVirtualSchemaRequiredTrue(final String propertyName) {
         this.rawProperties.put(propertyName, "");
         assertThat(AdapterProperties.isRefreshingVirtualSchemaRequired(this.rawProperties), equalTo(true));
     }
 
     @Test
-    void testtIsRefreshingVirtualSchemaRequiredFalse() {
+    void testIsRefreshingVirtualSchemaRequiredFalse() {
         assertThat(AdapterProperties.isRefreshingVirtualSchemaRequired(this.rawProperties), equalTo(false));
     }
 
