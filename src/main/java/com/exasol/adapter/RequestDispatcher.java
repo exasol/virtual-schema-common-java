@@ -8,6 +8,7 @@ import com.exasol.adapter.request.parser.RequestParser;
 import com.exasol.adapter.response.*;
 import com.exasol.adapter.response.converter.ResponseJsonConverter;
 import com.exasol.logging.RemoteLogManager;
+import com.exasol.logging.VersionCollector;
 
 /**
  * This class is the main entry point for calls to a Virtual Schema. From here the adapter calls are dispatched to the
@@ -78,7 +79,8 @@ public final class RequestDispatcher {
     }
 
     private void logVersionInformation() {
-        LOGGER.info("Loaded versions: virtual-schema-common-java 4.0.0");
+        final VersionCollector versionCollector = new VersionCollector();
+        LOGGER.info("Loaded versions: virtual-schema-common-java " + versionCollector.getVersionNumber());
     }
 
     private void logRawRequest(final String rawRequest) {

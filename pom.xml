@@ -13,9 +13,54 @@
         <java.version>1.8</java.version>
         <junit.version>5.4.0</junit.version>
         <junit.platform.version>1.3.2</junit.platform.version>
-        <maven.surefire.version>3.0.0-M3</maven.surefire.version>
+        <maven.surefire.version>2.22.1</maven.surefire.version>
         <gpg.skip>true</gpg.skip>
     </properties>
+    <profiles>
+        <profile>
+            <id>it</id>
+            <dependencies>
+            </dependencies>
+            <properties>
+                <!-- This property has to be overwritten from user -->
+                <integrationtest.configfile></integrationtest.configfile>
+                <integrationtest.skipTestSetup>false</integrationtest.skipTestSetup>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>2.22.0</version>
+                        <configuration>
+                            <includes>
+                                <include>**/*IT.java</include>
+                            </includes>
+                        </configuration>
+<!--                        <executions>-->
+<!--                            <execution>-->
+<!--                                <id>failsafe-integration-tests</id>-->
+<!--                                <phase>integration-test</phase>-->
+<!--                                <goals>-->
+<!--                                    <goal>integration-test</goal>-->
+<!--                                    <goal>verify</goal>-->
+<!--                                </goals>-->
+<!--                            </execution>-->
+<!--                            &lt;!&ndash; verify phase verifies the results. Must be added so-->
+<!--                                that failing integration tests are not ignored. &ndash;&gt;-->
+<!--                            <execution>-->
+<!--                                <id>verify</id>-->
+<!--                                <phase>verify</phase>-->
+<!--                                <goals>-->
+<!--                                    <goal>verify</goal>-->
+<!--                                </goals>-->
+<!--                            </execution>-->
+<!--                        </executions>-->
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
     <licenses>
         <license>
             <name>MIT</name>
