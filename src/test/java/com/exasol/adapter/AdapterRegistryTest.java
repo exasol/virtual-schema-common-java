@@ -1,7 +1,7 @@
 package com.exasol.adapter;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.sameInstance;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.collection.IsEmptyCollection.emptyCollectionOf;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.Assert.assertThat;
@@ -20,33 +20,38 @@ class AdapterRegistryTest {
 
     @Test
     void testRegistryIsEmptyByDefault() {
-        assertThat(this.registry.getRegisteredAdapters(), emptyCollectionOf(VirtualSchemaAdapter.class));
+        assertThat(this.registry.getRegisteredAdapterFactories(), emptyCollectionOf(AdapterFactory.class));
     }
 
     @Test
-    void testRegisterAdapter() {
-        final VirtualSchemaAdapter adapter = new DummyAdapter();
-        this.registry.registerAdapter("DUMMY", adapter);
-        assertThat(this.registry.getRegisteredAdapters(), containsInAnyOrder(adapter));
+    void testRegisterAdapterFactory() {
+        final AdapterFactory factory = new DummyAdapterFactory();
+        this.registry.registerAdapterFactory("DUMMY", factory);
+        assertThat(this.registry.getRegisteredAdapterFactories(), containsInAnyOrder(factory));
     }
 
     @Test
-    void testContainsAdapterWithName() {
-        final VirtualSchemaAdapter adapter = new DummyAdapter();
-        this.registry.registerAdapter("ID", adapter);
+    void testContainsAdapterFactoryWithName() {
+        final AdapterFactory factory = new DummyAdapterFactory();
+        this.registry.registerAdapterFactory("ID", factory);
         assertThat(this.registry.hasAdapterWithName("ID"), equalTo(true));
     }
 
     @Test
-    void testDoesNotContainAdapterWithName() {
+    void testDoesNotContainAdapterFactoryWithName() {
         assertThat(this.registry.hasAdapterWithName("ID"), equalTo(false));
     }
 
     @Test
+    void testLoadFactories() {
+        this.registry.loadAdapterFactories();
+        assertThat(this.registry.hasAdapterWithName("DUMMY"), equalTo(false));
+    }
+
+    @Test
     void testGetAdapterForName() {
-        final VirtualSchemaAdapter adapter = new DummyAdapter();
-        this.registry.registerAdapter("ID", adapter);
-        assertThat(this.registry.getAdapterForName("ID"), sameInstance(adapter));
+        this.registry.registerAdapterFactory("ID", new DummyAdapterFactory());
+        assertThat(this.registry.getAdapterForName("ID"), instanceOf(DummyAdapter.class));
     }
 
     @Test
@@ -56,8 +61,9 @@ class AdapterRegistryTest {
 
     @Test
     void testDescribe() {
-        this.registry.registerAdapter("One", null);
-        this.registry.registerAdapter("Two", null);
-        assertThat(this.registry.describe(), equalTo("Currently registered Virtual Schema Adapters: \"One\", \"Two\""));
+        this.registry.registerAdapterFactory("One", null);
+        this.registry.registerAdapterFactory("Two", null);
+        assertThat(this.registry.describe(),
+                equalTo("Currently registered Virtual Schema Adapter factories: \"One\", \"Two\""));
     }
 }

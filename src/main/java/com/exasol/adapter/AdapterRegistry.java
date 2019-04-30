@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 public final class AdapterRegistry {
     private static final Logger LOGGER = Logger.getLogger(AdapterRegistry.class.getName());
     private static AdapterRegistry instance = new AdapterRegistry();
-    private final Map<String, VirtualSchemaAdapter> registeredAdapters = new HashMap<>();
+    private final Map<String, AdapterFactory> registeredFactories = new HashMap<>();
 
     /**
      * Get the singleton instance of the {@link AdapterRegistry}
@@ -22,23 +22,39 @@ public final class AdapterRegistry {
     }
 
     /**
+     * Load adapter factories via the {@link ServiceLoader}
+     */
+    public void loadAdapterFactories() {
+        final ServiceLoader<AdapterFactory> serviceLoader = ServiceLoader.load(AdapterFactory.class);
+        final Iterator<AdapterFactory> factories = serviceLoader.iterator();
+        while (factories.hasNext()) {
+            final AdapterFactory factory = factories.next();
+            final Set<String> supportedAdapterNames = factory.getSupportedAdapterNames();
+            LOGGER.fine(() -> "Registering factory for Virtual Schema Adapter \"" + factories.getClass().getName()
+                    + "\" which supports: " + String.join(", ", supportedAdapterNames));
+            for (final String adapterName : supportedAdapterNames) {
+                registerAdapterFactory(adapterName, factory);
+            }
+        }
+    }
+
+    /**
+     * Register a factory for a {@link VirtualSchemaAdapter}
+     *
+     * @param factory     factory that can create the adapter
+     * @param adapterName name of the adapter
+     */
+    public void registerAdapterFactory(final String adapterName, final AdapterFactory factory) {
+        this.registeredFactories.put(adapterName, factory);
+    }
+
+    /**
      * Get a list of all currently registered Virtual Schema Adapters
      *
      * @return list of adapters
      */
-    public List<VirtualSchemaAdapter> getRegisteredAdapters() {
-        return new ArrayList<>(this.registeredAdapters.values());
-    }
-
-    /**
-     * Register a new adapter
-     *
-     * @param name    name under which the adapter is registered
-     * @param adapter adapter instance
-     */
-    public void registerAdapter(final String name, final VirtualSchemaAdapter adapter) {
-        LOGGER.fine(() -> "Registering adapter \"" + name + "\" (" + adapter.getClass().getName() + ")");
-        this.registeredAdapters.put(name, adapter);
+    public List<AdapterFactory> getRegisteredAdapterFactories() {
+        return new ArrayList<>(this.registeredFactories.values());
     }
 
     /**
@@ -49,7 +65,7 @@ public final class AdapterRegistry {
      */
     public VirtualSchemaAdapter getAdapterForName(final String name) {
         if (hasAdapterWithName(name)) {
-            return this.registeredAdapters.get(name);
+            return this.registeredFactories.get(name).createAdapter();
         } else {
             throw new IllegalArgumentException(
                     "Unknown Virtual Schema Adapter \"" + name + "\" requested. " + describe());
@@ -63,14 +79,14 @@ public final class AdapterRegistry {
      * @return <code>true</code> if an adapter is registered under that name
      */
     public boolean hasAdapterWithName(final String name) {
-        return this.registeredAdapters.containsKey(name);
+        return this.registeredFactories.containsKey(name);
     }
 
     /**
      * Remove all registered adapters from the registry
      */
     public void clear() {
-        this.registeredAdapters.clear();
+        this.registeredFactories.clear();
     }
 
     /**
@@ -79,9 +95,9 @@ public final class AdapterRegistry {
      * @return description
      */
     public String describe() {
-        final StringBuilder builder = new StringBuilder("Currently registered Virtual Schema Adapters: ");
+        final StringBuilder builder = new StringBuilder("Currently registered Virtual Schema Adapter factories: ");
         boolean first = true;
-        for (final String name : this.registeredAdapters.keySet()) {
+        for (final String name : this.registeredFactories.keySet()) {
             if (first) {
                 first = false;
             } else {
