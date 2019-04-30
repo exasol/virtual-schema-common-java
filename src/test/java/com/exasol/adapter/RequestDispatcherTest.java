@@ -7,8 +7,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.itsallcode.io.Capturable;
 import org.itsallcode.junit.sysextensions.SystemErrGuard;
@@ -26,12 +25,14 @@ import com.exasol.adapter.response.*;
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SystemErrGuard.class)
 class RequestDispatcherTest {
+    private static final String MOCKADAPTER = "MOCKADAPTER";
+
     private static final String DEFAULT_REQUEST_PARTS = "    \"schemaMetadataInfo\" :\n" //
             + "    {\n" //
             + "        \"name\" : \"foo\",\n" //
             + "        \"properties\" :\n" //
             + "        {\n" //
-            + "            \"SQL_DIALECT\" : \"DUMMY\"\n" //
+            + "            \"SQL_DIALECT\" : \"MOCKADAPTER\"\n" //
             + "        }\n" //
             + "    }\n";
     private final ExaMetadata metadata = null;
@@ -41,7 +42,8 @@ class RequestDispatcherTest {
     @BeforeEach
     void beforeEach() {
         MockitoAnnotations.initMocks(this);
-        AdapterRegistry.getInstance().registerAdapter("DUMMY", this.adapterMock);
+        AdapterRegistry.getInstance().registerAdapterFactory(MOCKADAPTER,
+                new MockInjectingAdapterFactory(this.adapterMock));
     }
 
     @AfterEach
@@ -164,7 +166,7 @@ class RequestDispatcherTest {
                 + "          \"name\" : \"REMOTE_DEBUG_TEST\",\n" //
                 + "          \"properties\" :\n" //
                 + "          {\n" //
-                + "              \"SQL_DIALECT\" : \"DUMMY\",\n" //
+                + "              \"SQL_DIALECT\" : \"MOCKADAPTER\",\n" //
                 + "              \"LOG_LEVEL\" : \"FINE\"\n" //
                 + "          }\n" //
                 + "    }\n" //
@@ -187,7 +189,7 @@ class RequestDispatcherTest {
                 + "          \"name\" : \"REMOTE_DEBUG_TEST\",\n" //
                 + "          \"properties\" :\n" //
                 + "          {\n" //
-                + "              \"SQL_DIALECT\" : \"DUMMY\",\n" //
+                + "              \"SQL_DIALECT\" : \"MOCKADAPTER\",\n" //
                 + "              \"DEBUG_ADDRESS\" : \"this.host.does.not.exist.exasol.com\"\n" //
                 + "          }\n" //
                 + "    }\n" //
@@ -198,5 +200,25 @@ class RequestDispatcherTest {
         stream.capture();
         RequestDispatcher.adapterCall(this.metadata, rawRequest);
         assertThat(stream.getCapturedData(), containsString("Falling back to console log."));
+    }
+
+    private static class MockInjectingAdapterFactory implements AdapterFactory {
+        private final VirtualSchemaAdapter adapterMock;
+
+        public MockInjectingAdapterFactory(final VirtualSchemaAdapter adapterMock) {
+            this.adapterMock = adapterMock;
+        }
+
+        @Override
+        public Set<String> getSupportedAdapterNames() {
+            final Set<String> names = new HashSet<>();
+            names.add(MOCKADAPTER);
+            return names;
+        }
+
+        @Override
+        public VirtualSchemaAdapter createAdapter() {
+            return this.adapterMock;
+        }
     }
 }

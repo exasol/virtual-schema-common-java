@@ -35,8 +35,14 @@ public final class RequestDispatcher {
      * @return response resulting from the adapter call
      * @throws AdapterException in case the request type is not recognized
      */
+    @SuppressWarnings("squid:S2139")
     public static String adapterCall(final ExaMetadata metadata, final String rawRequest) throws AdapterException {
-        return getInstance().executeAdapterCall(metadata, rawRequest);
+        try {
+            return getInstance().executeAdapterCall(metadata, rawRequest);
+        } catch (final Exception exception) {
+            LOGGER.severe("Adapter error: " + exception);
+            throw exception;
+        }
     }
 
     private String executeAdapterCall(final ExaMetadata metadata, final String rawRequest) throws AdapterException {
