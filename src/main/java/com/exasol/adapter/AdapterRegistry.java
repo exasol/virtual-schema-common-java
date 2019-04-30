@@ -51,7 +51,7 @@ public final class AdapterRegistry {
     /**
      * Get a list of all currently registered Virtual Schema Adapters
      *
-     * @return list of adapters
+     * @return list of adapter factories
      */
     public List<AdapterFactory> getRegisteredAdapterFactories() {
         return new ArrayList<>(this.registeredFactories.values());
