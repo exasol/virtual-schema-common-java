@@ -26,6 +26,10 @@ public final class RequestDispatcher {
         return INSTANCE;
     }
 
+    private RequestDispatcher() {
+        AdapterRegistry.getInstance().loadAdapterFactories();
+    }
+
     /**
      * Main entry point for all Virtual Schema Adapter requests issued by the Exasol database.
      *
