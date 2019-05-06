@@ -9,12 +9,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.List;
 import java.util.Map;
 
+import org.itsallcode.io.Capturable;
+import org.itsallcode.junit.sysextensions.SystemErrGuard;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import com.exasol.adapter.metadata.TableMetadata;
 import com.exasol.adapter.request.*;
 
+@ExtendWith(SystemErrGuard.class)
 class RequestParserTest {
     private static final String SCHEMA_METADATA_INFO = "\"schemaMetadataInfo\" : { \"name\" : \"foo\" }";
     private RequestParser parser;
@@ -62,7 +66,7 @@ class RequestParserTest {
                 + "    }," //
                 + SCHEMA_METADATA_INFO //
                 + "}";
-        final AbstractAdapterRequest request = this.parser.parse(rawRequest);
+        final AdapterRequest request = this.parser.parse(rawRequest);
         assertThat("Request class", request, instanceOf(SetPropertiesRequest.class));
         final Map<String, String> properties = ((SetPropertiesRequest) request).getProperties();
         assertAll(() -> assertThat(request.getType(), equalTo(AdapterRequestType.SET_PROPERTIES)),
@@ -108,11 +112,49 @@ class RequestParserTest {
                 + "    ],\n" //
                 + SCHEMA_METADATA_INFO //
                 + "}";
-        final AbstractAdapterRequest request = this.parser.parse(rawRequest);
+        final AdapterRequest request = this.parser.parse(rawRequest);
         assertThat("Request class", request, instanceOf(PushDownRequest.class));
-        final List<TableMetadata> involvedTables = ((PushDownRequest) request).getInvolvedTablesMetadata();
+        final List<TableMetadata> involvedTables = ((PushDownRequest) request)
+                .getInvolvedTablesMetadata();
         assertAll(() -> assertThat(request.getType(), equalTo(AdapterRequestType.PUSHDOWN)),
                 () -> assertThat(involvedTables, iterableWithSize(1)),
                 () -> assertThat(involvedTables.get(0).getName(), equalTo("FOO")));
     }
+
+    @Test
+    void testParseRefreshRequestWithoutTableFilter() {
+        final String rawRequest = "{" //
+                + "    \"type\" : \"refresh\",\n" //
+                + SCHEMA_METADATA_INFO //
+                + "}";
+        final RefreshRequest request = (RefreshRequest) this.parser.parse(rawRequest);
+        assertAll(() -> assertThat(request.refreshesOnlySelectedTables(), equalTo(false)),
+                () -> assertThat(request.getTables(), nullValue()));
+    }
+
+    @Test
+    void testParseRefreshRequestWithTableFilter() {
+        final String rawRequest = "{" //
+                + "    \"type\" : \"refresh\",\n" //
+                + "    \"requestedTables\" :\n" //
+                + "    [" //
+                + "        \"T1\", \"T2\"\n" //
+                + "    ],\n" //
+                + SCHEMA_METADATA_INFO //
+                + "}";
+        final RefreshRequest request = (RefreshRequest) this.parser.parse(rawRequest);
+        assertAll(() -> assertThat(request.refreshesOnlySelectedTables(), equalTo(true)),
+                () -> assertThat(request.getTables(), containsInAnyOrder("T1", "T2")));
+    }
+
+    @Test
+    void testParseRequestWithoutSchemaMetadataProducesWarning(final Capturable stderr) {
+        final String rawRequest = "{" //
+                + "    \"type\" : \"refresh\"\n" //
+                + "}";
+        stderr.capture();
+        this.parser.parse(rawRequest);
+        assertThat(stderr.getCapturedData(), containsString("SEVERE"));
+    }
+
 }
