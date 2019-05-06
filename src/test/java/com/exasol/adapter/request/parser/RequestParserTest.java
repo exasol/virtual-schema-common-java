@@ -10,15 +10,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.itsallcode.io.Capturable;
-import org.itsallcode.junit.sysextensions.SystemErrGuard;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import com.exasol.adapter.metadata.TableMetadata;
 import com.exasol.adapter.request.*;
 
-@ExtendWith(SystemErrGuard.class)
 class RequestParserTest {
     private static final String SCHEMA_METADATA_INFO = "\"schemaMetadataInfo\" : { \"name\" : \"foo\" }";
     private RequestParser parser;
@@ -148,13 +145,12 @@ class RequestParserTest {
     }
 
     @Test
-    void testParseRequestWithoutSchemaMetadataProducesWarning(final Capturable stderr) {
+    void testParseRequestWithoutSchemaMetadata(final Capturable stderr) {
         final String rawRequest = "{" //
                 + "    \"type\" : \"refresh\"\n" //
                 + "}";
         stderr.capture();
-        this.parser.parse(rawRequest);
-        assertThat(stderr.getCapturedData(), containsString("SEVERE"));
+        final AdapterRequest request = this.parser.parse(rawRequest);
+        assertThat(request.getAdapterName(), equalTo("UNKNOWN"));
     }
-
 }
