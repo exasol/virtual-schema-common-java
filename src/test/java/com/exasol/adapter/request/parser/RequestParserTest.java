@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.List;
 import java.util.Map;
 
-import org.itsallcode.io.Capturable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -145,11 +144,10 @@ class RequestParserTest {
     }
 
     @Test
-    void testParseRequestWithoutSchemaMetadata(final Capturable stderr) {
+    void testParseRequestWithoutSchemaMetadata() {
         final String rawRequest = "{" //
                 + "    \"type\" : \"refresh\"\n" //
                 + "}";
-        stderr.capture();
         final AdapterRequest request = this.parser.parse(rawRequest);
         assertThat(request.getAdapterName(), equalTo("UNKNOWN"));
     }
