@@ -26,11 +26,11 @@ Please note that the artifact name changed from "virtualschema-common" to "virtu
 
 ### Run Time Dependencies
 
-| Dependency                                                                   | Purpose                                                | License                       |
-|------------------------------------------------------------------------------|--------------------------------------------------------|-------------------------------|
-| [JSON-P](https://javaee.github.io/jsonp/)                                    | JSON Processing                                        | CDDL-1.0                      |
-| [Exasol Script API](https://www.exasol.com/portal/display/DOC/User+Manual+6.1.0 (Sections 3.6, 3.7)) | Accessing Exasol features      | MIT License                   |
-| [Google Guava](https://github.com/google/guava/)                             | Open-source set of common libraries for Java           | Apache License 2.0            |
+| Dependency                                                                          | Purpose                                                | License                       |
+|-------------------------------------------------------------------------------------|--------------------------------------------------------|-------------------------------|
+| [JSON-P](https://javaee.github.io/jsonp/)                                           | JSON Processing                                        | CDDL-1.0                      |
+| [Exasol Script API](https://docs.exasol.com/database_concepts/udf_scripts.htm)      | Accessing Exasol features                              | MIT License                   |
+| [Google Guava](https://github.com/google/guava/)                                    | Open-source set of common libraries for Java           | Apache License 2.0            |
 
 ### Build Time Dependencies
 
