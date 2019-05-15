@@ -33,8 +33,16 @@ public class DataType {
     }
 
     private DataType() {
+        // prevent instantiation
     }
 
+    /**
+     * Create a <code>VARCHAR</code> data type with a given size and character set
+     *
+     * @param size    size of the data type in characters
+     * @param charset character set to be used when creating the data type
+     * @return <code>VARCHAR</code> type
+     */
     public static DataType createVarChar(final int size, final ExaCharset charset) {
         final DataType type = new DataType();
         type.exaDataType = ExaDataType.VARCHAR;
@@ -47,12 +55,19 @@ public class DataType {
      * Create a <code>VARCHAR</code> data type with the maximum size supported by Exasol
      *
      * @param charset character set to be used when creating the data type
-     * @return data type
+     * @return <code>VARCHAR</code> type
      */
     public static DataType createMaximumSizeVarChar(final ExaCharset charset) {
         return createVarChar(MAX_EXASOL_VARCHAR_SIZE, charset);
     }
 
+    /**
+     * Create a <code>CHAR</code> data type with a given size and character set
+     *
+     * @param size    size of the data type in characters
+     * @param charset character set to be used when creating the data type
+     * @return <code>CHAR</code> type
+     */
     public static DataType createChar(final int size, final ExaCharset charset) {
         final DataType type = new DataType();
         type.exaDataType = ExaDataType.CHAR;
@@ -65,12 +80,19 @@ public class DataType {
      * Create a <code>CHAR</code> data type with the maximum size supported by Exasol
      *
      * @param charset character set to be used when creating the data type
-     * @return data type
+     * @return <code>CHAR</code> type
      */
     public static DataType createMaximumSizeChar(final ExaCharset charset) {
         return createChar(MAX_EXASOL_CHAR_SIZE, charset);
     }
 
+    /**
+     * Create a <code>DECIMAL</code> (i.e. fixed point value) data type
+     *
+     * @param precision total number of places before and after the point that an instance of this type can hold
+     * @param scale     number of decimal places behind the point
+     * @return <code>DECIMAL</code> data type
+     */
     public static DataType createDecimal(final int precision, final int scale) {
         final DataType type = new DataType();
         type.exaDataType = ExaDataType.DECIMAL;
@@ -79,18 +101,35 @@ public class DataType {
         return type;
     }
 
+    /**
+     * Create a <code>DOUBLE</code> (i.e. double-precision floating point value) data type
+     *
+     * @return <code>DOUBLE</code> data type
+     */
     public static DataType createDouble() {
         final DataType type = new DataType();
         type.exaDataType = ExaDataType.DOUBLE;
         return type;
     }
 
+    /**
+     * Create a <code>DATE</code> data type
+     *
+     * @return <code>DATE</code> data type
+     */
     public static DataType createDate() {
         final DataType type = new DataType();
         type.exaDataType = ExaDataType.DATE;
         return type;
     }
 
+    /**
+     * Create a <code>TIMESTAMP</code> data type
+     *
+     * @param withLocalTimezone defines whether the timestamp is local time (<code>true</code>) or
+     *                          UTC(<code>false</code>)
+     * @return <code>TIMESTAMP</code> data type
+     */
     public static DataType createTimestamp(final boolean withLocalTimezone) {
         final DataType type = new DataType();
         type.exaDataType = ExaDataType.TIMESTAMP;
@@ -98,12 +137,25 @@ public class DataType {
         return type;
     }
 
+    /**
+     * Create a <code>BOOL</code> data type
+     *
+     * @return <code>BOOL</code> data type
+     */
     public static DataType createBool() {
         final DataType type = new DataType();
         type.exaDataType = ExaDataType.BOOLEAN;
         return type;
     }
 
+    /**
+     * Create a <code>GEOMETRY</code> data type
+     *
+     * @param srid Spatial Reference System Identifier
+     * @return <code>GEOMETRY</code> data type
+     * @see <a href="https://en.wikipedia.org/wiki/Spatial_reference_system#Identifier">Spatial Reference System
+     *      Identifier (Wikipedia)</a>
+     */
     public static DataType createGeometry(final int srid) {
         final DataType type = new DataType();
         type.exaDataType = ExaDataType.GEOMETRY;
@@ -111,6 +163,15 @@ public class DataType {
         return type;
     }
 
+    /**
+     * Create an <code>INTERVAL DAY TO SECOND</code> data type
+     *
+     * @param precision number of days the interval can span
+     * @param fraction  decimal places after the point
+     * @return <code>INTERVAL DAY TO SECOND</code> data type
+     * @see <a href="https://docs.exasol.com/sql_references/data_types/datatypedetails.htm?Highlight=interval">Interval
+     *      data type (Exasol documentation)</a>
+     */
     public static DataType createIntervalDaySecond(final int precision, final int fraction) {
         final DataType type = new DataType();
         type.exaDataType = ExaDataType.INTERVAL;
@@ -120,6 +181,14 @@ public class DataType {
         return type;
     }
 
+    /**
+     * Create an <code>INTERVAL YEAR TO MONTH</code> data type
+     *
+     * @param precision number of years the interval can span
+     * @return <code>INTERVAL YEAR TO MONTH</code> data type
+     * @see <a href="https://docs.exasol.com/sql_references/data_types/datatypedetails.htm?Highlight=interval">Interval
+     *      data type (Exasol documentation)</a>
+     */
     public static DataType createIntervalYearMonth(final int precision) {
         final DataType type = new DataType();
         type.exaDataType = ExaDataType.INTERVAL;
@@ -128,38 +197,85 @@ public class DataType {
         return type;
     }
 
+    /**
+     * Get the Exasol data type without parameters
+     *
+     * @return Exasol data type
+     */
     public ExaDataType getExaDataType() {
         return this.exaDataType;
     }
 
+    /**
+     * Get the precision
+     *
+     * @return precision
+     */
     public int getPrecision() {
         return this.precision;
     }
 
+    /**
+     * Get the scale
+     *
+     * @return scale
+     */
     public int getScale() {
         return this.scale;
     }
 
+    /**
+     * Get the size
+     *
+     * @return size
+     */
     public int getSize() {
         return this.size;
     }
 
+    /**
+     * Get the character set
+     *
+     * @return character set
+     */
     public ExaCharset getCharset() {
         return this.charset;
     }
 
+    /**
+     * Check whether the timestamp uses the local time zone
+     *
+     * @return <code>true</code> if the timestamp uses the local time zone
+     */
     public boolean isWithLocalTimezone() {
         return this.withLocalTimezone;
     }
 
+    /**
+     * Get the Spatial Reference System Identifier (SRID) that was used to encode the geometry
+     *
+     * @return SRID
+     * @see <a href="https://en.wikipedia.org/wiki/Spatial_reference_system#Identifier">Spatial Reference System
+     *      Identifier (Wikipedia)</a>
+     */
     public int getGeometrySrid() {
         return this.geometrySrid;
     }
 
+    /**
+     * Get the interval type
+     *
+     * @return interval type
+     */
     public IntervalType getIntervalType() {
         return this.intervalType;
     }
 
+    /**
+     * Get the interval fraction
+     *
+     * @return interval fraction
+     */
     public int getIntervalFraction() {
         return this.intervalFraction;
     }

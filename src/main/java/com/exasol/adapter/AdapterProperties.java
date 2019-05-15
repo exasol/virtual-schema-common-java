@@ -3,6 +3,13 @@ package com.exasol.adapter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * The main job of this class is to turn user-defined key-value-pairs into concrete properties that the adapter knows.
+ * This improves the code readability and robustness.
+ * <p>
+ * It is still possible to access the raw keys and values in order to support properties that are specific to an adapter
+ * type an can therefore not be covered in the common module.
+ */
 public class AdapterProperties extends AbstractAdapterProperties {
     public static final String TABLE_FILTER_PROPERTY = "TABLE_FILTER";
     public static final String CATALOG_NAME_PROPERTY = "CATALOG_NAME";

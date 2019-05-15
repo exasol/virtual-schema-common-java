@@ -19,6 +19,7 @@ final class RequestParserConstants {
     static final String TABLE_NAME_KEY = "name";
     static final String TABLE_COMMENT_KEY = "comment";
     static final String TABLE_COLUMNS_KEY = "columns";
+    static final String REFRESH_TABLES_KEY = "requestedTables";
 
     private RequestParserConstants() {
         // prevent instantiation

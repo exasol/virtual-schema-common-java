@@ -4,9 +4,9 @@ import static com.exasol.adapter.request.parser.RequestParserConstants.*;
 
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
-import javax.json.JsonObject;
-import javax.json.JsonReader;
+import javax.json.*;
 
 import com.exasol.adapter.metadata.SchemaMetadataInfo;
 import com.exasol.adapter.metadata.TableMetadata;
@@ -20,13 +20,14 @@ public class RequestParser extends AbstractRequestParser {
     private static final Logger LOGGER = Logger.getLogger(RequestParser.class.getName());
 
     /**
-     * Parse a JSON string containing a Virtual Schema Adapter request into the abstract representation of that request
+     * Parse a JSON string containing a Virtual Schema Adapter request into the
+     * abstract representation of that request
      *
      * @param rawRequest request as JSON string
      * @return parsed request
      * @throws RequestParserException if an unknown request type is encountered
      */
-    public AbstractAdapterRequest parse(final String rawRequest) {
+    public AdapterRequest parse(final String rawRequest) {
         try (final JsonReader reader = createJsonReader(rawRequest)) {
             return parseFromReader(reader);
         }
@@ -44,24 +45,42 @@ public class RequestParser extends AbstractRequestParser {
         case REQUEST_TYPE_CREATE_VIRTUAL_SCHEMA:
             return new CreateVirtualSchemaRequest(adapterName, metadataInfo);
         case REQUEST_TYPE_REFRESH:
-            return new RefreshRequest(adapterName, metadataInfo);
+            return parseRefreshRequest(root, metadataInfo, adapterName);
         case REQUEST_TYPE_SET_PROPERTIES:
             return new SetPropertiesRequest(adapterName, metadataInfo, adapterProperties);
         case REQUEST_TYPE_GET_CAPABILITIES:
             return new GetCapabilitiesRequest(adapterName, metadataInfo);
         case REQUEST_TYPE_PUSHDOWN:
-            final SqlStatement statement = parsePushdownStatement(root);
-            final List<TableMetadata> involvedTables = parseInvolvedTablesMetadata(root);
-            return new PushDownRequest(adapterName, metadataInfo, statement, involvedTables);
+            return parsePushdownRequest(root, metadataInfo, adapterName);
         default:
-            throw new RequestParserException("Could not parse unknown adapter request type identifier \"" + type
-                    + "\". Check whether versions of Exasol database and Virtual Schema Adapter are compatible.");
+            throw new RequestParserException(
+                    "Could not parse unknown adapter request type identifier \"" + type
+                            + "\". Check whether versions of Exasol database and Virtual Schema Adapter are compatible.");
         }
     }
 
+    private AbstractAdapterRequest parseRefreshRequest(final JsonObject root,
+            final SchemaMetadataInfo metadataInfo, final String adapterName) {
+        if (root.containsKey(REFRESH_TABLES_KEY)) {
+            final List<String> tables = root.getJsonArray(REFRESH_TABLES_KEY) //
+                    .stream() //
+                    .map((table -> ((JsonString) table).getString())) //
+                    .collect(Collectors.toList());
+            return new RefreshRequest(adapterName, metadataInfo, tables);
+        } else {
+            return new RefreshRequest(adapterName, metadataInfo);
+        }
+    }
+
+    private AbstractAdapterRequest parsePushdownRequest(final JsonObject root,
+            final SchemaMetadataInfo metadataInfo, final String adapterName) {
+        final SqlStatement statement = parsePushdownStatement(root);
+        final List<TableMetadata> involvedTables = parseInvolvedTablesMetadata(root);
+        return new PushDownRequest(adapterName, metadataInfo, statement, involvedTables);
+    }
+
     private List<TableMetadata> parseInvolvedTablesMetadata(final JsonObject root) {
-        return new TablesMetadataParser()
-                .parse(root.getJsonArray("involvedTables"));
+        return new TablesMetadataParser().parse(root.getJsonArray("involvedTables"));
     }
 
     private String extractAdapterNameFromMetadataInfo(final SchemaMetadataInfo metadataInfo) {
@@ -79,7 +98,8 @@ public class RequestParser extends AbstractRequestParser {
 
     private SchemaMetadataInfo readSchemaMetadataInfo(final JsonObject root) {
         if (root.containsKey(SCHEMA_METADATA_INFO_KEY)) {
-            final JsonObject schemaMetadataInfoAsJson = root.getJsonObject(SCHEMA_METADATA_INFO_KEY);
+            final JsonObject schemaMetadataInfoAsJson = root
+                    .getJsonObject(SCHEMA_METADATA_INFO_KEY);
             return new SchemaMetadataInfoParser().parse(schemaMetadataInfoAsJson);
         } else {
             LOGGER.severe("Missing metadata information trying to parse adapter request.");
@@ -89,7 +109,8 @@ public class RequestParser extends AbstractRequestParser {
 
     private SqlStatement parsePushdownStatement(final JsonObject root) {
         final List<TableMetadata> involvedTables = parseInvolvedTables(root);
-        final PushdownSqlParser pushdownSqlParser = PushdownSqlParser.createWithTablesMetadata(involvedTables);
+        final PushdownSqlParser pushdownSqlParser = PushdownSqlParser
+                .createWithTablesMetadata(involvedTables);
         final JsonObject jsonPushdownStatement = root.getJsonObject(PUSHDOW_REQUEST_KEY);
         return (SqlStatement) pushdownSqlParser.parseExpression(jsonPushdownStatement);
     }
