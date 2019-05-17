@@ -116,4 +116,28 @@ class AdapterPropertiesTest {
         this.rawProperties.put(CONNECTION_STRING_PROPERTY, "user");
         assertThat(new AdapterProperties(this.rawProperties).hasConnectionString(), equalTo(true));
     }
+
+    @Test
+    void hasTableFilter() {
+        this.rawProperties.put(TABLE_FILTER_PROPERTY, "user");
+        assertThat(new AdapterProperties(this.rawProperties).hasTableFilter(), equalTo(true));
+    }
+
+    @Test
+    void hasCatalogName() {
+        this.rawProperties.put(CATALOG_NAME_PROPERTY, "user");
+        assertThat(new AdapterProperties(this.rawProperties).hasCatalogName(), equalTo(true));
+    }
+
+    @Test
+    void hasSchemaName() {
+        this.rawProperties.put(SCHEMA_NAME_PROPERTY, "user");
+        assertThat(new AdapterProperties(this.rawProperties).hasSchemaName(), equalTo(true));
+    }
+
+    @Test
+    void hasConnectionName() {
+        this.rawProperties.put(CONNECTION_NAME_PROPERTY, "user");
+        assertThat(new AdapterProperties(this.rawProperties).hasConnectionName(), equalTo(true));
+    }
 }

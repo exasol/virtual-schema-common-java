@@ -222,6 +222,42 @@ public class AdapterProperties extends AbstractAdapterProperties {
     }
 
     /**
+     * Check if the table filter property is set
+     *
+     * @return <code>true</code> if table filter property is set
+     */
+    public boolean hasTableFilter() {
+        return containsKey(TABLE_FILTER_PROPERTY);
+    }
+
+    /**
+     * Check if the catalog name property is set
+     *
+     * @return <code>true</code> if catalog name property is set
+     */
+    public boolean hasCatalogName() {
+        return containsKey(CATALOG_NAME_PROPERTY);
+    }
+
+    /**
+     * Check if the schema name property is set
+     *
+     * @return <code>true</code> if schema name property is set
+     */
+    public boolean hasSchemaName() {
+        return containsKey(SCHEMA_NAME_PROPERTY);
+    }
+
+    /**
+     * Check if the connection name property is set
+     *
+     * @return <code>true</code> if connection name property is set
+     */
+    public boolean hasConnectionName() {
+        return containsKey(CONNECTION_NAME_PROPERTY);
+    }
+
+    /**
      * Get empty map
      *
      * @return empty map
