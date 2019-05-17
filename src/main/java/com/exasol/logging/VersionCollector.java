@@ -21,9 +21,7 @@ public class VersionCollector {
         final Properties properties = new Properties();
         final ClassLoader loader = Thread.currentThread().getContextClassLoader();
         final InputStream stream = loader.getResourceAsStream(this.path);
-        if (stream == null) {
-            return "Unable to read the version. Check the file path.";
-        }
+        validateInputStream(stream);
         try {
             properties.load(stream);
         } catch (final IOException exception) {
@@ -31,5 +29,11 @@ public class VersionCollector {
                   exception);
         }
         return properties.getProperty(VERSION);
+    }
+
+    private void validateInputStream(final InputStream stream) {
+        if (stream == null) {
+            throw new IllegalArgumentException("Unable to load a properties file in the path: " + this.path + ".");
+        }
     }
 }
