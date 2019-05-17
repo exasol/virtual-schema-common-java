@@ -113,31 +113,117 @@ class AdapterPropertiesTest {
 
     @Test
     void hasConnectionString() {
-        this.rawProperties.put(CONNECTION_STRING_PROPERTY, "user");
+        this.rawProperties.put(CONNECTION_STRING_PROPERTY, "CONNECTION_STRING_PROPERTY");
         assertThat(new AdapterProperties(this.rawProperties).hasConnectionString(), equalTo(true));
     }
 
     @Test
+    void hasTableFilterFalseByDefault() {
+        assertThat(AdapterProperties.emptyProperties().hasTableFilter(), equalTo(false));
+    }
+
+    @Test
     void hasTableFilter() {
-        this.rawProperties.put(TABLE_FILTER_PROPERTY, "user");
+        this.rawProperties.put(TABLE_FILTER_PROPERTY, "TABLE_FILTER_PROPERTY");
         assertThat(new AdapterProperties(this.rawProperties).hasTableFilter(), equalTo(true));
     }
 
     @Test
+    void hasCatalogNameFalseByDefault() {
+        assertThat(AdapterProperties.emptyProperties().hasCatalogName(), equalTo(false));
+    }
+
+    @Test
     void hasCatalogName() {
-        this.rawProperties.put(CATALOG_NAME_PROPERTY, "user");
+        this.rawProperties.put(CATALOG_NAME_PROPERTY, "CATALOG_NAME_PROPERTY");
         assertThat(new AdapterProperties(this.rawProperties).hasCatalogName(), equalTo(true));
     }
 
     @Test
+    void hasSchemaNameFalseByDefault() {
+        assertThat(AdapterProperties.emptyProperties().hasSchemaName(), equalTo(false));
+    }
+
+    @Test
     void hasSchemaName() {
-        this.rawProperties.put(SCHEMA_NAME_PROPERTY, "user");
+        this.rawProperties.put(SCHEMA_NAME_PROPERTY, "SCHEMA_NAME_PROPERTY");
         assertThat(new AdapterProperties(this.rawProperties).hasSchemaName(), equalTo(true));
     }
 
     @Test
+    void hasConnectionNameFalseByDefault() {
+        assertThat(AdapterProperties.emptyProperties().hasConnectionName(), equalTo(false));
+    }
+
+    @Test
     void hasConnectionName() {
-        this.rawProperties.put(CONNECTION_NAME_PROPERTY, "user");
+        this.rawProperties.put(CONNECTION_NAME_PROPERTY, "CONNECTION_NAME_PROPERTY");
         assertThat(new AdapterProperties(this.rawProperties).hasConnectionName(), equalTo(true));
+    }
+
+    @Test
+    void hasDebugAddressFalseByDefault() {
+        assertThat(AdapterProperties.emptyProperties().hasDebugAddress(), equalTo(false));
+    }
+
+    @Test
+    void hasDebugAddress() {
+        this.rawProperties.put(DEBUG_ADDRESS_PROPERTY, "DEBUG_ADDRESS_PROPERTY");
+        assertThat(new AdapterProperties(this.rawProperties).hasDebugAddress(), equalTo(true));
+    }
+
+    @Test
+    void hasLogLevelFalseByDefault() {
+        assertThat(AdapterProperties.emptyProperties().hasLogLevel(), equalTo(false));
+    }
+
+    @Test
+    void hasLogLevel() {
+        this.rawProperties.put(LOG_LEVEL_PROPERTY, "LOG_LEVEL_PROPERTY");
+        assertThat(new AdapterProperties(this.rawProperties).hasLogLevel(), equalTo(true));
+    }
+
+    @Test
+    void hasSqlDialectFalseByDefault() {
+        assertThat(AdapterProperties.emptyProperties().hasSqlDialect(), equalTo(false));
+    }
+
+    @Test
+    void hasSqlDialect() {
+        this.rawProperties.put(SQL_DIALECT_PROPERTY, "SQL_DIALECT_PROPERTY");
+        assertThat(new AdapterProperties(this.rawProperties).hasSqlDialect(), equalTo(true));
+    }
+
+    @Test
+    void hasExcludedCapabilitiesFalseByDefault() {
+        assertThat(AdapterProperties.emptyProperties().hasExcludedCapabilities(), equalTo(false));
+    }
+
+    @Test
+    void hasExcludedCapabilities() {
+        this.rawProperties.put(EXCLUDED_CAPABILITIES_PROPERTY, "EXCLUDED_CAPABILITIES_PROPERTY");
+        assertThat(new AdapterProperties(this.rawProperties).hasExcludedCapabilities(), equalTo(true));
+    }
+
+    @Test
+    void hasExceptionHandlingFalseByDefault() {
+        assertThat(AdapterProperties.emptyProperties().hasExceptionHandling(), equalTo(false));
+    }
+
+    @Test
+    void hasExceptionHandling() {
+        this.rawProperties.put(EXCEPTION_HANDLING_PROPERTY, "EXCEPTION_HANDLING_PROPERTY");
+        assertThat(new AdapterProperties(this.rawProperties).hasExceptionHandling(), equalTo(true));
+    }
+
+    @Test
+    void hasIgnoreErrorsFalseByDefault() {
+        assertThat(AdapterProperties.emptyProperties().hasIgnoreErrors(), equalTo(false));
+    }
+
+    @Test
+    void hasIgnoreErrors() {
+        this.rawProperties.put(IGNORE_ERRORS_PROPERTY, "IGNORE_ERRORS_PROPERTY");
+        assertThat(new AdapterProperties(this.rawProperties).hasIgnoreErrors(), equalTo(true));
     }
 }

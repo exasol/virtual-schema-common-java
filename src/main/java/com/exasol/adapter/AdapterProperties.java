@@ -258,6 +258,60 @@ public class AdapterProperties extends AbstractAdapterProperties {
     }
 
     /**
+     * Check if the debug address property is set
+     *
+     * @return <code>true</code> if debug address property is set
+     */
+    public boolean hasDebugAddress() {
+        return containsKey(DEBUG_ADDRESS_PROPERTY);
+    }
+
+    /**
+     * Check if the log level property is set
+     *
+     * @return <code>true</code> if log level property is set
+     */
+    public boolean hasLogLevel() {
+        return containsKey(LOG_LEVEL_PROPERTY);
+    }
+
+    /**
+     * Check if the sql dialect property is set
+     *
+     * @return <code>true</code> if sql dialect property is set
+     */
+    public boolean hasSqlDialect() {
+        return containsKey(SQL_DIALECT_PROPERTY);
+    }
+
+    /**
+     * Check if the excluded capabilities property is set
+     *
+     * @return <code>true</code> if  excluded capabilities property is set
+     */
+    public boolean hasExcludedCapabilities() {
+        return containsKey(EXCLUDED_CAPABILITIES_PROPERTY);
+    }
+
+    /**
+     * Check if the exception handling property is set
+     *
+     * @return <code>true</code> if exception handling property is set
+     */
+    public boolean hasExceptionHandling() {
+        return containsKey(EXCEPTION_HANDLING_PROPERTY);
+    }
+
+    /**
+     * Check if the ignore errors property is set
+     *
+     * @return <code>true</code> if ignore errors property is set
+     */
+    public boolean hasIgnoreErrors() {
+        return containsKey(IGNORE_ERRORS_PROPERTY);
+    }
+
+    /**
      * Get empty map
      *
      * @return empty map
