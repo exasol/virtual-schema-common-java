@@ -83,4 +83,37 @@ class AdapterPropertiesTest {
         this.rawProperties.put(IS_LOCAL_PROPERTY, "true");
         assertThat(new AdapterProperties(this.rawProperties).isLocalSource(), equalTo(true));
     }
+
+    @Test
+    void hasUsernameFalseByDefault() {
+        assertThat(AdapterProperties.emptyProperties().hasUsername(), equalTo(false));
+    }
+
+    @Test
+    void hasUsername() {
+        this.rawProperties.put(USERNAME_PROPERTY, "user");
+        assertThat(new AdapterProperties(this.rawProperties).hasUsername(), equalTo(true));
+    }
+
+    @Test
+    void hasPasswordFalseByDefault() {
+        assertThat(AdapterProperties.emptyProperties().hasPassword(), equalTo(false));
+    }
+
+    @Test
+    void hasPassword() {
+        this.rawProperties.put(PASSWORD_PROPERTY, "user");
+        assertThat(new AdapterProperties(this.rawProperties).hasPassword(), equalTo(true));
+    }
+
+    @Test
+    void hasConnectionStringFalseByDefault() {
+        assertThat(AdapterProperties.emptyProperties().hasConnectionString(), equalTo(false));
+    }
+
+    @Test
+    void hasConnectionString() {
+        this.rawProperties.put(CONNECTION_STRING_PROPERTY, "user");
+        assertThat(new AdapterProperties(this.rawProperties).hasConnectionString(), equalTo(true));
+    }
 }
