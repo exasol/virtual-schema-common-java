@@ -19,6 +19,6 @@ class VersionCollectorTest {
     void testGetVesionNumberInvalidPath() {
         final VersionCollector versionCollector = new VersionCollector("blablapom.properties");
         final String versionNumber = versionCollector.getVersionNumber();
-        assertThat(versionNumber, equalTo("Unable to read the version. Check the file path."));
+        assertThat(versionNumber, equalTo("UNKNOWN"));
     }
 }
