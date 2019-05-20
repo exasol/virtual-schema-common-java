@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class VersionCollector {
-    private static final String PATH = "META-INF/maven/com.exasol/virtual-schema-common-java/pom.properties";
+    private static final String DEFAULT_PATH = "META-INF/maven/com.exasol/virtual-schema-common-java/pom.properties";
     private static final String VERSION = "version";
     private final String path;
 
@@ -14,7 +14,7 @@ public class VersionCollector {
     }
 
     public VersionCollector() {
-        this.path = PATH;
+        this.path = DEFAULT_PATH;
     }
 
     public String getVersionNumber() {
