@@ -7,11 +7,15 @@ import java.util.Collections;
 import java.util.List;
 
 public class SqlPredicateInConstList extends SqlPredicate {
-    // For <exp> IN (...) this stores <exp>
     private final SqlNode expression;
-    // Arguments inside the brackets
     private final List<SqlNode> inArguments;
-    
+
+    /**
+     * Create a new instance of {@link SqlPredicateInConstList}.
+     *
+     * @param expression  For <exp> IN (...) this stores <exp>
+     * @param inArguments arguments inside the brackets
+     */
     public SqlPredicateInConstList(final SqlNode expression, final List<SqlNode> inArguments) {
         super(Predicate.IN_CONSTLIST);
         this.expression = expression;
@@ -27,24 +31,24 @@ public class SqlPredicateInConstList extends SqlPredicate {
     }
     
     public SqlNode getExpression() {
-        return expression;
+        return this.expression;
     }
     
     public List<SqlNode> getInArguments() {
-        if (inArguments == null) {
+        if (this.inArguments == null) {
             return Collections.emptyList();
         } else {
-            return Collections.unmodifiableList(inArguments);
+            return Collections.unmodifiableList(this.inArguments);
         }
     }
     
     @Override
     public String toSimpleSql() {
         final List<String> argumentsSql = new ArrayList<>();
-        for (final SqlNode node : inArguments) {
+        for (final SqlNode node : this.inArguments) {
             argumentsSql.add(node.toSimpleSql());
         }
-        return expression.toSimpleSql() + " IN (" + String.join(", ", argumentsSql) + ")";
+        return this.expression.toSimpleSql() + " IN (" + String.join(", ", argumentsSql) + ")";
     }
 
     @Override

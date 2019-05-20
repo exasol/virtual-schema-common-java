@@ -9,8 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * http://docs.oracle.com/javaee/7/api/javax/json/JsonObjectBuilder.html
- * http://docs.oracle.com/javaee/7/api/javax/json/stream/JsonGenerator.html
+ * A helper class that handles creation and formatting of json files.
  */
 public final class JsonHelper {
     private JsonHelper() {

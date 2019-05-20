@@ -1,6 +1,6 @@
 package com.exasol.adapter.capabilities;
 
-import com.exasol.adapter.sql.Predicate;
+import com.exasol.adapter.sql.*;
 
 /**
  * List of all Predicates (scalar functions returning bool) supported by EXASOL.
@@ -14,7 +14,10 @@ public enum PredicateCapability {
     LESS,
     LESSEQUAL,
     LIKE,
-    LIKE_ESCAPE (Predicate.LIKE),    // the LIKE predicate with the optional escape character defined
+    /**
+     * The LIKE predicate with the optional escape character defined
+     */
+    LIKE_ESCAPE(Predicate.LIKE),
     REGEXP_LIKE,
     BETWEEN,
     IN_CONSTLIST,
@@ -32,7 +35,7 @@ public enum PredicateCapability {
     }
 
     public Predicate getPredicate() {
-        return predicate;
+        return this.predicate;
     }
 }
 

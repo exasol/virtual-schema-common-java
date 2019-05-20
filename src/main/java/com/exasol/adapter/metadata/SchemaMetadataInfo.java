@@ -35,7 +35,7 @@ public class SchemaMetadataInfo {
     }
 
     /**
-     * \note Keys are case-insensitive and stored upper case
+     * Keys are case-insensitive and stored upper case
      *
      * @return map with schema properties
      */
