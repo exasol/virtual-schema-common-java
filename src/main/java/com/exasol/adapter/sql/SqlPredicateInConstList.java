@@ -13,7 +13,7 @@ public class SqlPredicateInConstList extends SqlPredicate {
     /**
      * Create a new instance of {@link SqlPredicateInConstList}.
      *
-     * @param expression  For <exp> IN (...) this stores <exp>
+     * @param expression  For &lt;exp&gt; IN (...) this stores &lt;exp&gt;
      * @param inArguments arguments inside the brackets
      */
     public SqlPredicateInConstList(final SqlNode expression, final List<SqlNode> inArguments) {
