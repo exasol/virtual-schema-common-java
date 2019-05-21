@@ -10,13 +10,12 @@ public class SqlLiteralString extends SqlNode {
     }
     
     public String getValue() {
-        return value;
+        return this.value;
     }
     
     @Override
     public String toSimpleSql() {
-        // Don't forget to escape single quote
-        return "'" + value.replace("'", "''") + "'";
+        return "'" + this.value.replace("'", "''") + "'";
     }
 
     @Override

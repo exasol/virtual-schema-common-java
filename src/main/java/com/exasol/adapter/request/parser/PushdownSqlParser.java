@@ -228,7 +228,6 @@ public final class PushdownSqlParser extends AbstractRequestParser {
 
     private SqlSelectList parseSelectList(final JsonArray selectList) {
         if (selectList == null) {
-            // this is like SELECT *
             return SqlSelectList.createSelectStarSelectList();
         }
         final List<SqlNode> selectListElements = parseExpressionList(selectList);
