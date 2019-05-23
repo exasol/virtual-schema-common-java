@@ -276,9 +276,9 @@ public class AdapterProperties extends AbstractAdapterProperties {
     }
 
     /**
-     * Check if the sql dialect property is set
+     * Check if the SQL dialect property is set
      *
-     * @return <code>true</code> if sql dialect property is set
+     * @return <code>true</code> if SQL dialect property is set
      */
     public boolean hasSqlDialect() {
         return containsKey(SQL_DIALECT_PROPERTY);
@@ -287,7 +287,7 @@ public class AdapterProperties extends AbstractAdapterProperties {
     /**
      * Check if the excluded capabilities property is set
      *
-     * @return <code>true</code> if  excluded capabilities property is set
+     * @return <code>true</code> if excluded capabilities property is set
      */
     public boolean hasExcludedCapabilities() {
         return containsKey(EXCLUDED_CAPABILITIES_PROPERTY);
@@ -312,9 +312,9 @@ public class AdapterProperties extends AbstractAdapterProperties {
     }
 
     /**
-     * Get empty map
+     * Get empty property list
      *
-     * @return empty map
+     * @return empty properties
      */
     public static AdapterProperties emptyProperties() {
         return new AdapterProperties(Collections.emptyMap());

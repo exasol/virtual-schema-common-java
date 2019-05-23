@@ -91,7 +91,7 @@ class AdapterPropertiesTest {
 
     @Test
     void hasUsername() {
-        this.rawProperties.put(USERNAME_PROPERTY, "user");
+        this.rawProperties.put(USERNAME_PROPERTY, "USERNAME_PROPERTY");
         assertThat(new AdapterProperties(this.rawProperties).hasUsername(), equalTo(true));
     }
 
@@ -102,7 +102,7 @@ class AdapterPropertiesTest {
 
     @Test
     void hasPassword() {
-        this.rawProperties.put(PASSWORD_PROPERTY, "user");
+        this.rawProperties.put(PASSWORD_PROPERTY, "PASSWORD_PROPERTY");
         assertThat(new AdapterProperties(this.rawProperties).hasPassword(), equalTo(true));
     }
 
