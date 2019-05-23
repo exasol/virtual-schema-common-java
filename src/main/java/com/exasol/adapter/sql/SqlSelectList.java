@@ -61,7 +61,6 @@ public final class SqlSelectList extends SqlExpressionList {
     @Override
     public String toSimpleSql() {
         if (isRequestAnyColumn()) {
-            // The system requested any column
             return "true";
         }
         if (isSelectStar()) {

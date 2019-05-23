@@ -15,7 +15,6 @@ public final class SqlUtils {
             quoteChar = config.get("QUOTE_CHAR").toString();
         }
         if (identifier.toUpperCase().equals(identifier)) {
-            // Only upper case, no need to quote
             return identifier;
         } else {
             return quoteChar + identifier + quoteChar;
