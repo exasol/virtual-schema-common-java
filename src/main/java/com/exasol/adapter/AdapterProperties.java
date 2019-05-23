@@ -4,11 +4,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * The main job of this class is to turn user-defined key-value-pairs into concrete properties that the adapter knows.
- * This improves the code readability and robustness.
+ * The main job of this class is to turn user-defined key-value-pairs into
+ * concrete properties that the adapter knows. This improves the code
+ * readability and robustness.
  * <p>
- * It is still possible to access the raw keys and values in order to support properties that are specific to an adapter
- * type an can therefore not be covered in the common module.
+ * It is still possible to access the raw keys and values in order to support
+ * properties that are specific to an adapter type an can therefore not be
+ * covered in the common module.
  */
 public class AdapterProperties extends AbstractAdapterProperties {
     public static final String TABLE_FILTER_PROPERTY = "TABLE_FILTER";
@@ -155,7 +157,8 @@ public class AdapterProperties extends AbstractAdapterProperties {
     }
 
     /**
-     * Get the list of tables for which the metadata will be read from the remote source
+     * Get the list of tables for which the metadata will be read from the remote
+     * source
      *
      * @return list of tables serving as positive filter criteria
      */
@@ -164,10 +167,12 @@ public class AdapterProperties extends AbstractAdapterProperties {
     }
 
     /**
-     * Check whether any of the given properties causes a refresh of the virtual schema
+     * Check whether any of the given properties causes a refresh of the virtual
+     * schema
      *
      * @param changedProperties map of properties that were changed
-     * @return <code>true</code> if any of the changes makes refreshing the virtual schema necessary
+     * @return <code>true</code> if any of the changes makes refreshing the virtual
+     *         schema necessary
      */
     public static boolean isRefreshingVirtualSchemaRequired(final Map<String, String> changedProperties) {
         return changedProperties.containsKey(CONNECTION_STRING_PROPERTY) //
@@ -180,21 +185,138 @@ public class AdapterProperties extends AbstractAdapterProperties {
     }
 
     /**
-     * Get empty map
-     *
-     * @return empty map
-     */
-    public static AdapterProperties emptyProperties() {
-        return new AdapterProperties(Collections.emptyMap());
-    }
-
-    /**
      * Check if the data source is the local Exasol instance
      *
-     * @return <code>true</code> if the data source and the database containing the Virtual Schema are hosted on the
-     *         same Exasol cluster
+     * @return <code>true</code> if the data source and the database containing the
+     *         Virtual Schema are hosted on the same Exasol cluster
      */
     public boolean isLocalSource() {
         return isEnabled(IS_LOCAL_PROPERTY);
+    }
+
+    /**
+     * Check if the username property is set
+     *
+     * @return <code>true</code> if username property is set
+     */
+    public boolean hasUsername() {
+        return containsKey(USERNAME_PROPERTY);
+    }
+
+    /**
+     * Check if the password property is set
+     *
+     * @return <code>true</code> if password property is set
+     */
+    public boolean hasPassword() {
+        return containsKey(PASSWORD_PROPERTY);
+    }
+
+    /**
+     * Check if the connection string property is set
+     *
+     * @return <code>true</code> if connection string property is set
+     */
+    public boolean hasConnectionString() {
+        return containsKey(CONNECTION_STRING_PROPERTY);
+    }
+
+    /**
+     * Check if the table filter property is set
+     *
+     * @return <code>true</code> if table filter property is set
+     */
+    public boolean hasTableFilter() {
+        return containsKey(TABLE_FILTER_PROPERTY);
+    }
+
+    /**
+     * Check if the catalog name property is set
+     *
+     * @return <code>true</code> if catalog name property is set
+     */
+    public boolean hasCatalogName() {
+        return containsKey(CATALOG_NAME_PROPERTY);
+    }
+
+    /**
+     * Check if the schema name property is set
+     *
+     * @return <code>true</code> if schema name property is set
+     */
+    public boolean hasSchemaName() {
+        return containsKey(SCHEMA_NAME_PROPERTY);
+    }
+
+    /**
+     * Check if the connection name property is set
+     *
+     * @return <code>true</code> if connection name property is set
+     */
+    public boolean hasConnectionName() {
+        return containsKey(CONNECTION_NAME_PROPERTY);
+    }
+
+    /**
+     * Check if the debug address property is set
+     *
+     * @return <code>true</code> if debug address property is set
+     */
+    public boolean hasDebugAddress() {
+        return containsKey(DEBUG_ADDRESS_PROPERTY);
+    }
+
+    /**
+     * Check if the log level property is set
+     *
+     * @return <code>true</code> if log level property is set
+     */
+    public boolean hasLogLevel() {
+        return containsKey(LOG_LEVEL_PROPERTY);
+    }
+
+    /**
+     * Check if the SQL dialect property is set
+     *
+     * @return <code>true</code> if SQL dialect property is set
+     */
+    public boolean hasSqlDialect() {
+        return containsKey(SQL_DIALECT_PROPERTY);
+    }
+
+    /**
+     * Check if the excluded capabilities property is set
+     *
+     * @return <code>true</code> if excluded capabilities property is set
+     */
+    public boolean hasExcludedCapabilities() {
+        return containsKey(EXCLUDED_CAPABILITIES_PROPERTY);
+    }
+
+    /**
+     * Check if the exception handling property is set
+     *
+     * @return <code>true</code> if exception handling property is set
+     */
+    public boolean hasExceptionHandling() {
+        return containsKey(EXCEPTION_HANDLING_PROPERTY);
+    }
+
+    /**
+     * Check if the ignore errors property is set
+     *
+     * @return <code>true</code> if ignore errors property is set
+     */
+    public boolean hasIgnoreErrors() {
+        return containsKey(IGNORE_ERRORS_PROPERTY);
+    }
+
+    /**
+     * Get empty property list
+     *
+     * @return empty properties
+     */
+    public static AdapterProperties emptyProperties() {
+        return new AdapterProperties(Collections.emptyMap());
     }
 }
