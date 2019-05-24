@@ -16,8 +16,8 @@ public class CompactFormatter extends Formatter {
     /**
      * Formats a log record according in a compact manner.
      *
-     * The parts of the package name between the dots are abbreviated with their
-     * first letter. Timestamps are displayed as 24h UTC+0.
+     * The parts of the package name between the dots are abbreviated with their first letter. Timestamps are
+     * displayed as 24h UTC+0.
      *
      * <code>yyyy-MM-dd HH:mm:ss.SSS LEVEL   [c.e.ClassName] The message.</code>
      */
@@ -28,7 +28,7 @@ public class CompactFormatter extends Formatter {
         builder.append(" ");
         builder.append(String.format(LOG_LEVEL_FORMAT, record.getLevel()));
         appendClassName(record.getSourceClassName(), builder);
-        builder.append(record.getMessage());
+        builder.append(formatMessage(record));
         builder.append(System.lineSeparator());
         return builder.toString();
     }
