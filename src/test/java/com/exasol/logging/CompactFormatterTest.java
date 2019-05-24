@@ -72,4 +72,13 @@ class CompactFormatterTest {
         assertThat(formattedRecord,
                 matchesPattern("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}.\\d{3} SEVERE +\\[\\.\\] +message\\n"));
     }
+
+    @Test
+    void testFormatWithPlaceholders() {
+        final LogRecord recordWithPlaceholders = new LogRecord(Level.SEVERE, "message {0} : {1}");
+        recordWithPlaceholders.setParameters(new String[] { "foo", "bar" });
+        final String formattedRecord = this.formatter.format(recordWithPlaceholders);
+        assertThat(formattedRecord,
+                matchesPattern("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}.\\d{3} SEVERE +message foo : bar\\n"));
+    }
 }
