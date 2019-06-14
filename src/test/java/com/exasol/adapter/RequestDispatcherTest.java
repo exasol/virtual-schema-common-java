@@ -220,5 +220,10 @@ class RequestDispatcherTest {
         public VirtualSchemaAdapter createAdapter() {
             return this.adapterMock;
         }
+
+        @Override
+        public String getAdapterVersion() {
+            return null;
+        }
     }
 }

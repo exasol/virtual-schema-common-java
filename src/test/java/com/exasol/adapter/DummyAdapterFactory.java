@@ -16,4 +16,9 @@ public class DummyAdapterFactory implements AdapterFactory {
     public VirtualSchemaAdapter createAdapter() {
         return new DummyAdapter();
     }
+
+    @Override
+    public String getAdapterVersion() {
+        return null;
+    }
 }
