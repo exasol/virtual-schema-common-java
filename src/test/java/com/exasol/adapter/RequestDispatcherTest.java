@@ -225,5 +225,10 @@ class RequestDispatcherTest {
         public String getAdapterVersion() {
             return null;
         }
+
+        @Override
+        public String getAdapterName() {
+            return null;
+        }
     }
 }

@@ -21,4 +21,9 @@ public class DummyAdapterFactory implements AdapterFactory {
     public String getAdapterVersion() {
         return null;
     }
+
+    @Override
+    public String getAdapterName() {
+        return null;
+    }
 }
