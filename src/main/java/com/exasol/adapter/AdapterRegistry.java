@@ -67,7 +67,7 @@ public final class AdapterRegistry {
         if (hasAdapterWithName(name)) {
             final AdapterFactory factory = this.registeredFactories.get(name);
             LOGGER.config(
-                    "Loading Virtual Schema Adapter " + factory.getAdapterName() + " " + factory.getAdapterVersion());
+                    "Loading Virtual Schema Adapter: " + factory.getAdapterName() + " " + factory.getAdapterVersion());
             return factory.createAdapter();
         } else {
             throw new IllegalArgumentException(
