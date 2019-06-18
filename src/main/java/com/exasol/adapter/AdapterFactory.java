@@ -23,7 +23,7 @@ public interface AdapterFactory {
     /**
      * Get the version of the Virtual Schema Adapter
      *
-     * @return adapter version
+     * @return Virtual Schema Adapter version
      */
     public String getAdapterVersion();
 
