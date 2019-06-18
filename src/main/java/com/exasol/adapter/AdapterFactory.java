@@ -19,4 +19,18 @@ public interface AdapterFactory {
      * @return new instance
      */
     public VirtualSchemaAdapter createAdapter();
+
+    /**
+     * Get the version of the Virtual Schema Adapter
+     *
+     * @return Virtual Schema Adapter version
+     */
+    public String getAdapterVersion();
+
+    /**
+     * Get the name of the Virtual Schema Adapter
+     *
+     * @return Virtual Schema Adapter name
+     */
+    public String getAdapterName();
 }

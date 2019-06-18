@@ -1,7 +1,7 @@
 package com.exasol.adapter;
 
 import java.util.*;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 /**
  * {@link VirtualSchemaAdapter}s need to be registered in the {@link AdapterRegistry} in order to receive requests from
@@ -9,7 +9,7 @@ import java.util.logging.Logger;
  */
 public final class AdapterRegistry {
     private static final Logger LOGGER = Logger.getLogger(AdapterRegistry.class.getName());
-    private static AdapterRegistry instance = new AdapterRegistry();
+    private static final AdapterRegistry instance = new AdapterRegistry();
     private final Map<String, AdapterFactory> registeredFactories = new HashMap<>();
 
     /**
@@ -65,7 +65,10 @@ public final class AdapterRegistry {
      */
     public VirtualSchemaAdapter getAdapterForName(final String name) {
         if (hasAdapterWithName(name)) {
-            return this.registeredFactories.get(name).createAdapter();
+            final AdapterFactory factory = this.registeredFactories.get(name);
+            LOGGER.config(
+                    "Loading Virtual Schema Adapter: " + factory.getAdapterName() + " " + factory.getAdapterVersion());
+            return factory.createAdapter();
         } else {
             throw new IllegalArgumentException(
                     "Unknown Virtual Schema Adapter \"" + name + "\" requested. " + describe());
