@@ -1,6 +1,7 @@
 package com.exasol.adapter.request;
 
 import static com.exasol.adapter.AdapterProperties.DEBUG_ADDRESS_PROPERTY;
+import static com.exasol.adapter.AdapterProperties.LOG_LEVEL_PROPERTY;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -10,8 +11,6 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.junit.jupiter.api.Test;
-
-import com.exasol.adapter.AdapterProperties;
 
 class LoggingConfigurationTest {
     final Map<String, String> properties = new HashMap<>();
@@ -55,7 +54,7 @@ class LoggingConfigurationTest {
 
     @Test
     void testGetLogLevel() {
-        this.properties.put(AdapterProperties.LOG_LEVEL_PROPERTY, "FINEST");
+        this.properties.put(LOG_LEVEL_PROPERTY, "FINEST");
         assertThat(createLoggingConfiguration(this.properties).getLogLevel(), equalTo(Level.FINEST));
     }
 
