@@ -1,5 +1,7 @@
 package com.exasol.adapter.request;
 
+import static com.exasol.adapter.AdapterProperties.DEBUG_ADDRESS_PROPERTY;
+import static com.exasol.adapter.AdapterProperties.LOG_LEVEL_PROPERTY;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -9,8 +11,6 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.junit.jupiter.api.Test;
-
-import com.exasol.adapter.metadata.SchemaMetadataPropertyConstants;
 
 class LoggingConfigurationTest {
     final Map<String, String> properties = new HashMap<>();
@@ -26,13 +26,13 @@ class LoggingConfigurationTest {
 
     @Test
     void testIsRemoteLoggingConfigured_Yes() {
-        this.properties.put(SchemaMetadataPropertyConstants.REMOTE_DEBUG_CONFIG_KEY, "");
+        this.properties.put(DEBUG_ADDRESS_PROPERTY, "");
         assertThat(createLoggingConfiguration(this.properties).isRemoteLoggingConfigured(), equalTo(true));
     }
 
     @Test
     void testGetRemoteLoggingHostWithDefaultPort() {
-        this.properties.put(SchemaMetadataPropertyConstants.REMOTE_DEBUG_CONFIG_KEY, "www.example.com");
+        this.properties.put(DEBUG_ADDRESS_PROPERTY, "www.example.com");
         final LoggingConfiguration configuration = createLoggingConfiguration(this.properties);
         assertAll(() -> assertThat(configuration.getRemoteLoggingHost(), equalTo("www.example.com")),
                 () -> assertThat(configuration.getRemoteLoggingPort(), equalTo(3000)));
@@ -40,7 +40,7 @@ class LoggingConfigurationTest {
 
     @Test
     void testGetRemoteLoggingHostWithPort() {
-        this.properties.put(SchemaMetadataPropertyConstants.REMOTE_DEBUG_CONFIG_KEY, "www.example.org:4000");
+        this.properties.put(DEBUG_ADDRESS_PROPERTY, "www.example.org:4000");
         final LoggingConfiguration configuration = createLoggingConfiguration(this.properties);
         assertAll(() -> assertThat(configuration.getRemoteLoggingHost(), equalTo("www.example.org")),
                 () -> assertThat(configuration.getRemoteLoggingPort(), equalTo(4000)));
@@ -54,7 +54,14 @@ class LoggingConfigurationTest {
 
     @Test
     void testGetLogLevel() {
-        this.properties.put(SchemaMetadataPropertyConstants.LOG_LEVEL_KEY, "FINEST");
+        this.properties.put(LOG_LEVEL_PROPERTY, "FINEST");
         assertThat(createLoggingConfiguration(this.properties).getLogLevel(), equalTo(Level.FINEST));
+    }
+
+    @Test
+    void testFallBackToLocalLoggingInCaseOfIllegalLoggingPort() {
+        this.properties.put(DEBUG_ADDRESS_PROPERTY, "www.example.org:illegal_non_numeric_port");
+        final LoggingConfiguration configuration = createLoggingConfiguration(this.properties);
+        assertThat(configuration.isRemoteLoggingConfigured(), equalTo(false));
     }
 }
