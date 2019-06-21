@@ -1,10 +1,10 @@
 package com.exasol.adapter.request;
 
+import static com.exasol.adapter.AdapterProperties.DEBUG_ADDRESS_PROPERTY;
+import static com.exasol.adapter.AdapterProperties.LOG_LEVEL_PROPERTY;
+
 import java.util.Map;
 import java.util.logging.Level;
-
-import static com.exasol.adapter.metadata.SchemaMetadataPropertyConstants.LOG_LEVEL_KEY;
-import static com.exasol.adapter.metadata.SchemaMetadataPropertyConstants.REMOTE_DEBUG_CONFIG_KEY;
 
 /**
  * This class represents the logging configuration set in the request properties
@@ -68,36 +68,40 @@ public final class LoggingConfiguration {
      * @throws IllegalArgumentException if any of the logging configuration parameters can't be parsed
      */
     public static LoggingConfiguration parseFromProperties(final Map<String, String> properties) {
-        final Level level = parseLogLevel(properties);
-        final boolean logRemotely;
-        final String host;
-        final int port;
-        if (properties.containsKey(REMOTE_DEBUG_CONFIG_KEY)) {
-            logRemotely = true;
-            final String remoteLoggingAddress = properties.get(REMOTE_DEBUG_CONFIG_KEY);
-            if (remoteLoggingAddress.contains(":")) {
+        if (properties.containsKey(DEBUG_ADDRESS_PROPERTY)) {
+            return parseFromPropertiesWithDebugAddressGiven(properties);
+        } else {
+            return createLocalLoggingConfiguration(properties);
+        }
+    }
+
+    public static LoggingConfiguration parseFromPropertiesWithDebugAddressGiven(final Map<String, String> properties) {
+        final String remoteLoggingAddress = properties.get(DEBUG_ADDRESS_PROPERTY);
+        if (remoteLoggingAddress.contains(":")) {
+            try {
                 final int separatorIndex = remoteLoggingAddress.indexOf(':');
-                host = remoteLoggingAddress.substring(0, separatorIndex);
-                port = Integer.parseInt(remoteLoggingAddress.substring(separatorIndex + 1));
-            } else {
-                host = remoteLoggingAddress;
-                port = DEFAULT_REMOTE_LOGGING_PORT;
+                final String host = remoteLoggingAddress.substring(0, separatorIndex);
+                final int port = Integer.parseInt(remoteLoggingAddress.substring(separatorIndex + 1));
+                return new LoggingConfiguration(parseLogLevel(properties), true, host, port);
+            } catch (final NumberFormatException exception) {
+                return createLocalLoggingConfiguration(properties);
             }
         } else {
-            logRemotely = false;
-            host = null;
-            port = 0;
+            return new LoggingConfiguration(parseLogLevel(properties), true, remoteLoggingAddress, DEFAULT_REMOTE_LOGGING_PORT);
         }
-        return new LoggingConfiguration(level, logRemotely, host, port);
     }
 
     private static Level parseLogLevel(final Map<String, String> properties) {
         final Level level;
-        if (properties.containsKey(LOG_LEVEL_KEY)) {
-            level = Level.parse(properties.get(LOG_LEVEL_KEY));
+        if (properties.containsKey(LOG_LEVEL_PROPERTY)) {
+            level = Level.parse(properties.get(LOG_LEVEL_PROPERTY));
         } else {
             level = DEFAULT_LOG_LEVEL;
         }
         return level;
+    }
+
+    public static LoggingConfiguration createLocalLoggingConfiguration(final Map<String, String> properties) {
+        return new LoggingConfiguration(parseLogLevel(properties), false, null, 0);
     }
 }
