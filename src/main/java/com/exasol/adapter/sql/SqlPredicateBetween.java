@@ -6,7 +6,7 @@ public class SqlPredicateBetween extends SqlPredicate {
     private final SqlNode expression;
     private final SqlNode betweenLeft;
     private final SqlNode betweenRight;
-    
+
     public SqlPredicateBetween(final SqlNode expression, final SqlNode betweenLeft, final SqlNode betweenRight) {
         super(Predicate.BETWEEN);
         this.expression = expression;
@@ -22,22 +22,23 @@ public class SqlPredicateBetween extends SqlPredicate {
             this.betweenRight.setParent(this);
         }
     }
-    
+
     public SqlNode getExpression() {
         return expression;
     }
-    
+
     public SqlNode getBetweenLeft() {
         return betweenLeft;
     }
-    
+
     public SqlNode getBetweenRight() {
         return betweenRight;
     }
-    
+
     @Override
     public String toSimpleSql() {
-        return expression.toSimpleSql() + " BETWEEN " + betweenLeft.toSimpleSql() + " AND " + betweenRight.toSimpleSql();
+        return expression.toSimpleSql() + " BETWEEN " + betweenLeft.toSimpleSql() + " AND "
+                + betweenRight.toSimpleSql();
     }
 
     @Override

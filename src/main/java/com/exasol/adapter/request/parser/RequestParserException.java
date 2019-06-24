@@ -1,8 +1,7 @@
 package com.exasol.adapter.request.parser;
 
 /**
- * This class represent exceptions thrown when a Virtual Schema request cannot
- * be parsed.
+ * This class represent exceptions thrown when a Virtual Schema request cannot be parsed.
  *
  * <p>
  * This exception is not recoverable in the Virtual Schema Adapter.

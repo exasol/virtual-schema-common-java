@@ -31,8 +31,7 @@ public class SqlFunctionScalarCast extends SqlNode {
     public String toSimpleSql() {
         assert this.arguments != null;
         assert this.arguments.size() == 1 && this.arguments.get(0) != null;
-        return "CAST (" + this.arguments.get(0).toSimpleSql() + " AS " + getDataType().toString() +
-              ")";
+        return "CAST (" + this.arguments.get(0).toSimpleSql() + " AS " + getDataType().toString() + ")";
     }
 
     @Override

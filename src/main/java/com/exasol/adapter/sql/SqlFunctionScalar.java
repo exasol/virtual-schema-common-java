@@ -7,7 +7,8 @@ import java.util.*;
 /**
  * A simple scalar function with a name and zero or more arguments.
  *
- * <p>Scalar functions that are more complex, like CASE or CAST, are defined in separate classes.
+ * <p>
+ * Scalar functions that are more complex, like CASE or CAST, are defined in separate classes.
  * </p>
  */
 public class SqlFunctionScalar extends SqlNode {
@@ -17,7 +18,7 @@ public class SqlFunctionScalar extends SqlNode {
     private final boolean isPrefix;
 
     public SqlFunctionScalar(final ScalarFunction function, final List<SqlNode> arguments, final boolean isInfix,
-          final boolean isPrefix) {
+            final boolean isPrefix) {
         this.arguments = arguments;
         this.function = function;
         this.isInfix = isInfix;

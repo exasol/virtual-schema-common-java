@@ -52,7 +52,7 @@ public class TablesMetadataParser {
         final JsonObject dataType = column.getJsonObject(DATA_TYPE);
         final DataType type = getDataType(dataType);
         return ColumnMetadata.builder().name(columnName).adapterNotes(adapterNotes).type(type).nullable(isNullable)
-              .identity(isIdentity).defaultValue(defaultValue).comment(comment).build();
+                .identity(isIdentity).defaultValue(defaultValue).comment(comment).build();
     }
 
     private String readAdapterNotes(final JsonObject root) {
@@ -82,35 +82,35 @@ public class TablesMetadataParser {
         final String typeName = dataType.getString("type").toUpperCase();
         final DataType type;
         switch (typeName) {
-            case "DECIMAL":
-                type = getDecimalDataType(dataType);
-                break;
-            case "DOUBLE":
-                type = getDoubleDataType();
-                break;
-            case "VARCHAR":
-                type = getVarcharDataType(dataType);
-                break;
-            case "CHAR":
-                type = getCharDataType(dataType);
-                break;
-            case "BOOLEAN":
-                type = getBooleanDataType();
-                break;
-            case "DATE":
-                type = getDateDataType();
-                break;
-            case "TIMESTAMP":
-                type = getTimestampDataType(dataType);
-                break;
-            case "INTERVAL":
-                type = getIntervalDataType(dataType);
-                break;
-            case "GEOMETRY":
-                type = getGeometryDataType(dataType);
-                break;
-            default:
-                throw new RequestParserException("Unsupported data type encountered: " + typeName);
+        case "DECIMAL":
+            type = getDecimalDataType(dataType);
+            break;
+        case "DOUBLE":
+            type = getDoubleDataType();
+            break;
+        case "VARCHAR":
+            type = getVarcharDataType(dataType);
+            break;
+        case "CHAR":
+            type = getCharDataType(dataType);
+            break;
+        case "BOOLEAN":
+            type = getBooleanDataType();
+            break;
+        case "DATE":
+            type = getDateDataType();
+            break;
+        case "TIMESTAMP":
+            type = getTimestampDataType(dataType);
+            break;
+        case "INTERVAL":
+            type = getIntervalDataType(dataType);
+            break;
+        case "GEOMETRY":
+            type = getGeometryDataType(dataType);
+            break;
+        default:
+            throw new RequestParserException("Unsupported data type encountered: " + typeName);
         }
         return type;
     }

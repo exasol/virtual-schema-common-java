@@ -28,7 +28,7 @@ public class VersionCollector {
             properties.load(stream);
         } catch (final IOException exception) {
             throw new IllegalArgumentException("Unable to read the version from the file: " + this.path + ".",
-                  exception);
+                    exception);
         }
         return properties.getProperty(VERSION);
     }

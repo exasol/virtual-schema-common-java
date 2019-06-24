@@ -5,7 +5,7 @@ import com.exasol.adapter.AdapterException;
 public class SqlPredicateLikeRegexp extends SqlPredicate {
     private final SqlNode left;
     private final SqlNode pattern;
-    
+
     public SqlPredicateLikeRegexp(final SqlNode left, final SqlNode pattern) {
         super(Predicate.REGEXP_LIKE);
         this.left = left;
@@ -17,15 +17,15 @@ public class SqlPredicateLikeRegexp extends SqlPredicate {
             this.pattern.setParent(this);
         }
     }
-    
+
     public SqlNode getLeft() {
         return left;
     }
-    
+
     public SqlNode getPattern() {
         return pattern;
     }
-    
+
     @Override
     public String toSimpleSql() {
         return left.toSimpleSql() + " REGEXP_LIKE " + pattern.toSimpleSql();

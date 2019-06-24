@@ -33,104 +33,104 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         final SqlNodeType type = fromTypeName(typeName);
         final SqlNode sqlNode;
         switch (type) {
-            case SELECT:
-                sqlNode = parseSelect(expression);
-                break;
-            case TABLE:
-                sqlNode = parseTable(expression);
-                break;
-            case JOIN:
-                sqlNode = parseJoin(expression);
-                break;
-            case COLUMN:
-                sqlNode = parseColumn(expression);
-                break;
-            case LITERAL_NULL:
-                sqlNode = parseLiteralNull();
-                break;
-            case LITERAL_BOOL:
-                sqlNode = parseLiteralBool(expression);
-                break;
-            case LITERAL_DATE:
-                sqlNode = parseLiteralDate(expression);
-                break;
-            case LITERAL_TIMESTAMP:
-                sqlNode = parseLiteralTimestamp(expression);
-                break;
-            case LITERAL_TIMESTAMPUTC:
-                sqlNode = parseLiteralTimestamputc(expression);
-                break;
-            case LITERAL_DOUBLE:
-                sqlNode = parseLiteralDouble(expression);
-                break;
-            case LITERAL_EXACTNUMERIC:
-                sqlNode = parseLiteralExactNumeric(expression);
-                break;
-            case LITERAL_STRING:
-                sqlNode = parseLiteralString(expression);
-                break;
-            case LITERAL_INTERVAL:
-                sqlNode = parseLiteralInterval(expression);
-                break;
-            case PREDICATE_AND:
-                sqlNode = parsePredicateAnd(expression);
-                break;
-            case PREDICATE_OR:
-                sqlNode = parsePredicateOr(expression);
-                break;
-            case PREDICATE_NOT:
-                sqlNode = parsePredicateNot(expression);
-                break;
-            case PREDICATE_EQUAL:
-                sqlNode = parsePredicateEqual(expression);
-                break;
-            case PREDICATE_NOTEQUAL:
-                sqlNode = parsePredicateNotEqual(expression);
-                break;
-            case PREDICATE_LESS:
-                sqlNode = parsePredicateLess(expression);
-                break;
-            case PREDICATE_LESSEQUAL:
-                sqlNode = parsePredicateLessEqual(expression);
-                break;
-            case PREDICATE_LIKE:
-                sqlNode = parsePredicateLike(expression);
-                break;
-            case PREDICATE_LIKE_REGEXP:
-                sqlNode = parsePredicateLikeRegexp(expression);
-                break;
-            case PREDICATE_BETWEEN:
-                sqlNode = parsePredicateBetween(expression);
-                break;
-            case PREDICATE_IN_CONSTLIST:
-                sqlNode = parsePredicateInConstlist(expression);
-                break;
-            case PREDICATE_IS_NULL:
-                sqlNode = parsePredicateIsNull(expression);
-                break;
-            case PREDICATE_IS_NOT_NULL:
-                sqlNode = parsePredicateIsNotNull(expression);
-                break;
-            case FUNCTION_SCALAR:
-                sqlNode = parseFunctionScalar(expression);
-                break;
-            case FUNCTION_SCALAR_EXTRACT:
-                sqlNode = parseFunctionScalarExtract(expression);
-                break;
-            case FUNCTION_SCALAR_CASE:
-                sqlNode = parseFunctionScalarCase(expression);
-                break;
-            case FUNCTION_SCALAR_CAST:
-                sqlNode = parseFunctionScalarCast(expression);
-                break;
-            case FUNCTION_AGGREGATE:
-                sqlNode = parseFunctionAggregate(expression);
-                break;
-            case FUNCTION_AGGREGATE_GROUP_CONCAT:
-                sqlNode = parseFunctionAggregateGroupConcat(expression);
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown node type: " + typeName);
+        case SELECT:
+            sqlNode = parseSelect(expression);
+            break;
+        case TABLE:
+            sqlNode = parseTable(expression);
+            break;
+        case JOIN:
+            sqlNode = parseJoin(expression);
+            break;
+        case COLUMN:
+            sqlNode = parseColumn(expression);
+            break;
+        case LITERAL_NULL:
+            sqlNode = parseLiteralNull();
+            break;
+        case LITERAL_BOOL:
+            sqlNode = parseLiteralBool(expression);
+            break;
+        case LITERAL_DATE:
+            sqlNode = parseLiteralDate(expression);
+            break;
+        case LITERAL_TIMESTAMP:
+            sqlNode = parseLiteralTimestamp(expression);
+            break;
+        case LITERAL_TIMESTAMPUTC:
+            sqlNode = parseLiteralTimestamputc(expression);
+            break;
+        case LITERAL_DOUBLE:
+            sqlNode = parseLiteralDouble(expression);
+            break;
+        case LITERAL_EXACTNUMERIC:
+            sqlNode = parseLiteralExactNumeric(expression);
+            break;
+        case LITERAL_STRING:
+            sqlNode = parseLiteralString(expression);
+            break;
+        case LITERAL_INTERVAL:
+            sqlNode = parseLiteralInterval(expression);
+            break;
+        case PREDICATE_AND:
+            sqlNode = parsePredicateAnd(expression);
+            break;
+        case PREDICATE_OR:
+            sqlNode = parsePredicateOr(expression);
+            break;
+        case PREDICATE_NOT:
+            sqlNode = parsePredicateNot(expression);
+            break;
+        case PREDICATE_EQUAL:
+            sqlNode = parsePredicateEqual(expression);
+            break;
+        case PREDICATE_NOTEQUAL:
+            sqlNode = parsePredicateNotEqual(expression);
+            break;
+        case PREDICATE_LESS:
+            sqlNode = parsePredicateLess(expression);
+            break;
+        case PREDICATE_LESSEQUAL:
+            sqlNode = parsePredicateLessEqual(expression);
+            break;
+        case PREDICATE_LIKE:
+            sqlNode = parsePredicateLike(expression);
+            break;
+        case PREDICATE_LIKE_REGEXP:
+            sqlNode = parsePredicateLikeRegexp(expression);
+            break;
+        case PREDICATE_BETWEEN:
+            sqlNode = parsePredicateBetween(expression);
+            break;
+        case PREDICATE_IN_CONSTLIST:
+            sqlNode = parsePredicateInConstlist(expression);
+            break;
+        case PREDICATE_IS_NULL:
+            sqlNode = parsePredicateIsNull(expression);
+            break;
+        case PREDICATE_IS_NOT_NULL:
+            sqlNode = parsePredicateIsNotNull(expression);
+            break;
+        case FUNCTION_SCALAR:
+            sqlNode = parseFunctionScalar(expression);
+            break;
+        case FUNCTION_SCALAR_EXTRACT:
+            sqlNode = parseFunctionScalarExtract(expression);
+            break;
+        case FUNCTION_SCALAR_CASE:
+            sqlNode = parseFunctionScalarCase(expression);
+            break;
+        case FUNCTION_SCALAR_CAST:
+            sqlNode = parseFunctionScalarCast(expression);
+            break;
+        case FUNCTION_AGGREGATE:
+            sqlNode = parseFunctionAggregate(expression);
+            break;
+        case FUNCTION_AGGREGATE_GROUP_CONCAT:
+            sqlNode = parseFunctionAggregateGroupConcat(expression);
+            break;
+        default:
+            throw new IllegalArgumentException("Unknown node type: " + typeName);
         }
         return sqlNode;
     }
@@ -337,35 +337,35 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         final String typeName = dataType.getString("type").toUpperCase();
         final DataType type;
         switch (typeName) {
-            case "DECIMAL":
-                type = DataType.createDecimal(dataType.getInt("precision"), dataType.getInt("scale"));
-                break;
-            case "DOUBLE":
-                type = DataType.createDouble();
-                break;
-            case "VARCHAR":
-                type = getVarchar(dataType);
-                break;
-            case "CHAR":
-                type = getChar(dataType);
-                break;
-            case "BOOLEAN":
-                type = DataType.createBool();
-                break;
-            case "DATE":
-                type = DataType.createDate();
-                break;
-            case "TIMESTAMP":
-                type = getTimestamp(dataType);
-                break;
-            case "INTERVAL":
-                type = getInterval(dataType);
-                break;
-            case "GEOMETRY":
-                type = getGeometry(dataType);
-                break;
-            default:
-                throw new IllegalArgumentException("Unsupported data type encountered: " + typeName);
+        case "DECIMAL":
+            type = DataType.createDecimal(dataType.getInt("precision"), dataType.getInt("scale"));
+            break;
+        case "DOUBLE":
+            type = DataType.createDouble();
+            break;
+        case "VARCHAR":
+            type = getVarchar(dataType);
+            break;
+        case "CHAR":
+            type = getChar(dataType);
+            break;
+        case "BOOLEAN":
+            type = DataType.createBool();
+            break;
+        case "DATE":
+            type = DataType.createDate();
+            break;
+        case "TIMESTAMP":
+            type = getTimestamp(dataType);
+            break;
+        case "INTERVAL":
+            type = getInterval(dataType);
+            break;
+        case "GEOMETRY":
+            type = getGeometry(dataType);
+            break;
+        default:
+            throw new IllegalArgumentException("Unsupported data type encountered: " + typeName);
         }
         return type;
     }
@@ -419,7 +419,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
             return ExaCharset.ASCII;
         } else {
             throw new IllegalArgumentException(
-                  "Unsupported charset encountered: " + charset + ". Supported charsets are \"UTF8\" and \"ASCII\".");
+                    "Unsupported charset encountered: " + charset + ". Supported charsets are \"UTF8\" and \"ASCII\".");
         }
     }
 
@@ -430,7 +430,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
             return IntervalType.YEAR_TO_MONTH;
         } else {
             throw new IllegalArgumentException("Unsupported interval data type encountered: " + intervalType //
-                  + " Supported intervals are \"DAY TO SECONDS\" and \"YEAR TO MONTH\".");
+                    + " Supported intervals are \"DAY TO SECONDS\" and \"YEAR TO MONTH\".");
         }
     }
 
@@ -580,7 +580,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
             separator = exp.getString("separator");
         }
         return new SqlFunctionAggregateGroupConcat(fromAggregationFunctionName(functionName), setArguments, orderBy,
-              distinct, separator);
+                distinct, separator);
     }
 
     /**
@@ -618,9 +618,8 @@ public final class PushdownSqlParser extends AbstractRequestParser {
                 return tableMetadata;
             }
         }
-        throw new IllegalStateException(
-              "Could not find table metadata for involved table " + tableName + ". All involved tables: " +
-                    this.involvedTablesMetadata.toString());
+        throw new IllegalStateException("Could not find table metadata for involved table " + tableName
+                + ". All involved tables: " + this.involvedTablesMetadata.toString());
     }
 
     private ColumnMetadata findColumnMetadata(final String tableName, final String columnName) {
@@ -630,9 +629,8 @@ public final class PushdownSqlParser extends AbstractRequestParser {
                 return columnMetadata;
             }
         }
-        throw new IllegalStateException(
-              "Could not find column metadata for involved table " + tableName + " and column + " + columnName +
-                    ". All involved tables: " + this.involvedTablesMetadata.toString());
+        throw new IllegalStateException("Could not find column metadata for involved table " + tableName
+                + " and column + " + columnName + ". All involved tables: " + this.involvedTablesMetadata.toString());
     }
 
     /**

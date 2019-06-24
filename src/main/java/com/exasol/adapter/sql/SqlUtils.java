@@ -4,12 +4,11 @@ import java.util.Map;
 
 public final class SqlUtils {
     private SqlUtils() {
-        //Intentionally left blank
+        // Intentionally left blank
     }
 
     @SuppressWarnings("squid:S1157")
-    public static String quoteIdentifierIfNeeded(final String identifier,
-          final Map<String, ?> config) {
+    public static String quoteIdentifierIfNeeded(final String identifier, final Map<String, ?> config) {
         String quoteChar = "\"";
         if (config.containsKey("QUOTE_CHAR")) {
             quoteChar = config.get("QUOTE_CHAR").toString();

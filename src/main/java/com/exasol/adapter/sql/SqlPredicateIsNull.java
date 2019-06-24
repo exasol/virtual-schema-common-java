@@ -12,11 +12,11 @@ public class SqlPredicateIsNull extends SqlPredicate {
             this.expression.setParent(this);
         }
     }
-    
+
     public SqlNode getExpression() {
         return expression;
     }
-    
+
     @Override
     public String toSimpleSql() {
         return expression.toSimpleSql() + " IS NULL";

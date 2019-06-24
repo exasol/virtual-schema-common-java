@@ -26,11 +26,11 @@ public class SqlPredicateLike extends SqlPredicate {
             this.escapeChar.setParent(this);
         }
     }
-    
+
     public SqlNode getLeft() {
         return this.left;
     }
-    
+
     public SqlNode getPattern() {
         return this.pattern;
     }
@@ -38,7 +38,7 @@ public class SqlPredicateLike extends SqlPredicate {
     public SqlNode getEscapeChar() {
         return this.escapeChar;
     }
-    
+
     @Override
     public String toSimpleSql() {
         String sql = this.left.toSimpleSql() + " LIKE " + this.pattern.toSimpleSql();

@@ -11,7 +11,7 @@ public class SqlPredicateOr extends SqlPredicate {
 
     public SqlPredicateOr(final List<SqlNode> orPredicates) {
         super(Predicate.OR);
-        this.orPredicates  = orPredicates;
+        this.orPredicates = orPredicates;
         if (this.orPredicates != null) {
             for (final SqlNode node : this.orPredicates) {
                 node.setParent(this);

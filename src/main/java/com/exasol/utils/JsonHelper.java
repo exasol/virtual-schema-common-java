@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public final class JsonHelper {
     private JsonHelper() {
-        //Intentionally left blank
+        // Intentionally left blank
     }
 
     public static JsonBuilderFactory getBuilderFactory() {

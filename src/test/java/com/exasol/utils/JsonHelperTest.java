@@ -35,8 +35,8 @@ class JsonHelperTest {
         when(this.jsonObject.containsKey(KEY_2)).thenReturn(true);
         when(this.jsonValue.toString()).thenReturn(KEY_2);
         when(this.jsonObject.get(KEY_2)).thenReturn(this.jsonValue);
-        this.expectedJsonObject =
-              Json.createObjectBuilder().add("type", "getCapabilities").add("capabilities", "LIMIT").build();
+        this.expectedJsonObject = Json.createObjectBuilder().add("type", "getCapabilities").add("capabilities", "LIMIT")
+                .build();
     }
 
     @Test

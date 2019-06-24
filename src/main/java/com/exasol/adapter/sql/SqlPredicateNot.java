@@ -4,7 +4,7 @@ import com.exasol.adapter.AdapterException;
 
 public class SqlPredicateNot extends SqlPredicate {
     private final SqlNode expression;
-    
+
     public SqlPredicateNot(final SqlNode expression) {
         super(Predicate.NOT);
         this.expression = expression;
@@ -12,11 +12,11 @@ public class SqlPredicateNot extends SqlPredicate {
             this.expression.setParent(this);
         }
     }
-    
+
     public SqlNode getExpression() {
         return expression;
     }
-    
+
     @Override
     public String toSimpleSql() {
         return "NOT (" + expression.toSimpleSql() + ")";

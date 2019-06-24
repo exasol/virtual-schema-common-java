@@ -13,7 +13,7 @@ public class SqlFunctionAggregateGroupConcat extends SqlNode {
     private final SqlOrderBy orderBy;
 
     public SqlFunctionAggregateGroupConcat(final AggregateFunction function, final List<SqlNode> arguments,
-          final SqlOrderBy orderBy, final boolean distinct, final String separator) {
+            final SqlOrderBy orderBy, final boolean distinct, final String separator) {
         SqlArgumentValidator.validateSqlFunctionArguments(arguments, SqlFunctionAggregateGroupConcat.class);
         this.function = function;
         this.distinct = distinct;
@@ -42,7 +42,8 @@ public class SqlFunctionAggregateGroupConcat extends SqlNode {
     }
 
     public boolean hasOrderBy() {
-        return this.orderBy != null && this.orderBy.getExpressions() != null && !this.orderBy.getExpressions().isEmpty();
+        return this.orderBy != null && this.orderBy.getExpressions() != null
+                && !this.orderBy.getExpressions().isEmpty();
     }
 
     public SqlOrderBy getOrderBy() {

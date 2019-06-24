@@ -9,7 +9,8 @@ import java.util.List;
 /**
  * A simple aggregate function with a name and zero or more arguments. Distinct is also allowed.
  *
- * <p>Aggregate functions that are more complex, like GroupConcat, are defined in separate classes.
+ * <p>
+ * Aggregate functions that are more complex, like GroupConcat, are defined in separate classes.
  * </p>
  */
 public class SqlFunctionAggregate extends SqlNode {
@@ -17,7 +18,8 @@ public class SqlFunctionAggregate extends SqlNode {
     private final boolean distinct;
     private final List<SqlNode> arguments;
 
-    public SqlFunctionAggregate(final AggregateFunction function, final List<SqlNode> arguments, final boolean distinct) {
+    public SqlFunctionAggregate(final AggregateFunction function, final List<SqlNode> arguments,
+            final boolean distinct) {
         this.arguments = arguments;
         this.function = function;
         this.distinct = distinct;

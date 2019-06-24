@@ -23,15 +23,15 @@ public class SqlColumn extends SqlNode {
         this.tableName = tableName;
         this.tableAlias = tableAlias;
     }
-    
+
     public int getId() {
         return this.id;
     }
-    
+
     public ColumnMetadata getMetadata() {
         return this.metadata;
     }
-    
+
     public String getName() {
         return this.metadata.getName();
     }
@@ -40,12 +40,14 @@ public class SqlColumn extends SqlNode {
         return this.tableName;
     }
 
-    public boolean hasTableAlias() { return this.tableAlias != null; }
+    public boolean hasTableAlias() {
+        return this.tableAlias != null;
+    }
 
     public String getTableAlias() {
         return this.tableAlias;
     }
-    
+
     @Override
     public String toSimpleSql() {
         return "\"" + this.metadata.getName().replace("\"", "\"\"") + "\"";
@@ -63,7 +65,7 @@ public class SqlColumn extends SqlNode {
 
     @Override
     public String toString() {
-        return "SqlColumn{" + "id=" + this.id + ", metadata=" + this.metadata + ", tableName='" + this.tableName + '\'' +
-              ", tableAlias='" + this.tableAlias + '\'' + '}';
+        return "SqlColumn{" + "id=" + this.id + ", metadata=" + this.metadata + ", tableName='" + this.tableName + '\''
+                + ", tableAlias='" + this.tableAlias + '\'' + '}';
     }
 }

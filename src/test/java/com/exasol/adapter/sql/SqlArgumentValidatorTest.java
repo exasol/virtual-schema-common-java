@@ -11,22 +11,22 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class SqlArgumentValidatorTest {
     @Test
     void testValidateSqlFunctionArgumentsNullThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> SqlArgumentValidator
-              .validateSqlFunctionArguments(null, SqlFunctionScalar.class));
+        assertThrows(IllegalArgumentException.class,
+                () -> SqlArgumentValidator.validateSqlFunctionArguments(null, SqlFunctionScalar.class));
     }
 
     @Test
     void testValidateSqlFunctionArgumentsEmptyThrowsException() {
         assertThrows(IllegalArgumentException.class, () -> SqlArgumentValidator
-              .validateSqlFunctionArguments(Collections.emptyList(), SqlFunctionScalar.class));
+                .validateSqlFunctionArguments(Collections.emptyList(), SqlFunctionScalar.class));
     }
 
     @Test
     void testValidateSqlFunctionArgumentsWithJsonNodeSetToNullThrowsException() {
         final List<SqlNode> arguments = new ArrayList<>();
         arguments.add(null);
-        assertThrows(IllegalArgumentException.class, () -> SqlArgumentValidator
-              .validateSqlFunctionArguments(arguments, SqlFunctionScalar.class));
+        assertThrows(IllegalArgumentException.class,
+                () -> SqlArgumentValidator.validateSqlFunctionArguments(arguments, SqlFunctionScalar.class));
     }
 
     @Test

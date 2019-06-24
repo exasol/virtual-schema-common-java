@@ -18,7 +18,8 @@ class RefreshResponseTest {
 
     @Test
     void builder() {
-        assertThat(RefreshResponse.builder().schemaMetadata(this.schemaMetadata).build(), instanceOf(RefreshResponse.class));
+        assertThat(RefreshResponse.builder().schemaMetadata(this.schemaMetadata).build(),
+                instanceOf(RefreshResponse.class));
     }
 
     @Test

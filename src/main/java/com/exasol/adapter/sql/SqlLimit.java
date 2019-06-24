@@ -11,8 +11,9 @@ public class SqlLimit extends SqlNode {
     }
 
     public SqlLimit(final int limit, final int offset) {
-        if (offset < 0 || limit <0) {
-            throw new IllegalArgumentException("SqlLimit constructor expects offset and limit values to be greater than zero");
+        if (offset < 0 || limit < 0) {
+            throw new IllegalArgumentException(
+                    "SqlLimit constructor expects offset and limit values to be greater than zero");
         }
         this.limit = limit;
         this.offset = offset;

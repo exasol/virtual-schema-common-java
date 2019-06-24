@@ -4,8 +4,8 @@ import com.exasol.adapter.metadata.SchemaMetadata;
 import com.exasol.adapter.response.converter.ResponseException;
 
 /**
- * This class is an abstract representation of a response
- * created by a Virtual Schema Adapter as result of a request to refresh the virtual schema.
+ * This class is an abstract representation of a response created by a Virtual Schema Adapter as result of a request to
+ * refresh the virtual schema.
  */
 public final class RefreshResponse extends AbstractResponse {
     private RefreshResponse(final Builder builder) {
@@ -51,7 +51,7 @@ public final class RefreshResponse extends AbstractResponse {
         private void validate(final SchemaMetadata schemaMetadata) {
             if (schemaMetadata == null) {
                 throw new ResponseException("SchemaMetadata should be not null. Please, add SchemaMetadata using " //
-                      + "'schemaMetadata(yourSchemaMetadata)' method of this builder before you build.");
+                        + "'schemaMetadata(yourSchemaMetadata)' method of this builder before you build.");
             }
         }
     }

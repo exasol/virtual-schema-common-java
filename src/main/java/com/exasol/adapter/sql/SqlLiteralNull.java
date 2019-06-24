@@ -3,7 +3,7 @@ package com.exasol.adapter.sql;
 import com.exasol.adapter.AdapterException;
 
 public class SqlLiteralNull extends SqlNode {
-    
+
     @Override
     public String toSimpleSql() {
         return "NULL";

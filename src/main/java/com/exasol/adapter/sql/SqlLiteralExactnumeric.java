@@ -6,15 +6,15 @@ import java.math.BigDecimal;
 
 public class SqlLiteralExactnumeric extends SqlNode {
     private final BigDecimal value;
-    
+
     public SqlLiteralExactnumeric(final BigDecimal value) {
         this.value = value;
     }
-    
+
     public BigDecimal getValue() {
         return value;
     }
-    
+
     @Override
     public String toSimpleSql() {
         return value.toString();
