@@ -1,14 +1,15 @@
 package com.exasol.adapter.sql;
 
-import com.exasol.adapter.AdapterException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
+import static com.exasol.mocking.MockUtils.mockSqlNodeVisitor;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.exasol.adapter.AdapterException;
 
 class SqlLimitTest {
     private static final Integer LIMIT = 5;
@@ -43,7 +44,7 @@ class SqlLimitTest {
 
     @Test
     void testAccept() throws AdapterException {
-        final SqlNodeVisitor<SqlLimit> visitor = mock(SqlNodeVisitor.class);
+        final SqlNodeVisitor<SqlLimit> visitor = mockSqlNodeVisitor();
         when(visitor.visit(this.sqlLimit)).thenReturn(this.sqlLimit);
         assertThat(this.sqlLimit.accept(visitor), equalTo(this.sqlLimit));
     }
@@ -63,8 +64,8 @@ class SqlLimitTest {
     @Test
     void setOffset() {
         assertFalse(this.sqlLimit.hasOffset());
-        this.sqlLimit.setOffset(3);
-        assertTrue(this.sqlLimit.hasOffset());
-        assertThat(this.sqlLimit.getOffset(), equalTo(3));
+        this.sqlLimit.setOffset(OFFSET);
+        assertAll(() -> assertTrue(this.sqlLimit.hasOffset()),
+                () -> assertThat(this.sqlLimit.getOffset(), equalTo(OFFSET)));
     }
 }

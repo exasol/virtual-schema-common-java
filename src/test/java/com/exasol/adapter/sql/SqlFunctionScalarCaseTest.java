@@ -1,17 +1,16 @@
 package com.exasol.adapter.sql;
 
-import com.exasol.adapter.AdapterException;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.when;
+
+import java.util.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.exasol.adapter.AdapterException;
+import com.exasol.mocking.MockUtils;
 
 class SqlFunctionScalarCaseTest {
     private SqlFunctionScalarCase sqlFunctionScalarCase;
@@ -26,8 +25,7 @@ class SqlFunctionScalarCaseTest {
         this.results = new ArrayList<>();
         this.results.add(new SqlLiteralNull());
         this.basis = new SqlLiteralNull();
-        this.sqlFunctionScalarCase =
-              new SqlFunctionScalarCase(this.arguments, this.results, this.basis);
+        this.sqlFunctionScalarCase = new SqlFunctionScalarCase(this.arguments, this.results, this.basis);
     }
 
     @Test
@@ -37,8 +35,7 @@ class SqlFunctionScalarCaseTest {
 
     @Test
     void testGetArgumentsEmptyList() {
-        this.sqlFunctionScalarCase =
-              new SqlFunctionScalarCase(null, this.results, new SqlLiteralNull());
+        this.sqlFunctionScalarCase = new SqlFunctionScalarCase(null, this.results, new SqlLiteralNull());
         assertThat(this.sqlFunctionScalarCase.getArguments(), equalTo(Collections.emptyList()));
     }
 
@@ -75,7 +72,7 @@ class SqlFunctionScalarCaseTest {
 
     @Test
     void testAccept() throws AdapterException {
-        final SqlNodeVisitor<SqlFunctionScalarCase> visitor = mock(SqlNodeVisitor.class);
+        final SqlNodeVisitor<SqlFunctionScalarCase> visitor = MockUtils.mockSqlNodeVisitor();
         when(visitor.visit(this.sqlFunctionScalarCase)).thenReturn(this.sqlFunctionScalarCase);
         assertThat(this.sqlFunctionScalarCase.accept(visitor), equalTo(this.sqlFunctionScalarCase));
     }

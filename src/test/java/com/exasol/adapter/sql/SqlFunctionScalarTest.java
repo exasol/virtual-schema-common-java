@@ -1,17 +1,16 @@
 package com.exasol.adapter.sql;
 
-import com.exasol.adapter.AdapterException;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.when;
+
+import java.util.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.exasol.adapter.AdapterException;
+import com.exasol.mocking.MockUtils;
 
 class SqlFunctionScalarTest {
     private final static boolean IS_INFIX = true;
@@ -73,7 +72,7 @@ class SqlFunctionScalarTest {
 
     @Test
     void testAccept() throws AdapterException {
-        final SqlNodeVisitor<SqlFunctionScalar> visitor = mock(SqlNodeVisitor.class);
+        final SqlNodeVisitor<SqlFunctionScalar> visitor = MockUtils.mockSqlNodeVisitor();
         when(visitor.visit(this.sqlFunctionScalar)).thenReturn(this.sqlFunctionScalar);
         assertThat(this.sqlFunctionScalar.accept(visitor), equalTo(this.sqlFunctionScalar));
     }

@@ -1,13 +1,14 @@
 package com.exasol.adapter.sql;
 
-import com.exasol.adapter.AdapterException;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.when;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.exasol.adapter.AdapterException;
+import com.exasol.mocking.MockUtils;
 
 class SqlPredicateLessEqualTest {
     private SqlPredicateLessEqual sqlPredicateLessEqual;
@@ -18,8 +19,7 @@ class SqlPredicateLessEqualTest {
     void setUp() {
         this.sqlLiteralDoubleLeft = new SqlLiteralDouble(20.5);
         this.sqlLiteralDoubleRight = new SqlLiteralDouble(21.5);
-        this.sqlPredicateLessEqual =
-              new SqlPredicateLessEqual(this.sqlLiteralDoubleLeft, this.sqlLiteralDoubleRight);
+        this.sqlPredicateLessEqual = new SqlPredicateLessEqual(this.sqlLiteralDoubleLeft, this.sqlLiteralDoubleRight);
     }
 
     @Test
@@ -34,7 +34,7 @@ class SqlPredicateLessEqualTest {
 
     @Test
     void testAccept() throws AdapterException {
-        final SqlNodeVisitor<SqlPredicateLessEqual> visitor = mock(SqlNodeVisitor.class);
+        final SqlNodeVisitor<SqlPredicateLessEqual> visitor = MockUtils.mockSqlNodeVisitor();
         when(visitor.visit(this.sqlPredicateLessEqual)).thenReturn(this.sqlPredicateLessEqual);
         assertThat(this.sqlPredicateLessEqual.accept(visitor), equalTo(this.sqlPredicateLessEqual));
     }
