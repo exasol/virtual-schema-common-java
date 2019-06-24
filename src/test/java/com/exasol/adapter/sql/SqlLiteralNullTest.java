@@ -1,13 +1,14 @@
 package com.exasol.adapter.sql;
 
-import com.exasol.adapter.AdapterException;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.when;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.exasol.adapter.AdapterException;
+import com.exasol.mocking.MockUtils;
 
 class SqlLiteralNullTest {
     private SqlLiteralNull sqlLiteralNull;
@@ -29,7 +30,7 @@ class SqlLiteralNullTest {
 
     @Test
     void testAccept() throws AdapterException {
-        final SqlNodeVisitor<SqlLiteralNull> visitor = mock(SqlNodeVisitor.class);
+        final SqlNodeVisitor<SqlLiteralNull> visitor = MockUtils.mockSqlNodeVisitor();
         when(visitor.visit(this.sqlLiteralNull)).thenReturn(this.sqlLiteralNull);
         assertThat(this.sqlLiteralNull.accept(visitor), equalTo(this.sqlLiteralNull));
     }

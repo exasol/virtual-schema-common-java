@@ -1,13 +1,14 @@
 package com.exasol.adapter.sql;
 
-import com.exasol.adapter.AdapterException;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.when;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.exasol.adapter.AdapterException;
+import com.exasol.mocking.MockUtils;
 
 class SqlLiteralTimestampUtcTest {
     private static final String VALUE = "2019-02-07 23:59:00";
@@ -30,13 +31,12 @@ class SqlLiteralTimestampUtcTest {
 
     @Test
     void testGetType() {
-        assertThat(this.sqlLiteralTimestampUtc.getType(),
-              equalTo(SqlNodeType.LITERAL_TIMESTAMPUTC));
+        assertThat(this.sqlLiteralTimestampUtc.getType(), equalTo(SqlNodeType.LITERAL_TIMESTAMPUTC));
     }
 
     @Test
     void testAccept() throws AdapterException {
-        final SqlNodeVisitor<SqlLiteralTimestampUtc> visitor = mock(SqlNodeVisitor.class);
+        final SqlNodeVisitor<SqlLiteralTimestampUtc> visitor = MockUtils.mockSqlNodeVisitor();
         when(visitor.visit(this.sqlLiteralTimestampUtc)).thenReturn(this.sqlLiteralTimestampUtc);
         assertThat(this.sqlLiteralTimestampUtc.accept(visitor), equalTo(this.sqlLiteralTimestampUtc));
     }

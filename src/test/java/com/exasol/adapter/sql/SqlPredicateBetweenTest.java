@@ -1,13 +1,14 @@
 package com.exasol.adapter.sql;
 
-import com.exasol.adapter.AdapterException;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.when;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.exasol.adapter.AdapterException;
+import com.exasol.mocking.MockUtils;
 
 class SqlPredicateBetweenTest {
     private SqlPredicateBetween sqlPredicateBetween;
@@ -20,15 +21,13 @@ class SqlPredicateBetweenTest {
         this.expression = new SqlLiteralDouble(12.0);
         this.betweenLeft = new SqlLiteralDouble(11.0);
         this.betweenRight = new SqlLiteralDouble(13.0);
-        this.sqlPredicateBetween =
-              new SqlPredicateBetween(this.expression, this.betweenLeft, this.betweenRight);
+        this.sqlPredicateBetween = new SqlPredicateBetween(this.expression, this.betweenLeft, this.betweenRight);
     }
 
     @Test
     void testToSimpleSql() {
-        assertThat(this.sqlPredicateBetween.toSimpleSql(), equalTo(
-              this.expression.toSimpleSql() + " BETWEEN " + this.betweenLeft.toSimpleSql() +
-                    " AND " + this.betweenRight.toSimpleSql()));
+        assertThat(this.sqlPredicateBetween.toSimpleSql(), equalTo(this.expression.toSimpleSql() + " BETWEEN "
+                + this.betweenLeft.toSimpleSql() + " AND " + this.betweenRight.toSimpleSql()));
     }
 
     @Test
@@ -53,7 +52,7 @@ class SqlPredicateBetweenTest {
 
     @Test
     void testAccept() throws AdapterException {
-        final SqlNodeVisitor<SqlPredicateBetween> visitor = mock(SqlNodeVisitor.class);
+        final SqlNodeVisitor<SqlPredicateBetween> visitor = MockUtils.mockSqlNodeVisitor();
         when(visitor.visit(this.sqlPredicateBetween)).thenReturn(this.sqlPredicateBetween);
         assertThat(this.sqlPredicateBetween.accept(visitor), equalTo(this.sqlPredicateBetween));
     }

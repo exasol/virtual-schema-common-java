@@ -1,13 +1,14 @@
 package com.exasol.adapter.sql;
 
-import com.exasol.adapter.AdapterException;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.when;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.exasol.adapter.AdapterException;
+import com.exasol.mocking.MockUtils;
 
 class SqlPredicateLikeTest {
     private SqlPredicateLike sqlPredicateLike;
@@ -35,7 +36,7 @@ class SqlPredicateLikeTest {
 
     @Test
     void testAccept() throws AdapterException {
-        final SqlNodeVisitor<SqlPredicateLike> visitor = mock(SqlNodeVisitor.class);
+        final SqlNodeVisitor<SqlPredicateLike> visitor = MockUtils.mockSqlNodeVisitor();
         when(visitor.visit(this.sqlPredicateLike)).thenReturn(this.sqlPredicateLike);
         assertThat(this.sqlPredicateLike.accept(visitor), equalTo(this.sqlPredicateLike));
     }

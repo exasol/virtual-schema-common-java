@@ -1,17 +1,16 @@
 package com.exasol.adapter.sql;
 
-import com.exasol.adapter.AdapterException;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.when;
+
+import java.util.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.exasol.adapter.AdapterException;
+import com.exasol.mocking.MockUtils;
 
 class SqlFunctionAggregateTest {
     private static final boolean TEST_DISTINCT = true;
@@ -25,8 +24,7 @@ class SqlFunctionAggregateTest {
         this.aggregateFunction = AggregateFunction.AVG;
         this.arguments = new ArrayList<>();
         this.arguments.add(new SqlLiteralString(TEST_NAME));
-        this.sqlFunctionAggregate =
-              new SqlFunctionAggregate(this.aggregateFunction, this.arguments, TEST_DISTINCT);
+        this.sqlFunctionAggregate = new SqlFunctionAggregate(this.aggregateFunction, this.arguments, TEST_DISTINCT);
     }
 
     @Test
@@ -36,15 +34,13 @@ class SqlFunctionAggregateTest {
 
     @Test
     void testGetArgumentsReturnsEmptyList() {
-        assertThat(
-              new SqlFunctionAggregate(this.aggregateFunction, null, TEST_DISTINCT).getArguments(),
-              equalTo(Collections.emptyList()));
+        assertThat(new SqlFunctionAggregate(this.aggregateFunction, null, TEST_DISTINCT).getArguments(),
+                equalTo(Collections.emptyList()));
     }
 
     @Test
     void testToSimpleSql() {
-        assertThat(this.sqlFunctionAggregate.toSimpleSql(),
-              equalTo("AVG(DISTINCT '" + TEST_NAME + "')"));
+        assertThat(this.sqlFunctionAggregate.toSimpleSql(), equalTo("AVG(DISTINCT '" + TEST_NAME + "')"));
     }
 
     @Test
@@ -64,7 +60,7 @@ class SqlFunctionAggregateTest {
 
     @Test
     void testAccept() throws AdapterException {
-        final SqlNodeVisitor<SqlFunctionAggregate> visitor = mock(SqlNodeVisitor.class);
+        final SqlNodeVisitor<SqlFunctionAggregate> visitor = MockUtils.mockSqlNodeVisitor();
         when(visitor.visit(this.sqlFunctionAggregate)).thenReturn(this.sqlFunctionAggregate);
         assertThat(this.sqlFunctionAggregate.accept(visitor), equalTo(this.sqlFunctionAggregate));
     }

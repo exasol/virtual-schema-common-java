@@ -1,17 +1,16 @@
 package com.exasol.adapter.sql;
 
-import com.exasol.adapter.AdapterException;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.when;
+
+import java.util.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.exasol.adapter.AdapterException;
+import com.exasol.mocking.MockUtils;
 
 class SqlPredicateAndTest {
     private SqlPredicateAnd sqlPredicateAnd;
@@ -34,8 +33,7 @@ class SqlPredicateAndTest {
 
     @Test
     void testGetAndedPredicatesEmptyList() {
-        assertThat(this.sqlPredicateAndWithEmptyList.getAndedPredicates(),
-              equalTo(Collections.emptyList()));
+        assertThat(this.sqlPredicateAndWithEmptyList.getAndedPredicates(), equalTo(Collections.emptyList()));
     }
 
     @Test
@@ -50,7 +48,7 @@ class SqlPredicateAndTest {
 
     @Test
     void testAccept() throws AdapterException {
-        final SqlNodeVisitor<SqlPredicateAnd> visitor = mock(SqlNodeVisitor.class);
+        final SqlNodeVisitor<SqlPredicateAnd> visitor = MockUtils.mockSqlNodeVisitor();
         when(visitor.visit(this.sqlPredicateAnd)).thenReturn(this.sqlPredicateAnd);
         assertThat(this.sqlPredicateAnd.accept(visitor), equalTo(this.sqlPredicateAnd));
     }

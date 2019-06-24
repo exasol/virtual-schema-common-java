@@ -1,14 +1,15 @@
 package com.exasol.adapter.sql;
 
-import com.exasol.adapter.AdapterException;
-import com.exasol.adapter.metadata.DataType;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.when;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.exasol.adapter.AdapterException;
+import com.exasol.adapter.metadata.DataType;
+import com.exasol.mocking.MockUtils;
 
 class SqlLiteralIntervalTest {
     private static final String VALUE = "5";
@@ -32,19 +33,18 @@ class SqlLiteralIntervalTest {
     @Test
     void testToSimpleSqlDayToSecond() {
         assertThat(this.sqlLiteralIntervalDayToSecond.toSimpleSql(),
-              equalTo("INTERVAL '" + VALUE + "' DAY (1) TO SECOND (2)"));
+                equalTo("INTERVAL '" + VALUE + "' DAY (1) TO SECOND (2)"));
     }
 
     @Test
     void testToSimpleSqlYearToMonth() {
         assertThat(this.sqlLiteralIntervalYearToMonth.toSimpleSql(),
-              equalTo("INTERVAL '" + VALUE + "' YEAR (3) TO MONTH"));
+                equalTo("INTERVAL '" + VALUE + "' YEAR (3) TO MONTH"));
     }
 
     @Test
     void testGetType() {
-        assertThat(this.sqlLiteralIntervalDayToSecond.getType(),
-              equalTo(SqlNodeType.LITERAL_INTERVAL));
+        assertThat(this.sqlLiteralIntervalDayToSecond.getType(), equalTo(SqlNodeType.LITERAL_INTERVAL));
     }
 
     @Test
@@ -54,10 +54,8 @@ class SqlLiteralIntervalTest {
 
     @Test
     void testAccept() throws AdapterException {
-        final SqlNodeVisitor<SqlLiteralInterval> visitor = mock(SqlNodeVisitor.class);
-        when(visitor.visit(this.sqlLiteralIntervalDayToSecond)).thenReturn(
-              this.sqlLiteralIntervalDayToSecond);
-        assertThat(this.sqlLiteralIntervalDayToSecond.accept(visitor), equalTo(
-              this.sqlLiteralIntervalDayToSecond));
+        final SqlNodeVisitor<SqlLiteralInterval> visitor = MockUtils.mockSqlNodeVisitor();
+        when(visitor.visit(this.sqlLiteralIntervalDayToSecond)).thenReturn(this.sqlLiteralIntervalDayToSecond);
+        assertThat(this.sqlLiteralIntervalDayToSecond.accept(visitor), equalTo(this.sqlLiteralIntervalDayToSecond));
     }
 }

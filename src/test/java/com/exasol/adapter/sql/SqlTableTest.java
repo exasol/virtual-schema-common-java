@@ -1,15 +1,16 @@
 package com.exasol.adapter.sql;
 
-import com.exasol.adapter.AdapterException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.exasol.adapter.AdapterException;
+import com.exasol.mocking.MockUtils;
 
 class SqlTableTest {
     private static final String TEST_NAME = "test name";
@@ -59,7 +60,7 @@ class SqlTableTest {
 
     @Test
     void testAccept() throws AdapterException {
-        final SqlNodeVisitor<SqlTable> visitor = mock(SqlNodeVisitor.class);
+        final SqlNodeVisitor<SqlTable> visitor = MockUtils.mockSqlNodeVisitor();
         when(visitor.visit(this.sqlTable)).thenReturn(this.sqlTable);
         assertThat(this.sqlTable.accept(visitor), equalTo(this.sqlTable));
     }

@@ -1,18 +1,19 @@
 package com.exasol.adapter.sql;
 
-import com.exasol.adapter.AdapterException;
-import com.exasol.adapter.metadata.DataType;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.exasol.adapter.AdapterException;
+import com.exasol.adapter.metadata.DataType;
+import com.exasol.mocking.MockUtils;
 
 class SqlFunctionScalarCastTest {
     private SqlFunctionScalarCast sqlFunctionScalarCast;
@@ -35,7 +36,7 @@ class SqlFunctionScalarCastTest {
     @Test
     void testGetArgumentsWithNullAsArgumentList() {
         assertThrows(IllegalArgumentException.class,
-              () -> this.sqlFunctionScalarCast = new SqlFunctionScalarCast(this.dataType, null));
+                () -> this.sqlFunctionScalarCast = new SqlFunctionScalarCast(this.dataType, null));
     }
 
     @Test
@@ -60,7 +61,7 @@ class SqlFunctionScalarCastTest {
 
     @Test
     void testAccept() throws AdapterException {
-        final SqlNodeVisitor<SqlFunctionScalarCast> visitor = mock(SqlNodeVisitor.class);
+        final SqlNodeVisitor<SqlFunctionScalarCast> visitor = MockUtils.mockSqlNodeVisitor();
         when(visitor.visit(this.sqlFunctionScalarCast)).thenReturn(this.sqlFunctionScalarCast);
         assertThat(this.sqlFunctionScalarCast.accept(visitor), equalTo(this.sqlFunctionScalarCast));
     }

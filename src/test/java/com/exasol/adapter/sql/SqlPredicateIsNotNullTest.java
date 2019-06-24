@@ -1,13 +1,14 @@
 package com.exasol.adapter.sql;
 
-import com.exasol.adapter.AdapterException;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.when;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.exasol.adapter.AdapterException;
+import com.exasol.mocking.MockUtils;
 
 class SqlPredicateIsNotNullTest {
     private SqlPredicateIsNotNull sqlPredicateIsNotNull;
@@ -22,13 +23,12 @@ class SqlPredicateIsNotNullTest {
     @Test
     void testToSimpleSql() {
         assertThat(this.sqlPredicateIsNotNull.toSimpleSql(),
-              equalTo(this.sqlLiteralString.toSimpleSql() + " IS NOT NULL"));
+                equalTo(this.sqlLiteralString.toSimpleSql() + " IS NOT NULL"));
     }
 
     @Test
     void testGetType() {
-        assertThat(this.sqlPredicateIsNotNull.getType(),
-              equalTo(SqlNodeType.PREDICATE_IS_NOT_NULL));
+        assertThat(this.sqlPredicateIsNotNull.getType(), equalTo(SqlNodeType.PREDICATE_IS_NOT_NULL));
     }
 
     @Test
@@ -38,7 +38,7 @@ class SqlPredicateIsNotNullTest {
 
     @Test
     void testAccept() throws AdapterException {
-        final SqlNodeVisitor<SqlPredicateIsNotNull> visitor = mock(SqlNodeVisitor.class);
+        final SqlNodeVisitor<SqlPredicateIsNotNull> visitor = MockUtils.mockSqlNodeVisitor();
         when(visitor.visit(this.sqlPredicateIsNotNull)).thenReturn(this.sqlPredicateIsNotNull);
         assertThat(this.sqlPredicateIsNotNull.accept(visitor), equalTo(this.sqlPredicateIsNotNull));
     }

@@ -3,7 +3,6 @@ package com.exasol.adapter.sql;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -13,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.exasol.adapter.AdapterException;
+import com.exasol.mocking.MockUtils;
 
 class SqlFunctionScalarExtractTest {
     private static final String TEST_STRING_TO_EXTRACT = "SECOND";
@@ -65,7 +65,7 @@ class SqlFunctionScalarExtractTest {
 
     @Test
     void testAccept() throws AdapterException {
-        final SqlNodeVisitor<SqlFunctionScalarExtract> visitor = mock(SqlNodeVisitor.class);
+        final SqlNodeVisitor<SqlFunctionScalarExtract> visitor = MockUtils.mockSqlNodeVisitor();
         when(visitor.visit(this.sqlFunctionScalarExtract)).thenReturn(this.sqlFunctionScalarExtract);
         assertThat(this.sqlFunctionScalarExtract.accept(visitor), equalTo(this.sqlFunctionScalarExtract));
     }
