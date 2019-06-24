@@ -19,7 +19,7 @@ class CreateVirtualSchemaResponseTest {
     @Test
     void builder() {
         assertThat(CreateVirtualSchemaResponse.builder().schemaMetadata(this.schemaMetadata).build(),
-              instanceOf(CreateVirtualSchemaResponse.class));
+                instanceOf(CreateVirtualSchemaResponse.class));
     }
 
     @Test

@@ -4,7 +4,7 @@ import com.exasol.adapter.AdapterException;
 
 public class SqlLiteralTimestampUtc extends SqlNode {
     private final String value;
-    
+
     public SqlLiteralTimestampUtc(final String value) {
         this.value = value;
     }
@@ -15,7 +15,7 @@ public class SqlLiteralTimestampUtc extends SqlNode {
     public String getValue() {
         return this.value;
     }
-    
+
     @Override
     public String toSimpleSql() {
         return "TIMESTAMP '" + this.value + "'";

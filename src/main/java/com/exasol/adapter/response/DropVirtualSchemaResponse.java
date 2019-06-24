@@ -1,8 +1,8 @@
 package com.exasol.adapter.response;
 
 /**
- * This class is an abstract representation of a response
- * created by a Virtual Schema Adapter as result of a request to drop a virtual schema.
+ * This class is an abstract representation of a response created by a Virtual Schema Adapter as result of a request to
+ * drop a virtual schema.
  */
 public final class DropVirtualSchemaResponse {
     /**
@@ -15,7 +15,7 @@ public final class DropVirtualSchemaResponse {
     }
 
     private DropVirtualSchemaResponse() {
-        //intentionally left blank
+        // intentionally left blank
     }
 
     /**

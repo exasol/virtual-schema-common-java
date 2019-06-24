@@ -29,11 +29,11 @@ public class SqlPredicateInConstList extends SqlPredicate {
             }
         }
     }
-    
+
     public SqlNode getExpression() {
         return this.expression;
     }
-    
+
     public List<SqlNode> getInArguments() {
         if (this.inArguments == null) {
             return Collections.emptyList();
@@ -41,7 +41,7 @@ public class SqlPredicateInConstList extends SqlPredicate {
             return Collections.unmodifiableList(this.inArguments);
         }
     }
-    
+
     @Override
     public String toSimpleSql() {
         final List<String> argumentsSql = new ArrayList<>();

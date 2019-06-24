@@ -21,11 +21,12 @@ public abstract class SqlNode {
     public boolean hasParent() {
         return (this.parent != null);
     }
-    
+
     /**
      * See {@link SqlNodeVisitor}
+     * 
      * @param visitor The visitor object on which the appropriate visit(sqlNode) method is called
-     * @param <R> generic SqlNodeVisitor type
+     * @param <R>     generic SqlNodeVisitor type
      *
      * @return visited object
      *
@@ -34,7 +35,8 @@ public abstract class SqlNode {
     public abstract <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException;
 
     /**
-     * @return A SQL representation of the current graph, using EXASOL SQL syntax. It is called "SIMPLE" because it is not guaranteed to be 100 % correct SQL (e.g. might be ambiguous).
+     * @return A SQL representation of the current graph, using EXASOL SQL syntax. It is called "SIMPLE" because it is
+     *         not guaranteed to be 100 % correct SQL (e.g. might be ambiguous).
      */
     abstract String toSimpleSql();
 }

@@ -110,8 +110,7 @@ class RequestParserTest {
                 + "}";
         final AdapterRequest request = this.parser.parse(rawRequest);
         assertThat("Request class", request, instanceOf(PushDownRequest.class));
-        final List<TableMetadata> involvedTables = ((PushDownRequest) request)
-                .getInvolvedTablesMetadata();
+        final List<TableMetadata> involvedTables = ((PushDownRequest) request).getInvolvedTablesMetadata();
         assertAll(() -> assertThat(request.getType(), equalTo(AdapterRequestType.PUSHDOWN)),
                 () -> assertThat(involvedTables, iterableWithSize(1)),
                 () -> assertThat(involvedTables.get(0).getName(), equalTo("FOO")));

@@ -6,23 +6,11 @@ import com.exasol.adapter.sql.*;
  * List of all Predicates (scalar functions returning bool) supported by EXASOL.
  */
 public enum PredicateCapability {
-    AND,
-    OR,
-    NOT,
-    EQUAL,
-    NOTEQUAL,
-    LESS,
-    LESSEQUAL,
-    LIKE,
+    AND, OR, NOT, EQUAL, NOTEQUAL, LESS, LESSEQUAL, LIKE,
     /**
      * The LIKE predicate with the optional escape character defined
      */
-    LIKE_ESCAPE(Predicate.LIKE),
-    REGEXP_LIKE,
-    BETWEEN,
-    IN_CONSTLIST,
-    IS_NULL,
-    IS_NOT_NULL;
+    LIKE_ESCAPE(Predicate.LIKE), REGEXP_LIKE, BETWEEN, IN_CONSTLIST, IS_NULL, IS_NOT_NULL;
 
     private final Predicate predicate;
 
@@ -38,4 +26,3 @@ public enum PredicateCapability {
         return this.predicate;
     }
 }
-

@@ -23,8 +23,7 @@ class SqlUtilsTest {
 
     @Test
     void testQuoteIdentifierIfNeededWithoutQuotes() {
-        assertThat(SqlUtils.quoteIdentifierIfNeeded("TABLE", Collections.emptyMap()),
-              equalTo(TABLE_WITHOUT_QUOTES));
+        assertThat(SqlUtils.quoteIdentifierIfNeeded("TABLE", Collections.emptyMap()), equalTo(TABLE_WITHOUT_QUOTES));
     }
 
     @Test
@@ -36,7 +35,6 @@ class SqlUtilsTest {
     @Test
     void testQuoteIdentifierIfNeededWithQuotesSlash() {
         this.map.put("QUOTE_CHAR", "\"");
-        assertThat(SqlUtils.quoteIdentifierIfNeeded("table", this.map),
-              equalTo(TABLE_WITH_QUOTES_2));
+        assertThat(SqlUtils.quoteIdentifierIfNeeded("table", this.map), equalTo(TABLE_WITH_QUOTES_2));
     }
 }

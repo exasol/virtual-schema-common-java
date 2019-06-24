@@ -28,8 +28,8 @@ public class SqlLiteralInterval extends SqlNode {
         if (this.type.getIntervalType() == DataType.IntervalType.YEAR_TO_MONTH) {
             return "INTERVAL '" + this.value + "' YEAR (" + this.type.getPrecision() + ") TO MONTH";
         } else {
-            return "INTERVAL '" + this.value + "' DAY (" + this.type.getPrecision()
-                    + ") TO SECOND (" + this.type.getIntervalFraction() + ")";
+            return "INTERVAL '" + this.value + "' DAY (" + this.type.getPrecision() + ") TO SECOND ("
+                    + this.type.getIntervalFraction() + ")";
         }
     }
 

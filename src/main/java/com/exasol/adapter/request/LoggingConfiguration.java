@@ -87,7 +87,8 @@ public final class LoggingConfiguration {
                 return createLocalLoggingConfiguration(properties);
             }
         } else {
-            return new LoggingConfiguration(parseLogLevel(properties), true, remoteLoggingAddress, DEFAULT_REMOTE_LOGGING_PORT);
+            return new LoggingConfiguration(parseLogLevel(properties), true, remoteLoggingAddress,
+                    DEFAULT_REMOTE_LOGGING_PORT);
         }
     }
 

@@ -4,8 +4,7 @@ public abstract class AbstractSqlBinaryEquality extends SqlPredicate {
     private final SqlNode left;
     private final SqlNode right;
 
-    public AbstractSqlBinaryEquality(final Predicate function, final SqlNode left,
-          final SqlNode right) {
+    public AbstractSqlBinaryEquality(final Predicate function, final SqlNode left, final SqlNode right) {
         super(function);
         this.left = left;
         this.right = right;

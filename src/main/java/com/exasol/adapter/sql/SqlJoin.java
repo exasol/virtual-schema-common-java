@@ -8,8 +8,7 @@ public class SqlJoin extends SqlNode {
     private final SqlNode condition;
     private final JoinType joinType;
 
-    public SqlJoin(final SqlNode left, final SqlNode right, final SqlNode condition, final JoinType joinType)
-    {
+    public SqlJoin(final SqlNode left, final SqlNode right, final SqlNode condition, final JoinType joinType) {
         this.left = left;
         if (this.left != null) {
             this.left.setParent(this);
@@ -31,7 +30,7 @@ public class SqlJoin extends SqlNode {
     public SqlNode getLeft() {
         return left;
     }
-    
+
     /**
      * @return the right
      */
@@ -65,6 +64,7 @@ public class SqlJoin extends SqlNode {
 
     @Override
     String toSimpleSql() {
-		return left.toSimpleSql() + " " + joinType.name().replace('_', ' ') + " JOIN "  + right.toSimpleSql() + " ON " + condition.toSimpleSql();
-	}
+        return left.toSimpleSql() + " " + joinType.name().replace('_', ' ') + " JOIN " + right.toSimpleSql() + " ON "
+                + condition.toSimpleSql();
+    }
 }

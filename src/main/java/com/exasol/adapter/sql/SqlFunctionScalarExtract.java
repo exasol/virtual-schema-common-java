@@ -11,8 +11,7 @@ public class SqlFunctionScalarExtract extends SqlNode {
     private final List<SqlNode> arguments;
 
     public SqlFunctionScalarExtract(final String toExtract, final List<SqlNode> arguments) {
-        SqlArgumentValidator
-              .validateSqlFunctionArguments(arguments, SqlFunctionScalarExtract.class);
+        SqlArgumentValidator.validateSqlFunctionArguments(arguments, SqlFunctionScalarExtract.class);
         this.arguments = arguments;
         this.toExtract = toExtract;
         for (final SqlNode node : this.arguments) {

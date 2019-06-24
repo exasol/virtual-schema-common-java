@@ -15,7 +15,7 @@ public class SqlStatementSelect extends SqlStatement {
     private final SqlLimit limit;
 
     public SqlStatementSelect(final SqlNode fromClause, final SqlSelectList selectList, final SqlNode whereClause,
-          final SqlExpressionList groupBy, final SqlNode having, final SqlOrderBy orderBy, final SqlLimit limit) {
+            final SqlExpressionList groupBy, final SqlNode having, final SqlOrderBy orderBy, final SqlLimit limit) {
         this.fromClause = fromClause;
         this.selectList = selectList;
         this.whereClause = whereClause;

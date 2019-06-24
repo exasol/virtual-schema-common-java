@@ -10,11 +10,12 @@ import javax.json.JsonObjectBuilder;
 
 public final class SqlDataTypeJsonSerializer {
     private SqlDataTypeJsonSerializer() {
-        //Intentionally left blank.
+        // Intentionally left blank.
     }
 
     public static JsonObjectBuilder serialize(final DataType dataType) {
-        final JsonObjectBuilder root = Json.createObjectBuilder().add("type", exaTypeAsString(dataType.getExaDataType()));
+        final JsonObjectBuilder root = Json.createObjectBuilder().add("type",
+                exaTypeAsString(dataType.getExaDataType()));
 
         switch (dataType.getExaDataType()) {
         case UNSUPPORTED:
@@ -23,7 +24,7 @@ public final class SqlDataTypeJsonSerializer {
             root.add("precision", dataType.getPrecision());
             root.add("scale", dataType.getScale());
             break;
-        case VARCHAR: //falling through intentionally
+        case VARCHAR: // falling through intentionally
         case CHAR:
             root.add("size", dataType.getSize());
             root.add("characterSet", exaCharSetAsString(dataType.getCharset()));
@@ -37,7 +38,7 @@ public final class SqlDataTypeJsonSerializer {
         case INTERVAL:
             addIntervalToRoot(dataType, root);
             break;
-        case DOUBLE: //falling through intentionally
+        case DOUBLE: // falling through intentionally
         case DATE:
         case BOOLEAN:
             break;

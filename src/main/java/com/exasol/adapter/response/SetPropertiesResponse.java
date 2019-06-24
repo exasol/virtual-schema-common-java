@@ -3,8 +3,8 @@ package com.exasol.adapter.response;
 import com.exasol.adapter.metadata.SchemaMetadata;
 
 /**
- * This class is an abstract representation of a response
- * created by a Virtual Schema Adapter as result of a request to set properties.
+ * This class is an abstract representation of a response created by a Virtual Schema Adapter as result of a request to
+ * set properties.
  */
 public final class SetPropertiesResponse extends AbstractResponse {
     private SetPropertiesResponse(final Builder builder) {

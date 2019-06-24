@@ -4,7 +4,7 @@ import com.exasol.adapter.AdapterException;
 
 public class SqlLiteralDate extends SqlNode {
     private final String value;
-    
+
     public SqlLiteralDate(final String value) {
         this.value = value;
     }
@@ -15,7 +15,7 @@ public class SqlLiteralDate extends SqlNode {
     public String getValue() {
         return this.value;
     }
-    
+
     @Override
     public String toSimpleSql() {
         return "DATE '" + this.value + "'";

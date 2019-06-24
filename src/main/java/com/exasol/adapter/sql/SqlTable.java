@@ -19,23 +19,23 @@ public class SqlTable extends SqlNode {
         this.alias = alias;
         this.metadata = metadata;
     }
-    
+
     public boolean hasAlias() {
         return !this.name.equals(this.alias);
     }
-    
+
     public String getName() {
         return this.name;
     }
-    
+
     public String getAlias() {
         return this.alias;
     }
-    
+
     public TableMetadata getMetadata() {
         return this.metadata;
     }
-    
+
     @Override
     public String toSimpleSql() {
         return "\"" + this.name.replace("\"", "\"\"") + "\"";
