@@ -108,7 +108,7 @@ public final class SchemaMetadataJsonConverter {
         switch (dataType.getExaDataType()) {
         case UNSUPPORTED:
             throw new IllegalArgumentException("Unsupported data type found trying to serialize schema metadata. "
-                    + ErrorMessages.FILE_A_BUG_REPORT_MSG);
+                    + ErrorMessages.askForBugReport());
         case DECIMAL:
             typeAsJson.add("precision", dataType.getPrecision());
             typeAsJson.add("scale", dataType.getScale());
