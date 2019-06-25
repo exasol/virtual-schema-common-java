@@ -1,12 +1,10 @@
 package com.exasol.adapter.response.converter;
 
-import com.exasol.adapter.capabilities.*;
-import com.exasol.adapter.json.SchemaMetadataSerializer;
-import com.exasol.adapter.response.*;
+import javax.json.*;
 
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObjectBuilder;
+import com.exasol.adapter.capabilities.*;
+import com.exasol.adapter.metadata.converter.SchemaMetadataJsonConverter;
+import com.exasol.adapter.response.*;
 
 /**
  * Converts response into JSON format
@@ -54,7 +52,8 @@ public final class ResponseJsonConverter {
     public String convertCreateVirtualSchemaResponse(final CreateVirtualSchemaResponse createResponse) {
         return Json.createObjectBuilder() //
                 .add("type", "createVirtualSchema") //
-                .add(SCHEMA_METADATA, SchemaMetadataSerializer.serialize(createResponse.getSchemaMetadata())) //
+                .add(SCHEMA_METADATA,
+                        SchemaMetadataJsonConverter.getInstance().convert(createResponse.getSchemaMetadata())) //
                 .build() //
                 .toString();
     }
@@ -139,7 +138,8 @@ public final class ResponseJsonConverter {
     public String convertRefreshResponse(final RefreshResponse refreshResponse) {
         return Json.createObjectBuilder() //
                 .add("type", "refresh") //
-                .add(SCHEMA_METADATA, SchemaMetadataSerializer.serialize(refreshResponse.getSchemaMetadata())) //
+                .add(SCHEMA_METADATA,
+                        SchemaMetadataJsonConverter.getInstance().convert(refreshResponse.getSchemaMetadata())) //
                 .build() //
                 .toString();
     }
@@ -154,7 +154,8 @@ public final class ResponseJsonConverter {
         final JsonObjectBuilder builder = Json.createObjectBuilder();
         builder.add("type", "setProperties");
         if (setPropertiesResponse.getSchemaMetadata() != null) {
-            builder.add(SCHEMA_METADATA, SchemaMetadataSerializer.serialize(setPropertiesResponse.getSchemaMetadata()));
+            builder.add(SCHEMA_METADATA,
+                    SchemaMetadataJsonConverter.getInstance().convert(setPropertiesResponse.getSchemaMetadata()));
         }
         return builder.build().toString();
     }
