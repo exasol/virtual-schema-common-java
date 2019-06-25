@@ -58,12 +58,16 @@ public class TableMetadata {
         return this.columns;
     }
 
-    public boolean hasComment() {
-        return !this.comment.isEmpty();
-    }
-
     public String getComment() {
         return this.comment;
+    }
+
+    public boolean hasComment() {
+        return (this.comment != null) && !this.comment.isEmpty();
+    }
+
+    public boolean hasAdapterNote() {
+        return (this.adapterNotes != null) && !this.adapterNotes.isEmpty();
     }
 
     /**
