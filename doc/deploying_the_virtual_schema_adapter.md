@@ -33,13 +33,13 @@ Following steps are required to upload a file to a bucket:
 
 1. Make sure you have a bucket file system (BucketFS) and you know the port for either HTTP or HTTPS.
 
-   This can be done in EXAOperation under "EXABuckets". E.g. the id could be `bucketfs1` and the HTTP port 2580.
+   This can be done in EXAOperation under "EXABuckets". E.g. the ID could be `bucketfs1`. The recommended default HTTP port is 2580, but any unused TCP port will work. As a best practice choose an unprivileged port (1024 or higher).
   
 1. Check if you have a bucket in the BucketFS. Simply click on the name of the BucketFS in EXAOperation and add a bucket there, e.g. `bucket1`.
 
    Also make sure you know the write password. For simplicity we assume that the bucket is defined as a public bucket, i.e. it can be read by any script.
   
-1. Now upload the file into this bucket, e.g. using curl (adapt the hostname, BucketFS port, bucket name and bucket write password).
+1. Now upload the file into this bucket, e.g. using `curl` (adapt the hostname, BucketFS port, bucket name and bucket write password).
 
 ```bash
 curl -X PUT -T virtualschema-jdbc-adapter-dist/target/virtualschema-jdbc-adapter-dist-1.3.0.jar \
@@ -47,6 +47,8 @@ curl -X PUT -T virtualschema-jdbc-adapter-dist/target/virtualschema-jdbc-adapter
 ```
 
 See chapter 3.6.4. "The synchronous cluster file system BucketFS" in the EXASolution User Manual for more details about BucketFS.
+
+Check out Exasol's [BucketFS Explorer](https://github.com/exasol/bucketfs-explorer) as an alternative means of uploading your JAR archive.
 
 ## Deploying JDBC Driver Files
 
