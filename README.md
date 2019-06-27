@@ -20,7 +20,7 @@ This is one of the modules of Virtual Schemas Adapters.
 The libraries provided by this project are the foundation of the adapter development, i.e. adapters must be implemented on top of them.
 You can find the full description of the project here: https://github.com/exasol/virtual-schemas
 
-Please note that the artifact name changed from "virtualschema-common" to "virtual-schema-common". First to unify the naming schemes, second to make sure the new adapters do not accidentally use the old line of libraries.
+Please note that the artifact name changed from "virtualschema-common" to "virtual-schema-common-java". First to unify the naming schemes, second to make sure the new adapters do not accidentally use the old line of libraries.
 
 ## Dependencies
 
