@@ -1,6 +1,5 @@
 package com.exasol.adapter.sql;
 
-import com.exasol.SqlTestUtil;
 import com.exasol.adapter.metadata.ColumnMetadata;
 import com.exasol.adapter.metadata.DataType;
 import com.exasol.adapter.metadata.DataType.ExaCharset;
@@ -21,7 +20,11 @@ class SqlNodeTest {
         final String expectedSql = "SELECT \"USER_ID\", COUNT(\"URL\") FROM \"CLICKS\"" + " WHERE 1 < \"USER_ID\"" //
                 + " GROUP BY \"USER_ID\"" + " HAVING 1 < COUNT(\"URL\")" + " ORDER BY \"USER_ID\"" + " LIMIT 10";
         final String actualSql = node.toSimpleSql();
-        assertEquals(SqlTestUtil.normalizeSql(expectedSql), SqlTestUtil.normalizeSql(actualSql));
+        assertEquals(normalizeSql(expectedSql), normalizeSql(actualSql));
+    }
+
+    private String normalizeSql(final String sql) {
+        return sql.replaceAll("\t", " ").replaceAll("\n", " ").replaceAll("\\s+", " ");
     }
 
     private SqlNode getTestSqlNode() {
