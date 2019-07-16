@@ -1,12 +1,13 @@
 package com.exasol.adapter.sql;
 
-import com.exasol.SqlTestUtil;
 import com.exasol.adapter.metadata.ColumnMetadata;
 import com.exasol.adapter.metadata.DataType;
 import com.exasol.adapter.metadata.DataType.ExaCharset;
 import com.exasol.adapter.metadata.TableMetadata;
 import com.google.common.collect.ImmutableList;
+import org.json.*;
 import org.junit.jupiter.api.Test;
+import org.skyscreamer.jsonassert.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -21,16 +22,10 @@ class SqlNodeTest {
         final String expectedSql = "SELECT \"USER_ID\", COUNT(\"URL\") FROM \"CLICKS\"" + " WHERE 1 < \"USER_ID\"" //
                 + " GROUP BY \"USER_ID\"" + " HAVING 1 < COUNT(\"URL\")" + " ORDER BY \"USER_ID\"" + " LIMIT 10";
         final String actualSql = node.toSimpleSql();
-        assertEquals(SqlTestUtil.normalizeSql(expectedSql), SqlTestUtil.normalizeSql(actualSql));
+        assertEquals(expectedSql, actualSql);
     }
 
     private SqlNode getTestSqlNode() {
-        // SELECT USER_ID, count(URL) FROM CLICKS
-        // WHERE 1 < USER_ID
-        // GROUP BY USER_ID
-        // HAVING 1 < COUNT(URL)
-        // ORDER BY USER_ID
-        // LIMIT 10;
         final TableMetadata clicksMeta = getClicksTableMetadata();
         final SqlTable fromClause = new SqlTable("CLICKS", clicksMeta);
         final SqlSelectList selectList = SqlSelectList.createRegularSelectList(ImmutableList
@@ -58,5 +53,4 @@ class SqlNodeTest {
                 .comment("").build());
         return new TableMetadata("CLICKS", "", columns, "");
     }
-
 }
