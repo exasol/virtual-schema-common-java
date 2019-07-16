@@ -124,9 +124,9 @@ public class DataType {
     }
 
     /**
-     * Create a <code>DATE</code> data type
+     * Create a <code>UNSUPPORTED</code> data type
      *
-     * @return <code>DATE</code> data type
+     * @return <code>UNSUPPORTED</code> data type
      */
     public static DataType createUnsupported() {
         final DataType type = new DataType();
