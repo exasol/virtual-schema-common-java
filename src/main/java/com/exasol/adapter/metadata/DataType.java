@@ -124,7 +124,7 @@ public class DataType {
     }
 
     /**
-     * Create a <code>UNSUPPORTED</code> data type
+     * Create an <code>UNSUPPORTED</code> data type
      *
      * @return <code>UNSUPPORTED</code> data type
      */
