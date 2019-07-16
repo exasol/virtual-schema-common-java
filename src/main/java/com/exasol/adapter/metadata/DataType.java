@@ -124,6 +124,17 @@ public class DataType {
     }
 
     /**
+     * Create an <code>UNSUPPORTED</code> data type
+     *
+     * @return <code>UNSUPPORTED</code> data type
+     */
+    public static DataType createUnsupported() {
+        final DataType type = new DataType();
+        type.exaDataType = ExaDataType.UNSUPPORTED;
+        return type;
+    }
+
+    /**
      * Create a <code>TIMESTAMP</code> data type
      *
      * @param withLocalTimezone defines whether the timestamp is local time (<code>true</code>) or
