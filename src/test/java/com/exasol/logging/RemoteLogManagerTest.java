@@ -42,7 +42,7 @@ class RemoteLogManagerTest {
     void testSetupConsoleLoggingWithMoreDetailedLogLevel(final Capturable stream) throws IOException {
         this.logManager.setupConsoleLogger(Level.ALL);
         stream.capture();
-        LOGGER.finest("Hello.");
+        LOGGER.finest(() -> "Hello.");
         assertThat(stream.getCapturedData(),
                 matchesPattern(TIMESTAMP_PATTERN + " FINEST +" + CLASS_TAG + " Hello.\\n"));
     }

@@ -1,19 +1,16 @@
 package com.exasol.adapter.sql;
 
-import com.exasol.adapter.metadata.ColumnMetadata;
-import com.exasol.adapter.metadata.DataType;
-import com.exasol.adapter.metadata.DataType.ExaCharset;
-import com.exasol.adapter.metadata.TableMetadata;
-import com.google.common.collect.ImmutableList;
-import org.json.*;
-import org.junit.jupiter.api.Test;
-import org.skyscreamer.jsonassert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Test;
+
+import com.exasol.adapter.metadata.*;
+import com.exasol.adapter.metadata.DataType.ExaCharset;
+import com.google.common.collect.ImmutableList;
 
 class SqlNodeTest {
     @Test
