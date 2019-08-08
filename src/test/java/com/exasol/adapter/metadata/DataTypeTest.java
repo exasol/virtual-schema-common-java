@@ -58,6 +58,12 @@ class DataTypeTest {
     }
 
     @Test
+    void createUnsupported() {
+        final DataType dataType = DataType.createUnsupported();
+        assertThat(dataType.toString(), equalTo("UNSUPPORTED"));
+    }
+
+    @Test
     void createDate() {
         final DataType dataType = DataType.createDate();
         assertThat(dataType.toString(), equalTo("DATE"));
