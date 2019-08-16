@@ -138,9 +138,13 @@ class AdapterPropertiesTest {
     @ParameterizedTest
     void testHasNamedProperty(final String propertyName) throws NoSuchMethodException, SecurityException,
             IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        this.rawProperties.put(propertyName, propertyName + "_VALUE");
-        final AdapterProperties properties = new AdapterProperties(this.rawProperties);
+        final AdapterProperties properties = createPropertyListWithSpecificPropertySetToAValue(propertyName);
         final Boolean hasNamedProperty = invokePropertyExistenceCheckMethod(propertyName, properties);
         assertThat(hasNamedProperty, equalTo(true));
+    }
+
+    public AdapterProperties createPropertyListWithSpecificPropertySetToAValue(final String propertyName) {
+        this.rawProperties.put(propertyName, propertyName + "_VALUE");
+        return new AdapterProperties(this.rawProperties);
     }
 }
