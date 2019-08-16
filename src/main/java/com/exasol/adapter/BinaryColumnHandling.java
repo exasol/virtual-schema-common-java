@@ -11,7 +11,7 @@ package com.exasol.adapter;
  * <dd>Binary column is not mapped</dd>
  * <dt>ENCODE_BASE64</dt>
  * <dd>Content of the binary column is encoded with Base64 and put into a <code>VARCHAR</code></dd>
- * <dl>
+ * </dl>
  */
 public enum BinaryColumnHandling {
     IGNORE, ENCODE_BASE64
