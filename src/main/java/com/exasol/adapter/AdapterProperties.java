@@ -26,6 +26,7 @@ public class AdapterProperties extends AbstractAdapterProperties {
     public static final String USERNAME_PROPERTY = "USERNAME";
     @SuppressWarnings("squid:S2068") // Sonar mistakes this for a hard-coded credential
     public static final String PASSWORD_PROPERTY = "PASSWORD";
+    public static final String BINARY_COLUMN_HANDLING_PROPERTY = "BINARY_COLUMN_HANDLING";
 
     /**
      * Create a new instance of {@link AdapterProperties}
@@ -176,7 +177,8 @@ public class AdapterProperties extends AbstractAdapterProperties {
                 || changedProperties.containsKey(PASSWORD_PROPERTY) //
                 || changedProperties.containsKey(SCHEMA_NAME_PROPERTY) //
                 || changedProperties.containsKey(CATALOG_NAME_PROPERTY) //
-                || changedProperties.containsKey(TABLE_FILTER_PROPERTY);
+                || changedProperties.containsKey(TABLE_FILTER_PROPERTY)
+                || changedProperties.containsKey(BINARY_COLUMN_HANDLING_PROPERTY);
     }
 
     /**
@@ -187,6 +189,19 @@ public class AdapterProperties extends AbstractAdapterProperties {
      */
     public boolean isLocalSource() {
         return isEnabled(IS_LOCAL_PROPERTY);
+    }
+
+    /**
+     * Get binary column handling
+     *
+     * @return binary column handling
+     */
+    public BinaryColumnHandling getBinaryColumnHandling() {
+        if (hasBinaryColumnHandling()) {
+            return BinaryColumnHandling.valueOf(get(BINARY_COLUMN_HANDLING_PROPERTY));
+        } else {
+            return BinaryColumnHandling.IGNORE;
+        }
     }
 
     /**
@@ -304,6 +319,24 @@ public class AdapterProperties extends AbstractAdapterProperties {
      */
     public boolean hasIgnoreErrors() {
         return containsKey(IGNORE_ERRORS_PROPERTY);
+    }
+
+    /**
+     * Check if the "is local" property is set
+     *
+     * @return <code>true</code> if "is local" property is set
+     */
+    public boolean hasIsLocal() {
+        return containsKey(IS_LOCAL_PROPERTY);
+    }
+
+    /**
+     * Check if the binary column handling property is set
+     *
+     * @return <code>true</code> if binary column handling property is set
+     */
+    public boolean hasBinaryColumnHandling() {
+        return containsKey(BINARY_COLUMN_HANDLING_PROPERTY);
     }
 
     /**

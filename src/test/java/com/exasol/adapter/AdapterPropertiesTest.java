@@ -1,21 +1,23 @@
 package com.exasol.adapter;
 
 import static com.exasol.adapter.AdapterProperties.*;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.*;
 import java.util.*;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.*;
 
 import com.exasol.utils.StringUtils;
 
 class AdapterPropertiesTest {
+    private static final String PROPERTY_SUFFIX = "_PROPERTY";
     private Map<String, String> rawProperties;
 
     @BeforeEach
@@ -32,7 +34,7 @@ class AdapterPropertiesTest {
             CONNECTION_STRING_PROPERTY, USERNAME_PROPERTY, PASSWORD_PROPERTY, DEBUG_ADDRESS_PROPERTY,
             LOG_LEVEL_PROPERTY, SQL_DIALECT_PROPERTY, EXCLUDED_CAPABILITIES_PROPERTY, EXCEPTION_HANDLING_PROPERTY })
     @ParameterizedTest
-    void testGetCatalogName(final String property) throws IllegalAccessException, IllegalArgumentException,
+    void testGetStringProperty(final String property) throws IllegalAccessException, IllegalArgumentException,
             InvocationTargetException, NoSuchMethodException, SecurityException {
         final String expectedValue = property + "_VALUE";
         this.rawProperties.put(property, expectedValue);
@@ -54,7 +56,7 @@ class AdapterPropertiesTest {
     }
 
     @ValueSource(strings = { CONNECTION_STRING_PROPERTY, CONNECTION_NAME_PROPERTY, USERNAME_PROPERTY, PASSWORD_PROPERTY,
-            SCHEMA_NAME_PROPERTY, CATALOG_NAME_PROPERTY, TABLE_FILTER_PROPERTY })
+            SCHEMA_NAME_PROPERTY, CATALOG_NAME_PROPERTY, TABLE_FILTER_PROPERTY, BINARY_COLUMN_HANDLING_PROPERTY })
     @ParameterizedTest
     void testIsRefreshingVirtualSchemaRequiredTrue(final String propertyName) {
         this.rawProperties.put(propertyName, "");
@@ -74,6 +76,11 @@ class AdapterPropertiesTest {
     }
 
     @Test
+    void testGetIgnoredErrorsReturnsEmptyListByDefault() {
+        assertThat(AdapterProperties.emptyProperties().getIgnoredErrors(), emptyIterableOf(String.class));
+    }
+
+    @Test
     void testIsLocalSourceFalse() {
         assertThat(AdapterProperties.emptyProperties().isLocalSource(), equalTo(false));
     }
@@ -84,146 +91,60 @@ class AdapterPropertiesTest {
         assertThat(new AdapterProperties(this.rawProperties).isLocalSource(), equalTo(true));
     }
 
-    @Test
-    void hasUsernameFalseByDefault() {
-        assertThat(AdapterProperties.emptyProperties().hasUsername(), equalTo(false));
+    @CsvSource({ "IGNORE, IGNORE", "ENCODE_BASE64, ENCODE_BASE64" })
+    @ParameterizedTest
+    void testGetBinaryColumnHandling(final String value, final BinaryColumnHandling binaryColumnHandling) {
+        this.rawProperties.put(BINARY_COLUMN_HANDLING_PROPERTY, value);
+        assertThat(new AdapterProperties(this.rawProperties).getBinaryColumnHandling(), equalTo(binaryColumnHandling));
     }
 
     @Test
-    void hasUsername() {
-        this.rawProperties.put(USERNAME_PROPERTY, "USERNAME_PROPERTY");
-        assertThat(new AdapterProperties(this.rawProperties).hasUsername(), equalTo(true));
+    void testGetBinaryColumnHandlingIsIgnoreByDefault() {
+        assertThat(AdapterProperties.emptyProperties().getBinaryColumnHandling(), equalTo(BinaryColumnHandling.IGNORE));
     }
 
     @Test
-    void hasPasswordFalseByDefault() {
-        assertThat(AdapterProperties.emptyProperties().hasPassword(), equalTo(false));
+    void testGetUnknownBinaryColumnHandlingThrowsException() {
+        this.rawProperties.put(BINARY_COLUMN_HANDLING_PROPERTY, "THIS_VALUE_DOES_NOT_EXIST");
+        assertThrows(IllegalArgumentException.class,
+                () -> new AdapterProperties(this.rawProperties).getBinaryColumnHandling());
     }
 
-    @Test
-    void hasPassword() {
-        this.rawProperties.put(PASSWORD_PROPERTY, "PASSWORD_PROPERTY");
-        assertThat(new AdapterProperties(this.rawProperties).hasPassword(), equalTo(true));
+    @MethodSource("getAdapterPropertyNames")
+    @ParameterizedTest
+    void testHasNamedPropertyFalseByDefault(final String propertyName) throws NoSuchMethodException, SecurityException,
+            IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        final AdapterProperties emptyProperties = AdapterProperties.emptyProperties();
+        final Boolean hasNamedProperty = invokePropertyExistenceCheckMethod(propertyName, emptyProperties);
+        assertThat(hasNamedProperty, equalTo(false));
     }
 
-    @Test
-    void hasConnectionStringFalseByDefault() {
-        assertThat(AdapterProperties.emptyProperties().hasConnectionString(), equalTo(false));
+    static public Stream<String> getAdapterPropertyNames() {
+        return Arrays.asList(AdapterProperties.class.getDeclaredFields()) //
+                .stream() //
+                .map(Field::getName) //
+                .filter(name -> name.endsWith(PROPERTY_SUFFIX)) //
+                .map(name -> name.replace(PROPERTY_SUFFIX, ""));
     }
 
-    @Test
-    void hasConnectionString() {
-        this.rawProperties.put(CONNECTION_STRING_PROPERTY, "CONNECTION_STRING_PROPERTY");
-        assertThat(new AdapterProperties(this.rawProperties).hasConnectionString(), equalTo(true));
+    public boolean invokePropertyExistenceCheckMethod(final String propertyName, final AdapterProperties properties)
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        final String methodName = "has" + StringUtils.toCamelCase(propertyName);
+        final Method method = properties.getClass().getDeclaredMethod(methodName);
+        return (Boolean) method.invoke(properties);
     }
 
-    @Test
-    void hasTableFilterFalseByDefault() {
-        assertThat(AdapterProperties.emptyProperties().hasTableFilter(), equalTo(false));
+    @MethodSource("getAdapterPropertyNames")
+    @ParameterizedTest
+    void testHasNamedProperty(final String propertyName) throws NoSuchMethodException, SecurityException,
+            IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        final AdapterProperties properties = createPropertyListWithSpecificPropertySetToAValue(propertyName);
+        final Boolean hasNamedProperty = invokePropertyExistenceCheckMethod(propertyName, properties);
+        assertThat(hasNamedProperty, equalTo(true));
     }
 
-    @Test
-    void hasTableFilter() {
-        this.rawProperties.put(TABLE_FILTER_PROPERTY, "TABLE_FILTER_PROPERTY");
-        assertThat(new AdapterProperties(this.rawProperties).hasTableFilter(), equalTo(true));
-    }
-
-    @Test
-    void hasCatalogNameFalseByDefault() {
-        assertThat(AdapterProperties.emptyProperties().hasCatalogName(), equalTo(false));
-    }
-
-    @Test
-    void hasCatalogName() {
-        this.rawProperties.put(CATALOG_NAME_PROPERTY, "CATALOG_NAME_PROPERTY");
-        assertThat(new AdapterProperties(this.rawProperties).hasCatalogName(), equalTo(true));
-    }
-
-    @Test
-    void hasSchemaNameFalseByDefault() {
-        assertThat(AdapterProperties.emptyProperties().hasSchemaName(), equalTo(false));
-    }
-
-    @Test
-    void hasSchemaName() {
-        this.rawProperties.put(SCHEMA_NAME_PROPERTY, "SCHEMA_NAME_PROPERTY");
-        assertThat(new AdapterProperties(this.rawProperties).hasSchemaName(), equalTo(true));
-    }
-
-    @Test
-    void hasConnectionNameFalseByDefault() {
-        assertThat(AdapterProperties.emptyProperties().hasConnectionName(), equalTo(false));
-    }
-
-    @Test
-    void hasConnectionName() {
-        this.rawProperties.put(CONNECTION_NAME_PROPERTY, "CONNECTION_NAME_PROPERTY");
-        assertThat(new AdapterProperties(this.rawProperties).hasConnectionName(), equalTo(true));
-    }
-
-    @Test
-    void hasDebugAddressFalseByDefault() {
-        assertThat(AdapterProperties.emptyProperties().hasDebugAddress(), equalTo(false));
-    }
-
-    @Test
-    void hasDebugAddress() {
-        this.rawProperties.put(DEBUG_ADDRESS_PROPERTY, "DEBUG_ADDRESS_PROPERTY");
-        assertThat(new AdapterProperties(this.rawProperties).hasDebugAddress(), equalTo(true));
-    }
-
-    @Test
-    void hasLogLevelFalseByDefault() {
-        assertThat(AdapterProperties.emptyProperties().hasLogLevel(), equalTo(false));
-    }
-
-    @Test
-    void hasLogLevel() {
-        this.rawProperties.put(LOG_LEVEL_PROPERTY, "LOG_LEVEL_PROPERTY");
-        assertThat(new AdapterProperties(this.rawProperties).hasLogLevel(), equalTo(true));
-    }
-
-    @Test
-    void hasSqlDialectFalseByDefault() {
-        assertThat(AdapterProperties.emptyProperties().hasSqlDialect(), equalTo(false));
-    }
-
-    @Test
-    void hasSqlDialect() {
-        this.rawProperties.put(SQL_DIALECT_PROPERTY, "SQL_DIALECT_PROPERTY");
-        assertThat(new AdapterProperties(this.rawProperties).hasSqlDialect(), equalTo(true));
-    }
-
-    @Test
-    void hasExcludedCapabilitiesFalseByDefault() {
-        assertThat(AdapterProperties.emptyProperties().hasExcludedCapabilities(), equalTo(false));
-    }
-
-    @Test
-    void hasExcludedCapabilities() {
-        this.rawProperties.put(EXCLUDED_CAPABILITIES_PROPERTY, "EXCLUDED_CAPABILITIES_PROPERTY");
-        assertThat(new AdapterProperties(this.rawProperties).hasExcludedCapabilities(), equalTo(true));
-    }
-
-    @Test
-    void hasExceptionHandlingFalseByDefault() {
-        assertThat(AdapterProperties.emptyProperties().hasExceptionHandling(), equalTo(false));
-    }
-
-    @Test
-    void hasExceptionHandling() {
-        this.rawProperties.put(EXCEPTION_HANDLING_PROPERTY, "EXCEPTION_HANDLING_PROPERTY");
-        assertThat(new AdapterProperties(this.rawProperties).hasExceptionHandling(), equalTo(true));
-    }
-
-    @Test
-    void hasIgnoreErrorsFalseByDefault() {
-        assertThat(AdapterProperties.emptyProperties().hasIgnoreErrors(), equalTo(false));
-    }
-
-    @Test
-    void hasIgnoreErrors() {
-        this.rawProperties.put(IGNORE_ERRORS_PROPERTY, "IGNORE_ERRORS_PROPERTY");
-        assertThat(new AdapterProperties(this.rawProperties).hasIgnoreErrors(), equalTo(true));
+    public AdapterProperties createPropertyListWithSpecificPropertySetToAValue(final String propertyName) {
+        this.rawProperties.put(propertyName, propertyName + "_VALUE");
+        return new AdapterProperties(this.rawProperties);
     }
 }
