@@ -291,6 +291,15 @@ public class DataType {
         return this.intervalFraction;
     }
 
+    /**
+     * Check if the data type is supported.
+     *
+     * @return {@code true} if the data type is supported by the Virtual Schema.
+     */
+    public boolean isSupported() {
+        return this.exaDataType != ExaDataType.UNSUPPORTED;
+    }
+
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();

@@ -106,4 +106,14 @@ class DataTypeTest {
                 () -> assertThat(dataType.getSize(), equalTo(DataType.MAX_EXASOL_CHAR_SIZE)),
                 () -> assertThat(dataType.getCharset(), equalTo(DataType.ExaCharset.ASCII)));
     }
+
+    @Test
+    void testIsSupportedDate() {
+        assertThat(DataType.createDate().isSupported(), equalTo(true));
+    }
+
+    @Test
+    void testIsSupportedForUnsupporteTypeFalse() {
+        assertThat(DataType.createUnsupported().isSupported(), equalTo(false));
+    }
 }
