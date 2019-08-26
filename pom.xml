@@ -4,14 +4,14 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.exasol</groupId>
   <artifactId>virtual-schema-common-java</artifactId>
-  <version>7.2.0</version>
+  <version>7.2.1</version>
   <name>Common module of Exasol Virtual Schemas Adapters</name>
   <description>This is one of the modules of Virtual Schemas Adapters. The libraries provided by this project are the foundation of the adapter development, i.e. adapters must be implemented on top of them.</description>
   <url>https://github.com/exasol/virtual-schema-common-java</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <java.version>1.8</java.version>
+    <java.version>9</java.version>
     <junit.version>5.4.2</junit.version>
     <junit.platform.version>1.4.2</junit.platform.version>
     <maven.surefire.version>3.0.0-M3</maven.surefire.version>
@@ -73,11 +73,6 @@
       <groupId>com.exasol</groupId>
       <artifactId>exasol-script-api</artifactId>
       <version>6.1.0</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>18.0</version>
     </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
