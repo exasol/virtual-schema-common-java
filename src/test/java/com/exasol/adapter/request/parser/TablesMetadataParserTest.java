@@ -4,8 +4,6 @@ import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.ColumnMetadata;
 import com.exasol.adapter.metadata.DataType;
 import com.exasol.adapter.metadata.TableMetadata;
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
 import org.junit.jupiter.api.Test;
 
 import javax.json.Json;
@@ -14,6 +12,8 @@ import javax.json.JsonReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.nio.charset.*;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +24,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 class TablesMetadataParserTest {
     @Test
-    void testParseMetadata() throws IOException, AdapterException {
+    void testParseMetadata() throws IOException {
         final List<ColumnMetadata> tableColumns = new ArrayList<>();
         tableColumns.add(ColumnMetadata.builder().name("ID").adapterNotes("").type(DataType.createDecimal(22, 0))
                 .nullable(true).identity(true).defaultValue("").comment("").build());
@@ -44,12 +44,16 @@ class TablesMetadataParserTest {
     }
 
     private JsonArray readInvolvedTablesFromJsonFile(final String file) throws IOException {
-        final String rawRequest = Files.toString(new File(file), Charsets.UTF_8);
+        final String rawRequest = readFile(new File(file), Charset.defaultCharset());
         final JsonArray tablesAsJson;
         try (final JsonReader reader = Json.createReader(new StringReader(rawRequest))) {
             tablesAsJson = reader.readObject().getJsonArray(RequestParserConstants.INVOLVED_TABLES_KEY);
         }
         return tablesAsJson;
+    }
+
+    private String readFile(final File file, final Charset charset) throws IOException {
+        return new String(Files.readAllBytes(file.toPath()), charset);
     }
 
     @Test

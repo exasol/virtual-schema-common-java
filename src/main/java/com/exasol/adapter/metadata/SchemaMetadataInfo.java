@@ -1,8 +1,6 @@
 package com.exasol.adapter.metadata;
 
-import java.util.Map;
-
-import com.google.common.base.MoreObjects;
+import java.util.*;
 
 /**
  * Represents the metadata of an EXASOL Virtual Schema which are sent with each request. The metadata are just "for
@@ -22,8 +20,11 @@ public class SchemaMetadataInfo {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("schemaName", this.schemaName)
-                .add("adapterNotes", this.adapterNotes).add("properties", this.properties).toString();
+        return new StringJoiner(", ", SchemaMetadataInfo.class.getSimpleName() + "{", "}")
+                .add("schemaName=" + this.schemaName) //
+                .add("adapterNotes=" + this.adapterNotes) //
+                .add("properties=" + this.properties) //
+                .toString();
     }
 
     public String getSchemaName() {
