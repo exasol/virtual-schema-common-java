@@ -1,6 +1,5 @@
 package com.exasol.adapter.request.parser;
 
-import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.ColumnMetadata;
 import com.exasol.adapter.metadata.DataType;
 import com.exasol.adapter.metadata.TableMetadata;
