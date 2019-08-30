@@ -15,21 +15,27 @@ class SchemaMetadataInfoTest {
 
     @BeforeEach
     void setUp() {
-        schemaMetadataInfo = new SchemaMetadataInfo(TEST_NAME, TEST_ADAPTER_NOTES, Collections.emptyMap());
+        this.schemaMetadataInfo = new SchemaMetadataInfo(TEST_NAME, TEST_ADAPTER_NOTES, Collections.emptyMap());
     }
 
     @Test
     void testGetSchemaName() {
-        assertThat(schemaMetadataInfo.getSchemaName(), equalTo(TEST_NAME));
+        assertThat(this.schemaMetadataInfo.getSchemaName(), equalTo(TEST_NAME));
     }
 
     @Test
     void testGetAdapterNotes() {
-        assertThat(schemaMetadataInfo.getAdapterNotes(), equalTo(TEST_ADAPTER_NOTES));
+        assertThat(this.schemaMetadataInfo.getAdapterNotes(), equalTo(TEST_ADAPTER_NOTES));
     }
 
     @Test
     void testGetProperties() {
-        assertThat(schemaMetadataInfo.getProperties(), equalTo(Collections.emptyMap()));
+        assertThat(this.schemaMetadataInfo.getProperties(), equalTo(Collections.emptyMap()));
+    }
+
+    @Test
+    void testToString() {
+        assertThat(this.schemaMetadataInfo.toString(),
+                equalTo("SchemaMetadataInfo{schemaName=test name, adapterNotes=test adapter notes, properties={}}"));
     }
 }

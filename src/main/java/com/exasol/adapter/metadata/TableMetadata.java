@@ -1,9 +1,6 @@
 package com.exasol.adapter.metadata;
 
-import java.util.List;
-import java.util.Objects;
-
-import com.google.common.base.MoreObjects;
+import java.util.*;
 
 /**
  * Represents the metadata of an EXASOL table.
@@ -42,8 +39,12 @@ public class TableMetadata {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("name", this.name).add("adapterNotes", this.adapterNotes)
-                .add("columns", this.columns).add("comment", this.comment).toString();
+        return new StringJoiner(", ", TableMetadata.class.getSimpleName() + "{", "}\n") //
+                .add("name=" + this.name) //
+                .add("adapterNotes=" + this.adapterNotes) //
+                .add("columns=" + this.columns) //
+                .add("comment=" + this.comment) //
+                .toString();
     }
 
     public String getName() {
