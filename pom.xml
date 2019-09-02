@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.exasol</groupId>
   <artifactId>virtual-schema-common-java</artifactId>
-  <version>7.2.1</version>
+  <version>7.3.0</version>
   <name>Common module of Exasol Virtual Schemas Adapters</name>
   <description>This is one of the modules of Virtual Schemas Adapters. The libraries provided by this project are the foundation of the adapter development, i.e. adapters must be implemented on top of them.</description>
   <url>https://github.com/exasol/virtual-schema-common-java</url>
@@ -81,8 +81,8 @@
     </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-junit</artifactId>
-      <version>2.0.0.0</version>
+      <artifactId>hamcrest</artifactId>
+      <version>2.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>

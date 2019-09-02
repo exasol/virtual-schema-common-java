@@ -1,9 +1,9 @@
 package com.exasol.adapter.sql;
 
-import com.exasol.adapter.AdapterException;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.exasol.adapter.AdapterException;
 
 public final class SqlSelectList extends SqlExpressionList {
     private final SqlSelectListType type;
@@ -15,7 +15,7 @@ public final class SqlSelectList extends SqlExpressionList {
 
     /**
      * Creates a SqlSelectList for SELECT *. See {@link SqlSelectListType#SELECT_STAR}.
-     * 
+     *
      * @return the new SqlSelectList.
      */
     public static SqlSelectList createSelectStarSelectList() {
@@ -24,7 +24,7 @@ public final class SqlSelectList extends SqlExpressionList {
 
     /**
      * Creates a SqlSelectList that uses an arbitrary value. See {@link SqlSelectListType#ANY_VALUE}.
-     * 
+     *
      * @return the new SqlSelectList.
      */
     public static SqlSelectList createAnyValueSelectList() {
@@ -33,12 +33,12 @@ public final class SqlSelectList extends SqlExpressionList {
 
     /**
      * Creates a regular SqlSelectList. See {@link SqlSelectListType#REGULAR}.
-     * 
+     *
      * @param selectList The selectList needs at least one element.
      * @return the new SqlSelectList.
      */
     public static SqlSelectList createRegularSelectList(final List<SqlNode> selectList) {
-        if (selectList == null || selectList.isEmpty()) {
+        if ((selectList == null) || selectList.isEmpty()) {
             throw new IllegalArgumentException(
                     "SqlFunctionAggregateGroupConcat constructor expects an argument." + "But the list is empty.");
         }
@@ -50,7 +50,7 @@ public final class SqlSelectList extends SqlExpressionList {
     }
 
     /**
-     * @return true if this is "SELECT *", false otherwise
+     * @return {@code true} if this is "{@code SELECT *}"
      */
     public boolean isSelectStar() {
         return this.type == SqlSelectListType.SELECT_STAR;

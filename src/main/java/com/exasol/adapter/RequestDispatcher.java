@@ -1,5 +1,6 @@
 package com.exasol.adapter;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.exasol.ExaMetadata;
@@ -40,21 +41,26 @@ public final class RequestDispatcher {
      * @return response resulting from the adapter call
      * @throws AdapterException in case the request type is not recognized
      */
-    @SuppressWarnings("squid:S2139")
     public static String adapterCall(final ExaMetadata metadata, final String rawRequest) throws AdapterException {
+        return getInstance().executeAdapterCall(metadata, rawRequest);
+    }
+
+    @SuppressWarnings("squid:S2139")
+    private String executeAdapterCall(final ExaMetadata metadata, final String rawRequest) throws AdapterException {
         try {
-            return getInstance().executeAdapterCall(metadata, rawRequest);
+            final AdapterRequest request = new RequestParser().parse(rawRequest);
+            configureAdapterLoggingAccordingToRequestSettings(request);
+            logVersionInformation();
+            logRawRequest(rawRequest);
+            return processRequest(request, metadata);
         } catch (final Exception exception) {
-            LOGGER.severe("Adapter error: " + exception);
+            LOGGER.severe(exception::getMessage);
+            LOGGER.log(Level.FINE, "Stack trace:", exception);
             throw exception;
         }
     }
 
-    private String executeAdapterCall(final ExaMetadata metadata, final String rawRequest) throws AdapterException {
-        final AdapterRequest request = new RequestParser().parse(rawRequest);
-        configureAdapterLoggingAccordingToRequestSettings(request);
-        logVersionInformation();
-        logRawRequest(rawRequest);
+    public String processRequest(final AdapterRequest request, final ExaMetadata metadata) throws AdapterException {
         final AdapterRequestType type = request.getType();
         final VirtualSchemaAdapter adapter = findResponsibleAdapter(request);
         switch (type) {
