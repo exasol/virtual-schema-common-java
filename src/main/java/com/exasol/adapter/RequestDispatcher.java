@@ -52,7 +52,8 @@ public final class RequestDispatcher {
             configureAdapterLoggingAccordingToRequestSettings(request);
             logVersionInformation();
             logRawRequest(rawRequest);
-            return processRequest(request, metadata);
+            final VirtualSchemaAdapter adapter = findResponsibleAdapter(request);
+            return processRequest(request, adapter, metadata);
         } catch (final Exception exception) {
             LOGGER.severe(exception::getMessage);
             LOGGER.log(Level.FINE, "Stack trace:", exception);
@@ -60,9 +61,9 @@ public final class RequestDispatcher {
         }
     }
 
-    public String processRequest(final AdapterRequest request, final ExaMetadata metadata) throws AdapterException {
+    private String processRequest(final AdapterRequest request, final VirtualSchemaAdapter adapter,
+            final ExaMetadata metadata) throws AdapterException {
         final AdapterRequestType type = request.getType();
-        final VirtualSchemaAdapter adapter = findResponsibleAdapter(request);
         switch (type) {
         case CREATE_VIRTUAL_SCHEMA:
             return dispatchCreateVirtualSchemaRequestToAdapter(request, adapter, metadata);
