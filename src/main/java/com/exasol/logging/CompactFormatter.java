@@ -1,5 +1,7 @@
 package com.exasol.logging;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -29,6 +31,7 @@ public class CompactFormatter extends Formatter {
         builder.append(String.format(LOG_LEVEL_FORMAT, record.getLevel()));
         appendClassName(record.getSourceClassName(), builder);
         builder.append(formatMessage(record));
+        formatException(record, builder);
         builder.append(System.lineSeparator());
         return builder.toString();
     }
@@ -59,5 +62,15 @@ public class CompactFormatter extends Formatter {
     private String formatTimestamp(final long millis) {
         final Instant instant = Instant.ofEpochMilli(millis);
         return this.dateTimeFormatter.format(instant.atZone(ZoneId.of("Z")));
+    }
+
+    private void formatException(final LogRecord record, final StringBuilder builder) {
+        final Throwable thrown = record.getThrown();
+        if (thrown != null) {
+            builder.append("\n\t");
+            final StringWriter errors = new StringWriter();
+            thrown.printStackTrace(new PrintWriter(errors));
+            builder.append(errors);
+        }
     }
 }
