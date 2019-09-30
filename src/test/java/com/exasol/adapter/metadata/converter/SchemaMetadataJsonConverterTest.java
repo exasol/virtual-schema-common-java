@@ -93,11 +93,19 @@ class SchemaMetadataJsonConverterTest {
     }
 
     @Test
-    void testConvertTypeTypeGeometry() {
+    void testConvertTypeGeometry() {
         final int srid = 2;
         final JsonObject jsonObject = CONVERTER.convertType(DataType.createGeometry(srid));
         assertAll(() -> assertTypeName(jsonObject, "geometry"),
                 () -> assertThat(jsonObject.getInt("srid"), equalTo(srid)));
+    }
+
+    @Test
+    void testConvertTypeHashtype() {
+        final int bytesize = 16;
+        final JsonObject jsonObject = CONVERTER.convertType(DataType.createHashtype(bytesize));
+        assertAll(() -> assertTypeName(jsonObject, "hashtype"),
+              () -> assertThat(jsonObject.getInt("bytesize"), equalTo(bytesize)));
     }
 
     @Test

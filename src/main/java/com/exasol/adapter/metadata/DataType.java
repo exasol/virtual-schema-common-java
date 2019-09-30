@@ -19,16 +19,20 @@ public class DataType {
     private int geometrySrid;
     private IntervalType intervalType;
     private int intervalFraction;
+    private int byteSize;
 
-    public enum ExaDataType {
-        UNSUPPORTED, DECIMAL, DOUBLE, VARCHAR, CHAR, DATE, TIMESTAMP, BOOLEAN, GEOMETRY, INTERVAL
+    public enum ExaDataType
+    {
+        UNSUPPORTED, DECIMAL, DOUBLE, VARCHAR, CHAR, DATE, TIMESTAMP, BOOLEAN, GEOMETRY, INTERVAL, HASHTYPE
     }
 
-    public enum ExaCharset {
+    public enum ExaCharset
+    {
         UTF8, ASCII
     }
 
-    public enum IntervalType {
+    public enum IntervalType
+    {
         DAY_TO_SECOND, YEAR_TO_MONTH
     }
 
@@ -209,6 +213,19 @@ public class DataType {
     }
 
     /**
+     * Create a <code>HASHTYPE</code> data type
+     *
+     * @param byteSize size in bytes
+     * @return <code>HASHTYPE</code> data type
+     */
+    public static DataType createHashtype(final int byteSize) {
+        final DataType type = new DataType();
+        type.exaDataType = ExaDataType.HASHTYPE;
+        type.byteSize = byteSize;
+        return type;
+    }
+
+    /**
      * Get the Exasol data type without parameters
      *
      * @return Exasol data type
@@ -292,6 +309,15 @@ public class DataType {
     }
 
     /**
+     * Get the size in bytes.
+     *
+     * @return byte size
+     */
+    public int getByteSize() {
+        return this.byteSize;
+    }
+
+    /**
      * Check if the data type is supported.
      *
      * @return {@code true} if the data type is supported by the Virtual Schema.
@@ -334,8 +360,18 @@ public class DataType {
         case INTERVAL:
             appendInterval(builder);
             break;
+        case HASHTYPE:
+            appendHashtype(builder);
         }
         return builder.toString();
+    }
+
+    private void appendHashtype(final StringBuilder builder) {
+        builder.append("HASHTYPE");
+        builder.append("(");
+        builder.append(this.byteSize);
+        builder.append(" byte");
+        builder.append(")");
     }
 
     private void appendInterval(final StringBuilder builder) {
@@ -405,12 +441,12 @@ public class DataType {
                 && (this.withLocalTimezone == dataType.withLocalTimezone)
                 && (this.geometrySrid == dataType.geometrySrid) && (this.intervalFraction == dataType.intervalFraction)
                 && (this.exaDataType == dataType.exaDataType) && (this.charset == dataType.charset)
-                && (this.intervalType == dataType.intervalType);
+                && (this.intervalType == dataType.intervalType) && (this.byteSize == dataType.byteSize);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(this.exaDataType, this.precision, this.scale, this.size, this.charset,
-                this.withLocalTimezone, this.geometrySrid, this.intervalType, this.intervalFraction);
+                this.withLocalTimezone, this.geometrySrid, this.intervalType, this.intervalFraction, this.byteSize);
     }
 }

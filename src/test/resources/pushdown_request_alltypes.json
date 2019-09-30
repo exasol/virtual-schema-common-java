@@ -112,6 +112,13 @@
             }
         },
         {
+            "name": "C_HASHTYPE",
+            "dataType": {
+                "type": "HASHTYPE",
+                "bytesize": 16
+            }
+        },
+        {
             "name": "C_INTERVAL_DS_1",
             "dataType": {
                 "type": "INTERVAL",

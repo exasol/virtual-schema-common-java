@@ -364,9 +364,19 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         case "GEOMETRY":
             type = getGeometry(dataType);
             break;
+        case "HASHTYPE":
+            type = getHashtype(dataType);
+            break;
         default:
             throw new IllegalArgumentException("Unsupported data type encountered: " + typeName);
         }
+        return type;
+    }
+
+    private DataType getHashtype(final JsonObject dataType) {
+        final DataType type;
+        final int byteSize = dataType.getInt("bytesize");
+        type = DataType.createGeometry(byteSize);
         return type;
     }
 

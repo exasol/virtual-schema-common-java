@@ -109,10 +109,18 @@ public class TablesMetadataParser {
         case "GEOMETRY":
             type = getGeometryDataType(dataType);
             break;
+        case "HASHTYPE":
+            type = getHashtypeDataType(dataType);
+            break;
         default:
             throw new RequestParserException("Unsupported data type encountered: " + typeName);
         }
         return type;
+    }
+
+    private DataType getHashtypeDataType(final JsonObject dataType) {
+        final int bytesize = dataType.getInt("bytesize");
+        return DataType.createHashtype(bytesize);
     }
 
     private DataType getGeometryDataType(final JsonObject dataType) {
