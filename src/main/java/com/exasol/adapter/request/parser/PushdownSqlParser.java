@@ -31,108 +31,74 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     public SqlNode parseExpression(final JsonObject expression) {
         final String typeName = expression.getString("type", "");
         final SqlNodeType type = fromTypeName(typeName);
-        final SqlNode sqlNode;
         switch (type) {
         case SELECT:
-            sqlNode = parseSelect(expression);
-            break;
+            return parseSelect(expression);
         case TABLE:
-            sqlNode = parseTable(expression);
-            break;
+            return parseTable(expression);
         case JOIN:
-            sqlNode = parseJoin(expression);
-            break;
+            return parseJoin(expression);
         case COLUMN:
-            sqlNode = parseColumn(expression);
-            break;
+            return parseColumn(expression);
         case LITERAL_NULL:
-            sqlNode = parseLiteralNull();
-            break;
+            return parseLiteralNull();
         case LITERAL_BOOL:
-            sqlNode = parseLiteralBool(expression);
-            break;
+            return parseLiteralBool(expression);
         case LITERAL_DATE:
-            sqlNode = parseLiteralDate(expression);
-            break;
+            return parseLiteralDate(expression);
         case LITERAL_TIMESTAMP:
-            sqlNode = parseLiteralTimestamp(expression);
-            break;
+            return parseLiteralTimestamp(expression);
         case LITERAL_TIMESTAMPUTC:
-            sqlNode = parseLiteralTimestamputc(expression);
-            break;
+            return parseLiteralTimestamputc(expression);
         case LITERAL_DOUBLE:
-            sqlNode = parseLiteralDouble(expression);
-            break;
+            return parseLiteralDouble(expression);
         case LITERAL_EXACTNUMERIC:
-            sqlNode = parseLiteralExactNumeric(expression);
-            break;
+            return parseLiteralExactNumeric(expression);
         case LITERAL_STRING:
-            sqlNode = parseLiteralString(expression);
-            break;
+            return parseLiteralString(expression);
         case LITERAL_INTERVAL:
-            sqlNode = parseLiteralInterval(expression);
-            break;
+            return parseLiteralInterval(expression);
         case PREDICATE_AND:
-            sqlNode = parsePredicateAnd(expression);
-            break;
+            return parsePredicateAnd(expression);
         case PREDICATE_OR:
-            sqlNode = parsePredicateOr(expression);
-            break;
+            return parsePredicateOr(expression);
         case PREDICATE_NOT:
-            sqlNode = parsePredicateNot(expression);
-            break;
+            return parsePredicateNot(expression);
         case PREDICATE_EQUAL:
-            sqlNode = parsePredicateEqual(expression);
-            break;
+            return parsePredicateEqual(expression);
         case PREDICATE_NOTEQUAL:
-            sqlNode = parsePredicateNotEqual(expression);
-            break;
+            return parsePredicateNotEqual(expression);
         case PREDICATE_LESS:
-            sqlNode = parsePredicateLess(expression);
-            break;
+            return parsePredicateLess(expression);
         case PREDICATE_LESSEQUAL:
-            sqlNode = parsePredicateLessEqual(expression);
-            break;
+            return parsePredicateLessEqual(expression);
         case PREDICATE_LIKE:
-            sqlNode = parsePredicateLike(expression);
-            break;
+            return parsePredicateLike(expression);
         case PREDICATE_LIKE_REGEXP:
-            sqlNode = parsePredicateLikeRegexp(expression);
-            break;
+            return parsePredicateLikeRegexp(expression);
         case PREDICATE_BETWEEN:
-            sqlNode = parsePredicateBetween(expression);
-            break;
+            return parsePredicateBetween(expression);
         case PREDICATE_IN_CONSTLIST:
-            sqlNode = parsePredicateInConstlist(expression);
-            break;
+            return parsePredicateInConstlist(expression);
         case PREDICATE_IS_NULL:
-            sqlNode = parsePredicateIsNull(expression);
-            break;
+            return parsePredicateIsNull(expression);
         case PREDICATE_IS_NOT_NULL:
-            sqlNode = parsePredicateIsNotNull(expression);
-            break;
+            return parsePredicateIsNotNull(expression);
         case FUNCTION_SCALAR:
-            sqlNode = parseFunctionScalar(expression);
-            break;
+            return parseFunctionScalar(expression);
         case FUNCTION_SCALAR_EXTRACT:
-            sqlNode = parseFunctionScalarExtract(expression);
-            break;
+            return parseFunctionScalarExtract(expression);
         case FUNCTION_SCALAR_CASE:
-            sqlNode = parseFunctionScalarCase(expression);
-            break;
+            return parseFunctionScalarCase(expression);
         case FUNCTION_SCALAR_CAST:
-            sqlNode = parseFunctionScalarCast(expression);
-            break;
+            return parseFunctionScalarCast(expression);
         case FUNCTION_AGGREGATE:
-            sqlNode = parseFunctionAggregate(expression);
-            break;
+            return parseFunctionAggregate(expression);
         case FUNCTION_AGGREGATE_GROUP_CONCAT:
-            sqlNode = parseFunctionAggregateGroupConcat(expression);
-            break;
+            return parseFunctionAggregateGroupConcat(expression);
         default:
             throw new IllegalArgumentException("Unknown node type: " + typeName);
         }
-        return sqlNode;
     }
 
     private SqlStatementSelect parseSelect(final JsonObject select) {
@@ -335,70 +301,50 @@ public final class PushdownSqlParser extends AbstractRequestParser {
 
     private DataType getDataType(final JsonObject dataType) {
         final String typeName = dataType.getString("type").toUpperCase();
-        final DataType type;
         switch (typeName) {
         case "DECIMAL":
-            type = DataType.createDecimal(dataType.getInt("precision"), dataType.getInt("scale"));
-            break;
+            return DataType.createDecimal(dataType.getInt("precision"), dataType.getInt("scale"));
         case "DOUBLE":
-            type = DataType.createDouble();
-            break;
+            return DataType.createDouble();
         case "VARCHAR":
-            type = getVarchar(dataType);
-            break;
+            return getVarchar(dataType);
         case "CHAR":
-            type = getChar(dataType);
-            break;
+            return getChar(dataType);
         case "BOOLEAN":
-            type = DataType.createBool();
-            break;
+            return DataType.createBool();
         case "DATE":
-            type = DataType.createDate();
-            break;
+            return DataType.createDate();
         case "TIMESTAMP":
-            type = getTimestamp(dataType);
-            break;
+            return getTimestamp(dataType);
         case "INTERVAL":
-            type = getInterval(dataType);
-            break;
+            return getInterval(dataType);
         case "GEOMETRY":
-            type = getGeometry(dataType);
-            break;
+            return getGeometry(dataType);
         case "HASHTYPE":
-            type = getHashtype(dataType);
-            break;
+            return getHashtype(dataType);
         default:
             throw new IllegalArgumentException("Unsupported data type encountered: " + typeName);
         }
-        return type;
     }
 
     private DataType getHashtype(final JsonObject dataType) {
-        final DataType type;
         final int byteSize = dataType.getInt("bytesize");
-        type = DataType.createGeometry(byteSize);
-        return type;
+        return DataType.createGeometry(byteSize);
     }
 
     private DataType getVarchar(final JsonObject dataType) {
-        final DataType type;
         final String charSet = dataType.getString("characterSet", "UTF8");
-        type = DataType.createVarChar(dataType.getInt("size"), charSetFromString(charSet));
-        return type;
+        return DataType.createVarChar(dataType.getInt("size"), charSetFromString(charSet));
     }
 
     private DataType getChar(final JsonObject dataType) {
-        final DataType type;
         final String charSet = dataType.getString("characterSet", "UTF8");
-        type = DataType.createChar(dataType.getInt("size"), charSetFromString(charSet));
-        return type;
+        return DataType.createChar(dataType.getInt("size"), charSetFromString(charSet));
     }
 
     private DataType getTimestamp(final JsonObject dataType) {
-        final DataType type;
         final boolean withLocalTimezone = dataType.getBoolean("withLocalTimeZone", false);
-        type = DataType.createTimestamp(withLocalTimezone);
-        return type;
+        return DataType.createTimestamp(withLocalTimezone);
     }
 
     private DataType getInterval(final JsonObject dataType) {
@@ -416,10 +362,8 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private DataType getGeometry(final JsonObject dataType) {
-        final DataType type;
         final int srid = dataType.getInt("srid");
-        type = DataType.createGeometry(srid);
-        return type;
+        return DataType.createGeometry(srid);
     }
 
     private static ExaCharset charSetFromString(final String charset) {
