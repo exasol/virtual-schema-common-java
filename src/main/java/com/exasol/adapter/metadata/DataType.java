@@ -21,18 +21,15 @@ public class DataType {
     private int intervalFraction;
     private int byteSize;
 
-    public enum ExaDataType
-    {
+    public enum ExaDataType {
         UNSUPPORTED, DECIMAL, DOUBLE, VARCHAR, CHAR, DATE, TIMESTAMP, BOOLEAN, GEOMETRY, INTERVAL, HASHTYPE
     }
 
-    public enum ExaCharset
-    {
+    public enum ExaCharset {
         UTF8, ASCII
     }
 
-    public enum IntervalType
-    {
+    public enum IntervalType {
         DAY_TO_SECOND, YEAR_TO_MONTH
     }
 
