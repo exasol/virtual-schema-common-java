@@ -108,6 +108,13 @@ class DataTypeTest {
     }
 
     @Test
+    void createHashtype() {
+        final DataType dataType = DataType.createHashtype(16);
+        assertAll(() -> assertThat(dataType.getByteSize(), equalTo(16)),
+              () -> assertThat(dataType.toString(), equalTo("HASHTYPE(16 byte)")));
+    }
+
+    @Test
     void testIsSupportedDate() {
         assertThat(DataType.createDate().isSupported(), equalTo(true));
     }

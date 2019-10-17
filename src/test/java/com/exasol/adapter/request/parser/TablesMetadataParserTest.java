@@ -102,6 +102,8 @@ class TablesMetadataParserTest {
                 .nullable(true).identity(true).defaultValue("").comment("").build());
         tableColumns.add(ColumnMetadata.builder().name("C_GEOMETRY").adapterNotes("").type(DataType.createGeometry(1))
                 .nullable(true).identity(true).defaultValue("").comment("").build());
+        tableColumns.add(ColumnMetadata.builder().name("C_HASHTYPE").adapterNotes("").type(DataType.createHashtype(16))
+                .nullable(true).identity(true).defaultValue("").comment("").build());
         tableColumns.add(ColumnMetadata.builder().name("C_INTERVAL_DS_1").adapterNotes("")
                 .type(DataType.createIntervalDaySecond(2, 3)).nullable(true).identity(true).defaultValue("").comment("")
                 .build());

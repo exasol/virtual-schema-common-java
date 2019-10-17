@@ -127,6 +127,9 @@ public final class SchemaMetadataJsonConverter {
         case INTERVAL:
             addIntervalToRoot(dataType, typeAsJson);
             break;
+        case HASHTYPE:
+            typeAsJson.add("bytesize", dataType.getByteSize());
+            break;
         case DOUBLE: // falling through intentionally
         case DATE:
         case BOOLEAN:
@@ -168,6 +171,8 @@ public final class SchemaMetadataJsonConverter {
             return "geometry";
         case INTERVAL:
             return "interval";
+        case HASHTYPE:
+            return "hashtype";
         default:
             return "unknown";
         }

@@ -80,39 +80,35 @@ public class TablesMetadataParser {
 
     private DataType getDataType(final JsonObject dataType) {
         final String typeName = dataType.getString("type").toUpperCase();
-        final DataType type;
         switch (typeName) {
         case "DECIMAL":
-            type = getDecimalDataType(dataType);
-            break;
+            return getDecimalDataType(dataType);
         case "DOUBLE":
-            type = getDoubleDataType();
-            break;
+            return getDoubleDataType();
         case "VARCHAR":
-            type = getVarcharDataType(dataType);
-            break;
+            return getVarcharDataType(dataType);
         case "CHAR":
-            type = getCharDataType(dataType);
-            break;
+            return getCharDataType(dataType);
         case "BOOLEAN":
-            type = getBooleanDataType();
-            break;
+            return getBooleanDataType();
         case "DATE":
-            type = getDateDataType();
-            break;
+            return getDateDataType();
         case "TIMESTAMP":
-            type = getTimestampDataType(dataType);
-            break;
+            return getTimestampDataType(dataType);
         case "INTERVAL":
-            type = getIntervalDataType(dataType);
-            break;
+            return getIntervalDataType(dataType);
         case "GEOMETRY":
-            type = getGeometryDataType(dataType);
-            break;
+            return getGeometryDataType(dataType);
+        case "HASHTYPE":
+            return getHashtypeDataType(dataType);
         default:
             throw new RequestParserException("Unsupported data type encountered: " + typeName);
         }
-        return type;
+    }
+
+    private DataType getHashtypeDataType(final JsonObject dataType) {
+        final int bytesize = dataType.getInt("bytesize");
+        return DataType.createHashtype(bytesize);
     }
 
     private DataType getGeometryDataType(final JsonObject dataType) {
