@@ -14,17 +14,14 @@ public class SqlStatementSelect extends SqlStatement {
     private final SqlOrderBy orderBy;
     private final SqlLimit limit;
 
-    public SqlStatementSelect(final SqlNode fromClause, final SqlSelectList selectList, final SqlNode whereClause,
-            final SqlExpressionList groupBy, final SqlNode having, final SqlOrderBy orderBy, final SqlLimit limit) {
-        this.fromClause = fromClause;
-        this.selectList = selectList;
-        this.whereClause = whereClause;
-        this.groupBy = groupBy;
-        this.having = having;
-        this.orderBy = orderBy;
-        this.limit = limit;
-        assert this.fromClause != null;
-        assert this.selectList != null;
+    private SqlStatementSelect(final Builder builder) {
+        this.fromClause = builder.fromClause;
+        this.selectList = builder.selectList;
+        this.whereClause = builder.whereClause;
+        this.groupBy = builder.groupBy;
+        this.having = builder.having;
+        this.orderBy = builder.orderBy;
+        this.limit = builder.limit;
         this.fromClause.setParent(this);
         this.selectList.setParent(this);
 
@@ -136,5 +133,113 @@ public class SqlStatementSelect extends SqlStatement {
     @Override
     public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
+    }
+
+    /**
+     * Create a new builder for {@link SqlStatementSelect}.
+     *
+     * @return builder instance
+     */
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    /**
+     * Builder for {@link SqlStatementSelect}.
+     */
+    public static class Builder {
+        private SqlNode fromClause;
+        private SqlSelectList selectList;
+        private SqlNode whereClause;
+        private SqlExpressionList groupBy;
+        private SqlNode having;
+        private SqlOrderBy orderBy;
+        private SqlLimit limit;
+
+        /**
+         * Set the from clause of the SQL Select Statement.
+         *
+         * @param fromClause from clause
+         * @return builder instance for fluent programming
+         */
+        public Builder fromClause(final SqlNode fromClause) {
+            this.fromClause = fromClause;
+            return this;
+        }
+
+        /**
+         * Set the select list of the SQL Select Statement.
+         *
+         * @param selectList select list
+         * @return builder instance for fluent programming
+         */
+        public Builder selectList(final SqlSelectList selectList) {
+            this.selectList = selectList;
+            return this;
+        }
+
+        /**
+         * Set the where clause of the SQL Select Statement.
+         *
+         * @param whereClause where clause
+         * @return builder instance for fluent programming
+         */
+        public Builder whereClause(final SqlNode whereClause) {
+            this.whereClause = whereClause;
+            return this;
+        }
+
+        /**
+         * Set the group by clause of the SQL Select Statement.
+         *
+         * @param groupBy group by clause
+         * @return builder instance for fluent programming
+         */
+        public Builder groupBy(final SqlExpressionList groupBy) {
+            this.groupBy = groupBy;
+            return this;
+        }
+
+        /**
+         * Set the having clause of the SQL Select Statement.
+         *
+         * @param having having clause
+         * @return builder instance for fluent programming
+         */
+        public Builder having(final SqlNode having) {
+            this.having = having;
+            return this;
+        }
+
+        /**
+         * Set the order by clause of the SQL Select Statement.
+         *
+         * @param orderBy order by clause
+         * @return builder instance for fluent programming
+         */
+        public Builder orderBy(final SqlOrderBy orderBy) {
+            this.orderBy = orderBy;
+            return this;
+        }
+
+        /**
+         * Set the limit clause of the SQL Select Statement.
+         *
+         * @param limit limit clause
+         * @return builder instance for fluent programming
+         */
+        public Builder limit(final SqlLimit limit) {
+            this.limit = limit;
+            return this;
+        }
+
+        /**
+         * Build a new instance of {@link SqlStatementSelect}
+         *
+         * @return new instance
+         */
+        public SqlStatementSelect build() {
+            return new SqlStatementSelect(this);
+        }
     }
 }

@@ -125,7 +125,8 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         if (select.containsKey("limit")) {
             limit = parseLimit(select.getJsonObject("limit"));
         }
-        return new SqlStatementSelect(table, selectList, whereClause, groupByClause, having, orderBy, limit);
+        return new SqlStatementSelect.Builder().selectList(selectList).fromClause(table).whereClause(whereClause)
+              .groupBy(groupByClause).having(having).orderBy(orderBy).limit(limit).build();
     }
 
     private SqlNode parseTable(final JsonObject exp) {
