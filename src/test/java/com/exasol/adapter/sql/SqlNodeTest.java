@@ -36,7 +36,7 @@ class SqlNodeTest {
         final SqlOrderBy orderBy = new SqlOrderBy(List.of(new SqlColumn(0, clicksMeta.getColumns().get(0))),
                 List.of(true), List.of(true));
         final SqlLimit limit = new SqlLimit(10);
-        return new SqlStatementSelect.Builder().selectList(selectList).fromClause(fromClause).whereClause(whereClause)
+        return SqlStatementSelect.builder().selectList(selectList).fromClause(fromClause).whereClause(whereClause)
                 .groupBy(groupBy).having(having).orderBy(orderBy).limit(limit).build();
     }
 
