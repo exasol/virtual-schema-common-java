@@ -44,7 +44,6 @@ class AdapterRegistryTest {
 
     @Test
     void testLoadFactories() {
-        this.registry.loadAdapterFactories();
         assertThat(this.registry.hasAdapterWithName("DUMMY"), equalTo(false));
     }
 
@@ -65,5 +64,10 @@ class AdapterRegistryTest {
         this.registry.registerAdapterFactory("Two", null);
         assertThat(this.registry.describe(),
                 equalTo("Currently registered Virtual Schema Adapter factories: \"One\", \"Two\""));
+    }
+
+    @Test
+    void testDescribeWithNoFactories() {
+        assertThat(this.registry.describe(), equalTo("No Virtual Schema Adapter factories are currently reqistered."));
     }
 }

@@ -28,10 +28,6 @@ public final class RequestDispatcher {
         return INSTANCE;
     }
 
-    private RequestDispatcher() {
-        AdapterRegistry.getInstance().loadAdapterFactories();
-    }
-
     /**
      * Main entry point for all Virtual Schema Adapter requests issued by the Exasol database.
      *
@@ -59,6 +55,11 @@ public final class RequestDispatcher {
             LOGGER.log(Level.FINE, "Stack trace:", exception);
             throw exception;
         }
+    }
+
+    private VirtualSchemaAdapter findResponsibleAdapter(final AdapterRequest request) {
+        final String name = request.getAdapterName();
+        return AdapterRegistry.getInstance().getAdapterForName(name);
     }
 
     private String processRequest(final AdapterRequest request, final VirtualSchemaAdapter adapter,
@@ -102,11 +103,6 @@ public final class RequestDispatcher {
 
     private void logRawRequest(final String rawRequest) {
         LOGGER.finer(() -> "Raw JSON request:\n" + rawRequest);
-    }
-
-    private VirtualSchemaAdapter findResponsibleAdapter(final AdapterRequest request) {
-        final String name = request.getAdapterName();
-        return AdapterRegistry.getInstance().getAdapterForName(name);
     }
 
     private String dispatchCreateVirtualSchemaRequestToAdapter(final AdapterRequest request,

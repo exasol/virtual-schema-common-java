@@ -15,7 +15,7 @@ public interface AdapterFactory {
 
     /**
      * Create a new instance of the Virtual Schema Adapter
-     * 
+     *
      * @return new instance
      */
     public VirtualSchemaAdapter createAdapter();

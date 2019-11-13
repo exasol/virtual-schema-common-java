@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class DummyAdapterFactory implements AdapterFactory {
-
     @Override
     public Set<String> getSupportedAdapterNames() {
         final Set<String> names = new HashSet<>();
