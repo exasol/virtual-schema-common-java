@@ -9,7 +9,7 @@ import java.util.logging.Logger;
  */
 public final class AdapterRegistry {
     private static final Logger LOGGER = Logger.getLogger(AdapterRegistry.class.getName());
-    private static final AdapterRegistry instance = new AdapterRegistry();
+    private static AdapterRegistry instance;
     private final Map<String, AdapterFactory> registeredFactories = new HashMap<>();
 
     /**
@@ -17,14 +17,16 @@ public final class AdapterRegistry {
      *
      * @return singleton instance
      */
-    public static AdapterRegistry getInstance() {
+    public static final synchronized AdapterRegistry getInstance() {
+        if (instance == null) {
+            LOGGER.finer(() -> "Instanciating Virtual Schema Adapter registry and loading adapter factories.");
+            instance = new AdapterRegistry();
+            instance.loadAdapterFactories();
+        }
         return instance;
     }
 
-    /**
-     * Load adapter factories via the {@link ServiceLoader}
-     */
-    public void loadAdapterFactories() {
+    private void loadAdapterFactories() {
         final ServiceLoader<AdapterFactory> serviceLoader = ServiceLoader.load(AdapterFactory.class);
         final Iterator<AdapterFactory> factories = serviceLoader.iterator();
         while (factories.hasNext()) {
@@ -98,18 +100,22 @@ public final class AdapterRegistry {
      * @return description
      */
     public String describe() {
-        final StringBuilder builder = new StringBuilder("Currently registered Virtual Schema Adapter factories: ");
-        boolean first = true;
-        for (final String name : this.registeredFactories.keySet()) {
-            if (first) {
-                first = false;
-            } else {
-                builder.append(", ");
+        if (this.registeredFactories.isEmpty()) {
+            return "No Virtual Schema Adapter factories are currently reqistered.";
+        } else {
+            final StringBuilder builder = new StringBuilder("Currently registered Virtual Schema Adapter factories: ");
+            boolean first = true;
+            for (final String name : this.registeredFactories.keySet()) {
+                if (first) {
+                    first = false;
+                } else {
+                    builder.append(", ");
+                }
+                builder.append("\"");
+                builder.append(name);
+                builder.append("\"");
             }
-            builder.append("\"");
-            builder.append(name);
-            builder.append("\"");
+            return builder.toString();
         }
-        return builder.toString();
     }
 }
