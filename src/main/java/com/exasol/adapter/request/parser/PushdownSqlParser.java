@@ -330,7 +330,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
 
     private DataType getHashtype(final JsonObject dataType) {
         final int byteSize = dataType.getInt("bytesize");
-        return DataType.createGeometry(byteSize);
+        return DataType.createHashtype(byteSize);
     }
 
     private DataType getVarchar(final JsonObject dataType) {
