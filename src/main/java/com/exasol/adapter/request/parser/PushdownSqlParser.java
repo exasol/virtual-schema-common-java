@@ -124,7 +124,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
             limit = parseLimit(select.getJsonObject("limit"));
         }
         return SqlStatementSelect.builder().selectList(selectList).fromClause(table).whereClause(whereClause)
-              .groupBy(groupByClause).having(having).orderBy(orderBy).limit(limit).build();
+                .groupBy(groupByClause).having(having).orderBy(orderBy).limit(limit).build();
     }
 
     private SqlNode parseTable(final JsonObject exp) {
@@ -319,9 +319,16 @@ public final class PushdownSqlParser extends AbstractRequestParser {
             return getInterval(dataType);
         case "GEOMETRY":
             return getGeometry(dataType);
+        case "HASHTYPE":
+            return getHashtype(dataType);
         default:
             throw new IllegalArgumentException("Unsupported data type encountered: " + typeName);
         }
+    }
+
+    private DataType getHashtype(final JsonObject dataType) {
+        final int byteSize = dataType.getInt("bytesize");
+        return DataType.createHashtype(byteSize);
     }
 
     private DataType getVarchar(final JsonObject dataType) {
