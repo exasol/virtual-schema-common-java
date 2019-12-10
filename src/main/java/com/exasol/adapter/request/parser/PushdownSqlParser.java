@@ -1,10 +1,8 @@
 package com.exasol.adapter.request.parser;
 
-import com.exasol.adapter.metadata.ColumnMetadata;
-import com.exasol.adapter.metadata.DataType;
+import com.exasol.adapter.metadata.*;
 import com.exasol.adapter.metadata.DataType.ExaCharset;
 import com.exasol.adapter.metadata.DataType.IntervalType;
-import com.exasol.adapter.metadata.TableMetadata;
 import com.exasol.adapter.sql.*;
 
 import javax.json.JsonArray;
@@ -321,16 +319,9 @@ public final class PushdownSqlParser extends AbstractRequestParser {
             return getInterval(dataType);
         case "GEOMETRY":
             return getGeometry(dataType);
-        case "HASHTYPE":
-            return getHashtype(dataType);
         default:
             throw new IllegalArgumentException("Unsupported data type encountered: " + typeName);
         }
-    }
-
-    private DataType getHashtype(final JsonObject dataType) {
-        final int byteSize = dataType.getInt("bytesize");
-        return DataType.createGeometry(byteSize);
     }
 
     private DataType getVarchar(final JsonObject dataType) {
