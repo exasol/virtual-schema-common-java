@@ -1,10 +1,8 @@
 package com.exasol.adapter.request.parser;
 
-import com.exasol.adapter.metadata.ColumnMetadata;
-import com.exasol.adapter.metadata.DataType;
+import com.exasol.adapter.metadata.*;
 import com.exasol.adapter.metadata.DataType.ExaCharset;
 import com.exasol.adapter.metadata.DataType.IntervalType;
-import com.exasol.adapter.metadata.TableMetadata;
 import com.exasol.adapter.sql.*;
 
 import javax.json.JsonArray;
@@ -126,7 +124,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
             limit = parseLimit(select.getJsonObject("limit"));
         }
         return SqlStatementSelect.builder().selectList(selectList).fromClause(table).whereClause(whereClause)
-              .groupBy(groupByClause).having(having).orderBy(orderBy).limit(limit).build();
+                .groupBy(groupByClause).having(having).orderBy(orderBy).limit(limit).build();
     }
 
     private SqlNode parseTable(final JsonObject exp) {
@@ -330,7 +328,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
 
     private DataType getHashtype(final JsonObject dataType) {
         final int byteSize = dataType.getInt("bytesize");
-        return DataType.createGeometry(byteSize);
+        return DataType.createHashtype(byteSize);
     }
 
     private DataType getVarchar(final JsonObject dataType) {
