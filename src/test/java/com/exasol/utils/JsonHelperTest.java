@@ -1,5 +1,12 @@
 package com.exasol.utils;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.when;
+
+import javax.json.*;
+
+import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -7,14 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonValue;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.when;
+import org.skyscreamer.jsonassert.JSONAssert;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -55,7 +55,7 @@ class JsonHelperTest {
     }
 
     @Test
-    void testPrettyJson() {
-        assertThat(JsonHelper.prettyJson(this.expectedJsonObject), equalTo(JSON));
+    void testPrettyJson() throws JSONException {
+        JSONAssert.assertEquals(JSON, JsonHelper.prettyJson(this.expectedJsonObject), false);
     }
 }

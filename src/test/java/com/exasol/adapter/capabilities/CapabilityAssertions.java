@@ -1,8 +1,8 @@
 package com.exasol.adapter.capabilities;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsEmptyIterable.emptyIterableOf;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
-import static org.junit.Assert.assertThat;
 
 public final class CapabilityAssertions {
     private CapabilityAssertions() {
@@ -58,5 +58,4 @@ public final class CapabilityAssertions {
         assertThat("Contains aggregate function capabilities", capabilities.getAggregateFunctionCapabilities(),
                 containsInAnyOrder(expectedCapabilities));
     }
-
 }

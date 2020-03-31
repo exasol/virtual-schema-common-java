@@ -2,7 +2,7 @@ package com.exasol.adapter;
 
 import static com.exasol.adapter.AdapterProperties.*;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.lang.reflect.*;
