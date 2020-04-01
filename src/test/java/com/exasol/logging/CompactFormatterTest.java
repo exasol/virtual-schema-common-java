@@ -2,7 +2,7 @@ package com.exasol.logging;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.text.MatchesPattern.matchesPattern;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.logging.Level;
