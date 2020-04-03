@@ -1,15 +1,10 @@
 package com.exasol.adapter.request.parser;
 
-import com.exasol.adapter.metadata.ColumnMetadata;
-import com.exasol.adapter.metadata.DataType;
-import com.exasol.adapter.metadata.TableMetadata;
-import com.exasol.adapter.sql.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static com.exasol.adapter.sql.SqlNodeType.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
 import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 import java.math.BigDecimal;
@@ -17,10 +12,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.exasol.adapter.sql.SqlNodeType.*;
-import static org.hamcrest.Matchers.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
+import javax.json.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.exasol.adapter.metadata.*;
+import com.exasol.adapter.sql.*;
 
 class PushDownSqlParserTest {
     private JsonObject jsonObject;
@@ -686,6 +684,50 @@ class PushDownSqlParserTest {
     }
 
     @Test
+    void testParsePredicateIsJson() {
+        final String sqlAsJson = "{" //
+                + "   \"type\" : \"predicate_is_json\", " //
+                + "   \"expression\" : { " //
+                + "        \"type\" : \"literal_string\", " //
+                + "        \"value\" : \"'123'\"" //
+                + "   }, " //
+                + "   \"typeConstraint\" : \"VALUE\", " //
+                + "   \"keyUniquenessConstraint\" : \"WITHOUT UNIQUE KEYS\"" + "}";
+        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
+            this.jsonObject = jsonReader.readObject();
+        }
+        final SqlPredicateIsJson sqlPredicateIsJson = (SqlPredicateIsJson) this.pushdownSqlParser
+                .parseExpression(this.jsonObject);
+        final SqlLiteralString expression = (SqlLiteralString) sqlPredicateIsJson.getExpression();
+        assertAll(() -> assertThat(sqlPredicateIsJson.getType(), equalTo(PREDICATE_IS_JSON)),
+                () -> assertThat(expression.getValue(), equalTo("'123'")),
+                () -> assertThat(sqlPredicateIsJson.getTypeConstraint(), equalTo("VALUE")),
+                () -> assertThat(sqlPredicateIsJson.getKeyUniquenessConstraint(), equalTo("WITHOUT UNIQUE KEYS")));
+    }
+
+    @Test
+    void testParsePredicateIsNotJson() {
+        final String sqlAsJson = "{" //
+                + "   \"type\" : \"predicate_is_not_json\", " //
+                + "   \"expression\" : { " //
+                + "        \"type\" : \"literal_string\", " //
+                + "        \"value\" : \"'123'\"" //
+                + "   }, " //
+                + "   \"typeConstraint\" : \"VALUE\", " //
+                + "   \"keyUniquenessConstraint\" : \"WITHOUT UNIQUE KEYS\"" + "}";
+        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
+            this.jsonObject = jsonReader.readObject();
+        }
+        final SqlPredicateIsNotJson sqlPredicateIsNotJson = (SqlPredicateIsNotJson) this.pushdownSqlParser
+                .parseExpression(this.jsonObject);
+        final SqlLiteralString expression = (SqlLiteralString) sqlPredicateIsNotJson.getExpression();
+        assertAll(() -> assertThat(sqlPredicateIsNotJson.getType(), equalTo(PREDICATE_IS_NOT_JSON)),
+                () -> assertThat(expression.getValue(), equalTo("'123'")),
+                () -> assertThat(sqlPredicateIsNotJson.getTypeConstraint(), equalTo("VALUE")),
+                () -> assertThat(sqlPredicateIsNotJson.getKeyUniquenessConstraint(), equalTo("WITHOUT UNIQUE KEYS")));
+    }
+
+    @Test
     void testParseFunctionScalarCase() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"function_scalar_case\", " //
@@ -734,6 +776,56 @@ class PushDownSqlParserTest {
                 () -> assertThat(sqlLiteralExactnumeric2.getValue(), equalTo(new BigDecimal(2))),
                 () -> assertThat(sqlLiteralString1.getValue(), equalTo("VERY GOOD")),
                 () -> assertThat(sqlLiteralString2.getValue(), equalTo("GOOD")));
+    }
+
+    @Test
+    void testParseFunctionScalarJsonValue() {
+        final String sqlAsJson = "{" //
+                + "   \"type\" : \"function_scalar_json_value\", " //
+                + "   \"name\" : \"JSON_VALUE\", " //
+                + "   \"arguments\" : [ " //
+                + "   { " //
+                + "        \"type\" : \"literal_string\", " //
+                + "        \"value\" : \"'first argument'\"" //
+                + "   }, " //
+                + "   { " //
+                + "        \"type\" : \"literal_string\", " //
+                + "        \"value\" : \"'second argument'\"" ///
+                + "   } " //
+                + "   ], " //
+                + "   \"returningDataType\" : { " //
+                + "        \"type\" : \"VARCHAR\", " //
+                + "        \"size\" : 10000 " //
+                + "   }, " //
+                + "   \"emptyBehavior\" : " //
+                + "   { " //
+                + "        \"type\" : \"NULL\" " //
+                + "   }, " //
+                + "   \"errorBehavior\" : " //
+                + "   { " //
+                + "        \"type\" : \"DEFAULT\", " //
+                + "         \"expression\" : " //
+                + "     { " //
+                + "            \"type\" : \"literal_string\", " //
+                + "            \"value\" : \"*** error ***\" " //
+                + "      } " //
+                + "   } " //
+                + "}";
+        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
+            this.jsonObject = jsonReader.readObject();
+        }
+        final SqlFunctionScalarJsonValue sqlFunctionScalarJsonValue = (SqlFunctionScalarJsonValue) this.pushdownSqlParser
+                .parseExpression(this.jsonObject);
+        final ScalarFunction scalarFunction = sqlFunctionScalarJsonValue.getScalarFunction();
+        final List<SqlNode> arguments = sqlFunctionScalarJsonValue.getArguments();
+        final SqlLiteralString firstArgument = (SqlLiteralString) arguments.get(0);
+        final SqlLiteralString secondArgument = (SqlLiteralString) arguments.get(1);
+        final DataType returningDataType = sqlFunctionScalarJsonValue.getReturningDataType();
+        assertAll(() -> assertThat(sqlFunctionScalarJsonValue.getType(), equalTo(FUNCTION_SCALAR_JSON_VALUE)),
+                () -> assertThat(scalarFunction, equalTo(ScalarFunction.JSON_VALUE)),
+                () -> assertThat(firstArgument.getValue(), equalTo("'first argument'")),
+                () -> assertThat(secondArgument.getValue(), equalTo("'second argument'")),
+                () -> assertThat(returningDataType, equalTo(DataType.createVarChar(10000, DataType.ExaCharset.UTF8))));
     }
 
     @Test

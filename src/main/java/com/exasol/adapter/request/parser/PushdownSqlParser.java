@@ -1,15 +1,15 @@
 package com.exasol.adapter.request.parser;
 
+import java.math.BigDecimal;
+import java.util.*;
+
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+
 import com.exasol.adapter.metadata.*;
 import com.exasol.adapter.metadata.DataType.ExaCharset;
 import com.exasol.adapter.metadata.DataType.IntervalType;
 import com.exasol.adapter.sql.*;
-
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 public final class PushdownSqlParser extends AbstractRequestParser {
     private static final String ORDER_BY = "orderBy";
@@ -78,6 +78,10 @@ public final class PushdownSqlParser extends AbstractRequestParser {
             return parsePredicateBetween(expression);
         case PREDICATE_IN_CONSTLIST:
             return parsePredicateInConstlist(expression);
+        case PREDICATE_IS_JSON:
+            return parsePredicateIsJson(expression);
+        case PREDICATE_IS_NOT_JSON:
+            return parsePredicateIsNotJson(expression);
         case PREDICATE_IS_NULL:
             return parsePredicateIsNull(expression);
         case PREDICATE_IS_NOT_NULL:
@@ -90,6 +94,8 @@ public final class PushdownSqlParser extends AbstractRequestParser {
             return parseFunctionScalarCase(expression);
         case FUNCTION_SCALAR_CAST:
             return parseFunctionScalarCast(expression);
+        case FUNCTION_SCALAR_JSON_VALUE:
+            return parseFunctionScalarJsonValue(expression);
         case FUNCTION_AGGREGATE:
             return parseFunctionAggregate(expression);
         case FUNCTION_AGGREGATE_GROUP_CONCAT:
@@ -277,18 +283,22 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private SqlNode parsePredicateOr(final JsonObject exp) {
-        final List<SqlNode> orPredicates = new ArrayList<>();
-        for (final JsonObject pred : exp.getJsonArray("expressions").getValuesAs(JsonObject.class)) {
-            orPredicates.add(parseExpression(pred));
-        }
+        final List<SqlNode> orPredicates = getListOfSqlNodes(exp, "expressions");
         return new SqlPredicateOr(orPredicates);
     }
 
-    private SqlNode parsePredicateAnd(final JsonObject exp) {
-        final List<SqlNode> andedPredicates = new ArrayList<>();
-        for (final JsonObject pred : exp.getJsonArray("expressions").getValuesAs(JsonObject.class)) {
-            andedPredicates.add(parseExpression(pred));
+    private List<SqlNode> getListOfSqlNodes(final JsonObject jsonExpression, final String key) {
+        final List<SqlNode> arguments = new ArrayList<>();
+        if (jsonExpression.containsKey(key)) {
+            for (final JsonObject jsonObject : jsonExpression.getJsonArray(key).getValuesAs(JsonObject.class)) {
+                arguments.add(parseExpression(jsonObject));
+            }
         }
+        return arguments;
+    }
+
+    private SqlNode parsePredicateAnd(final JsonObject exp) {
+        final List<SqlNode> andedPredicates = getListOfSqlNodes(exp, "expressions");
         return new SqlPredicateAnd(andedPredicates);
     }
 
@@ -420,12 +430,27 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         return new SqlPredicateBetween(betweenExp, betweenLeft, betweenRight);
     }
 
+    private SqlNode parsePredicateIsJson(final JsonObject jsonExpression) {
+        final SqlNode expression = parseExpression(jsonExpression.getJsonObject(EXPRESSION));
+        final SqlPredicateIsJson.TypeConstraints typeConstraint = SqlPredicateIsJson.TypeConstraints
+                .valueOf(jsonExpression.getString("typeConstraint").toUpperCase());
+        final SqlPredicateIsJson.KeyUniquenessConstraint keyUniquenessConstraint = SqlPredicateIsJson.KeyUniquenessConstraint
+                .of(jsonExpression.getString("keyUniquenessConstraint"));
+        return new SqlPredicateIsJson(expression, typeConstraint, keyUniquenessConstraint);
+    }
+
+    private SqlNode parsePredicateIsNotJson(final JsonObject jsonExpression) {
+        final SqlNode expression = parseExpression(jsonExpression.getJsonObject(EXPRESSION));
+        final SqlPredicateIsJson.TypeConstraints typeConstraint = SqlPredicateIsJson.TypeConstraints
+                .valueOf(jsonExpression.getString("typeConstraint").toUpperCase());
+        final SqlPredicateIsJson.KeyUniquenessConstraint keyUniquenessConstraint = SqlPredicateIsJson.KeyUniquenessConstraint
+                .of(jsonExpression.getString("keyUniquenessConstraint"));
+        return new SqlPredicateIsNotJson(expression, typeConstraint, keyUniquenessConstraint);
+    }
+
     private SqlNode parsePredicateInConstlist(final JsonObject exp) {
         final SqlNode inExp = parseExpression(exp.getJsonObject(EXPRESSION));
-        final List<SqlNode> inArguments = new ArrayList<>();
-        for (final JsonObject pred : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
-            inArguments.add(parseExpression(pred));
-        }
+        final List<SqlNode> inArguments = getListOfSqlNodes(exp, ARGUMENTS);
         return new SqlPredicateInConstList(inExp, inArguments);
     }
 
@@ -436,10 +461,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         if (exp.containsKey("variableInputArgs")) {
             hasVariableInputArgs = exp.getBoolean("variableInputArgs");
         }
-        final List<SqlNode> arguments = new ArrayList<>();
-        for (final JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
-            arguments.add(parseExpression(argument));
-        }
+        final List<SqlNode> arguments = getListOfSqlNodes(exp, ARGUMENTS);
         if (!hasVariableInputArgs) {
             numArgs = exp.getInt("numArgs");
             assert numArgs == arguments.size();
@@ -457,57 +479,63 @@ public final class PushdownSqlParser extends AbstractRequestParser {
 
     private SqlNode parseFunctionScalarExtract(final JsonObject exp) {
         final String toExtract = exp.getString("toExtract");
-        final List<SqlNode> extractArguments = new ArrayList<>();
-        if (exp.containsKey(ARGUMENTS)) {
-            for (final JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
-                extractArguments.add(parseExpression(argument));
-            }
-        }
+        final List<SqlNode> extractArguments = getListOfSqlNodes(exp, ARGUMENTS);
         return new SqlFunctionScalarExtract(toExtract, extractArguments);
     }
 
     private SqlNode parseFunctionScalarCase(final JsonObject exp) {
-        final List<SqlNode> caseArguments = new ArrayList<>();
-        final List<SqlNode> caseResults = new ArrayList<>();
+        final List<SqlNode> caseArguments = getListOfSqlNodes(exp, ARGUMENTS);
+        final List<SqlNode> caseResults = getListOfSqlNodes(exp, "results");
         SqlNode caseBasis = null;
-        if (exp.containsKey(ARGUMENTS)) {
-            for (final JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
-                caseArguments.add(parseExpression(argument));
-            }
-        }
-        if (exp.containsKey("results")) {
-            for (final JsonObject argument : exp.getJsonArray("results").getValuesAs(JsonObject.class)) {
-                caseResults.add(parseExpression(argument));
-            }
-        }
         if (exp.containsKey("basis")) {
             caseBasis = parseExpression(exp.getJsonObject("basis"));
         }
         return new SqlFunctionScalarCase(caseArguments, caseResults, caseBasis);
     }
 
-    private SqlNode parseFunctionScalarCast(final JsonObject exp) {
-        final DataType castDataType = getDataType(exp.getJsonObject(DATA_TYPE));
-        final List<SqlNode> castArguments = new ArrayList<>();
-        if (exp.containsKey(ARGUMENTS)) {
-            for (final JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
-                castArguments.add(parseExpression(argument));
-            }
-        }
+    private SqlNode parseFunctionScalarCast(final JsonObject jsonObject) {
+        final DataType castDataType = getDataType(jsonObject.getJsonObject(DATA_TYPE));
+        final List<SqlNode> castArguments = getListOfSqlNodes(jsonObject, ARGUMENTS);
         return new SqlFunctionScalarCast(castDataType, castArguments);
+    }
+
+    private SqlNode parseFunctionScalarJsonValue(final JsonObject jsonObject) {
+        final String functionName = jsonObject.getString("name");
+        final List<SqlNode> arguments = getListOfSqlNodes(jsonObject, ARGUMENTS);
+        final DataType returningDataType = getDataType(jsonObject.getJsonObject("returningDataType"));
+        final SqlFunctionScalarJsonValue.Behavior emptyBehavior = getScalarJsonValueBehavior(jsonObject,
+                "emptyBehavior");
+        final SqlFunctionScalarJsonValue.Behavior errorBehavior = getScalarJsonValueBehavior(jsonObject,
+                "errorBehavior");
+        return new SqlFunctionScalarJsonValue(fromScalarFunctionName(functionName), arguments, returningDataType,
+                emptyBehavior, errorBehavior);
+    }
+
+    private SqlFunctionScalarJsonValue.Behavior getScalarJsonValueBehavior(final JsonObject jsonObject,
+            final String key) {
+        final JsonObject behaviorJson = jsonObject.getJsonObject(key);
+        final String behaviorTypeString = behaviorJson.getString("type");
+        final SqlFunctionScalarJsonValue.BehaviorType behaviorType = SqlFunctionScalarJsonValue.BehaviorType
+                .valueOf(behaviorTypeString);
+        final Optional<SqlNode> expression = getScalarJsonValueExpression(behaviorJson, behaviorType);
+        return new SqlFunctionScalarJsonValue.Behavior(behaviorType, expression);
+    }
+
+    private Optional<SqlNode> getScalarJsonValueExpression(final JsonObject jsonObject,
+            final SqlFunctionScalarJsonValue.BehaviorType behaviorType) {
+        if (behaviorType == SqlFunctionScalarJsonValue.BehaviorType.DEFAULT) {
+            return Optional.of(parseExpression(jsonObject.getJsonObject(EXPRESSION)));
+        } else {
+            return Optional.empty();
+        }
     }
 
     private SqlNode parseFunctionAggregate(final JsonObject exp) {
         final String setFunctionName = exp.getString("name");
-        final List<SqlNode> setArguments = new ArrayList<>();
+        final List<SqlNode> setArguments = getListOfSqlNodes(exp, ARGUMENTS);
         boolean distinct = false;
         if (exp.containsKey(DISTINCT)) {
             distinct = exp.getBoolean(DISTINCT);
-        }
-        if (exp.containsKey(ARGUMENTS)) {
-            for (final JsonObject argument : exp.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class)) {
-                setArguments.add(parseExpression(argument));
-            }
         }
         return new SqlFunctionAggregate(fromAggregationFunctionName(setFunctionName), setArguments, distinct);
     }
