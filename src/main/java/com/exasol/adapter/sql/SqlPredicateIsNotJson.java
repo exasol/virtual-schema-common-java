@@ -7,8 +7,8 @@ import com.exasol.adapter.AdapterException;
  */
 public class SqlPredicateIsNotJson extends AbstractSqlPredicateJson {
     public SqlPredicateIsNotJson(final SqlNode expression,
-            final AbstractSqlPredicateJson.TypeConstraints typeConstraint,
-            final AbstractSqlPredicateJson.KeyUniquenessConstraint keyUniquenessConstraint) {
+                                 final AbstractSqlPredicateJson.TypeConstraints typeConstraint,
+                                 final AbstractSqlPredicateJson.KeyUniquenessConstraint keyUniquenessConstraint) {
         super(Predicate.IS_NOT_JSON, expression, typeConstraint, keyUniquenessConstraint);
     }
 
@@ -24,12 +24,6 @@ public class SqlPredicateIsNotJson extends AbstractSqlPredicateJson {
 
     @Override
     public String toSimpleSql() {
-        final StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(this.expression.toSimpleSql());
-        stringBuilder.append(" IS NOT JSON ");
-        stringBuilder.append(getTypeConstraint());
-        stringBuilder.append(" ");
-        stringBuilder.append(getKeyUniquenessConstraint());
-        return stringBuilder.toString();
+        return " IS NOT JSON ";
     }
 }

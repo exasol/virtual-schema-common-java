@@ -44,17 +44,12 @@ class SqlFunctionScalarExtractTest {
     @Test
     void testToSimpleSql() {
         assertThat(this.sqlFunctionScalarExtract.toSimpleSql(),
-                equalTo("EXTRACT(SECOND FROM TIMESTAMP '2019-02-12 12:07:00')"));
+                equalTo("EXTRACT"));
     }
 
     @Test
     void testGetType() {
         assertThat(this.sqlFunctionScalarExtract.getType(), equalTo(SqlNodeType.FUNCTION_SCALAR_EXTRACT));
-    }
-
-    @Test
-    void testGetFunction() {
-        assertThat(this.sqlFunctionScalarExtract.getFunction(), equalTo(ScalarFunction.EXTRACT));
     }
 
     @Test

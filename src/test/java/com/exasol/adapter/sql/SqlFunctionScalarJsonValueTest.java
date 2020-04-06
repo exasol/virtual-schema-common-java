@@ -50,8 +50,7 @@ class SqlFunctionScalarJsonValueTest {
     @Test
     void testToSimpleSql() {
         assertThat(this.sqlFunctionScalarJsonValue.toSimpleSql(),
-                equalTo("JSON_VALUE('{\"a\": 1}', '$.a' RETURNING VARCHAR(1000) UTF8 "
-                        + "ERROR ON EMPTY DEFAULT '*** error ***' ON ERROR)"));
+                equalTo("JSON_VALUE"));
     }
 
     @Test

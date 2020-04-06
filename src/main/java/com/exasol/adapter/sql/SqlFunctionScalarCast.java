@@ -29,7 +29,7 @@ public class SqlFunctionScalarCast extends SqlNode {
 
     @Override
     public String toSimpleSql() {
-        return "CAST(" + this.arguments.get(0).toSimpleSql() + " AS " + getDataType().toString() + ")";
+        return "CAST";
     }
 
     @Override
@@ -40,9 +40,5 @@ public class SqlFunctionScalarCast extends SqlNode {
     @Override
     public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
-    }
-
-    public ScalarFunction getFunction() {
-        return ScalarFunction.CAST;
     }
 }

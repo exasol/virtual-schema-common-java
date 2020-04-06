@@ -7,7 +7,7 @@ import com.exasol.adapter.AdapterException;
  */
 public class SqlPredicateIsJson extends AbstractSqlPredicateJson {
     public SqlPredicateIsJson(final SqlNode expression, final TypeConstraints typeConstraint,
-            final KeyUniquenessConstraint keyUniquenessConstraint) {
+                              final KeyUniquenessConstraint keyUniquenessConstraint) {
         super(Predicate.IS_JSON, expression, typeConstraint, keyUniquenessConstraint);
     }
 
@@ -23,12 +23,6 @@ public class SqlPredicateIsJson extends AbstractSqlPredicateJson {
 
     @Override
     public String toSimpleSql() {
-        final StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(this.expression.toSimpleSql());
-        stringBuilder.append(" IS JSON ");
-        stringBuilder.append(getTypeConstraint());
-        stringBuilder.append(" ");
-        stringBuilder.append(getKeyUniquenessConstraint());
-        return stringBuilder.toString();
+        return " IS JSON ";
     }
 }

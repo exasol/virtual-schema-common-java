@@ -66,11 +66,6 @@ class SqlFunctionScalarCaseTest {
     }
 
     @Test
-    void testGetFunction() {
-        assertThat(this.sqlFunctionScalarCase.getFunction(), equalTo(ScalarFunction.CASE));
-    }
-
-    @Test
     void testAccept() throws AdapterException {
         final SqlNodeVisitor<SqlFunctionScalarCase> visitor = MockUtils.mockSqlNodeVisitor();
         when(visitor.visit(this.sqlFunctionScalarCase)).thenReturn(this.sqlFunctionScalarCase);

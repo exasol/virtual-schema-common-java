@@ -28,8 +28,7 @@ public class SqlFunctionScalarExtract extends SqlNode {
 
     @Override
     public String toSimpleSql() {
-        assert this.arguments.size() == 1 && this.arguments.get(0) != null;
-        return "EXTRACT(" + this.toExtract + " FROM " + this.arguments.get(0).toSimpleSql() + ")";
+        return "EXTRACT";
     }
 
     @Override
@@ -40,9 +39,5 @@ public class SqlFunctionScalarExtract extends SqlNode {
     @Override
     public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
-    }
-
-    public ScalarFunction getFunction() {
-        return ScalarFunction.EXTRACT;
     }
 }

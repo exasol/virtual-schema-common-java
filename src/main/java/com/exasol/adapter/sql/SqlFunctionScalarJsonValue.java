@@ -16,7 +16,7 @@ public class SqlFunctionScalarJsonValue extends SqlNode {
     private final Behavior errorBehavior;
 
     public SqlFunctionScalarJsonValue(final ScalarFunction scalarFunction, final List<SqlNode> arguments,
-            final DataType returningDataType, final Behavior emptyBehavior, final Behavior errorBehavior) {
+                                      final DataType returningDataType, final Behavior emptyBehavior, final Behavior errorBehavior) {
         validateFunctionName(scalarFunction);
         this.scalarFunction = scalarFunction;
         this.arguments = arguments;
@@ -44,27 +44,7 @@ public class SqlFunctionScalarJsonValue extends SqlNode {
 
     @Override
     public String toSimpleSql() {
-        final StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("JSON_VALUE(");
-        stringBuilder.append(getArguments().get(0).toSimpleSql());
-        stringBuilder.append(", ");
-        stringBuilder.append(getArguments().get(1).toSimpleSql());
-        stringBuilder.append(" RETURNING ");
-        stringBuilder.append(this.returningDataType.toString());
-        stringBuilder.append(" ");
-        stringBuilder.append(this.emptyBehavior.getBehaviorType());
-        if (this.emptyBehavior.getExpression().isPresent()) {
-            stringBuilder.append(" ");
-            stringBuilder.append(this.emptyBehavior.getExpression().get());
-        }
-        stringBuilder.append(" ON EMPTY ");
-        stringBuilder.append(this.errorBehavior.getBehaviorType());
-        if (this.errorBehavior.getExpression().isPresent()) {
-            stringBuilder.append(" ");
-            stringBuilder.append(this.errorBehavior.getExpression().get().toSimpleSql());
-        }
-        stringBuilder.append(" ON ERROR)");
-        return stringBuilder.toString();
+        return "JSON_VALUE";
     }
 
     public ScalarFunction getScalarFunction() {

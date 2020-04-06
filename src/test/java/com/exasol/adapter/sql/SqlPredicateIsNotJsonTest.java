@@ -40,9 +40,8 @@ class SqlPredicateIsNotJsonTest {
 
     @Test
     void testToSimpleSql() {
-        when(this.expressionMock.toSimpleSql()).thenReturn("SELECT 'not JSON'");
         assertThat(this.sqlPredicateIsNotJson.toSimpleSql(),
-                equalTo("SELECT 'not JSON' IS NOT JSON VALUE WITHOUT UNIQUE KEYS"));
+                equalTo(" IS NOT JSON "));
     }
 
     @Test
