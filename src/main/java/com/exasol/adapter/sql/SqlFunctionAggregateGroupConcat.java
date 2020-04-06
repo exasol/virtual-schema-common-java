@@ -14,7 +14,7 @@ public class SqlFunctionAggregateGroupConcat extends SqlNode {
 
     public SqlFunctionAggregateGroupConcat(final AggregateFunction function, final List<SqlNode> arguments,
             final SqlOrderBy orderBy, final boolean distinct, final String separator) {
-        SqlArgumentValidator.validateSqlFunctionArguments(arguments, SqlFunctionAggregateGroupConcat.class);
+        SqlArgumentValidator.validateSingleAgrumentFunctionParameter(arguments, SqlFunctionAggregateGroupConcat.class);
         this.function = function;
         this.distinct = distinct;
         this.arguments = arguments;

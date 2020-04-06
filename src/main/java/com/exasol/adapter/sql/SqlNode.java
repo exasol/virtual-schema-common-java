@@ -38,5 +38,5 @@ public abstract class SqlNode {
      * @return A SQL representation of the current graph, using EXASOL SQL syntax. It is called "SIMPLE" because it is
      *         not guaranteed to be 100 % correct SQL (e.g. might be ambiguous).
      */
-    abstract String toSimpleSql();
+    public abstract String toSimpleSql();
 }

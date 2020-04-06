@@ -7,10 +7,11 @@ public final class SqlArgumentValidator {
         // Intentionally left blank
     }
 
-    public static void validateSqlFunctionArguments(final List<SqlNode> arguments, final Class<?> usedClass) {
+    public static void validateSingleAgrumentFunctionParameter(final List<SqlNode> arguments,
+            final Class<?> usedClass) {
         if (arguments == null) {
             throw new IllegalArgumentException(
-                    usedClass.getName() + " constructor expects an argument." + "But the argument is NULL.");
+                    usedClass.getName() + " constructor expects an argument. But the argument is NULL.");
         }
         if (arguments.size() != 1) {
             throw new IllegalArgumentException(usedClass.getName() + " constructor expects exactly one argument."

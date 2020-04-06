@@ -22,7 +22,7 @@ public class SqlPredicateIsJson extends AbstractSqlPredicateJson {
     }
 
     @Override
-    String toSimpleSql() {
+    public String toSimpleSql() {
         final StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(this.expression.toSimpleSql());
         stringBuilder.append(" IS JSON ");

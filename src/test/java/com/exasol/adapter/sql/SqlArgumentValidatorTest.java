@@ -12,13 +12,13 @@ class SqlArgumentValidatorTest {
     @Test
     void testValidateSqlFunctionArgumentsNullThrowsException() {
         assertThrows(IllegalArgumentException.class,
-                () -> SqlArgumentValidator.validateSqlFunctionArguments(null, SqlFunctionScalar.class));
+                () -> SqlArgumentValidator.validateSingleAgrumentFunctionParameter(null, SqlFunctionScalar.class));
     }
 
     @Test
     void testValidateSqlFunctionArgumentsEmptyThrowsException() {
         assertThrows(IllegalArgumentException.class, () -> SqlArgumentValidator
-                .validateSqlFunctionArguments(Collections.emptyList(), SqlFunctionScalar.class));
+                .validateSingleAgrumentFunctionParameter(Collections.emptyList(), SqlFunctionScalar.class));
     }
 
     @Test
@@ -26,13 +26,13 @@ class SqlArgumentValidatorTest {
         final List<SqlNode> arguments = new ArrayList<>();
         arguments.add(null);
         assertThrows(IllegalArgumentException.class,
-                () -> SqlArgumentValidator.validateSqlFunctionArguments(arguments, SqlFunctionScalar.class));
+                () -> SqlArgumentValidator.validateSingleAgrumentFunctionParameter(arguments, SqlFunctionScalar.class));
     }
 
     @Test
     void testValidateSqlFunctionNoException() {
         final List<SqlNode> arguments = new ArrayList<>();
         arguments.add(new SqlLiteralNull());
-        SqlArgumentValidator.validateSqlFunctionArguments(arguments, SqlFunctionScalar.class);
+        SqlArgumentValidator.validateSingleAgrumentFunctionParameter(arguments, SqlFunctionScalar.class);
     }
 }

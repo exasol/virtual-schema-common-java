@@ -46,7 +46,7 @@ class SqlFunctionScalarCastTest {
 
     @Test
     void testToSimpleSql() {
-        assertThat(this.sqlFunctionScalarCast.toSimpleSql(), equalTo("CAST (20.0 AS DECIMAL(18, 0))"));
+        assertThat(this.sqlFunctionScalarCast.toSimpleSql(), equalTo("CAST(20.0 AS DECIMAL(18, 0))"));
     }
 
     @Test

@@ -23,7 +23,7 @@ public class SqlPredicateIsNotJson extends AbstractSqlPredicateJson {
     }
 
     @Override
-    String toSimpleSql() {
+    public String toSimpleSql() {
         final StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(this.expression.toSimpleSql());
         stringBuilder.append(" IS NOT JSON ");

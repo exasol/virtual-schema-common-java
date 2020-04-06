@@ -43,7 +43,7 @@ public class SqlFunctionScalarJsonValue extends SqlNode {
     }
 
     @Override
-    String toSimpleSql() {
+    public String toSimpleSql() {
         final StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("JSON_VALUE(");
         stringBuilder.append(getArguments().get(0).toSimpleSql());
