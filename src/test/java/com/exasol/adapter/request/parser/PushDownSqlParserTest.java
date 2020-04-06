@@ -9,8 +9,7 @@ import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import javax.json.*;
 
@@ -821,11 +820,19 @@ class PushDownSqlParserTest {
         final SqlLiteralString firstArgument = (SqlLiteralString) arguments.get(0);
         final SqlLiteralString secondArgument = (SqlLiteralString) arguments.get(1);
         final DataType returningDataType = sqlFunctionScalarJsonValue.getReturningDataType();
+        final SqlFunctionScalarJsonValue.Behavior emptyBehavior = sqlFunctionScalarJsonValue.getEmptyBehavior();
+        final SqlFunctionScalarJsonValue.Behavior errorBehavior = sqlFunctionScalarJsonValue.getErrorBehavior();
         assertAll(() -> assertThat(sqlFunctionScalarJsonValue.getType(), equalTo(FUNCTION_SCALAR_JSON_VALUE)),
                 () -> assertThat(scalarFunction, equalTo(ScalarFunction.JSON_VALUE)),
                 () -> assertThat(firstArgument.getValue(), equalTo("'first argument'")),
                 () -> assertThat(secondArgument.getValue(), equalTo("'second argument'")),
-                () -> assertThat(returningDataType, equalTo(DataType.createVarChar(10000, DataType.ExaCharset.UTF8))));
+                () -> assertThat(returningDataType, equalTo(DataType.createVarChar(10000, DataType.ExaCharset.UTF8))),
+                () -> assertThat(emptyBehavior,
+                        equalTo(new SqlFunctionScalarJsonValue.Behavior(SqlFunctionScalarJsonValue.BehaviorType.NULL,
+                                Optional.empty()))),
+                () -> assertThat(errorBehavior,
+                        equalTo(new SqlFunctionScalarJsonValue.Behavior(SqlFunctionScalarJsonValue.BehaviorType.DEFAULT,
+                                Optional.of(new SqlLiteralString("*** error ***"))))));
     }
 
     @Test

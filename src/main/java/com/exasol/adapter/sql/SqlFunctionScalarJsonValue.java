@@ -1,11 +1,13 @@
 package com.exasol.adapter.sql;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.DataType;
 
+/**
+ * This class represents the {@link ScalarFunction#JSON_VALUE} scalar function.
+ */
 public class SqlFunctionScalarJsonValue extends SqlNode {
     private final ScalarFunction scalarFunction;
     private final List<SqlNode> arguments;
@@ -42,7 +44,27 @@ public class SqlFunctionScalarJsonValue extends SqlNode {
 
     @Override
     String toSimpleSql() {
-        return null;
+        final StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("JSON_VALUE(");
+        stringBuilder.append(getArguments().get(0).toSimpleSql());
+        stringBuilder.append(", ");
+        stringBuilder.append(getArguments().get(1).toSimpleSql());
+        stringBuilder.append(" RETURNING ");
+        stringBuilder.append(this.returningDataType.toString());
+        stringBuilder.append(" ");
+        stringBuilder.append(this.emptyBehavior.getBehaviorType());
+        if (this.emptyBehavior.getExpression().isPresent()) {
+            stringBuilder.append(" ");
+            stringBuilder.append(this.emptyBehavior.getExpression().get());
+        }
+        stringBuilder.append(" ON EMPTY ");
+        stringBuilder.append(this.errorBehavior.getBehaviorType());
+        if (this.errorBehavior.getExpression().isPresent()) {
+            stringBuilder.append(" ");
+            stringBuilder.append(this.errorBehavior.getExpression().get().toSimpleSql());
+        }
+        stringBuilder.append(" ON ERROR)");
+        return stringBuilder.toString();
     }
 
     public ScalarFunction getScalarFunction() {
@@ -65,26 +87,48 @@ public class SqlFunctionScalarJsonValue extends SqlNode {
         return this.errorBehavior;
     }
 
+    /**
+     * A list of expected behavior types.
+     */
     public enum BehaviorType {
         ERROR, NULL, DEFAULT
     }
 
+    /**
+     * This class represent behavior of {@link SqlFunctionScalarJsonValue} on error or empty.
+     */
     public static class Behavior {
-        private BehaviorType behaviorType;
-
-        private Optional<SqlNode> expression;
+        private final BehaviorType behaviorType;
+        private final Optional<SqlNode> expression;
 
         public Behavior(final BehaviorType behaviorType, final Optional<SqlNode> expression) {
             this.behaviorType = behaviorType;
             this.expression = expression;
         }
 
-        protected BehaviorType getBehaviorType() {
-            return behaviorType;
+        public String getBehaviorType() {
+            return this.behaviorType.name();
         }
 
         public Optional<SqlNode> getExpression() {
-            return expression;
+            return this.expression;
+        }
+
+        @Override
+        public boolean equals(final Object object) {
+            if (this == object) {
+                return true;
+            }
+            if (object == null || getClass() != object.getClass()) {
+                return false;
+            }
+            final Behavior behavior = (Behavior) object;
+            return this.behaviorType == behavior.behaviorType && Objects.equals(this.expression, behavior.expression);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(this.behaviorType, this.expression);
         }
     }
 }

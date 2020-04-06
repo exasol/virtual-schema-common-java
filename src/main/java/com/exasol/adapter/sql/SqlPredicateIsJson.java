@@ -2,6 +2,9 @@ package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
 
+/**
+ * This class represents the {@link Predicate#IS_JSON} predicate.
+ */
 public class SqlPredicateIsJson extends AbstractSqlPredicateJson {
     public SqlPredicateIsJson(final SqlNode expression, final TypeConstraints typeConstraint,
             final KeyUniquenessConstraint keyUniquenessConstraint) {
