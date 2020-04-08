@@ -6,9 +6,8 @@ import com.exasol.adapter.AdapterException;
  * This class represents the {@link Predicate#IS_NOT_JSON} predicate.
  */
 public class SqlPredicateIsNotJson extends AbstractSqlPredicateJson {
-    public SqlPredicateIsNotJson(final SqlNode expression,
-                                 final AbstractSqlPredicateJson.TypeConstraints typeConstraint,
-                                 final AbstractSqlPredicateJson.KeyUniquenessConstraint keyUniquenessConstraint) {
+    public SqlPredicateIsNotJson(final SqlNode expression, final TypeConstraints typeConstraint,
+            final KeyUniquenessConstraint keyUniquenessConstraint) {
         super(Predicate.IS_NOT_JSON, expression, typeConstraint, keyUniquenessConstraint);
     }
 
