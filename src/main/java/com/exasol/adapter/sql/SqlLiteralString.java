@@ -35,7 +35,7 @@ public class SqlLiteralString extends SqlNode {
         if (this == object) {
             return true;
         }
-        if (object == null || getClass() != object.getClass()) {
+        if (!(object instanceof SqlLiteralString)) {
             return false;
         }
         SqlLiteralString that = (SqlLiteralString) object;

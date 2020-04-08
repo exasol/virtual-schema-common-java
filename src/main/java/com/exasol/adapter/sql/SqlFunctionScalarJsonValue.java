@@ -99,7 +99,7 @@ public class SqlFunctionScalarJsonValue extends SqlNode {
             if (this == object) {
                 return true;
             }
-            if (object == null || getClass() != object.getClass()) {
+            if (!(object instanceof Behavior)) {
                 return false;
             }
             final Behavior behavior = (Behavior) object;
