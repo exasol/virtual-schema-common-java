@@ -28,28 +28,28 @@ public class SqlJoin extends SqlNode {
      * @return the left
      */
     public SqlNode getLeft() {
-        return left;
+        return this.left;
     }
 
     /**
      * @return the right
      */
     public SqlNode getRight() {
-        return right;
+        return this.right;
     }
 
     /**
      * @return the condition
      */
     public SqlNode getCondition() {
-        return condition;
+        return this.condition;
     }
 
     /**
      * @return the joinType
      */
     public JoinType getJoinType() {
-        return joinType;
+        return this.joinType;
     }
 
     @Override
@@ -63,8 +63,8 @@ public class SqlJoin extends SqlNode {
     }
 
     @Override
-    String toSimpleSql() {
-        return left.toSimpleSql() + " " + joinType.name().replace('_', ' ') + " JOIN " + right.toSimpleSql() + " ON "
-                + condition.toSimpleSql();
+    public String toSimpleSql() {
+        return this.left.toSimpleSql() + " " + this.joinType.name().replace('_', ' ') + " JOIN " + this.right.toSimpleSql() + " ON "
+                + this.condition.toSimpleSql();
     }
 }

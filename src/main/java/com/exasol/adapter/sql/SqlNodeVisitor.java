@@ -35,6 +35,8 @@ public interface SqlNodeVisitor<R> {
 
     public R visit(SqlFunctionScalarExtract sqlFunctionScalarExtract) throws AdapterException;
 
+    public R visit(SqlFunctionScalarJsonValue sqlFunctionScalarJsonValue) throws AdapterException;
+
     public R visit(SqlLimit sqlLimit) throws AdapterException;
 
     public R visit(SqlLiteralBool sqlLiteralBool) throws AdapterException;
@@ -64,6 +66,10 @@ public interface SqlNodeVisitor<R> {
     public R visit(SqlPredicateEqual sqlPredicateEqual) throws AdapterException;
 
     public R visit(SqlPredicateInConstList sqlPredicateInConstList) throws AdapterException;
+
+    public R visit(SqlPredicateIsJson sqlPredicateIsJson) throws AdapterException;
+
+    public R visit(SqlPredicateIsNotJson sqlPredicateIsNotJson) throws AdapterException;
 
     public R visit(SqlPredicateLess sqlPredicateLess) throws AdapterException;
 

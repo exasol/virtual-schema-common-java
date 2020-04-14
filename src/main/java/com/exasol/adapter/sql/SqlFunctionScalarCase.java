@@ -63,8 +63,4 @@ public class SqlFunctionScalarCase extends SqlNode {
     public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
-
-    public ScalarFunction getFunction() {
-        return ScalarFunction.CASE;
-    }
 }

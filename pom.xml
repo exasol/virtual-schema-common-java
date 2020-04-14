@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.exasol</groupId>
   <artifactId>virtual-schema-common-java</artifactId>
-  <version>8.0.2</version>
+  <version>9.0.0</version>
   <name>Common module of Exasol Virtual Schemas Adapters</name>
   <description>This is one of the modules of Virtual Schemas Adapters. The libraries provided by this project are the foundation of the adapter development, i.e. adapters must be implemented on top of them.</description>
   <url>https://github.com/exasol/virtual-schema-common-java</url>

@@ -15,7 +15,6 @@ import com.exasol.adapter.AdapterException;
 import com.exasol.mocking.MockUtils;
 
 class SqlFunctionScalarExtractTest {
-    private static final String TEST_STRING_TO_EXTRACT = "SECOND";
     private SqlFunctionScalarExtract sqlFunctionScalarExtract;
     private List<SqlNode> arguments;
 
@@ -23,12 +22,12 @@ class SqlFunctionScalarExtractTest {
     void setUp() {
         this.arguments = new ArrayList<>();
         this.arguments.add(new SqlLiteralTimestamp("2019-02-12 12:07:00"));
-        this.sqlFunctionScalarExtract = new SqlFunctionScalarExtract(TEST_STRING_TO_EXTRACT, this.arguments);
+        this.sqlFunctionScalarExtract = new SqlFunctionScalarExtract("SECOND", this.arguments);
     }
 
     @Test
     void getToExtract() {
-        assertThat(this.sqlFunctionScalarExtract.getToExtract(), equalTo(TEST_STRING_TO_EXTRACT));
+        assertThat(this.sqlFunctionScalarExtract.getToExtract(), equalTo("SECOND"));
     }
 
     @Test
@@ -38,29 +37,19 @@ class SqlFunctionScalarExtractTest {
 
     @Test
     void testGetArgumentsWithNullAsArgumentList() {
-        assertThrows(IllegalArgumentException.class, () -> this.sqlFunctionScalarExtract = new SqlFunctionScalarExtract(
-                SqlFunctionScalarExtractTest.TEST_STRING_TO_EXTRACT, null));
+        assertThrows(IllegalArgumentException.class,
+                () -> this.sqlFunctionScalarExtract = new SqlFunctionScalarExtract("SECOND", null));
     }
 
     @Test
     void testToSimpleSql() {
         assertThat(this.sqlFunctionScalarExtract.toSimpleSql(),
-                equalTo("EXTRACT (" + TEST_STRING_TO_EXTRACT + " FROM TIMESTAMP '2019-02-12 12:07:00')"));
+                equalTo("EXTRACT"));
     }
 
     @Test
     void testGetType() {
         assertThat(this.sqlFunctionScalarExtract.getType(), equalTo(SqlNodeType.FUNCTION_SCALAR_EXTRACT));
-    }
-
-    @Test
-    void testGetFunction() {
-        assertThat(this.sqlFunctionScalarExtract.getFunction(), equalTo(ScalarFunction.EXTRACT));
-    }
-
-    @Test
-    void getFunctionName() {
-        assertThat(this.sqlFunctionScalarExtract.getFunctionName(), equalTo("EXTRACT"));
     }
 
     @Test

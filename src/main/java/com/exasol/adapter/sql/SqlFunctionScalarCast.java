@@ -11,7 +11,7 @@ public class SqlFunctionScalarCast extends SqlNode {
     private final List<SqlNode> arguments;
 
     public SqlFunctionScalarCast(final DataType dataType, final List<SqlNode> arguments) {
-        SqlArgumentValidator.validateSqlFunctionArguments(arguments, SqlFunctionScalarCast.class);
+        SqlArgumentValidator.validateSingleAgrumentFunctionParameter(arguments, SqlFunctionScalarCast.class);
         this.arguments = arguments;
         this.dataType = dataType;
         for (final SqlNode node : this.arguments) {
@@ -29,9 +29,7 @@ public class SqlFunctionScalarCast extends SqlNode {
 
     @Override
     public String toSimpleSql() {
-        assert this.arguments != null;
-        assert this.arguments.size() == 1 && this.arguments.get(0) != null;
-        return "CAST (" + this.arguments.get(0).toSimpleSql() + " AS " + getDataType().toString() + ")";
+        return "CAST";
     }
 
     @Override
@@ -42,9 +40,5 @@ public class SqlFunctionScalarCast extends SqlNode {
     @Override
     public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
-    }
-
-    public ScalarFunction getFunction() {
-        return ScalarFunction.CAST;
     }
 }

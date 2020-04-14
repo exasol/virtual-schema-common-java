@@ -1,5 +1,7 @@
 package com.exasol.adapter.sql;
 
+import java.util.Objects;
+
 import com.exasol.adapter.AdapterException;
 
 public class SqlLiteralString extends SqlNode {
@@ -26,5 +28,22 @@ public class SqlLiteralString extends SqlNode {
     @Override
     public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof SqlLiteralString)) {
+            return false;
+        }
+        SqlLiteralString that = (SqlLiteralString) object;
+        return Objects.equals(value, that.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 }

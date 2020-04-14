@@ -10,7 +10,8 @@ public enum PredicateCapability {
     /**
      * The LIKE predicate with the optional escape character defined
      */
-    LIKE_ESCAPE(Predicate.LIKE), REGEXP_LIKE, BETWEEN, IN_CONSTLIST, IS_NULL, IS_NOT_NULL;
+    LIKE_ESCAPE(Predicate.LIKE), REGEXP_LIKE, BETWEEN, IN_CONSTLIST, IS_NULL, IS_NOT_NULL,
+    IS_JSON, IS_NOT_JSON;
 
     private final Predicate predicate;
 
