@@ -36,6 +36,7 @@ public enum ScalarFunctionCapability {
     HASHTYPE_SHA1, HASH_SHA256, HASHTYPE_SHA256, HASH_SHA512, HASHTYPE_SHA512, HASH_TIGER, HASHTYPE_TIGER, NULLIFZERO,
     SYS_GUID, ZEROIFNULL, JSON_VALUE;
 
+
     public ScalarFunction getFunction() {
         return ScalarFunction.valueOf(name());
     }
