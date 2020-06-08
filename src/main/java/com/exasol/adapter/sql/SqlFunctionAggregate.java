@@ -43,7 +43,7 @@ public class SqlFunctionAggregate extends SqlNode {
     }
 
     public String getFunctionName() {
-        return function.name();
+        return function.toString();
     }
 
     public boolean hasDistinct() {
