@@ -258,7 +258,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>S
+            </plugin>
         </plugins>
     </build>
 </project>
