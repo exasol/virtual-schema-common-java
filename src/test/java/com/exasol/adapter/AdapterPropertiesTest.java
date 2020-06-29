@@ -1,8 +1,8 @@
 package com.exasol.adapter;
 
 import static com.exasol.adapter.AdapterProperties.*;
-import static org.hamcrest.Matchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.lang.reflect.*;
@@ -31,8 +31,8 @@ class AdapterPropertiesTest {
     }
 
     @ValueSource(strings = { CATALOG_NAME_PROPERTY, SCHEMA_NAME_PROPERTY, CONNECTION_NAME_PROPERTY,
-            CONNECTION_STRING_PROPERTY, USERNAME_PROPERTY, PASSWORD_PROPERTY, DEBUG_ADDRESS_PROPERTY,
-            LOG_LEVEL_PROPERTY, SQL_DIALECT_PROPERTY, EXCLUDED_CAPABILITIES_PROPERTY, EXCEPTION_HANDLING_PROPERTY })
+            DEBUG_ADDRESS_PROPERTY, LOG_LEVEL_PROPERTY, SQL_DIALECT_PROPERTY, EXCLUDED_CAPABILITIES_PROPERTY,
+            EXCEPTION_HANDLING_PROPERTY })
     @ParameterizedTest
     void testGetStringProperty(final String property) throws IllegalAccessException, IllegalArgumentException,
             InvocationTargetException, NoSuchMethodException, SecurityException {
@@ -55,8 +55,8 @@ class AdapterPropertiesTest {
         assertThat(properties.getFilteredTables(), containsInAnyOrder("Table a", "Table B", "TABLE  C", "table d"));
     }
 
-    @ValueSource(strings = { CONNECTION_STRING_PROPERTY, CONNECTION_NAME_PROPERTY, USERNAME_PROPERTY, PASSWORD_PROPERTY,
-            SCHEMA_NAME_PROPERTY, CATALOG_NAME_PROPERTY, TABLE_FILTER_PROPERTY, BINARY_COLUMN_HANDLING_PROPERTY })
+    @ValueSource(strings = { CONNECTION_NAME_PROPERTY, SCHEMA_NAME_PROPERTY, CATALOG_NAME_PROPERTY,
+            TABLE_FILTER_PROPERTY, BINARY_COLUMN_HANDLING_PROPERTY })
     @ParameterizedTest
     void testIsRefreshingVirtualSchemaRequiredTrue(final String propertyName) {
         this.rawProperties.put(propertyName, "");
@@ -120,8 +120,7 @@ class AdapterPropertiesTest {
     }
 
     static public Stream<String> getAdapterPropertyNames() {
-        return Arrays.asList(AdapterProperties.class.getDeclaredFields()) //
-                .stream() //
+        return Arrays.stream(AdapterProperties.class.getDeclaredFields()) //
                 .map(Field::getName) //
                 .filter(name -> name.endsWith(PROPERTY_SUFFIX)) //
                 .map(name -> name.replace(PROPERTY_SUFFIX, ""));

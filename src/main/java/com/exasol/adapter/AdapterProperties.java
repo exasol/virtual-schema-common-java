@@ -15,7 +15,6 @@ public class AdapterProperties extends AbstractAdapterProperties {
     public static final String CATALOG_NAME_PROPERTY = "CATALOG_NAME";
     public static final String SCHEMA_NAME_PROPERTY = "SCHEMA_NAME";
     public static final String CONNECTION_NAME_PROPERTY = "CONNECTION_NAME";
-    public static final String CONNECTION_STRING_PROPERTY = "CONNECTION_STRING";
     public static final String DEBUG_ADDRESS_PROPERTY = "DEBUG_ADDRESS";
     public static final String LOG_LEVEL_PROPERTY = "LOG_LEVEL";
     public static final String SQL_DIALECT_PROPERTY = "SQL_DIALECT";
@@ -23,9 +22,6 @@ public class AdapterProperties extends AbstractAdapterProperties {
     public static final String EXCEPTION_HANDLING_PROPERTY = "EXCEPTION_HANDLING";
     public static final String IGNORE_ERRORS_PROPERTY = "IGNORE_ERRORS";
     public static final String IS_LOCAL_PROPERTY = "IS_LOCAL";
-    public static final String USERNAME_PROPERTY = "USERNAME";
-    @SuppressWarnings("squid:S2068") // Sonar mistakes this for a hard-coded credential
-    public static final String PASSWORD_PROPERTY = "PASSWORD";
     public static final String BINARY_COLUMN_HANDLING_PROPERTY = "BINARY_COLUMN_HANDLING";
 
     /**
@@ -62,33 +58,6 @@ public class AdapterProperties extends AbstractAdapterProperties {
      */
     public String getConnectionName() {
         return get(CONNECTION_NAME_PROPERTY);
-    }
-
-    /**
-     * Get the connection string
-     *
-     * @return connection string
-     */
-    public String getConnectionString() {
-        return get(CONNECTION_STRING_PROPERTY);
-    }
-
-    /**
-     * Get the user name
-     *
-     * @return user name
-     */
-    public String getUsername() {
-        return get(USERNAME_PROPERTY);
-    }
-
-    /**
-     * Get the password
-     *
-     * @return password
-     */
-    public String getPassword() {
-        return get(PASSWORD_PROPERTY);
     }
 
     /**
@@ -171,10 +140,7 @@ public class AdapterProperties extends AbstractAdapterProperties {
      * @return <code>true</code> if any of the changes makes refreshing the virtual schema necessary
      */
     public static boolean isRefreshingVirtualSchemaRequired(final Map<String, String> changedProperties) {
-        return changedProperties.containsKey(CONNECTION_STRING_PROPERTY) //
-                || changedProperties.containsKey(CONNECTION_NAME_PROPERTY) //
-                || changedProperties.containsKey(USERNAME_PROPERTY) //
-                || changedProperties.containsKey(PASSWORD_PROPERTY) //
+        return  changedProperties.containsKey(CONNECTION_NAME_PROPERTY) //
                 || changedProperties.containsKey(SCHEMA_NAME_PROPERTY) //
                 || changedProperties.containsKey(CATALOG_NAME_PROPERTY) //
                 || changedProperties.containsKey(TABLE_FILTER_PROPERTY)
@@ -202,33 +168,6 @@ public class AdapterProperties extends AbstractAdapterProperties {
         } else {
             return BinaryColumnHandling.IGNORE;
         }
-    }
-
-    /**
-     * Check if the username property is set
-     *
-     * @return <code>true</code> if username property is set
-     */
-    public boolean hasUsername() {
-        return containsKey(USERNAME_PROPERTY);
-    }
-
-    /**
-     * Check if the password property is set
-     *
-     * @return <code>true</code> if password property is set
-     */
-    public boolean hasPassword() {
-        return containsKey(PASSWORD_PROPERTY);
-    }
-
-    /**
-     * Check if the connection string property is set
-     *
-     * @return <code>true</code> if connection string property is set
-     */
-    public boolean hasConnectionString() {
-        return containsKey(CONNECTION_STRING_PROPERTY);
     }
 
     /**
