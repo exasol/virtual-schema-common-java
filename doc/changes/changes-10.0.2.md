@@ -4,6 +4,10 @@
 
 * #141: Added ossindex-maven-plugin and versions-maven-plugin, updated dependencies.
 
+## Documentation
+
+* #138: Removed outdated Google Guava dependency declaration in README.md.
+
 ## Dependency updates
 
 * Added `org.sonatype.ossindex.maven:ossindex-maven-plugin:3.1.0`
