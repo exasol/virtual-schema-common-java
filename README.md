@@ -1,6 +1,7 @@
 # Common module of Exasol Virtual Schemas Adapters
 
 [![Build Status](https://api.travis-ci.org/exasol/virtual-schema-common-java.svg?branch=master)](https://travis-ci.org/exasol/virtual-schema-common-java)
+[![Maven Central](https://img.shields.io/maven-central/v/com.exasol/virtual-schema-common-java)](https://search.maven.org/artifact/com.exasol/virtual-schema-common-java)
 
 SonarCloud results:
 
@@ -22,6 +23,10 @@ You can find the full description of the project here: https://github.com/exasol
 
 Please note that the artifact name changed from "virtualschema-common" to "virtual-schema-common-java". First to unify the naming schemes, second to make sure the new adapters do not accidentally use the old line of libraries.
 
+## Information for Users
+
+* [Changelog](doc/changes/changelog.md)
+
 ## Dependencies
 
 ### Run Time Dependencies
@@ -30,7 +35,6 @@ Please note that the artifact name changed from "virtualschema-common" to "virtu
 |-------------------------------------------------------------------------------------|--------------------------------------------------------|-------------------------------|
 | [JSON-P](https://javaee.github.io/jsonp/)                                           | JSON Processing                                        | CDDL-1.0                      |
 | [Exasol Script API](https://docs.exasol.com/database_concepts/udf_scripts.htm)      | Accessing Exasol features                              | MIT License                   |
-| [Google Guava](https://github.com/google/guava/)                                    | Open-source set of common libraries for Java           | Apache License 2.0            |
 
 ### Build Time Dependencies
 
@@ -43,6 +47,26 @@ Please note that the artifact name changed from "virtualschema-common" to "virtu
 | [Mockito](http://site.mockito.org/)                                                 | Mocking framework                                      | MIT License                   |
 | [JUnit 5 System Extensions](https://github.com/itsallcode/junit5-system-extensions) | Capturing `STDOUT` and `STDERR`                        | Eclipse Public License 2.0    |
 | [Equals Verifier](https://jqno.nl/equalsverifier/)                                  | Testing `equals(...)` and `hashCode()` contracts       | Apache License 2.0            |
+
+### Maven Plug-ins
+
+| Plug-in                                                                        | Purpose                                                | License                       |
+---------------------------------------------------------------------------------|--------------------------------------------------------|--------------------------------
+| [Maven Compiler Plugin][maven-compiler-plugin]                                 | Setting required Java version                          | Apache License 2.0            |
+| [Maven GPG Plugin](https://maven.apache.org/plugins/maven-gpg-plugin/)         | Signs JARs                                             | Apache License 2.0            |
+| [Maven Enforcer Plugin][maven-enforcer-plugin]                                 | Controlling environment constants                      | Apache License 2.0            |
+| [Maven Jacoco Plugin](https://www.eclemma.org/jacoco/trunk/doc/maven.html)     | Code coverage metering                                 | Eclipse Public License 2.0    |
+| [Maven JavaDoc Plugin](https://maven.apache.org/plugins/maven-javadoc-plugin/) | Creates JavaDoc JARs                                   | Apache License 2.0            |
+| [Maven Source Plugin](https://maven.apache.org/plugins/maven-source-plugin/)   | Creates source JARs                                    | Apache License 2.0            |
+| [Maven Surefire Plugin][maven-surefire-plugin]                                 | Unit testing                                           | Apache License 2.0            |
+| [Sonatype OSS Index Maven Plugin][sonatype-oss-index-maven-plugin]             | Checking Dependencies Vulnerability                    | ASL2                          |
+| [Versions Maven Plugin][versions-maven-plugin]                                 | Checking if dependencies updates are available         | Apache License 2.0            |
+
+[maven-compiler-plugin]: https://maven.apache.org/plugins/maven-compiler-plugin/
+[maven-enforcer-plugin]: http://maven.apache.org/enforcer/maven-enforcer-plugin/
+[maven-surefire-plugin]: https://maven.apache.org/surefire/maven-surefire-plugin/
+[sonatype-oss-index-maven-plugin]: https://sonatype.github.io/ossindex-maven/maven-plugin/
+[versions-maven-plugin]: https://www.mojohaus.org/versions-maven-plugin/
 
 ## Open Source Project Support
 
