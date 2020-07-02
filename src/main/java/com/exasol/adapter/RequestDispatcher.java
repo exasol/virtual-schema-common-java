@@ -44,10 +44,10 @@ public final class RequestDispatcher {
     @SuppressWarnings("squid:S2139")
     private String executeAdapterCall(final ExaMetadata metadata, final String rawRequest) throws AdapterException {
         try {
-            final AdapterRequest request = new RequestParser().parse(rawRequest);
-            configureAdapterLoggingAccordingToRequestSettings(request);
             logVersionInformation();
             logRawRequest(rawRequest);
+            final AdapterRequest request = new RequestParser().parse(rawRequest);
+            configureAdapterLoggingAccordingToRequestSettings(request);
             final VirtualSchemaAdapter adapter = findResponsibleAdapter(request);
             return processRequest(request, adapter, metadata);
         } catch (final Exception exception) {
