@@ -1,7 +1,8 @@
-# Virtual Schema Common Java 10.0.2, released 30.06.2020
+# Virtual Schema Common Java 10.1.0, released 2020.07.02
 
 ## Features / Enhancements
 
+* #127: Added capabilities for new scalar function SESSION_PARAMETER 
 * #141: Added ossindex-maven-plugin and versions-maven-plugin, updated dependencies.
 
 ## Documentation
