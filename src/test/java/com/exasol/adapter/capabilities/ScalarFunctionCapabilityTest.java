@@ -1,10 +1,11 @@
 package com.exasol.adapter.capabilities;
 
-import com.exasol.adapter.sql.ScalarFunction;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import com.exasol.adapter.sql.ScalarFunction;
 
 class ScalarFunctionCapabilityTest {
     @Test
@@ -17,7 +18,7 @@ class ScalarFunctionCapabilityTest {
                     foundCap = true;
                 }
             }
-            assertTrue("Did not find a capability for function " + function.name(), foundCap);
+            assertTrue(foundCap, "Did not find a capability for function " + function.name());
         }
     }
 
@@ -27,5 +28,4 @@ class ScalarFunctionCapabilityTest {
             assertEquals(cap.name(), cap.getFunction().name());
         }
     }
-
 }
