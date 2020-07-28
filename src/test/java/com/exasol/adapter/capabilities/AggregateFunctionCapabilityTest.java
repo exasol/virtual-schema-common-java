@@ -1,9 +1,10 @@
 package com.exasol.adapter.capabilities;
 
-import com.exasol.adapter.sql.AggregateFunction;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertTrue;
+import com.exasol.adapter.sql.AggregateFunction;
 
 class AggregateFunctionCapabilityTest {
     @Test
@@ -15,7 +16,7 @@ class AggregateFunctionCapabilityTest {
                     foundCap = true;
                 }
             }
-            assertTrue("Did not find a capability for function " + func.name(), foundCap);
+            assertTrue(foundCap, "Did not find a capability for function " + func.name());
         }
     }
 

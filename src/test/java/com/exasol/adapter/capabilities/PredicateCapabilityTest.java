@@ -1,9 +1,10 @@
 package com.exasol.adapter.capabilities;
 
-import com.exasol.adapter.sql.Predicate;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertTrue;
+import com.exasol.adapter.sql.Predicate;
 
 class PredicateCapabilityTest {
     @Test
@@ -15,7 +16,7 @@ class PredicateCapabilityTest {
                     foundCap = true;
                 }
             }
-            assertTrue("Did not find a capability for predicate " + pred.name(), foundCap);
+            assertTrue(foundCap, "Did not find a capability for predicate " + pred.name());
         }
     }
 
