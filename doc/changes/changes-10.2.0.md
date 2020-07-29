@@ -3,6 +3,7 @@
 ## Features / Enhancements
 
 * #126: Added capabilities for new scalar functions HASHTYPE_*. 
+* #144: Updated .travis.yml, added upload_release_assets.yml for Release Robot.
 
 ## Dependency updates
 
