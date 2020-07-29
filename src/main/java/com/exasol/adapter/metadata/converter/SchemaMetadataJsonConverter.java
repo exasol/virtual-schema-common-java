@@ -15,14 +15,13 @@ public final class SchemaMetadataJsonConverter {
     private static final SchemaMetadataJsonConverter instance = new SchemaMetadataJsonConverter();
     private static final String ADAPTER_NOTES_KEY = "adapterNotes";
     private static final String TABLES_KEY = "tables";
-    private static final String TABLE_TYPE_KEY = "type";
+    private static final String TYPE_KEY = "type";
     private static final String TABLE_NAME_KEY = "name";
     private static final String DATA_TYPE_KEY = "dataType";
     private static final String NULLABLE_KEY = "isNullable";
     private static final String COMMENT_KEY = "comment";
     private static final String IDENTITY_KEY = "isIdentity";
     private static final String DEFAULT_KEY = "default";
-    private static final String DATA_TYPEKEY = "type";
     private final JsonBuilderFactory factory = Json.createBuilderFactory(Collections.emptyMap());
 
     /**
@@ -45,12 +44,12 @@ public final class SchemaMetadataJsonConverter {
      */
     public JsonObject convert(final SchemaMetadata schemaMetadata) {
         final JsonObjectBuilder root = this.factory.createObjectBuilder();
-        root.add(TABLES_KEY, converTables(schemaMetadata));
+        root.add(TABLES_KEY, convertTables(schemaMetadata));
         root.add(ADAPTER_NOTES_KEY, schemaMetadata.getAdapterNotes());
         return root.build();
     }
 
-    public JsonArrayBuilder converTables(final SchemaMetadata schemaMetadata) {
+    private JsonArrayBuilder convertTables(final SchemaMetadata schemaMetadata) {
         final JsonArrayBuilder tablesBuilder = this.factory.createArrayBuilder();
         for (final TableMetadata table : schemaMetadata.getTables()) {
             tablesBuilder.add(convertTableMetadata(table));
@@ -60,7 +59,7 @@ public final class SchemaMetadataJsonConverter {
 
     private JsonObjectBuilder convertTableMetadata(final TableMetadata table) {
         final JsonObjectBuilder tableBuilder = this.factory.createObjectBuilder();
-        tableBuilder.add(TABLE_TYPE_KEY, "table");
+        tableBuilder.add(TYPE_KEY, "table");
         tableBuilder.add(TABLE_NAME_KEY, table.getName());
         final JsonArrayBuilder columnsBuilder = Json.createArrayBuilder();
         for (final ColumnMetadata column : table.getColumns()) {
@@ -104,7 +103,7 @@ public final class SchemaMetadataJsonConverter {
      */
     public JsonObject convertType(final DataType dataType) {
         final JsonObjectBuilder typeAsJson = this.factory.createObjectBuilder();
-        typeAsJson.add(DATA_TYPEKEY, getExasolDataTypeName(dataType.getExaDataType()));
+        typeAsJson.add(TYPE_KEY, getExasolDataTypeName(dataType.getExaDataType()));
         switch (dataType.getExaDataType()) {
         case UNSUPPORTED:
             throw new IllegalArgumentException("Unsupported data type found trying to serialize schema metadata. "

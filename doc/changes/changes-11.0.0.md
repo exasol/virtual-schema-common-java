@@ -1,7 +1,8 @@
-# Virtual Schema Common Java 10.2.0, released 2020.07.28
+# Virtual Schema Common Java 11.0.0, released 2020.07.28
 
 ## Features / Enhancements
 
+* #90: Removed `JsonHelper` class.
 * #126: Added capabilities for new scalar functions HASHTYPE_*. 
 * #144: Updated .travis.yml, added upload_release_assets.yml for Release Robot.
 
