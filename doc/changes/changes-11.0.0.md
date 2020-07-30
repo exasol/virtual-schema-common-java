@@ -1,4 +1,4 @@
-# Virtual Schema Common Java 11.0.0, released 2020.07.28
+# Virtual Schema Common Java 11.0.0, released 2020-07-30
 
 ## Features / Enhancements
 

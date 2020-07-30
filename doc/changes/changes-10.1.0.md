@@ -1,4 +1,4 @@
-# Virtual Schema Common Java 10.1.0, released 2020.07.02
+# Virtual Schema Common Java 10.1.0, released 2020-07-02
 
 ## Features / Enhancements
 
