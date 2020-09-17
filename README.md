@@ -27,6 +27,11 @@ Please note that the artifact name changed from "virtualschema-common" to "virtu
 
 * [Changelog](doc/changes/changelog.md)
 
+## Information for Developers
+
+* [Virtual Schema API](doc/development/api/virtual_schema_api.md)
+* [Capabilities list](doc/development/api/capabilities_list.md)
+
 ## Dependencies
 
 ### Run Time Dependencies
