@@ -1034,6 +1034,8 @@ Refer to the [Exasol Scalar Functions API Documentation](scalar_functions_api.md
 
 ### Aggregate Functions
 
+#### Functions With a Common API
+
 Consistent with scalar functions. To be detailed: `star-operator`, `distinct`, ...
 
 An aggregate function with a single argument (consistent with multiple argument version):
@@ -1068,6 +1070,32 @@ An aggregate function with multiple arguments:
 ```
 
 #### Special Cases of Aggregate Functions
+
+This section contains functions that have a special API mapping.
+
+| Function Name       | API Mapping Link                                   |
+|---------------------|----------------------------------------------------|
+| AVG(exp)            | [AVG(exp) function](#avgexp)                       |
+| AVG(DISTINCT exp)   | [AVG(DISTINCT exp) function](#avgdistinct-exp)     |
+| COUNT(*)            | [COUNT(*) function](#count)                        |
+| COUNT(exp)          | [COUNT(exp) function](#countexp)                   |
+| COUNT(DISTINCT exp) | [COUNT(DISTINCT exp) function](#countdistinct-exp) |
+| COUNT((exp1, exp2)) | [COUNT((exp1, exp2)) function](#countexp1-exp2)    |
+| GROUP_CONCAT        | [GROUP_CONCAT function](#group_concat)             |
+
+#### Aggregate Functions Not Included in the API
+
+| Function Name   | Comment                                 |
+|-----------------|-----------------------------------------|
+| ANY             | The API uses the SOME function.         |
+| CORR            | Not included in the API.                |
+| COVAR_POP       | Not included in the API.                |
+| COVAR_SAMP      | Not included in the API.                |
+| GROUPING        | Not included in the API.                |
+| LISTAGG         | The API uses the GROUP_CONCAT function. |
+| PERCENTILE_CONT | Not included in the API.                |
+| PERCENTILE_DISC | Not included in the API.                |
+| REGR_*          | Not included in the API.                |
 
 ##### COUNT(exp)
 

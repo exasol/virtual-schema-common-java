@@ -22,7 +22,7 @@ Here you can find a list of available Virtual Schema capabilities.
 - ORDER_BY_COLUMN
 - ORDER_BY_EXPRESSION
 - SELECTLIST_EXPRESSIONS
-- SELECTLIST_PROJECTION  
+- SELECTLIST_PROJECTION
 
 ## [Literal Capabilities](../../../src/main/java/com/exasol/adapter/capabilities/LiteralCapability.java)
 
