@@ -1036,7 +1036,6 @@ Refer to the [Exasol Scalar Functions API Documentation](scalar_functions_api.md
 
 #### Functions With a Common API
 
-Consistent with scalar functions. To be detailed: `star-operator`, `distinct`, ...
 
 An aggregate function with a single argument (consistent with multiple argument version):
 
