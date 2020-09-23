@@ -1080,22 +1080,22 @@ This section contains functions that have a special API mapping.
 | COUNT(*)            | [COUNT(*) function](#count)                        |
 | COUNT(exp)          | [COUNT(exp) function](#countexp)                   |
 | COUNT(DISTINCT exp) | [COUNT(DISTINCT exp) function](#countdistinct-exp) |
-| COUNT((exp1, exp2)) | [COUNT((exp1, exp2)) function](#countexp1-exp2)    |
 | GROUP_CONCAT        | [GROUP_CONCAT function](#group_concat)             |
 
 #### Aggregate Functions Not Included in the API
 
-| Function Name   | Comment                                 |
-|-----------------|-----------------------------------------|
-| ANY             | The API uses the SOME function.         |
-| CORR            | Not included in the API.                |
-| COVAR_POP       | Not included in the API.                |
-| COVAR_SAMP      | Not included in the API.                |
-| GROUPING        | Not included in the API.                |
-| LISTAGG         | The API uses the GROUP_CONCAT function. |
-| PERCENTILE_CONT | Not included in the API.                |
-| PERCENTILE_DISC | Not included in the API.                |
-| REGR_*          | Not included in the API.                |
+| Function Name       | Comment                                 |
+|---------------------|-----------------------------------------|
+| ANY                 | The API uses the SOME function.         |
+| CORR                | Not included in the API.                |
+| COUNT((exp1, exp2)) | Not included in the API.                |
+| COVAR_POP           | Not included in the API.                |
+| COVAR_SAMP          | Not included in the API.                |
+| GROUPING            | Not included in the API.                |
+| LISTAGG             | The API uses the GROUP_CONCAT function. |
+| PERCENTILE_CONT     | Not included in the API.                |
+| PERCENTILE_DISC     | Not included in the API.                |
+| REGR_*              | Not included in the API.                |
 
 ##### COUNT(exp)
 
@@ -1116,7 +1116,7 @@ This section contains functions that have a special API mapping.
 ##### COUNT(*)
 
 `COUNT(*)`
- (requires set-function capability `COUNT` and `COUNT_STAR`)
+ (Requires set-function capability `COUNT_STAR`. Please notice, that the set-function capability `COUNT` is not required in this case.)
 
 ```json
 {
@@ -1128,7 +1128,7 @@ This section contains functions that have a special API mapping.
 ##### COUNT(DISTINCT exp)
 
 `COUNT(DISTINCT exp)`
- (requires set-function capability `COUNT` and `COUNT_DISTINCT`)
+ (requires set-function capabilities `COUNT` and `COUNT_DISTINCT`)
 
 ```json
 {
@@ -1136,27 +1136,6 @@ This section contains functions that have a special API mapping.
     "name": "COUNT",
     "distinct": true,
     "arguments": [
-    {
-        ...
-    }
-    ]
-}
-```
-
-##### COUNT((exp1, exp2))
-
-`COUNT((exp1, exp2))`
-(requires set-function capability `COUNT` and `COUNT_TUPLE`)
-
-```json
-{
-    "type": "function_aggregate",
-    "name": "COUNT",
-    "distinct": true,
-    "arguments": [
-    {
-        ...
-    },
     {
         ...
     }
@@ -1184,7 +1163,7 @@ This section contains functions that have a special API mapping.
 ##### AVG(DISTINCT exp)
 
 `AVG(DISTINCT exp)`
- (requires set-function capability `AVG` and `AVG_DISTINCT`)
+ (requires set-function capabilities `AVG` and `AVG_DISTINCT`)
 
 ```json
 {
