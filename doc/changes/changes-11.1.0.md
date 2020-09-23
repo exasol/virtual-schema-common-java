@@ -10,3 +10,7 @@ FN_BIT_LROTATE, FN_BIT_RROTATE, FN_BIT_LSHIFT, FN_BIT_RSHIFT, FN_FROM_POSIX_TIME
 ## Features / Enhancements
 
 * #147: Added new capabilities.
+
+## Documentation
+
+* #149: Moved the APi documentation to this repository.
