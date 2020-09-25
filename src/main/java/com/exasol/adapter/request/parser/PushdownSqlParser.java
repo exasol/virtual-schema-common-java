@@ -456,25 +456,8 @@ public final class PushdownSqlParser extends AbstractRequestParser {
 
     private SqlNode parseFunctionScalar(final JsonObject exp) {
         final String functionName = exp.getString("name");
-        boolean hasVariableInputArgs = false;
-        final int numArgs;
-        if (exp.containsKey("variableInputArgs")) {
-            hasVariableInputArgs = exp.getBoolean("variableInputArgs");
-        }
         final List<SqlNode> arguments = getListOfSqlNodes(exp, ARGUMENTS);
-        if (!hasVariableInputArgs) {
-            numArgs = exp.getInt("numArgs");
-            assert numArgs == arguments.size();
-        }
-        boolean isInfix = false;
-        if (exp.containsKey("infix")) {
-            isInfix = exp.getBoolean("infix");
-        }
-        boolean isPrefix = false;
-        if (exp.containsKey("prefix")) {
-            isPrefix = exp.getBoolean("prefix");
-        }
-        return new SqlFunctionScalar(fromScalarFunctionName(functionName), arguments, isInfix, isPrefix);
+        return new SqlFunctionScalar(fromScalarFunctionName(functionName), arguments);
     }
 
     private SqlNode parseFunctionScalarExtract(final JsonObject exp) {

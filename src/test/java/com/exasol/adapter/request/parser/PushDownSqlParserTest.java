@@ -592,7 +592,6 @@ class PushDownSqlParserTest {
         final List<SqlNode> expressions = sqlFunctionScalar.getArguments();
         final SqlLiteralDouble sqlLiteralDouble = (SqlLiteralDouble) expressions.get(0);
         assertAll(() -> assertThat(sqlFunctionScalar.getType(), equalTo(FUNCTION_SCALAR)),
-                () -> assertThat(sqlFunctionScalar.getNumArgs(), equalTo(1)), //
                 () -> assertThat(sqlLiteralDouble.getValue(), equalTo(1.0)));
     }
 

@@ -1,8 +1,9 @@
 package com.exasol.adapter.sql;
 
-import com.exasol.adapter.AdapterException;
+import java.util.Collections;
+import java.util.List;
 
-import java.util.*;
+import com.exasol.adapter.AdapterException;
 
 /**
  * A simple scalar function with a name and zero or more arguments.
@@ -14,15 +15,10 @@ import java.util.*;
 public class SqlFunctionScalar extends SqlNode {
     private final List<SqlNode> arguments;
     private final ScalarFunction function;
-    private final boolean isInfix;
-    private final boolean isPrefix;
 
-    public SqlFunctionScalar(final ScalarFunction function, final List<SqlNode> arguments, final boolean isInfix,
-            final boolean isPrefix) {
+    public SqlFunctionScalar(final ScalarFunction function, final List<SqlNode> arguments) {
         this.arguments = arguments;
         this.function = function;
-        this.isInfix = isInfix;
-        this.isPrefix = isPrefix;
         if (this.arguments != null) {
             for (final SqlNode node : this.arguments) {
                 node.setParent(this);
@@ -46,47 +42,9 @@ public class SqlFunctionScalar extends SqlNode {
         return this.function.name();
     }
 
-    public int getNumArgs() {
-        return getArguments().size();
-    }
-
-    public boolean isInfix() {
-        return this.isInfix;
-    }
-
-    public boolean isPrefix() {
-        return this.isPrefix;
-    }
-
     @Override
     public String toSimpleSql() {
-        final List<String> argumentsSql = new ArrayList<>();
-        for (final SqlNode node : this.arguments) {
-            argumentsSql.add(node.toSimpleSql());
-        }
-        if (this.isInfix) {
-            assert argumentsSql.size() == 2;
-            final Map<String, String> functionAliases = new HashMap<>();
-            functionAliases.put("ADD", "+");
-            functionAliases.put("SUB", "-");
-            functionAliases.put("MULT", "*");
-            functionAliases.put("FLOAT_DIV", "/");
-            String realFunctionName = getFunctionName();
-            if (functionAliases.containsKey(getFunctionName())) {
-                realFunctionName = functionAliases.get(getFunctionName());
-            }
-            return "(" + argumentsSql.get(0) + " " + realFunctionName + " " + argumentsSql.get(1) + ")";
-        } else if (this.isPrefix) {
-            assert argumentsSql.size() == 1;
-            final Map<String, String> functionAliases = new HashMap<>();
-            functionAliases.put("NEG", "-");
-            String realFunctionName = getFunctionName();
-            if (functionAliases.containsKey(getFunctionName())) {
-                realFunctionName = functionAliases.get(getFunctionName());
-            }
-            return "(" + realFunctionName + " " + argumentsSql.get(0) + ")";
-        }
-        return getFunctionName() + "(" + String.join(", ", argumentsSql) + ")";
+        return getFunctionName();
     }
 
     @Override
