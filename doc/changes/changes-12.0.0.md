@@ -27,11 +27,6 @@ We have removed the capabilities that are not used in the API: `FN_HASH_SHA`
 
 ## Dependency updates
 
-<details>
-  <summary>Click to expand</summary>
-
 * Updated org.junit.jupiter:junit-jupiter:jar:5.6.2 to version 5.7.0
 * Updated org.mockito:mockito-junit-jupiter:jar:3.4.4 to version 3.5.13
 * Updated nl.jqno.equalsverifier:equalsverifier:jar:3.4.1 to version 3.4.3
-
-</details>
