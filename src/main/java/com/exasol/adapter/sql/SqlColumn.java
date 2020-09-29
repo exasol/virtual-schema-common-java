@@ -49,11 +49,6 @@ public class SqlColumn extends SqlNode {
     }
 
     @Override
-    public String toSimpleSql() {
-        return "\"" + this.metadata.getName().replace("\"", "\"\"") + "\"";
-    }
-
-    @Override
     public SqlNodeType getType() {
         return SqlNodeType.COLUMN;
     }

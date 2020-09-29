@@ -8,11 +8,6 @@ public class SqlPredicateLess extends AbstractSqlBinaryEquality {
     }
 
     @Override
-    public String toSimpleSql() {
-        return super.toSimpleSql(" < ");
-    }
-
-    @Override
     public SqlNodeType getType() {
         return SqlNodeType.PREDICATE_LESS;
     }

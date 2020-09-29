@@ -22,12 +22,6 @@ class SqlLimitTest {
     }
 
     @Test
-    void testToSimpleSql() {
-        this.sqlLimit.setOffset(10);
-        assertThat(this.sqlLimit.toSimpleSql(), equalTo("LIMIT 5 OFFSET 10"));
-    }
-
-    @Test
     void testCreateAssertWithNegativeLimitThrowsException() {
         assertThrows(IllegalArgumentException.class, () -> this.sqlLimit = new SqlLimit(-1));
     }

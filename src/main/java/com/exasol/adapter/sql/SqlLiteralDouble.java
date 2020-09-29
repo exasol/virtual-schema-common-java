@@ -14,11 +14,6 @@ public class SqlLiteralDouble extends SqlNode {
     }
 
     @Override
-    public String toSimpleSql() {
-        return Double.toString(value);
-    }
-
-    @Override
     public SqlNodeType getType() {
         return SqlNodeType.LITERAL_DOUBLE;
     }

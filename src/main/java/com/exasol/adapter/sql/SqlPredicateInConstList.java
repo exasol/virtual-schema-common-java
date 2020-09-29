@@ -2,7 +2,6 @@ package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -40,15 +39,6 @@ public class SqlPredicateInConstList extends SqlPredicate {
         } else {
             return Collections.unmodifiableList(this.inArguments);
         }
-    }
-
-    @Override
-    public String toSimpleSql() {
-        final List<String> argumentsSql = new ArrayList<>();
-        for (final SqlNode node : this.inArguments) {
-            argumentsSql.add(node.toSimpleSql());
-        }
-        return this.expression.toSimpleSql() + " IN (" + String.join(", ", argumentsSql) + ")";
     }
 
     @Override

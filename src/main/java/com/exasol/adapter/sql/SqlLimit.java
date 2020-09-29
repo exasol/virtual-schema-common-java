@@ -40,15 +40,6 @@ public class SqlLimit extends SqlNode {
     }
 
     @Override
-    public String toSimpleSql() {
-        String offsetSql = "";
-        if (offset != 0) {
-            offsetSql = " OFFSET " + offset;
-        }
-        return "LIMIT " + limit + offsetSql;
-    }
-
-    @Override
     public SqlNodeType getType() {
         return SqlNodeType.LIMIT;
     }

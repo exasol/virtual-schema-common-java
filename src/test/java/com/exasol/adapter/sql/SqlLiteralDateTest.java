@@ -25,11 +25,6 @@ class SqlLiteralDateTest {
     }
 
     @Test
-    void testToSimpleSql() {
-        assertThat(this.sqlLiteralDate.toSimpleSql(), equalTo("DATE '" + VALUE + "'"));
-    }
-
-    @Test
     void testGetType() {
         assertThat(this.sqlLiteralDate.getType(), equalTo(SqlNodeType.LITERAL_DATE));
     }

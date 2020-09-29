@@ -19,11 +19,6 @@ class SqlLiteralNullTest {
     }
 
     @Test
-    void testToSimpleSql() {
-        assertThat(this.sqlLiteralNull.toSimpleSql(), equalTo("NULL"));
-    }
-
-    @Test
     void testGetType() {
         assertThat(this.sqlLiteralNull.getType(), equalTo(SqlNodeType.LITERAL_NULL));
     }

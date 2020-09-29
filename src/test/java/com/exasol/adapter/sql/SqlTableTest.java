@@ -23,11 +23,6 @@ class SqlTableTest {
     }
 
     @Test
-    void testToSimpleSql() {
-        assertThat(this.sqlTable.toSimpleSql(), equalTo("\"" + TEST_NAME + "\""));
-    }
-
-    @Test
     void testGetType() {
         assertThat(this.sqlTable.getType(), equalTo(SqlNodeType.TABLE));
     }

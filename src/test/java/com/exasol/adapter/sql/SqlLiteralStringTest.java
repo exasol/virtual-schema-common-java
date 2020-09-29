@@ -25,11 +25,6 @@ class SqlLiteralStringTest {
     }
 
     @Test
-    void testToSimpleSql() {
-        assertThat(this.sqlLiteralString.toSimpleSql(), equalTo("'" + VALUE + "'"));
-    }
-
-    @Test
     void testGetType() {
         assertThat(this.sqlLiteralString.getType(), equalTo(SqlNodeType.LITERAL_STRING));
     }

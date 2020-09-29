@@ -21,12 +21,6 @@ class SqlPredicateIsNotNullTest {
     }
 
     @Test
-    void testToSimpleSql() {
-        assertThat(this.sqlPredicateIsNotNull.toSimpleSql(),
-                equalTo(this.sqlLiteralString.toSimpleSql() + " IS NOT NULL"));
-    }
-
-    @Test
     void testGetType() {
         assertThat(this.sqlPredicateIsNotNull.getType(), equalTo(SqlNodeType.PREDICATE_IS_NOT_NULL));
     }

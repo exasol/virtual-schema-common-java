@@ -42,12 +42,6 @@ class SqlFunctionScalarExtractTest {
     }
 
     @Test
-    void testToSimpleSql() {
-        assertThat(this.sqlFunctionScalarExtract.toSimpleSql(),
-                equalTo("EXTRACT"));
-    }
-
-    @Test
     void testGetType() {
         assertThat(this.sqlFunctionScalarExtract.getType(), equalTo(SqlNodeType.FUNCTION_SCALAR_EXTRACT));
     }

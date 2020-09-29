@@ -14,15 +14,6 @@ public class SqlLiteralBool extends SqlNode {
     }
 
     @Override
-    public String toSimpleSql() {
-        if (this.value) {
-            return "true";
-        } else {
-            return "false";
-        }
-    }
-
-    @Override
     public SqlNodeType getType() {
         return SqlNodeType.LITERAL_BOOL;
     }

@@ -40,15 +40,6 @@ public class SqlPredicateLike extends SqlPredicate {
     }
 
     @Override
-    public String toSimpleSql() {
-        String sql = this.left.toSimpleSql() + " LIKE " + this.pattern.toSimpleSql();
-        if (this.escapeChar != null) {
-            sql += " ESCAPE " + this.escapeChar.toSimpleSql();
-        }
-        return sql;
-    }
-
-    @Override
     public SqlNodeType getType() {
         return SqlNodeType.PREDICATE_LIKE;
     }

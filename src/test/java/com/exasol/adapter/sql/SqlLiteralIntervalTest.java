@@ -14,7 +14,6 @@ import com.exasol.mocking.MockUtils;
 class SqlLiteralIntervalTest {
     private static final String VALUE = "5";
     private SqlLiteralInterval sqlLiteralIntervalDayToSecond;
-    private SqlLiteralInterval sqlLiteralIntervalYearToMonth;
     private DataType dayToSecond;
 
     @BeforeEach
@@ -22,24 +21,11 @@ class SqlLiteralIntervalTest {
         this.dayToSecond = DataType.createIntervalDaySecond(1, 2);
         final DataType yearToMonth = DataType.createIntervalYearMonth(3);
         this.sqlLiteralIntervalDayToSecond = new SqlLiteralInterval(VALUE, this.dayToSecond);
-        this.sqlLiteralIntervalYearToMonth = new SqlLiteralInterval(VALUE, yearToMonth);
     }
 
     @Test
     void testGetValue() {
         assertThat(this.sqlLiteralIntervalDayToSecond.getValue(), equalTo(VALUE));
-    }
-
-    @Test
-    void testToSimpleSqlDayToSecond() {
-        assertThat(this.sqlLiteralIntervalDayToSecond.toSimpleSql(),
-                equalTo("INTERVAL '" + VALUE + "' DAY (1) TO SECOND (2)"));
-    }
-
-    @Test
-    void testToSimpleSqlYearToMonth() {
-        assertThat(this.sqlLiteralIntervalYearToMonth.toSimpleSql(),
-                equalTo("INTERVAL '" + VALUE + "' YEAR (3) TO MONTH"));
     }
 
     @Test

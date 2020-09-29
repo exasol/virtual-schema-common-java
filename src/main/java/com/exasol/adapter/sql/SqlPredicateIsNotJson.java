@@ -20,9 +20,4 @@ public class SqlPredicateIsNotJson extends AbstractSqlPredicateJson {
     public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
-
-    @Override
-    public String toSimpleSql() {
-        return " IS NOT JSON ";
-    }
 }

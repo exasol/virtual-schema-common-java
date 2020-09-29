@@ -25,11 +25,6 @@ class SqlLiteralDoubleTest {
     }
 
     @Test
-    void testToSimpleSql() {
-        assertThat(this.sqlLiteralDouble.toSimpleSql(), equalTo("20.1"));
-    }
-
-    @Test
     void testGetType() {
         assertThat(this.sqlLiteralDouble.getType(), equalTo(SqlNodeType.LITERAL_DOUBLE));
     }

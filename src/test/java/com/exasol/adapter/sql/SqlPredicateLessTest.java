@@ -23,11 +23,6 @@ class SqlPredicateLessTest {
     }
 
     @Test
-    void testToSimpleSql() {
-        assertThat(this.sqlPredicateLess.toSimpleSql(), equalTo("20.5 < 21.5"));
-    }
-
-    @Test
     void testGetType() {
         assertThat(this.sqlPredicateLess.getType(), equalTo(SqlNodeType.PREDICATE_LESS));
     }

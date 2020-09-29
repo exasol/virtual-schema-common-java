@@ -25,11 +25,6 @@ class SqlPredicateLikeTest {
     }
 
     @Test
-    void testToSimpleSql() {
-        assertThat(this.sqlPredicateLike.toSimpleSql(), equalTo("'abcd' LIKE 'a_d' ESCAPE '\\%%t'"));
-    }
-
-    @Test
     void testGetType() {
         assertThat(this.sqlPredicateLike.getType(), equalTo(SqlNodeType.PREDICATE_LIKE));
     }

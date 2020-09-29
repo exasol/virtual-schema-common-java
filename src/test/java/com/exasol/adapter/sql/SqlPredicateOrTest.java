@@ -37,11 +37,6 @@ class SqlPredicateOrTest {
     }
 
     @Test
-    void testToSimpleSql() {
-        assertThat(this.sqlPredicateOr.toSimpleSql(), equalTo("('value1' OR 'value2')"));
-    }
-
-    @Test
     void testGetType() {
         assertThat(this.sqlPredicateOr.getType(), equalTo(SqlNodeType.PREDICATE_OR));
     }

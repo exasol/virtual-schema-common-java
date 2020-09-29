@@ -24,16 +24,6 @@ public class SqlLiteralInterval extends SqlNode {
     }
 
     @Override
-    public String toSimpleSql() {
-        if (this.type.getIntervalType() == DataType.IntervalType.YEAR_TO_MONTH) {
-            return "INTERVAL '" + this.value + "' YEAR (" + this.type.getPrecision() + ") TO MONTH";
-        } else {
-            return "INTERVAL '" + this.value + "' DAY (" + this.type.getPrecision() + ") TO SECOND ("
-                    + this.type.getIntervalFraction() + ")";
-        }
-    }
-
-    @Override
     public SqlNodeType getType() {
         return SqlNodeType.LITERAL_INTERVAL;
     }

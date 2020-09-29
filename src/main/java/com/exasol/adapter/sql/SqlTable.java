@@ -37,11 +37,6 @@ public class SqlTable extends SqlNode {
     }
 
     @Override
-    public String toSimpleSql() {
-        return "\"" + this.name.replace("\"", "\"\"") + "\"";
-    }
-
-    @Override
     public SqlNodeType getType() {
         return SqlNodeType.TABLE;
     }

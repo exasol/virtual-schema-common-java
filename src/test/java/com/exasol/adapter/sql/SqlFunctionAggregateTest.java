@@ -39,11 +39,6 @@ class SqlFunctionAggregateTest {
     }
 
     @Test
-    void testToSimpleSql() {
-        assertThat(this.sqlFunctionAggregate.toSimpleSql(), equalTo("AVG(DISTINCT '" + TEST_NAME + "')"));
-    }
-
-    @Test
     void testGetType() {
         assertThat(this.sqlFunctionAggregate.getType(), equalTo(SqlNodeType.FUNCTION_AGGREGATE));
     }

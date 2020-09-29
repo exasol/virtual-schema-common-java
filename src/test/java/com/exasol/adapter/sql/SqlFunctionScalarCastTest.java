@@ -45,11 +45,6 @@ class SqlFunctionScalarCastTest {
     }
 
     @Test
-    void testToSimpleSql() {
-        assertThat(this.sqlFunctionScalarCast.toSimpleSql(), equalTo("CAST"));
-    }
-
-    @Test
     void testGetType() {
         assertThat(this.sqlFunctionScalarCast.getType(), equalTo(SqlNodeType.FUNCTION_SCALAR_CAST));
     }

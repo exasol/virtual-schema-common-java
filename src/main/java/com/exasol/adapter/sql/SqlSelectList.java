@@ -1,6 +1,5 @@
 package com.exasol.adapter.sql;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.exasol.adapter.AdapterException;
@@ -59,21 +58,6 @@ public final class SqlSelectList extends SqlExpressionList {
     @Override
     public SqlNodeType getType() {
         return SqlNodeType.SELECT_LIST;
-    }
-
-    @Override
-    public String toSimpleSql() {
-        if (isRequestAnyColumn()) {
-            return "true";
-        }
-        if (isSelectStar()) {
-            return "*";
-        }
-        final List<String> selectElement = new ArrayList<>();
-        for (final SqlNode node : getExpressions()) {
-            selectElement.add(node.toSimpleSql());
-        }
-        return String.join(", ", selectElement);
     }
 
     @Override

@@ -23,11 +23,6 @@ class SqlPredicateLikeRegexpTest {
     }
 
     @Test
-    void testToSimpleSql() {
-        assertThat(this.sqlPredicateLikeRegexp.toSimpleSql(), equalTo("'abcd' REGEXP_LIKE 'a_d'"));
-    }
-
-    @Test
     void testGetType() {
         assertThat(this.sqlPredicateLikeRegexp.getType(), equalTo(SqlNodeType.PREDICATE_LIKE_REGEXP));
     }

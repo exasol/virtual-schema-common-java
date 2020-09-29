@@ -61,10 +61,4 @@ public class SqlJoin extends SqlNode {
     public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
-
-    @Override
-    public String toSimpleSql() {
-        return this.left.toSimpleSql() + " " + this.joinType.name().replace('_', ' ') + " JOIN " + this.right.toSimpleSql() + " ON "
-                + this.condition.toSimpleSql();
-    }
 }

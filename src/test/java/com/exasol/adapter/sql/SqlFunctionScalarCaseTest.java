@@ -56,11 +56,6 @@ class SqlFunctionScalarCaseTest {
     }
 
     @Test
-    void testToSimpleSql() {
-        assertThat(this.sqlFunctionScalarCase.toSimpleSql(), equalTo("CASE"));
-    }
-
-    @Test
     void testGetType() {
         assertThat(this.sqlFunctionScalarCase.getType(), equalTo(SqlNodeType.FUNCTION_SCALAR_CASE));
     }
