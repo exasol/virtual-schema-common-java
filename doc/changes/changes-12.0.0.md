@@ -5,9 +5,9 @@ Code name: New capabilities, refactored API
 ## Summary
 
 In this release we added the following capabilities: 
-FN_BIT_LROTATE, FN_BIT_RROTATE, FN_BIT_LSHIFT, FN_BIT_RSHIFT, FN_FROM_POSIX_TIME, FN_HOUR, FN_INITCAP, FN_AGG_EVERY, FN_AGG_SOME, FN_AGG_MUL_DISTINCT.  
+`FN_BIT_LROTATE`, `FN_BIT_RROTATE`, `FN_BIT_LSHIFT`, `FN_BIT_RSHIFT,` `FN_FROM_POSIX_TIME`, `FN_HOUR`, `FN_INITCAP`, `FN_AGG_EVERY`, `FN_AGG_SOME`, `FN_AGG_MUL_DISTINCT`.
 
-We have removed the capabilities that are not used in the API: FN_HASH_SHA
+We have removed the capabilities that are not used in the API: `FN_HASH_SHA`
                                                      
 ## Features / Enhancements
 
@@ -20,10 +20,10 @@ We have removed the capabilities that are not used in the API: FN_HASH_SHA
 ## Refactoring
 
 * #152: Refactored the module according to the changes in the API: 
- - removed usage of numArgs field in Scalar function;
- - removed usage of variableInputArgs field in Scalar function;
- - removed usage of prefix and infix fields in Scalar function;
-* #154: Removed toSimpleSql() method and its implementation because it was not used.
+ - removed usage of `numArgs` field in scalar function definitions;
+ - removed usage of `variableInputArgs` field in scalar function definitions;
+ - removed usage of prefix and infix fields in scalar function definitions;
+* #154: Removed `toSimpleSql()` method and its implementation because it was not used.
 
 ## Dependency updates
 
