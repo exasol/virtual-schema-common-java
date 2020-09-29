@@ -25,11 +25,6 @@ class SqlLiteralTimestampTest {
     }
 
     @Test
-    void testToSimpleSql() {
-        assertThat(this.sqlLiteralTimestamp.toSimpleSql(), equalTo("TIMESTAMP '" + VALUE + "'"));
-    }
-
-    @Test
     void testGetType() {
         assertThat(this.sqlLiteralTimestamp.getType(), equalTo(SqlNodeType.LITERAL_TIMESTAMP));
     }

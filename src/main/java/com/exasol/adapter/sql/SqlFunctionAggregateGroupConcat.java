@@ -63,33 +63,6 @@ public class SqlFunctionAggregateGroupConcat extends SqlNode {
     }
 
     @Override
-    public String toSimpleSql() {
-        String distinctSql = "";
-        if (this.distinct) {
-            distinctSql = "DISTINCT ";
-        }
-        final StringBuilder builder = new StringBuilder();
-        builder.append(getFunctionName());
-        builder.append("(");
-        builder.append(distinctSql);
-        assert this.arguments != null;
-        assert this.arguments.size() == 1 && this.arguments.get(0) != null;
-        builder.append(this.arguments.get(0).toSimpleSql());
-        if (this.orderBy != null) {
-            builder.append(" ");
-            builder.append(this.orderBy.toSimpleSql());
-        }
-        if (this.separator != null) {
-            builder.append(" SEPARATOR ");
-            builder.append("'");
-            builder.append(this.separator);
-            builder.append("'");
-        }
-        builder.append(")");
-        return builder.toString();
-    }
-
-    @Override
     public SqlNodeType getType() {
         return SqlNodeType.FUNCTION_AGGREGATE_GROUP_CONCAT;
     }

@@ -18,11 +18,6 @@ public class SqlPredicateNot extends SqlPredicate {
     }
 
     @Override
-    public String toSimpleSql() {
-        return "NOT (" + expression.toSimpleSql() + ")";
-    }
-
-    @Override
     public SqlNodeType getType() {
         return SqlNodeType.PREDICATE_NOT;
     }

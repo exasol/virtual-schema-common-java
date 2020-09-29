@@ -2,7 +2,6 @@ package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -44,22 +43,6 @@ public class SqlOrderBy extends SqlNode {
         } else {
             return Collections.unmodifiableList(this.nullsLast);
         }
-    }
-
-    @Override
-    public String toSimpleSql() {
-        final List<String> sqlOrderElement = new ArrayList<>();
-        for (int i = 0; i < this.expressions.size(); ++i) {
-            String elementSql = this.expressions.get(i).toSimpleSql();
-            if (!this.isAsc.get(i)) {
-                elementSql += " DESC";
-            }
-            if (!this.nullsLast.get(i)) {
-                elementSql += " NULLS FIRST";
-            }
-            sqlOrderElement.add(elementSql);
-        }
-        return "ORDER BY " + String.join(", ", sqlOrderElement);
     }
 
     @Override

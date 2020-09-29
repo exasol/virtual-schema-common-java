@@ -23,8 +23,4 @@ public abstract class AbstractSqlBinaryEquality extends SqlPredicate {
     public SqlNode getRight() {
         return this.right;
     }
-
-    public String toSimpleSql(final String equalityExpression) {
-        return this.left.toSimpleSql() + equalityExpression + this.right.toSimpleSql();
-    }
 }

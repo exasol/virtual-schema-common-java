@@ -7,7 +7,7 @@ import com.exasol.adapter.AdapterException;
  */
 public class SqlPredicateIsJson extends AbstractSqlPredicateJson {
     public SqlPredicateIsJson(final SqlNode expression, final TypeConstraints typeConstraint,
-                              final KeyUniquenessConstraint keyUniquenessConstraint) {
+            final KeyUniquenessConstraint keyUniquenessConstraint) {
         super(Predicate.IS_JSON, expression, typeConstraint, keyUniquenessConstraint);
     }
 
@@ -19,10 +19,5 @@ public class SqlPredicateIsJson extends AbstractSqlPredicateJson {
     @Override
     public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
-    }
-
-    @Override
-    public String toSimpleSql() {
-        return " IS JSON ";
     }
 }

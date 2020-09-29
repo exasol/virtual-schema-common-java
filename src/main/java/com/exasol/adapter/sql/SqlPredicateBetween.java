@@ -36,12 +36,6 @@ public class SqlPredicateBetween extends SqlPredicate {
     }
 
     @Override
-    public String toSimpleSql() {
-        return expression.toSimpleSql() + " BETWEEN " + betweenLeft.toSimpleSql() + " AND "
-                + betweenRight.toSimpleSql();
-    }
-
-    @Override
     public SqlNodeType getType() {
         return SqlNodeType.PREDICATE_BETWEEN;
     }

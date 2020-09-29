@@ -18,11 +18,6 @@ public class SqlPredicateIsNull extends SqlPredicate {
     }
 
     @Override
-    public String toSimpleSql() {
-        return expression.toSimpleSql() + " IS NULL";
-    }
-
-    @Override
     public SqlNodeType getType() {
         return SqlNodeType.PREDICATE_IS_NULL;
     }

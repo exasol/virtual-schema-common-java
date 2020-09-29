@@ -33,10 +33,4 @@ public abstract class SqlNode {
      * @throws AdapterException can be thrown
      */
     public abstract <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException;
-
-    /**
-     * @return A SQL representation of the current graph, using EXASOL SQL syntax. It is called "SIMPLE" because it is
-     *         not guaranteed to be 100 % correct SQL (e.g. might be ambiguous).
-     */
-    public abstract String toSimpleSql();
 }

@@ -16,11 +16,6 @@ public class SqlLiteralString extends SqlNode {
     }
 
     @Override
-    public String toSimpleSql() {
-        return "'" + this.value.replace("'", "''") + "'";
-    }
-
-    @Override
     public SqlNodeType getType() {
         return SqlNodeType.LITERAL_STRING;
     }

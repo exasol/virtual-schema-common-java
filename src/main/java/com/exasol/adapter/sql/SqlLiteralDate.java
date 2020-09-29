@@ -17,11 +17,6 @@ public class SqlLiteralDate extends SqlNode {
     }
 
     @Override
-    public String toSimpleSql() {
-        return "DATE '" + this.value + "'";
-    }
-
-    @Override
     public SqlNodeType getType() {
         return SqlNodeType.LITERAL_DATE;
     }

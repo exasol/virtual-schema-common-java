@@ -23,11 +23,6 @@ class SqlPredicateNotEqualTest {
     }
 
     @Test
-    void testToSimpleSql() {
-        assertThat(this.sqlPredicateNotEqual.toSimpleSql(), equalTo("21.5 != 20.5"));
-    }
-
-    @Test
     void testGetType() {
         assertThat(this.sqlPredicateNotEqual.getType(), equalTo(SqlNodeType.PREDICATE_NOTEQUAL));
     }

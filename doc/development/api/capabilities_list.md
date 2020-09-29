@@ -115,7 +115,6 @@ Here you can find a list of available Virtual Schema capabilities.
 - FN_FROM_POSIX_TIME
 - FN_GREATEST
 - FN_HASH_MD5
-- FN_HASH_SHA
 - FN_HASH_SHA1
 - FN_HASH_SHA256
 - FN_HASH_SHA512

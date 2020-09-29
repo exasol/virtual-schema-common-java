@@ -23,11 +23,6 @@ class SqlPredicateEqualTest {
     }
 
     @Test
-    void testToSimpleSql() {
-        assertThat(this.sqlPredicateEqual.toSimpleSql(), equalTo("20.5 = 20.5"));
-    }
-
-    @Test
     void testGetType() {
         assertThat(this.sqlPredicateEqual.getType(), equalTo(SqlNodeType.PREDICATE_EQUAL));
     }

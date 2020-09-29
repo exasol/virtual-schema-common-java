@@ -37,11 +37,6 @@ class SqlPredicateAndTest {
     }
 
     @Test
-    void testToSimpleSql() {
-        assertThat(this.sqlPredicateAnd.toSimpleSql(), equalTo("('value1' AND 'value2')"));
-    }
-
-    @Test
     void testGetType() {
         assertThat(this.sqlPredicateAnd.getType(), equalTo(SqlNodeType.PREDICATE_AND));
     }

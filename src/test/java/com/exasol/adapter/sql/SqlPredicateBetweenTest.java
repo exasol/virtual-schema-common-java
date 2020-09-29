@@ -25,12 +25,6 @@ class SqlPredicateBetweenTest {
     }
 
     @Test
-    void testToSimpleSql() {
-        assertThat(this.sqlPredicateBetween.toSimpleSql(), equalTo(this.expression.toSimpleSql() + " BETWEEN "
-                + this.betweenLeft.toSimpleSql() + " AND " + this.betweenRight.toSimpleSql()));
-    }
-
-    @Test
     void testGetType() {
         assertThat(this.sqlPredicateBetween.getType(), equalTo(SqlNodeType.PREDICATE_BETWEEN));
     }

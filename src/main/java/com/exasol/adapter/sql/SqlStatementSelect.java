@@ -95,37 +95,6 @@ public class SqlStatementSelect extends SqlStatement {
     }
 
     @Override
-    public String toSimpleSql() {
-
-        final StringBuilder sql = new StringBuilder();
-        sql.append("SELECT ");
-        sql.append(this.selectList.toSimpleSql());
-        sql.append(" FROM ");
-        sql.append(this.fromClause.toSimpleSql());
-        if (hasFilter()) {
-            sql.append(" WHERE ");
-            sql.append(this.whereClause.toSimpleSql());
-        }
-        if (hasGroupBy()) {
-            sql.append(" GROUP BY ");
-            sql.append(this.groupBy.toSimpleSql());
-        }
-        if (hasHaving()) {
-            sql.append(" HAVING ");
-            sql.append(this.having.toSimpleSql());
-        }
-        if (hasOrderBy()) {
-            sql.append(" ");
-            sql.append(this.orderBy.toSimpleSql());
-        }
-        if (hasLimit()) {
-            sql.append(" ");
-            sql.append(this.limit.toSimpleSql());
-        }
-        return sql.toString();
-    }
-
-    @Override
     public SqlNodeType getType() {
         return SqlNodeType.SELECT;
     }

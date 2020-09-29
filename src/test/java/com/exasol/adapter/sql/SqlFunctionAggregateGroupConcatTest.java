@@ -49,12 +49,6 @@ class SqlFunctionAggregateGroupConcatTest {
     }
 
     @Test
-    void testToSimpleSql() {
-        assertThat(this.sqlFunctionAggregateGroupConcat.toSimpleSql(),
-                equalTo("GROUP_CONCAT(DISTINCT '" + TEST_NAME + "' null SEPARATOR ':')"));
-    }
-
-    @Test
     void testGetType() {
         assertThat(this.sqlFunctionAggregateGroupConcat.getType(),
                 equalTo(SqlNodeType.FUNCTION_AGGREGATE_GROUP_CONCAT));

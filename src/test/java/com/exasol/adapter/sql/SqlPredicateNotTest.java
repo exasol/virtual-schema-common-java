@@ -21,11 +21,6 @@ class SqlPredicateNotTest {
     }
 
     @Test
-    void testToSimpleSql() {
-        assertThat(this.sqlPredicateNot.toSimpleSql(), equalTo("NOT (" + this.sqlLiteralNull.toSimpleSql() + ")"));
-    }
-
-    @Test
     void testGetType() {
         assertThat(this.sqlPredicateNot.getType(), equalTo(SqlNodeType.PREDICATE_NOT));
     }

@@ -2,7 +2,6 @@ package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,15 +24,6 @@ public class SqlPredicateAnd extends SqlPredicate {
         } else {
             return Collections.unmodifiableList(andedPredicates);
         }
-    }
-
-    @Override
-    public String toSimpleSql() {
-        final List<String> operandsSql = new ArrayList<>();
-        for (final SqlNode node : andedPredicates) {
-            operandsSql.add(node.toSimpleSql());
-        }
-        return "(" + String.join(" AND ", operandsSql) + ")";
     }
 
     @Override

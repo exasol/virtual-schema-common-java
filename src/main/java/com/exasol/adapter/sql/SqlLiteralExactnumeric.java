@@ -16,11 +16,6 @@ public class SqlLiteralExactnumeric extends SqlNode {
     }
 
     @Override
-    public String toSimpleSql() {
-        return value.toString();
-    }
-
-    @Override
     public SqlNodeType getType() {
         return SqlNodeType.LITERAL_EXACTNUMERIC;
     }

@@ -2,7 +2,6 @@ package com.exasol.adapter.sql;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 
 import java.util.*;
@@ -48,23 +47,8 @@ class SqlFunctionScalarJsonValueTest {
     }
 
     @Test
-    void testToSimpleSql() {
-        assertThat(this.sqlFunctionScalarJsonValue.toSimpleSql(),
-                equalTo("JSON_VALUE"));
-    }
-
-    @Test
     void testGetScalarFunction() {
         assertThat(this.sqlFunctionScalarJsonValue.getScalarFunction(), equalTo(ScalarFunction.JSON_VALUE));
-    }
-
-    @Test
-    void testGetArguments() {
-        assertAll(
-                () -> assertThat(this.sqlFunctionScalarJsonValue.getArguments().get(0).toSimpleSql(),
-                        equalTo("'{\"a\": 1}'")),
-                () -> assertThat(this.sqlFunctionScalarJsonValue.getArguments().get(1).toSimpleSql(),
-                        equalTo("'$.a'")));
     }
 
     @Test

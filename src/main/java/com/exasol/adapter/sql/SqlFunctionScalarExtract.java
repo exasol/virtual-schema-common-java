@@ -27,11 +27,6 @@ public class SqlFunctionScalarExtract extends SqlNode {
     }
 
     @Override
-    public String toSimpleSql() {
-        return "EXTRACT";
-    }
-
-    @Override
     public SqlNodeType getType() {
         return SqlNodeType.FUNCTION_SCALAR_EXTRACT;
     }

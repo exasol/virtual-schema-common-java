@@ -28,11 +28,6 @@ public class SqlFunctionScalarCast extends SqlNode {
     }
 
     @Override
-    public String toSimpleSql() {
-        return "CAST";
-    }
-
-    @Override
     public SqlNodeType getType() {
         return SqlNodeType.FUNCTION_SCALAR_CAST;
     }

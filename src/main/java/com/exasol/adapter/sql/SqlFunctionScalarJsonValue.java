@@ -16,7 +16,7 @@ public class SqlFunctionScalarJsonValue extends SqlNode {
     private final Behavior errorBehavior;
 
     public SqlFunctionScalarJsonValue(final ScalarFunction scalarFunction, final List<SqlNode> arguments,
-                                      final DataType returningDataType, final Behavior emptyBehavior, final Behavior errorBehavior) {
+            final DataType returningDataType, final Behavior emptyBehavior, final Behavior errorBehavior) {
         validateFunctionName(scalarFunction);
         this.scalarFunction = scalarFunction;
         this.arguments = arguments;
@@ -40,11 +40,6 @@ public class SqlFunctionScalarJsonValue extends SqlNode {
     @Override
     public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
-    }
-
-    @Override
-    public String toSimpleSql() {
-        return "JSON_VALUE";
     }
 
     public ScalarFunction getScalarFunction() {

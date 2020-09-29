@@ -26,11 +26,6 @@ class SqlColumnTest {
     }
 
     @Test
-    void testToSimpleSql() {
-        assertThat(this.sqlColumn.toSimpleSql(), equalTo("\"" + METADATA_TEST_NAME + "\""));
-    }
-
-    @Test
     void testGetType() {
         assertThat(this.sqlColumn.getType(), equalTo(SqlNodeType.COLUMN));
     }

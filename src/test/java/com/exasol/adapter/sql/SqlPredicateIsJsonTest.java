@@ -39,12 +39,6 @@ class SqlPredicateIsJsonTest {
     }
 
     @Test
-    void testToSimpleSql() {
-        assertThat(this.sqlPredicateIsJson.toSimpleSql(),
-                equalTo(" IS JSON "));
-    }
-
-    @Test
     void testGetExpression() {
         assertThat(this.sqlPredicateIsJson.getExpression(), equalTo(this.expressionMock));
     }

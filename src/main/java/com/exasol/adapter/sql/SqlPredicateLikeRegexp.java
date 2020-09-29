@@ -27,11 +27,6 @@ public class SqlPredicateLikeRegexp extends SqlPredicate {
     }
 
     @Override
-    public String toSimpleSql() {
-        return left.toSimpleSql() + " REGEXP_LIKE " + pattern.toSimpleSql();
-    }
-
-    @Override
     public SqlNodeType getType() {
         return SqlNodeType.PREDICATE_LIKE_REGEXP;
     }

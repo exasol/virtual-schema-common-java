@@ -43,11 +43,6 @@ public class SqlFunctionScalar extends SqlNode {
     }
 
     @Override
-    public String toSimpleSql() {
-        return getFunctionName();
-    }
-
-    @Override
     public SqlNodeType getType() {
         return SqlNodeType.FUNCTION_SCALAR;
     }

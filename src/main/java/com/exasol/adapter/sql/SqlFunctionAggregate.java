@@ -2,7 +2,6 @@ package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,23 +47,6 @@ public class SqlFunctionAggregate extends SqlNode {
 
     public boolean hasDistinct() {
         return distinct;
-    }
-
-    @Override
-    public String toSimpleSql() {
-        final List<String> argumentsSql = new ArrayList<>();
-        for (final SqlNode node : arguments) {
-            argumentsSql.add(node.toSimpleSql());
-        }
-        if (argumentsSql.isEmpty()) {
-            assert getFunctionName().equalsIgnoreCase("count");
-            argumentsSql.add("*");
-        }
-        String distinctSql = "";
-        if (distinct) {
-            distinctSql = "DISTINCT ";
-        }
-        return getFunctionName() + "(" + distinctSql + String.join(", ", argumentsSql) + ")";
     }
 
     @Override

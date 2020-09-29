@@ -50,11 +50,6 @@ public class SqlFunctionScalarCase extends SqlNode {
     }
 
     @Override
-    public String toSimpleSql() {
-        return "CASE";
-    }
-
-    @Override
     public SqlNodeType getType() {
         return SqlNodeType.FUNCTION_SCALAR_CASE;
     }

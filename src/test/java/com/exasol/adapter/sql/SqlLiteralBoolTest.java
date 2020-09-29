@@ -27,12 +27,6 @@ class SqlLiteralBoolTest {
     }
 
     @Test
-    void testToSimpleSql() {
-        assertThat(this.sqlLiteralBoolTrue.toSimpleSql(), equalTo("true"));
-        assertThat(this.sqlLiteralBoolFalse.toSimpleSql(), equalTo("false"));
-    }
-
-    @Test
     void testGetType() {
         assertThat(this.sqlLiteralBoolTrue.getType(), equalTo(SqlNodeType.LITERAL_BOOL));
     }
