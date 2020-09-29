@@ -1,4 +1,4 @@
-# Virtual Schema Common Java 12.0.0, released 2020-??-??
+# Virtual Schema Common Java 12.0.0, released 2020-09-29
 
 Code name: New capabilities, refactored API
 
