@@ -25,7 +25,9 @@ public enum AggregateFunctionCapability {
     VAR_SAMP_DISTINCT(AggregateFunction.VAR_SAMP), GROUP_CONCAT, GROUP_CONCAT_DISTINCT(AggregateFunction.GROUP_CONCAT),
     GROUP_CONCAT_SEPARATOR(AggregateFunction.GROUP_CONCAT), GROUP_CONCAT_ORDER_BY(AggregateFunction.GROUP_CONCAT),
     GEO_INTERSECTION_AGGREGATE, GEO_UNION_AGGREGATE, APPROXIMATE_COUNT_DISTINCT, MUL,
-    MUL_DISTINCT(AggregateFunction.MUL), EVERY, SOME;
+    MUL_DISTINCT(AggregateFunction.MUL), EVERY, SOME, LISTAGG, LISTAGG_DISTINCT(AggregateFunction.LISTAGG),
+    LISTAGG_SEPARATOR(AggregateFunction.LISTAGG), LISTAGG_ON_OVERFLOW_ERROR(AggregateFunction.LISTAGG),
+    LISTAGG_ON_OVERFLOW_TRUNCATE(AggregateFunction.LISTAGG), LISTAGG_ORDER_BY(AggregateFunction.LISTAGG);
 
     private final AggregateFunction function;
 
