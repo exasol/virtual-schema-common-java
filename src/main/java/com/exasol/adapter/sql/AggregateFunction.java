@@ -6,7 +6,8 @@ package com.exasol.adapter.sql;
 public enum AggregateFunction {
     COUNT, SUM, MIN, MAX, AVG, MEDIAN, FIRST_VALUE, LAST_VALUE, STDDEV, STDDEV_POP, STDDEV_SAMP, VARIANCE, VAR_POP,
     VAR_SAMP, GROUP_CONCAT(false, "GROUP_CONCAT"), APPROXIMATE_COUNT_DISTINCT,
-    GEO_INTERSECTION_AGGREGATE(true, "ST_INTERSECTION"), GEO_UNION_AGGREGATE(true, "ST_UNION"), MUL, EVERY, SOME;
+    GEO_INTERSECTION_AGGREGATE(true, "ST_INTERSECTION"), GEO_UNION_AGGREGATE(true, "ST_UNION"), MUL, EVERY, SOME,
+    LISTAGG(false, "LISTAGG");
 
     private final boolean simple;
     private String realFunctionName;

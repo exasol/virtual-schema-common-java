@@ -1080,6 +1080,7 @@ This section contains functions that have a special API mapping.
 | COUNT(exp)          | [COUNT(exp) function](#countexp)                   |
 | COUNT(DISTINCT exp) | [COUNT(DISTINCT exp) function](#countdistinct-exp) |
 | GROUP_CONCAT        | [GROUP_CONCAT function](#group_concat)             |
+| LISTAGG             | [LISTAGG](#listagg)
 
 #### Aggregate Functions Not Included in the API
 
@@ -1091,7 +1092,6 @@ This section contains functions that have a special API mapping.
 | COVAR_POP           | Not included in the API.                |
 | COVAR_SAMP          | Not included in the API.                |
 | GROUPING            | Not included in the API.                |
-| LISTAGG             | The API uses the GROUP_CONCAT function. |
 | PERCENTILE_CONT     | Not included in the API.                |
 | PERCENTILE_DISC     | Not included in the API.                |
 | REGR_*              | Not included in the API.                |
@@ -1214,3 +1214,49 @@ Notes:
 * `distinct`: Optional. Requires set-function capability `GROUP_CONCAT_DISTINCT.`
 * `orderBy`: Optional. The requested order-by clause, a list of `order_by_element` elements. The field `expression` contains the expression to order by. The `group by` clause of a `SELECT` query uses the same `order_by_element` element type. The clause requires the set-function capability `GROUP_CONCAT_ORDER_BY`.
 * `separator`: Optional. Requires set-function capability `GROUP_CONCAT_SEPARATOR`.
+
+##### LISTAGG
+
+`LISTAGG([DISTINCT] arg1[, separator] ON OVERFLOW {ERROR | TRUNCATE [truncationFiller] {WITH | WITHOUT} COUNT}) [WITHIN GROUP (orderBy)]`
+ (requires set-function capability `LISTAGG`)
+
+```json
+{
+    "type": "function_aggregate_listagg",
+    "name": "LISTAGG",
+    "distinct": true,
+    "arguments": [
+    {
+        ...
+    }
+    ],
+    "separator": ", ",
+    "overflowBehavior":
+    {
+        "type": "TRUNCATE",
+        "truncationType": "WITH COUNT",
+        "truncationFiller": "..."
+    },
+    "orderBy": [
+        {
+            "type": "order_by_element",
+            "expression":
+            {
+              "type": "column",
+               "columnNr": 1,
+                "name": "USER_ID",
+                "tableName": "CLICKS"
+            },
+            "isAscending": true,
+            "nullsLast": true
+        }
+    ]
+}
+```
+
+Notes:
+
+* `distinct`: Optional. Requires set-function capability `LISTAGG_DISTINCT`.
+* `separator`: Optional. Requires set-function capability `LISTAGG_SEPARATOR`.
+* `overflowBehavior`: `type` is `"ERROR"` (requires set-function capability `LISTAGG_ON_OVERFLOW_ERROR`) or `"TRUNCATE"` (requires set-function capability `LISTAGG_ON_OVERFLOW_TRUNCATE`). Only for `"TRUNCATE"` the members `truncationType` and optionally `truncationFiller` exist. `truncationType` is `"WITH COUNT"` or `"WITHOUT COUNT"`.
+* `orderBy`: Optional. The requested order-by clause, a list of `order_by_element` elements. The field `expression` contains the expression to order by. The `group by` clause of a `SELECT` query uses the same `order_by_element` element type. The clause requires the set-function capability `LISTAGG_ORDER_BY`.

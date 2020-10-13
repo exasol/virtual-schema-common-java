@@ -1,5 +1,6 @@
 package com.exasol.adapter.request.parser;
 
+import static com.exasol.adapter.sql.SqlFunctionAggregateListagg.BehaviorType.TRUNCATE;
 import static com.exasol.adapter.sql.SqlNodeType.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -902,6 +903,62 @@ class PushDownSqlParserTest {
         assertAll(() -> assertThat(sqlFunctionAggregateGroupConcat.getType(), equalTo(FUNCTION_AGGREGATE_GROUP_CONCAT)),
                 () -> assertThat(sqlFunctionAggregateGroupConcat.getFunctionName(), equalTo("GROUP_CONCAT")), //
                 () -> assertThat(sqlLiteralDouble.getValue(), equalTo(2.0)));
+    }
+
+    @Test
+    void testParseFunctionAggregateGroupListagg() {
+        final String sqlAsJson = "{" //
+                + "    \"type\": \"function_aggregate_listagg\"," //
+                + "    \"name\": \"LISTAGG\"," //
+                + "    \"distinct\": true," //
+                + "    \"arguments\": [" //
+                + "    {" //
+                + "        \"type\": \"column\"," //
+                + "        \"columnNr\": 1," //
+                + "        \"name\": \"USER_ID\"," //
+                + "        \"tableName\": \"CLICKS\"" //
+                + "    }" //
+                + "    ]," //
+                + "    \"separator\": \", \"," //
+                + "    \"overflowBehavior\":" //
+                + "    {" //
+                + "        \"type\": \"TRUNCATE\"," //
+                + "        \"truncationType\": \"WITH COUNT\"," //
+                + "        \"truncationFiller\": \"...\"" //
+                + "    }," //
+                + "    \"orderBy\": [" //
+                + "        {" //
+                + "            \"type\": \"order_by_element\"," //
+                + "            \"expression\":" //
+                + "            {" //
+                + "              \"type\": \"column\"," //
+                + "               \"columnNr\": 1," //
+                + "                \"name\": \"USER_ID\"," //
+                + "                \"tableName\": \"CLICKS\"" //
+                + "            }," //
+                + "            \"isAscending\": true," //
+                + "            \"nullsLast\": true" //
+                + "        }" //
+                + "    ]" //
+                + "}";
+        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
+            this.jsonObject = jsonReader.readObject();
+        }
+        final SqlFunctionAggregateListagg listagg = (SqlFunctionAggregateListagg) this.pushdownSqlParser
+                .parseExpression(this.jsonObject);
+        final List<SqlNode> arguments = listagg.getArguments();
+        final SqlColumn sqlColumn = (SqlColumn) arguments.get(0);
+        assertAll(() -> assertThat(listagg.getType(), equalTo(FUNCTION_AGGREGATE_LISTAGG)),
+                () -> assertThat(listagg.getFunctionName(), equalTo("LISTAGG")), //
+                () -> assertThat(listagg.isDistinct(), equalTo(true)), //
+                () -> assertThat(listagg.hasOrderBy(), equalTo(true)), //
+                () -> assertThat(listagg.hasSeparator(), equalTo(true)), //
+                () -> assertThat(listagg.getSeparator(), equalTo(", ")), //
+                () -> assertThat(listagg.getOrderBy().getType(), equalTo(ORDER_BY)), //
+                () -> assertThat(listagg.getOverflowBehavior().getBehaviorType(), equalTo(TRUNCATE)), //
+                () -> assertThat(listagg.getOverflowBehavior().getTruncationType(), equalTo("WITH COUNT")), //
+                () -> assertThat(listagg.getOverflowBehavior().getTruncationFilter(), equalTo("...")), //
+                () -> assertThat(sqlColumn.getId(), equalTo(1)));
     }
 
     @Test
