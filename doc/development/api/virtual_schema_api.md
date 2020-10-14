@@ -1067,19 +1067,22 @@ An aggregate function with multiple arguments:
 }
 ```
 
-The aggregate functions from the list below support an optional distinct value:
+The aggregate functions from the table below support an optional `distinct` field:
 
-- AVG  (requires set-function capabilities `AVG` and `AVG_DISTINCT`)
-- COUNT (requires set-function capabilities `COUNT` and `COUNT_DISTINCT`)
-- GROUP_CONCAT (requires set-function capabilities `GROUP_CONCAT` and `GROUP_CONCAT_DISTINCT`)
-- LISTAGG (requires set-function capabilities `LISTAGG` and `LISTAGG_DISTINCT`)
-- MUL (requires set-function capabilities `MUL` and `MUL_DISTINCT`)
-- STDDEV (requires set-function capabilities `STDDEV` and `STDDEV_DISTINCT`)
-- STDDEV_POP (requires set-function capabilities `STDDEV_POP` and `STDDEV_POP_DISTINCT`)
-- STDDEV_SAMP (requires set-function capabilities `STDDEV_SAMP` and `STDDEV_SAMP_DISTINCT`)
-- VARIANCE (requires set-function capabilities `VARIANCE` and `VARIANCE_DISTINCT`)
-- VAR_POP (requires set-function capabilities `VAR_POP` and `VAR_POP_DISTINCT`)
-- VAR_SAMP (requires set-function capabilities `VAR_SAMP` and `VAR_SAMP_DISTINCT`)
+| Function Name | Required Set-Function Capabilities         |
+|---------------|--------------------------------------------|
+| AVG           | `AVG` and `AVG_DISTINCT`                   |
+| COUNT         | `COUNT` and `COUNT_DISTINCT`               |
+| GROUP_CONCAT  | `GROUP_CONCAT` and `GROUP_CONCAT_DISTINCT` |
+| LISTAGG       | `LISTAGG` and `LISTAGG_DISTINCT`           |
+| MUL           | `MUL` and `MUL_DISTINCT`                   |
+| STDDEV        | `STDDEV` and `STDDEV_DISTINCT`             |
+| STDDEV_POP    | `STDDEV_POP` and `STDDEV_POP_DISTINCT`     |
+| STDDEV_SAMP   | `STDDEV_SAMP` and `STDDEV_SAMP_DISTINCT`   |
+| SUM           | `SUM` and `SUM_DISTINCT`                   |
+| VARIANCE      | `VARIANCE` and `VARIANCE_DISTINCT`         |
+| VAR_POP       | `VAR_POP` and `VAR_POP_DISTINCT`           |
+| VAR_SAMP      | `VAR_SAMP` and `VAR_SAMP_DISTINCT`         |
 
 ```json
 {
@@ -1100,10 +1103,9 @@ This section contains functions that have a special API mapping.
 
 | Function Name       | API Mapping Link                                   |
 |---------------------|----------------------------------------------------|
-| COUNT(*)            | [COUNT(*) function](#count)                        |
-| COUNT((exp1, exp2)) | [COUNT((exp1, exp2)) function](#countexp1-exp2)    |
+| COUNT               | [COUNT function](#count)                           |
 | GROUP_CONCAT        | [GROUP_CONCAT function](#group_concat)             |
-| LISTAGG             | [LISTAGG](#listagg)                                |
+| LISTAGG             | [LISTAGG function](#listagg)                       |
 
 #### Aggregate Functions Not Included in the API
 
@@ -1118,7 +1120,7 @@ This section contains functions that have a special API mapping.
 | PERCENTILE_DISC     | Not included in the API.                |
 | REGR_*              | Not included in the API.                |
 
-##### COUNT(*)
+##### COUNT
 
 `COUNT(*)`
  (Requires set-function capability `COUNT_STAR`. Please notice, that the set-function capability `COUNT` is not required in this case.)
@@ -1130,15 +1132,17 @@ This section contains functions that have a special API mapping.
 }
 ```
 
-##### COUNT((exp1, exp2))
+`COUNT([DISTINCT] exp)`
+(requires set-function capability `COUNT`)
 
-`COUNT((exp1, exp2))`
+`COUNT([DISTINCT] (exp1, exp2, ...))`
 (requires set-function capabilities `COUNT` and `COUNT_TUPLE`)
 
 ```json
 {
     "type": "function_aggregate",
     "name": "COUNT",
+    "distinct": true,
     "arguments": [
     {
         ...
@@ -1150,9 +1154,12 @@ This section contains functions that have a special API mapping.
 }
 ```
 
+Notes:
+* `distinct`: Optional. Requires set-function capability `COUNT_DISTINCT.`
+
 ##### GROUP_CONCAT
 
-`GROUP_CONCAT(DISTINCT exp1 orderBy SEPARATOR ', ')`
+`GROUP_CONCAT([DISTINCT] exp1 [orderBy] [SEPARATOR ', '])`
  (requires set-function capability `GROUP_CONCAT`)
 
 ```json
