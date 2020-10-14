@@ -147,6 +147,7 @@ Here you can find a list of available Virtual Schema capabilities.
 - FN_LTRIM
 - FN_MINUTE
 - FN_MINUTES_BETWEEN
+- FN_MIN_SCALE
 - FN_MOD
 - FN_MONTH
 - FN_MONTHS_BETWEEN
