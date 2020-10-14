@@ -1036,7 +1036,6 @@ Refer to the [Exasol Scalar Functions API Documentation](scalar_functions_api.md
 
 #### Functions With a Common API
 
-
 An aggregate function with a single argument (consistent with multiple argument version):
 
 ```json
@@ -1078,6 +1077,7 @@ This section contains functions that have a special API mapping.
 | AVG(DISTINCT exp)   | [AVG(DISTINCT exp) function](#avgdistinct-exp)     |
 | COUNT(*)            | [COUNT(*) function](#count)                        |
 | COUNT(exp)          | [COUNT(exp) function](#countexp)                   |
+| COUNT((exp1, exp2)) | [COUNT((exp1, exp2)) function](#countexp1-exp2)    |
 | COUNT(DISTINCT exp) | [COUNT(DISTINCT exp) function](#countdistinct-exp) |
 | GROUP_CONCAT        | [GROUP_CONCAT function](#group_concat)             |
 | LISTAGG             | [LISTAGG](#listagg)
@@ -1088,7 +1088,6 @@ This section contains functions that have a special API mapping.
 |---------------------|-----------------------------------------|
 | ANY                 | The API uses the SOME function.         |
 | CORR                | Not included in the API.                |
-| COUNT((exp1, exp2)) | Not included in the API.                |
 | COVAR_POP           | Not included in the API.                |
 | COVAR_SAMP          | Not included in the API.                |
 | GROUPING            | Not included in the API.                |
@@ -1112,6 +1111,27 @@ This section contains functions that have a special API mapping.
     ]
 }
 ```
+
+##### COUNT((exp1, exp2))
+
+`COUNT((exp1, exp2))`
+(requires set-function capabilities `COUNT` and `COUNT_TUPLE`)
+
+```json
+{
+    "type": "function_aggregate",
+    "name": "COUNT",
+    "arguments": [
+    {
+        ...
+    },
+    {
+        ...
+    }
+    ]
+}
+```
+
 ##### COUNT(*)
 
 `COUNT(*)`

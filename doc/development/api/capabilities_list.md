@@ -252,6 +252,7 @@ Here you can find a list of available Virtual Schema capabilities.
 - FN_AGG_COUNT
 - FN_AGG_COUNT_DISTINCT 
 - FN_AGG_COUNT_STAR
+- FN_AGG_COUNT_TUPLE
 - FN_AGG_EVERY
 - FN_AGG_FIRST_VALUE
 - FN_AGG_GEO_INTERSECTION_AGGREGATE
