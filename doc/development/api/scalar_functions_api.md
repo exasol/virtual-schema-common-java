@@ -81,7 +81,7 @@ See [Early Function Evaluation](#early-function-evaluation) for an explanation w
 | ROWID               | Not included in the API.                        |
 | ROW_NUMBER          | Not included in the API (analytic functions).   |
 | ROWNUM              | Not included in the API.                        |
-| SCOPE_USER          | The API uses a literal_string.                  |
+| SCOPE_USER          | The API uses a `literal_string`.                |
 | SUBSTRING           | The API uses the SUBSTR function.               |
 | SYS_CONNECT_BY_PATH | Not included in the API (hierarchical queries). |
 | TRUNCATE            | The API uses the TRUNC function.                |
@@ -343,6 +343,7 @@ Notes:
 * `arguments`: The different cases.
 * `results`: The different results in the same order as the arguments. If present, the ELSE result is the last entry in the `results` array.
 * `basis`: Optional.
+
 Here is an example of a query containing a CASE function and its JSON representation (only the function part): 
 
 ```sql
