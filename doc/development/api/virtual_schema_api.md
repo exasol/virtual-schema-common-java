@@ -1067,20 +1067,43 @@ An aggregate function with multiple arguments:
 }
 ```
 
-#### Special Cases of Aggregate Functions
+The aggregate functions from the list below support an optional distinct value:
+
+- AVG  (requires set-function capabilities `AVG` and `AVG_DISTINCT`)
+- COUNT (requires set-function capabilities `COUNT` and `COUNT_DISTINCT`)
+- GROUP_CONCAT (requires set-function capabilities `GROUP_CONCAT` and `GROUP_CONCAT_DISTINCT`)
+- LISTAGG (requires set-function capabilities `LISTAGG` and `LISTAGG_DISTINCT`)
+- MUL (requires set-function capabilities `MUL` and `MUL_DISTINCT`)
+- STDDEV (requires set-function capabilities `STDDEV` and `STDDEV_DISTINCT`)
+- STDDEV_POP (requires set-function capabilities `STDDEV_POP` and `STDDEV_POP_DISTINCT`)
+- STDDEV_SAMP (requires set-function capabilities `STDDEV_SAMP` and `STDDEV_SAMP_DISTINCT`)
+- VARIANCE (requires set-function capabilities `VARIANCE` and `VARIANCE_DISTINCT`)
+- VAR_POP (requires set-function capabilities `VAR_POP` and `VAR_POP_DISTINCT`)
+- VAR_SAMP (requires set-function capabilities `VAR_SAMP` and `VAR_SAMP_DISTINCT`)
+
+```json
+{
+    "type": "function_aggregate",
+    "name": "AVG",
+    "distinct": true,
+    "arguments": [
+        ...
+    ],
+
+    ...
+}
+```
+
+#### Other Special Cases of Aggregate Functions
 
 This section contains functions that have a special API mapping.
 
 | Function Name       | API Mapping Link                                   |
 |---------------------|----------------------------------------------------|
-| AVG(exp)            | [AVG(exp) function](#avgexp)                       |
-| AVG(DISTINCT exp)   | [AVG(DISTINCT exp) function](#avgdistinct-exp)     |
 | COUNT(*)            | [COUNT(*) function](#count)                        |
-| COUNT(exp)          | [COUNT(exp) function](#countexp)                   |
 | COUNT((exp1, exp2)) | [COUNT((exp1, exp2)) function](#countexp1-exp2)    |
-| COUNT(DISTINCT exp) | [COUNT(DISTINCT exp) function](#countdistinct-exp) |
 | GROUP_CONCAT        | [GROUP_CONCAT function](#group_concat)             |
-| LISTAGG             | [LISTAGG](#listagg)
+| LISTAGG             | [LISTAGG](#listagg)                                |
 
 #### Aggregate Functions Not Included in the API
 
@@ -1095,20 +1118,15 @@ This section contains functions that have a special API mapping.
 | PERCENTILE_DISC     | Not included in the API.                |
 | REGR_*              | Not included in the API.                |
 
-##### COUNT(exp)
+##### COUNT(*)
 
-`COUNT(exp)`
- (requires set-function capability `COUNT`)
+`COUNT(*)`
+ (Requires set-function capability `COUNT_STAR`. Please notice, that the set-function capability `COUNT` is not required in this case.)
 
 ```json
 {
     "type": "function_aggregate",
-    "name": "COUNT",
-    "arguments": [
-    {
-        ...
-    }
-    ]
+    "name": "COUNT"
 }
 ```
 
@@ -1125,71 +1143,6 @@ This section contains functions that have a special API mapping.
     {
         ...
     },
-    {
-        ...
-    }
-    ]
-}
-```
-
-##### COUNT(*)
-
-`COUNT(*)`
- (Requires set-function capability `COUNT_STAR`. Please notice, that the set-function capability `COUNT` is not required in this case.)
-
-```json
-{
-    "type": "function_aggregate",
-    "name": "COUNT"
-}
-```
-
-##### COUNT(DISTINCT exp)
-
-`COUNT(DISTINCT exp)`
- (requires set-function capabilities `COUNT` and `COUNT_DISTINCT`)
-
-```json
-{
-    "type": "function_aggregate",
-    "name": "COUNT",
-    "distinct": true,
-    "arguments": [
-    {
-        ...
-    }
-    ]
-}
-```
-
-##### AVG(exp)
-
-`AVG(exp)`
- (requires set-function capability `AVG`)
-
-```json
-{
-    "type": "function_aggregate",
-    "name": "AVG",
-    "arguments": [
-    {
-        ...
-    }
-    ]
-}
-```
-
-##### AVG(DISTINCT exp)
-
-`AVG(DISTINCT exp)`
- (requires set-function capabilities `AVG` and `AVG_DISTINCT`)
-
-```json
-{
-    "type": "function_aggregate",
-    "name": "AVG",
-    "distinct": true,
-    "arguments": [
     {
         ...
     }

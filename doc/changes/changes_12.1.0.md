@@ -7,6 +7,7 @@ Code name: New capabilities and updates in the API
 * #157: Added new capabilities for the LISTAGG API.
 * #158: Added additional capabilities for the ST_INTERSECTION and ST_UNION functions.
 * #161: Added new capability for the COUNT API.
+* #164: Added support for a new scalar function MIN_SCALE
 
 ## Documentation
 
