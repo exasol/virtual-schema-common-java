@@ -93,5 +93,5 @@ public interface SqlNodeVisitor<R> {
 
     public R visit(SqlJoin sqlJoin) throws AdapterException;
 
-    public R visit(SqlFunctionAggregateListagg sqlFunctionAggregateListagg);
+    public R visit(SqlFunctionAggregateListagg sqlFunctionAggregateListagg) throws AdapterException;
 }

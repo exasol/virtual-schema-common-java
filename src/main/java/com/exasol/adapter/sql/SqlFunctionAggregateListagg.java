@@ -233,6 +233,15 @@ public class SqlFunctionAggregateListagg extends SqlNode {
         }
 
         /**
+         * Check if a truncation filter exists.
+         *
+         * @return true if a truncation filter exists
+         */
+        public boolean hasTruncationFilter() {
+            return this.truncationFilter != null && !this.truncationFilter.isEmpty();
+        }
+
+        /**
          * Set a truncation filter.
          * 
          * @param truncationFilter truncation filter
