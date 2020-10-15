@@ -194,7 +194,7 @@ public class SqlFunctionAggregateListagg extends SqlNode {
     public static class Behavior {
         private final BehaviorType behaviorType;
         private String truncationType = null;
-        private String truncationFilter = null;
+        private String truncationFiller = null;
 
         /**
          * Create a new instance of {@link Behavior}.
@@ -224,30 +224,30 @@ public class SqlFunctionAggregateListagg extends SqlNode {
         }
 
         /**
-         * Get a truncation filter.
+         * Get a truncation filler.
          * 
-         * @return truncation filter
+         * @return truncation filler
          */
-        public String getTruncationFilter() {
-            return this.truncationFilter;
+        public String getTruncationFiller() {
+            return this.truncationFiller;
         }
 
         /**
-         * Check if a truncation filter exists.
+         * Check if a truncation filler exists.
          *
-         * @return true if a truncation filter exists
+         * @return true if a truncation filler exists
          */
-        public boolean hasTruncationFilter() {
-            return this.truncationFilter != null && !this.truncationFilter.isEmpty();
+        public boolean hasTruncationFiller() {
+            return this.truncationFiller != null && !this.truncationFiller.isEmpty();
         }
 
         /**
-         * Set a truncation filter.
+         * Set a truncation filler.
          * 
-         * @param truncationFilter truncation filter
+         * @param truncationFiller truncation filler
          */
-        public void setTruncationFilter(final String truncationFilter) {
-            this.truncationFilter = truncationFilter;
+        public void setTruncationFiller(final String truncationFiller) {
+            this.truncationFiller = truncationFiller;
         }
 
         /**
