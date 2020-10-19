@@ -957,7 +957,7 @@ class PushDownSqlParserTest {
                 () -> assertThat(listagg.getOrderBy().getType(), equalTo(ORDER_BY)), //
                 () -> assertThat(listagg.getOverflowBehavior().getBehaviorType(), equalTo(TRUNCATE)), //
                 () -> assertThat(listagg.getOverflowBehavior().getTruncationType(), equalTo("WITH COUNT")), //
-                () -> assertThat(listagg.getOverflowBehavior().getTruncationFilter(), equalTo("...")), //
+                () -> assertThat(listagg.getOverflowBehavior().getTruncationFiller(), equalTo("...")), //
                 () -> assertThat(sqlColumn.getId(), equalTo(1)));
     }
 

@@ -523,19 +523,19 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     private SqlNode parseFunctionAggregate(final JsonObject exp) {
         final String setFunctionName = exp.getString("name");
         final List<SqlNode> setArguments = getListOfSqlNodes(exp, ARGUMENTS_KEY);
-        boolean distinct = exp.containsKey(DISTINCT_KEY) && exp.getBoolean(DISTINCT_KEY);
+        final boolean distinct = exp.containsKey(DISTINCT_KEY) && exp.getBoolean(DISTINCT_KEY);
         return new SqlFunctionAggregate(fromAggregationFunctionName(setFunctionName), setArguments, distinct);
     }
 
     private SqlNode parseFunctionAggregateGroupConcat(final JsonObject exp) {
         final String functionName = exp.getString("name");
         final List<SqlNode> setArguments = new ArrayList<>();
-        boolean distinct = exp.containsKey(DISTINCT_KEY) && exp.getBoolean(DISTINCT_KEY);
+        final boolean distinct = exp.containsKey(DISTINCT_KEY) && exp.getBoolean(DISTINCT_KEY);
         for (final JsonObject argument : exp.getJsonArray(ARGUMENTS_KEY).getValuesAs(JsonObject.class)) {
             setArguments.add(parseExpression(argument));
         }
-        SqlOrderBy orderBy = exp.containsKey(ORDER_BY_KEY) ? parseOrderBy(exp.getJsonArray(ORDER_BY_KEY)) : null;
-        String separator = exp.containsKey(SEPARATOR_KEY) ? exp.getString(SEPARATOR_KEY) : null;
+        final SqlOrderBy orderBy = exp.containsKey(ORDER_BY_KEY) ? parseOrderBy(exp.getJsonArray(ORDER_BY_KEY)) : null;
+        final String separator = exp.containsKey(SEPARATOR_KEY) ? exp.getString(SEPARATOR_KEY) : null;
         return new SqlFunctionAggregateGroupConcat(fromAggregationFunctionName(functionName), setArguments, orderBy,
                 distinct, separator);
     }
@@ -566,7 +566,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         if (behaviorType == BehaviorType.TRUNCATE) {
             overflowBehavior.setTruncationType(overflowBehaviorJson.getString("truncationType"));
             if (overflowBehaviorJson.containsKey("truncationFiller")) {
-                overflowBehavior.setTruncationFilter(overflowBehaviorJson.getString("truncationFiller"));
+                overflowBehavior.setTruncationFiller(overflowBehaviorJson.getString("truncationFiller"));
             }
         }
         return overflowBehavior;
