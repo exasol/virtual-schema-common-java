@@ -13,6 +13,7 @@ import com.exasol.adapter.metadata.*;
 import com.exasol.adapter.metadata.DataType.ExaCharset;
 import com.exasol.adapter.metadata.DataType.IntervalType;
 import com.exasol.adapter.sql.*;
+import com.exasol.adapter.sql.SqlFunctionAggregateListagg.Behavior.TruncationType;
 import com.exasol.adapter.sql.SqlFunctionAggregateListagg.*;
 
 public final class PushdownSqlParser extends AbstractRequestParser {
@@ -564,7 +565,8 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         final BehaviorType behaviorType = BehaviorType.valueOf(overflowBehaviorJson.getString("type").toUpperCase());
         final Behavior overflowBehavior = new Behavior(behaviorType);
         if (behaviorType == BehaviorType.TRUNCATE) {
-            overflowBehavior.setTruncationType(overflowBehaviorJson.getString("truncationType"));
+            overflowBehavior.setTruncationType(
+                    TruncationType.parseTruncationType(overflowBehaviorJson.getString("truncationType")));
             if (overflowBehaviorJson.containsKey("truncationFiller")) {
                 overflowBehavior.setTruncationFiller(overflowBehaviorJson.getString("truncationFiller"));
             }

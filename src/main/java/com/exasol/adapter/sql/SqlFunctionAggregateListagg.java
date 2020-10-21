@@ -1,6 +1,8 @@
 package com.exasol.adapter.sql;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.exasol.adapter.AdapterException;
 
@@ -185,7 +187,7 @@ public class SqlFunctionAggregateListagg extends SqlNode {
      * Expected behavior types.
      */
     public enum BehaviorType {
-        ERROR, TRUNCATE;
+        ERROR, TRUNCATE
     }
 
     /**
@@ -193,8 +195,33 @@ public class SqlFunctionAggregateListagg extends SqlNode {
      */
     public static class Behavior {
         private final BehaviorType behaviorType;
-        private String truncationType = null;
+        private TruncationType truncationType = null;
         private String truncationFiller = null;
+
+        /**
+         * Expected truncation types.
+         */
+        public enum TruncationType {
+            WITH_COUNT, WITHOUT_COUNT;
+
+            public static TruncationType parseTruncationType(final String value) {
+                if (value.equalsIgnoreCase("WITH COUNT")) {
+                    return WITH_COUNT;
+                } else if (value.equalsIgnoreCase("WITHOUT COUNT")) {
+                    return WITHOUT_COUNT;
+                } else {
+                    throw new IllegalArgumentException("Illegal value " + value
+                            + " was set for a 'truncation type' parameter of the LISTAGG function. Possible values: "
+                            + Arrays.stream(TruncationType.values()).map(TruncationType::toString)
+                                    .collect(Collectors.joining(", ")));
+                }
+            }
+
+            @Override
+            public String toString() {
+                return name().replace("_", " ");
+            }
+        }
 
         /**
          * Create a new instance of {@link Behavior}.
@@ -211,7 +238,7 @@ public class SqlFunctionAggregateListagg extends SqlNode {
          * @return truncation type
          */
         public String getTruncationType() {
-            return this.truncationType;
+            return this.truncationType.toString();
         }
 
         /**
@@ -219,7 +246,7 @@ public class SqlFunctionAggregateListagg extends SqlNode {
          * 
          * @param truncationType truncation type
          */
-        public void setTruncationType(final String truncationType) {
+        public void setTruncationType(final TruncationType truncationType) {
             this.truncationType = truncationType;
         }
 
