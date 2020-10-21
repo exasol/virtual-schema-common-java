@@ -9,6 +9,10 @@ Code name: New capabilities and updates in the API
 * #161: Added new capability for the COUNT API.
 * #164: Added support for a new scalar function MIN_SCALE
 
+## Refactoring
+
+* #168: Removed unused class SqlUtils.
+
 ## Documentation
 
 * #159: Added the API documentation fixes.
