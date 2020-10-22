@@ -1,5 +1,6 @@
 package com.exasol.adapter.sql;
 
+import static com.exasol.adapter.sql.SqlFunctionScalarExtract.ExtractParameter.SECOND;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -22,7 +23,7 @@ class SqlFunctionScalarExtractTest {
     void setUp() {
         this.arguments = new ArrayList<>();
         this.arguments.add(new SqlLiteralTimestamp("2019-02-12 12:07:00"));
-        this.sqlFunctionScalarExtract = new SqlFunctionScalarExtract("SECOND", this.arguments);
+        this.sqlFunctionScalarExtract = new SqlFunctionScalarExtract(SECOND, this.arguments);
     }
 
     @Test
@@ -38,7 +39,7 @@ class SqlFunctionScalarExtractTest {
     @Test
     void testGetArgumentsWithNullAsArgumentList() {
         assertThrows(IllegalArgumentException.class,
-                () -> this.sqlFunctionScalarExtract = new SqlFunctionScalarExtract("SECOND", null));
+                () -> this.sqlFunctionScalarExtract = new SqlFunctionScalarExtract(SECOND, null));
     }
 
     @Test
