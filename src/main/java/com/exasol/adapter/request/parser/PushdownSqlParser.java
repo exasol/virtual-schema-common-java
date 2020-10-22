@@ -471,7 +471,8 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     private SqlNode parseFunctionScalarExtract(final JsonObject exp) {
         final String toExtract = exp.getString("toExtract");
         final List<SqlNode> extractArguments = getListOfSqlNodes(exp, ARGUMENTS_KEY);
-        return new SqlFunctionScalarExtract(toExtract, extractArguments);
+        return new SqlFunctionScalarExtract(SqlFunctionScalarExtract.ExtractParameter.valueOf(toExtract),
+                extractArguments);
     }
 
     private SqlNode parseFunctionScalarCase(final JsonObject exp) {

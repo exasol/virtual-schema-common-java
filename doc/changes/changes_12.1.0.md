@@ -13,6 +13,7 @@ Code name: New capabilities and updates in the API
 
 * #168: Removed unused class SqlUtils.
 * #173: Improved LISTAGG function class.
+* #175: Improved EXTRACT function class.
 
 ## Documentation
 
