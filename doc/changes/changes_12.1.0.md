@@ -1,4 +1,4 @@
-# Virtual Schema Common Java 12.1.0, released 2020-10-??
+# Virtual Schema Common Java 12.1.0, released 2020-10-23
 
 Code name: New capabilities and updates in the API
 
@@ -14,6 +14,7 @@ Code name: New capabilities and updates in the API
 * #168: Removed unused class SqlUtils.
 * #173: Improved LISTAGG function class.
 * #175: Improved EXTRACT function class.
+* #178: Prepared the project for an automated Maven Central Release
 
 ## Documentation
 
