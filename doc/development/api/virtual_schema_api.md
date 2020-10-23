@@ -952,7 +952,7 @@ The same can be used for `predicate_is_null`, `predicate_is_not_null`.
 
 The same can be used for `predicate_notequal`, `predicate_less` and `predicate_lessequal`.
 
-##### LIKE / REGEXP_LIKE
+##### LIKE
 
 ```json
 {
@@ -963,14 +963,28 @@ The same can be used for `predicate_notequal`, `predicate_less` and `predicate_l
     "pattern": {
         ...
     },
-    "escapeChar": "%"
+    "escapeChar": {
+        ...
+    }
 }
 ```
 
-The same can be used for `predicate_like_regexp`.
+Notes:
+* `escapeChar` is optional.
 
-Notes
-* **escapeChar** is optional
+##### REGEXP_LIKE
+
+```json
+{
+    "type": "predicate_like_regexp",
+    "expression": {
+        ...
+    },
+    "pattern": {
+        ...
+    }
+}
+```
 
 ##### BETWEEN
 

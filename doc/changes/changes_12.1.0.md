@@ -18,3 +18,4 @@ Code name: New capabilities and updates in the API
 ## Documentation
 
 * #159: Added the API documentation fixes.
+* #177: Improved the API documentation for LIKE and REGEXP_LIKE.
