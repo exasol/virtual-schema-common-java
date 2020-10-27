@@ -6,7 +6,7 @@ import com.exasol.adapter.AdapterException;
  * Represents a GROUP_CONCAT aggregate function.
  */
 public class SqlFunctionAggregateGroupConcat extends SqlNode {
-    private final AggregateFunction function = AggregateFunction.GROUP_CONCAT;
+    private static final AggregateFunction function = AggregateFunction.GROUP_CONCAT;
     private final SqlNode argument;
     private final boolean distinct;
     private final SqlLiteralString separator;
@@ -36,7 +36,7 @@ public class SqlFunctionAggregateGroupConcat extends SqlNode {
     }
 
     /**
-     * Check if this function contains an order by clause.
+     * Check if the this function contains an order by clause.
      *
      * @return true if contains an order by clause
      */
