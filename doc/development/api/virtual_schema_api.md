@@ -1204,7 +1204,7 @@ Notes:
 
 ##### LISTAGG
 
-`LISTAGG([DISTINCT] arg[, separator] ON OVERFLOW {ERROR | TRUNCATE [truncationFiller] {WITH | WITHOUT} COUNT}) [WITHIN GROUP (orderBy)]`
+`LISTAGG([DISTINCT] arg[, 'separator'] ON OVERFLOW {ERROR | TRUNCATE ['truncationFiller'] {WITH | WITHOUT} COUNT}) [WITHIN GROUP (orderBy)]`
  (requires set-function capability `LISTAGG`)
 
 ```json

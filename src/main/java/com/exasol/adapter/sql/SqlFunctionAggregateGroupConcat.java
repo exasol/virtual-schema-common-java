@@ -36,7 +36,7 @@ public class SqlFunctionAggregateGroupConcat extends SqlNode {
     }
 
     /**
-     * Check if the this function contains an order by clause.
+     * Check if this function contains an order by clause.
      *
      * @return true if contains an order by clause
      */
