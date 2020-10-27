@@ -60,7 +60,7 @@ public class SqlFunctionAggregateGroupConcat extends SqlNode {
      * @return function name as a string
      */
     public String getFunctionName() {
-        return this.function.name();
+        return function.name();
     }
 
     /**
