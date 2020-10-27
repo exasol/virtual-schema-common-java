@@ -614,8 +614,7 @@ class PushDownSqlParserTest {
         }
         final SqlFunctionScalarExtract sqlFunctionScalarExtract = (SqlFunctionScalarExtract) this.pushdownSqlParser
                 .parseExpression(this.jsonObject);
-        final List<SqlNode> expressions = sqlFunctionScalarExtract.getArguments();
-        final SqlLiteralTimestamp sqlLiteralTimestamp = (SqlLiteralTimestamp) expressions.get(0);
+        final SqlLiteralTimestamp sqlLiteralTimestamp = (SqlLiteralTimestamp) sqlFunctionScalarExtract.getArgument();
         assertAll(() -> assertThat(sqlFunctionScalarExtract.getType(), equalTo(FUNCTION_SCALAR_EXTRACT)),
                 () -> assertThat(sqlFunctionScalarExtract.getToExtract(), equalTo("MINUTE")), //
                 () -> assertThat(sqlLiteralTimestamp.getValue(), equalTo("2015-12-01 12:01:01.1234")));
@@ -642,8 +641,7 @@ class PushDownSqlParserTest {
         }
         final SqlFunctionScalarCast sqlFunctionScalarCast = (SqlFunctionScalarCast) this.pushdownSqlParser
                 .parseExpression(this.jsonObject);
-        final List<SqlNode> expressions = sqlFunctionScalarCast.getArguments();
-        final SqlLiteralDouble sqlLiteralDouble = (SqlLiteralDouble) expressions.get(0);
+        final SqlLiteralDouble sqlLiteralDouble = (SqlLiteralDouble) sqlFunctionScalarCast.getArgument();
         assertAll(() -> assertThat(sqlFunctionScalarCast.getType(), equalTo(FUNCTION_SCALAR_CAST)),
                 () -> assertThat(sqlLiteralDouble.getValue(), equalTo(1.234)));
     }

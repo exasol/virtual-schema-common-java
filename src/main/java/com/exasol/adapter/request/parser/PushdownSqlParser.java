@@ -467,11 +467,10 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         return new SqlFunctionScalar(fromScalarFunctionName(functionName), arguments);
     }
 
-    private SqlNode parseFunctionScalarExtract(final JsonObject exp) {
-        final String toExtract = exp.getString("toExtract");
-        final List<SqlNode> extractArguments = getListOfSqlNodes(exp, ARGUMENTS_KEY);
-        return new SqlFunctionScalarExtract(SqlFunctionScalarExtract.ExtractParameter.valueOf(toExtract),
-                extractArguments);
+    private SqlNode parseFunctionScalarExtract(final JsonObject expression) {
+        final SqlNode argument = getSingleArgument(expression);
+        final String toExtract = expression.getString("toExtract");
+        return new SqlFunctionScalarExtract(SqlFunctionScalarExtract.ExtractParameter.valueOf(toExtract), argument);
     }
 
     private SqlNode parseFunctionScalarCase(final JsonObject exp) {
@@ -484,10 +483,10 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         return new SqlFunctionScalarCase(caseArguments, caseResults, caseBasis);
     }
 
-    private SqlNode parseFunctionScalarCast(final JsonObject jsonObject) {
-        final DataType castDataType = getDataType(jsonObject.getJsonObject(DATA_TYPE));
-        final List<SqlNode> castArguments = getListOfSqlNodes(jsonObject, ARGUMENTS_KEY);
-        return new SqlFunctionScalarCast(castDataType, castArguments);
+    private SqlNode parseFunctionScalarCast(final JsonObject expression) {
+        final DataType castDataType = getDataType(expression.getJsonObject(DATA_TYPE));
+        final SqlNode argument = getSingleArgument(expression);
+        return new SqlFunctionScalarCast(castDataType, argument);
     }
 
     private SqlNode parseFunctionScalarJsonValue(final JsonObject jsonObject) {
@@ -529,8 +528,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private SqlNode parseFunctionAggregateGroupConcat(final JsonObject expression) {
-        final List<JsonObject> arguments = expression.getJsonArray(ARGUMENTS_KEY).getValuesAs(JsonObject.class);
-        final SqlNode argument = parseExpression(arguments.get(0));
+        final SqlNode argument = getSingleArgument(expression);
         final SqlFunctionAggregateGroupConcat.Builder builder = SqlFunctionAggregateGroupConcat.builder(argument);
         if (expression.containsKey(DISTINCT_KEY)) {
             builder.distinct(expression.getBoolean(DISTINCT_KEY));
@@ -545,6 +543,11 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         return builder.build();
     }
 
+    private SqlNode getSingleArgument(final JsonObject expression) {
+        final List<JsonObject> arguments = expression.getJsonArray(ARGUMENTS_KEY).getValuesAs(JsonObject.class);
+        return parseExpression(arguments.get(0));
+    }
+
     private SqlLiteralString getSeparator(final JsonObject expression) {
         final JsonValue jsonSeparator = expression.get(SEPARATOR_KEY);
         if (jsonSeparator.getValueType() == JsonValue.ValueType.STRING) {
@@ -555,8 +558,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private SqlNode parseFunctionAggregateListagg(final JsonObject expression) {
-        final List<JsonObject> arguments = expression.getJsonArray(ARGUMENTS_KEY).getValuesAs(JsonObject.class);
-        final SqlNode argument = parseExpression(arguments.get(0));
+        final SqlNode argument = getSingleArgument(expression);
         final Behavior overflowBehavior = parseOverflowBehavior(expression);
         final Builder builder = SqlFunctionAggregateListagg.builder(argument, overflowBehavior);
         if (expression.containsKey(DISTINCT_KEY)) {
