@@ -6,8 +6,7 @@ import static com.exasol.adapter.sql.SqlPredicateIsJson.TypeConstraints;
 import java.math.BigDecimal;
 import java.util.*;
 
-import javax.json.JsonArray;
-import javax.json.JsonObject;
+import javax.json.*;
 
 import com.exasol.adapter.metadata.*;
 import com.exasol.adapter.metadata.DataType.ExaCharset;
@@ -529,26 +528,10 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         return new SqlFunctionAggregate(fromAggregationFunctionName(setFunctionName), setArguments, distinct);
     }
 
-    private SqlNode parseFunctionAggregateGroupConcat(final JsonObject exp) {
-        final String functionName = exp.getString("name");
-        final List<SqlNode> setArguments = new ArrayList<>();
-        final boolean distinct = exp.containsKey(DISTINCT_KEY) && exp.getBoolean(DISTINCT_KEY);
-        for (final JsonObject argument : exp.getJsonArray(ARGUMENTS_KEY).getValuesAs(JsonObject.class)) {
-            setArguments.add(parseExpression(argument));
-        }
-        final SqlOrderBy orderBy = exp.containsKey(ORDER_BY_KEY) ? parseOrderBy(exp.getJsonArray(ORDER_BY_KEY)) : null;
-        final String separator = exp.containsKey(SEPARATOR_KEY) ? exp.getString(SEPARATOR_KEY) : null;
-        return new SqlFunctionAggregateGroupConcat(fromAggregationFunctionName(functionName), setArguments, orderBy,
-                distinct, separator);
-    }
-
-    private SqlNode parseFunctionAggregateListagg(final JsonObject expression) {
-        final List<SqlNode> arguments = new ArrayList<>();
-        for (final JsonObject argument : expression.getJsonArray(ARGUMENTS_KEY).getValuesAs(JsonObject.class)) {
-            arguments.add(parseExpression(argument));
-        }
-        final Behavior overflowBehavior = parseOverflowBehavior(expression);
-        final Builder builder = SqlFunctionAggregateListagg.builder(arguments, overflowBehavior);
+    private SqlNode parseFunctionAggregateGroupConcat(final JsonObject expression) {
+        final List<JsonObject> arguments = expression.getJsonArray(ARGUMENTS_KEY).getValuesAs(JsonObject.class);
+        final SqlNode argument = parseExpression(arguments.get(0));
+        final SqlFunctionAggregateGroupConcat.Builder builder = SqlFunctionAggregateGroupConcat.builder(argument);
         if (expression.containsKey(DISTINCT_KEY)) {
             builder.distinct(expression.getBoolean(DISTINCT_KEY));
         }
@@ -556,7 +539,36 @@ public final class PushdownSqlParser extends AbstractRequestParser {
             builder.orderBy(parseOrderBy(expression.getJsonArray(ORDER_BY_KEY)));
         }
         if (expression.containsKey(SEPARATOR_KEY)) {
-            builder.separator(expression.getString(SEPARATOR_KEY));
+            final SqlLiteralString separator = getSeparator(expression);
+            builder.separator(separator);
+        }
+        return builder.build();
+    }
+
+    private SqlLiteralString getSeparator(final JsonObject expression) {
+        final JsonValue jsonSeparator = expression.get(SEPARATOR_KEY);
+        if (jsonSeparator.getValueType() == JsonValue.ValueType.STRING) {
+            return new SqlLiteralString(expression.getString(SEPARATOR_KEY));
+        } else {
+            return (SqlLiteralString) parseExpression(expression.getJsonObject(SEPARATOR_KEY));
+        }
+    }
+
+    private SqlNode parseFunctionAggregateListagg(final JsonObject expression) {
+        final List<JsonObject> arguments = expression.getJsonArray(ARGUMENTS_KEY).getValuesAs(JsonObject.class);
+        final SqlNode argument = parseExpression(arguments.get(0));
+        final Behavior overflowBehavior = parseOverflowBehavior(expression);
+        final Builder builder = SqlFunctionAggregateListagg.builder(argument, overflowBehavior);
+        if (expression.containsKey(DISTINCT_KEY)) {
+            builder.distinct(expression.getBoolean(DISTINCT_KEY));
+        }
+        if (expression.containsKey(ORDER_BY_KEY)) {
+            builder.orderBy(parseOrderBy(expression.getJsonArray(ORDER_BY_KEY)));
+        }
+        if (expression.containsKey(SEPARATOR_KEY)) {
+            final SqlLiteralString separator = (SqlLiteralString) parseExpression(
+                    expression.getJsonObject(SEPARATOR_KEY));
+            builder.separator(separator);
         }
         return builder.build();
     }
@@ -569,7 +581,9 @@ public final class PushdownSqlParser extends AbstractRequestParser {
             overflowBehavior.setTruncationType(
                     TruncationType.parseTruncationType(overflowBehaviorJson.getString("truncationType")));
             if (overflowBehaviorJson.containsKey("truncationFiller")) {
-                overflowBehavior.setTruncationFiller(overflowBehaviorJson.getString("truncationFiller"));
+                final SqlLiteralString truncationFiller = (SqlLiteralString) parseExpression(
+                        overflowBehaviorJson.getJsonObject("truncationFiller"));
+                overflowBehavior.setTruncationFiller(truncationFiller);
             }
         }
         return overflowBehavior;

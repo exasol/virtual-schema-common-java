@@ -1,33 +1,33 @@
 package com.exasol.adapter.sql;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import com.exasol.adapter.AdapterException;
 
 /**
- * Represents a listagg aggregate function.
+ * Represents a LISTAGG aggregate function.
  */
 public class SqlFunctionAggregateListagg extends SqlNode {
     private static final AggregateFunction function = AggregateFunction.LISTAGG;
     private final boolean distinct;
-    private final List<SqlNode> arguments;
-    private final String separator;
+    private final SqlNode argument;
+    private final SqlLiteralString separator;
     private final SqlOrderBy orderBy;
     private final Behavior overflowBehavior;
 
     private SqlFunctionAggregateListagg(final Builder builder) {
         this.distinct = builder.distinct;
-        this.arguments = builder.arguments;
+        this.argument = builder.argument;
         this.orderBy = builder.orderBy;
         this.separator = builder.separator;
         this.overflowBehavior = builder.overflowBehavior;
-        for (final SqlNode node : this.arguments) {
-            node.setParent(this);
-        }
+        this.argument.setParent(this);
         if (this.orderBy != null) {
             this.orderBy.setParent(this);
+        }
+        if (this.separator != null) {
+            this.separator.setParent(this);
         }
     }
 
@@ -46,7 +46,7 @@ public class SqlFunctionAggregateListagg extends SqlNode {
      * 
      * @return true if contains distinct
      */
-    public boolean isDistinct() {
+    public boolean hasDistinct() {
         return this.distinct;
     }
 
@@ -66,16 +66,16 @@ public class SqlFunctionAggregateListagg extends SqlNode {
      * @return true if contains a separator
      */
     public boolean hasSeparator() {
-        return this.separator != null && !this.separator.isEmpty();
+        return this.separator != null;
     }
 
     /**
-     * Get list of arguments.
+     * Get a function argument.
      * 
-     * @return arguments
+     * @return argument
      */
-    public List<SqlNode> getArguments() {
-        return this.arguments;
+    public SqlNode getArgument() {
+        return this.argument;
     }
 
     /**
@@ -83,7 +83,7 @@ public class SqlFunctionAggregateListagg extends SqlNode {
      * 
      * @return separator
      */
-    public String getSeparator() {
+    public SqlLiteralString getSeparator() {
         return this.separator;
     }
 
@@ -117,26 +117,26 @@ public class SqlFunctionAggregateListagg extends SqlNode {
     /**
      * Get a {@link SqlFunctionAggregateListagg} builder.
      *
-     * @param arguments        list of arguments
+     * @param argument         function argument
      * @param overflowBehavior overflow behavior
      * @return builder instance
      */
-    public static Builder builder(final List<SqlNode> arguments, final Behavior overflowBehavior) {
-        return new Builder(arguments, overflowBehavior);
+    public static Builder builder(final SqlNode argument, final Behavior overflowBehavior) {
+        return new Builder(argument, overflowBehavior);
     }
 
     /**
      * Builder for {@link SqlFunctionAggregateListagg}.
      */
     public static final class Builder {
-        private final List<SqlNode> arguments;
+        private final SqlNode argument;
         private final Behavior overflowBehavior;
         private boolean distinct = false;
         private SqlOrderBy orderBy = null;
-        private String separator = null;
+        private SqlLiteralString separator = null;
 
-        private Builder(final List<SqlNode> arguments, final Behavior overflowBehavior) {
-            this.arguments = arguments;
+        private Builder(final SqlNode argument, final Behavior overflowBehavior) {
+            this.argument = argument;
             this.overflowBehavior = overflowBehavior;
         }
 
@@ -177,7 +177,7 @@ public class SqlFunctionAggregateListagg extends SqlNode {
          * @param separator separator
          * @return builder instance for fluent programming
          */
-        public Builder separator(final String separator) {
+        public Builder separator(final SqlLiteralString separator) {
             this.separator = separator;
             return this;
         }
@@ -196,7 +196,7 @@ public class SqlFunctionAggregateListagg extends SqlNode {
     public static class Behavior {
         private final BehaviorType behaviorType;
         private TruncationType truncationType = null;
-        private String truncationFiller = null;
+        private SqlLiteralString truncationFiller = null;
 
         /**
          * Expected truncation types.
@@ -255,7 +255,7 @@ public class SqlFunctionAggregateListagg extends SqlNode {
          * 
          * @return truncation filler
          */
-        public String getTruncationFiller() {
+        public SqlLiteralString getTruncationFiller() {
             return this.truncationFiller;
         }
 
@@ -265,7 +265,7 @@ public class SqlFunctionAggregateListagg extends SqlNode {
          * @return true if a truncation filler exists
          */
         public boolean hasTruncationFiller() {
-            return this.truncationFiller != null && !this.truncationFiller.isEmpty();
+            return this.truncationFiller != null;
         }
 
         /**
@@ -273,7 +273,7 @@ public class SqlFunctionAggregateListagg extends SqlNode {
          * 
          * @param truncationFiller truncation filler
          */
-        public void setTruncationFiller(final String truncationFiller) {
+        public void setTruncationFiller(final SqlLiteralString truncationFiller) {
             this.truncationFiller = truncationFiller;
         }
 

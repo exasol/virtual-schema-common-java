@@ -866,7 +866,7 @@ class PushDownSqlParserTest {
     }
 
     @Test
-    void testParseFunctionAggregateGroupConcat() {
+    void testParseFunctionAggregateGroupConcatOldApi() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"function_aggregate_group_concat\", " //
                 + "   \"name\" : \"GROUP_CONCAT\", " //
@@ -898,11 +898,57 @@ class PushDownSqlParserTest {
         }
         final SqlFunctionAggregateGroupConcat sqlFunctionAggregateGroupConcat = (SqlFunctionAggregateGroupConcat) this.pushdownSqlParser
                 .parseExpression(this.jsonObject);
-        final List<SqlNode> arguments = sqlFunctionAggregateGroupConcat.getArguments();
-        final SqlLiteralDouble sqlLiteralDouble = (SqlLiteralDouble) arguments.get(0);
+        final SqlLiteralDouble sqlLiteralDouble = (SqlLiteralDouble) sqlFunctionAggregateGroupConcat.getArgument();
         assertAll(() -> assertThat(sqlFunctionAggregateGroupConcat.getType(), equalTo(FUNCTION_AGGREGATE_GROUP_CONCAT)),
                 () -> assertThat(sqlFunctionAggregateGroupConcat.getFunctionName(), equalTo("GROUP_CONCAT")), //
                 () -> assertThat(sqlLiteralDouble.getValue(), equalTo(2.0)));
+    }
+
+    @Test
+    void testParseFunctionAggregateGroupConcatNewApi() {
+        final String sqlAsJson = "{" //
+                + "   \"type\" : \"function_aggregate_group_concat\", " //
+                + "   \"name\" : \"GROUP_CONCAT\", " //
+                + "   \"distinct\" : true, " //
+                + "   \"arguments\" : [ " //
+                + "     { " //
+                + "          \"type\" : \"literal_double\", " //
+                + "          \"value\" : \"2.0\" " //
+                + "     } " //
+                + "     ], " //
+                + "     \"orderBy\" : [ " //
+                + "     { " //
+                + "          \"type\" : \"order_by_element\", " //
+                + "          \"expression\" : " //
+                + "     { " //
+                + "          \"type\" : \"column\", " //
+                + "          \"columnNr\" : 1, " //
+                + "          \"name\" : \"USER_ID\", " //
+                + "          \"tableName\" : \"CLICKS\" " //
+                + "     }, " //
+                + "     \"isAscending\" : true, " //
+                + "     \"nullsLast\" : true " //
+                + "     } " //
+                + "   ], " //
+                + "    \"separator\":" //
+                + "    {" //
+                + "        \"type\": \"literal_string\"," //
+                + "        \"value\": \", \"" //
+                + "    }" //
+                + "}";
+        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
+            this.jsonObject = jsonReader.readObject();
+        }
+        final SqlFunctionAggregateGroupConcat sqlFunctionAggregateGroupConcat = (SqlFunctionAggregateGroupConcat) this.pushdownSqlParser
+                .parseExpression(this.jsonObject);
+        final SqlLiteralDouble sqlLiteralDouble = (SqlLiteralDouble) sqlFunctionAggregateGroupConcat.getArgument();
+        assertAll(() -> assertThat(sqlFunctionAggregateGroupConcat.getType(), equalTo(FUNCTION_AGGREGATE_GROUP_CONCAT)),
+                () -> assertThat(sqlFunctionAggregateGroupConcat.getFunctionName(), equalTo("GROUP_CONCAT")), //
+                () -> assertThat(sqlLiteralDouble.getValue(), equalTo(2.0)),
+                () -> assertThat(sqlFunctionAggregateGroupConcat.getSeparator(), equalTo(new SqlLiteralString(", "))),
+                () -> assertThat(sqlFunctionAggregateGroupConcat.hasDistinct(), equalTo(true)),
+                () -> assertThat(sqlFunctionAggregateGroupConcat.hasOrderBy(), equalTo(true)),
+                () -> assertThat(sqlFunctionAggregateGroupConcat.hasSeparator(), equalTo(true)));
     }
 
     @Test
@@ -919,12 +965,20 @@ class PushDownSqlParserTest {
                 + "        \"tableName\": \"CLICKS\"" //
                 + "    }" //
                 + "    ]," //
-                + "    \"separator\": \", \"," //
+                + "    \"separator\":" //
+                + "    {" //
+                + "        \"type\": \"literal_string\"," //
+                + "        \"value\": \", \"" //
+                + "    }," //
                 + "    \"overflowBehavior\":" //
                 + "    {" //
                 + "        \"type\": \"TRUNCATE\"," //
                 + "        \"truncationType\": \"WITH COUNT\"," //
-                + "        \"truncationFiller\": \"...\"" //
+                + "        \"truncationFiller\": " //
+                + "        {" //
+                + "             \"type\": \"literal_string\"," //
+                + "             \"value\": \"filler\"" //
+                + "         }" //
                 + "    }," //
                 + "    \"orderBy\": [" //
                 + "        {" //
@@ -946,18 +1000,18 @@ class PushDownSqlParserTest {
         }
         final SqlFunctionAggregateListagg listagg = (SqlFunctionAggregateListagg) this.pushdownSqlParser
                 .parseExpression(this.jsonObject);
-        final List<SqlNode> arguments = listagg.getArguments();
-        final SqlColumn sqlColumn = (SqlColumn) arguments.get(0);
+        final SqlColumn sqlColumn = (SqlColumn) listagg.getArgument();
         assertAll(() -> assertThat(listagg.getType(), equalTo(FUNCTION_AGGREGATE_LISTAGG)),
                 () -> assertThat(listagg.getFunctionName(), equalTo("LISTAGG")), //
-                () -> assertThat(listagg.isDistinct(), equalTo(true)), //
+                () -> assertThat(listagg.hasDistinct(), equalTo(true)), //
                 () -> assertThat(listagg.hasOrderBy(), equalTo(true)), //
                 () -> assertThat(listagg.hasSeparator(), equalTo(true)), //
-                () -> assertThat(listagg.getSeparator(), equalTo(", ")), //
+                () -> assertThat(listagg.getSeparator(), equalTo(new SqlLiteralString(", "))), //
                 () -> assertThat(listagg.getOrderBy().getType(), equalTo(ORDER_BY)), //
                 () -> assertThat(listagg.getOverflowBehavior().getBehaviorType(), equalTo(TRUNCATE)), //
                 () -> assertThat(listagg.getOverflowBehavior().getTruncationType(), equalTo("WITH COUNT")), //
-                () -> assertThat(listagg.getOverflowBehavior().getTruncationFiller(), equalTo("...")), //
+                () -> assertThat(listagg.getOverflowBehavior().getTruncationFiller(),
+                        equalTo(new SqlLiteralString("filler"))), //
                 () -> assertThat(sqlColumn.getId(), equalTo(1)));
     }
 
