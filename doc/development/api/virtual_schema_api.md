@@ -1173,7 +1173,7 @@ Notes:
 
 ##### GROUP_CONCAT
 
-`GROUP_CONCAT([DISTINCT] exp1 [orderBy] [SEPARATOR ', '])`
+`GROUP_CONCAT([DISTINCT] arg [orderBy] [SEPARATOR 'separator'])`
  (requires set-function capability `GROUP_CONCAT`)
 
 ```json
@@ -1187,20 +1187,13 @@ Notes:
     }
     ],
     "orderBy" : [
-        {
-            "type" : "order_by_element",
-            "expression" :
-            {
-              "type" : "column",
-               "columnNr" : 1,
-                "name" : "USER_ID",
-                "tableName" : "CLICKS"
-            },
-            "isAscending" : true,
-            "nullsLast" : true
-        }
+        ...
     ],
-    "separator": ", "
+    "separator":
+    {
+        "type": "literal_string",
+        "value": "..."
+    }
 }
 ```
 
@@ -1211,7 +1204,7 @@ Notes:
 
 ##### LISTAGG
 
-`LISTAGG([DISTINCT] arg1[, separator] ON OVERFLOW {ERROR | TRUNCATE [truncationFiller] {WITH | WITHOUT} COUNT}) [WITHIN GROUP (orderBy)]`
+`LISTAGG([DISTINCT] arg[, 'separator'] ON OVERFLOW {ERROR | TRUNCATE ['truncationFiller'] {WITH | WITHOUT} COUNT}) [WITHIN GROUP (orderBy)]`
  (requires set-function capability `LISTAGG`)
 
 ```json
@@ -1224,26 +1217,23 @@ Notes:
         ...
     }
     ],
-    "separator": ", ",
+    "separator":
+    {
+        "type": "literal_string",
+        "value": "..."
+    },
     "overflowBehavior":
     {
         "type": "TRUNCATE",
         "truncationType": "WITH COUNT",
-        "truncationFiller": "..."
+        "truncationFiller":
+        {
+            "type": "literal_string",
+            "value": "..."
+        }    
     },
     "orderBy": [
-        {
-            "type": "order_by_element",
-            "expression":
-            {
-              "type": "column",
-               "columnNr": 1,
-                "name": "USER_ID",
-                "tableName": "CLICKS"
-            },
-            "isAscending": true,
-            "nullsLast": true
-        }
+        ...
     ]
 }
 ```

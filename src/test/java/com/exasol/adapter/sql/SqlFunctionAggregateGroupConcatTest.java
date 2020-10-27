@@ -23,7 +23,7 @@ class SqlFunctionAggregateGroupConcatTest {
     private static final String TEST_SEPARATOR = ":";
     private static final String TEST_NAME = "test string";
     private SqlFunctionAggregateGroupConcat sqlFunctionAggregateGroupConcat;
-    private List<SqlNode> arguments;
+    private SqlNode argument;
     private AggregateFunction aggregateFunction;
     @Mock
     private SqlOrderBy sqlOrderBy;
@@ -31,15 +31,15 @@ class SqlFunctionAggregateGroupConcatTest {
     @BeforeEach
     void setUp() {
         this.aggregateFunction = AggregateFunction.GROUP_CONCAT;
-        this.arguments = new ArrayList<>();
-        this.arguments.add(new SqlLiteralString(TEST_NAME));
-        this.sqlFunctionAggregateGroupConcat = new SqlFunctionAggregateGroupConcat(this.aggregateFunction,
-                this.arguments, this.sqlOrderBy, TEST_DISTINCT, TEST_SEPARATOR);
+        this.argument = new SqlLiteralString(TEST_NAME);
+        this.sqlFunctionAggregateGroupConcat = SqlFunctionAggregateGroupConcat.builder(this.argument)
+                .distinct(TEST_DISTINCT).orderBy(this.sqlOrderBy).separator(new SqlLiteralString(TEST_SEPARATOR))
+                .build();
     }
 
     @Test
     void testGetArguments() {
-        assertThat(this.sqlFunctionAggregateGroupConcat.getArguments(), equalTo(this.arguments));
+        assertThat(this.sqlFunctionAggregateGroupConcat.getArgument(), equalTo(this.argument));
     }
 
     @Test
@@ -52,11 +52,6 @@ class SqlFunctionAggregateGroupConcatTest {
     void testGetType() {
         assertThat(this.sqlFunctionAggregateGroupConcat.getType(),
                 equalTo(SqlNodeType.FUNCTION_AGGREGATE_GROUP_CONCAT));
-    }
-
-    @Test
-    void testGetFunction() {
-        assertThat(this.sqlFunctionAggregateGroupConcat.getFunction(), equalTo(this.aggregateFunction));
     }
 
     @Test
@@ -96,6 +91,6 @@ class SqlFunctionAggregateGroupConcatTest {
 
     @Test
     void getSeparator() {
-        assertThat(this.sqlFunctionAggregateGroupConcat.getSeparator(), equalTo(TEST_SEPARATOR));
+        assertThat(this.sqlFunctionAggregateGroupConcat.getSeparator(), equalTo(new SqlLiteralString(TEST_SEPARATOR)));
     }
 }

@@ -3,28 +3,22 @@ package com.exasol.adapter.sql;
 import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.DataType;
 
-import java.util.Collections;
-import java.util.List;
-
 public class SqlFunctionScalarCast extends SqlNode {
     private final DataType dataType;
-    private final List<SqlNode> arguments;
+    private final SqlNode argument;
 
-    public SqlFunctionScalarCast(final DataType dataType, final List<SqlNode> arguments) {
-        SqlArgumentValidator.validateSingleAgrumentFunctionParameter(arguments, SqlFunctionScalarCast.class);
-        this.arguments = arguments;
+    public SqlFunctionScalarCast(final DataType dataType, final SqlNode argument) {
+        this.argument = argument;
         this.dataType = dataType;
-        for (final SqlNode node : this.arguments) {
-            node.setParent(this);
-        }
+        argument.setParent(this);
     }
 
     public DataType getDataType() {
         return this.dataType;
     }
 
-    public List<SqlNode> getArguments() {
-        return Collections.unmodifiableList(this.arguments);
+    public SqlNode getArgument() {
+        return this.argument;
     }
 
     @Override

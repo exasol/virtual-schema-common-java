@@ -1,29 +1,23 @@
 package com.exasol.adapter.sql;
 
-import java.util.Collections;
-import java.util.List;
-
 import com.exasol.adapter.AdapterException;
 
 public class SqlFunctionScalarExtract extends SqlNode {
     private final ExtractParameter extractType;
-    private final List<SqlNode> arguments;
+    private final SqlNode argument;
 
-    public SqlFunctionScalarExtract(final ExtractParameter extractParameter, final List<SqlNode> arguments) {
-        SqlArgumentValidator.validateSingleAgrumentFunctionParameter(arguments, SqlFunctionScalarExtract.class);
-        this.arguments = arguments;
+    public SqlFunctionScalarExtract(final ExtractParameter extractParameter, final SqlNode argument) {
+        this.argument = argument;
         this.extractType = extractParameter;
-        for (final SqlNode node : this.arguments) {
-            node.setParent(this);
-        }
+        argument.setParent(this);
     }
 
     public String getToExtract() {
         return this.extractType.toString();
     }
 
-    public List<SqlNode> getArguments() {
-        return Collections.unmodifiableList(this.arguments);
+    public SqlNode getArgument() {
+        return this.argument;
     }
 
     @Override
