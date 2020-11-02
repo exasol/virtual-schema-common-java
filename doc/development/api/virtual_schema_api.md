@@ -105,12 +105,12 @@ Notes
 ```
 
 Notes
-* `schemaMetadata` is optional. It can be skipped if the adapter does not want to refresh (e.g. because he detected that there is no change).
+* `schemaMetadata` is optional. It can be skipped if the adapter does not want to refresh (e.g. because it detected that there is no change).
 * `requestedTables` must exist if and only if the element existed in the request. The values must be the same as in the request (to make sure that Adapter only refreshed these tables).
 
 ### Set Properties
 
-Request to set properties. The Adapter can decide whether he needs to send back new metadata. The Adapter is allowed to throw an Exception if the user provided invalid properties or in case of any other problems (e.g. connectivity).
+Request to set properties. The Adapter can decide whether it needs to send back new metadata. The Adapter is allowed to throw an Exception if the user provided invalid properties or in case of any other problems (e.g. connectivity).
 
 **Request:**
 
@@ -146,7 +146,7 @@ Notes
 
 ### Drop Virtual Schema
 
-Inform the Adapter that a Virtual Schema is about to be dropped. The Adapter can update external dependencies if he has such. The Adapter is not expected to throw an exception, and if he does, it will be ignored.
+Inform the Adapter that a Virtual Schema is about to be dropped. The Adapter can update external dependencies if it has such. The Adapter is not expected to throw an exception, and if it does, it will be ignored.
 
 **Request:**
 
