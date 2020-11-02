@@ -16,6 +16,7 @@
   - [Table](#table)
   - [Join](#join)
   - [Column Lookup](#column-lookup)
+  - [Order By Element](#order-by-element)
   - [Data Types](#data-types)
   - [Literal](#literal)
   - [Predicates](#predicates)
@@ -419,10 +420,9 @@ Notes
   * `aggregationType`Optional element, set if an aggregation is requested. Either `group_by` or `single_group`, if a aggregate function is used but no group by.
   * `groupBy`: The requested group by clause, a list of expressions.
   * `having`: The requested having clause, a single expression.
-  * `orderBy`: The requested order-by clause, a list of `order_by_element` elements. The field `expression` contains the expression to order by.
+  * `orderBy`: The requested order-by clause, a list of `order_by_element` elements.
   * `limit` The requested limit of the result set, with an optional offset.
 * `involvedTables`: Metadata of the involved tables, encoded like in schemaMetadata.
-
 
 **Response:**
 
@@ -609,6 +609,23 @@ A column lookup is a reference to a table column. It can reference the table dir
 Notes
 * **tableAlias**: This is an optional property and is added if the referenced table has an alias.
 * **columnNr**: Column number in the virtual table, starting with 0.
+
+### Order By Element
+
+```json
+{
+    "type": "order_by_element",
+    "expression":
+    {
+        ...
+    },
+    "isAscending": true,
+    "nullsLast": true
+}
+```
+
+Notes
+* The field `expression` contains the expression to order by.
 
 ### Data Types
 
