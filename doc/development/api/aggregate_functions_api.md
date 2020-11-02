@@ -173,7 +173,7 @@ Notes:
 
 Notes:
 * `distinct`: Optional. Requires set-function capability `GROUP_CONCAT_DISTINCT.`
-* `orderBy`: Optional. The requested order-by clause, a list of `order_by_element` elements. The field `expression` contains the expression to order by. The `group by` clause of a `SELECT` query uses the same `order_by_element` element type. The clause requires the set-function capability `GROUP_CONCAT_ORDER_BY`.
+* `orderBy`: Optional. The requested order-by clause, a list of `order_by_element` elements. Requires the set-function capability `GROUP_CONCAT_ORDER_BY`.
 * `separator`: Optional. Requires set-function capability `GROUP_CONCAT_SEPARATOR`.
 
 ### LISTAGG
@@ -217,4 +217,4 @@ Notes:
 * `distinct`: Optional. Requires set-function capability `LISTAGG_DISTINCT`.
 * `separator`: Optional. Requires set-function capability `LISTAGG_SEPARATOR`.
 * `overflowBehavior`: `type` is `"ERROR"` (requires set-function capability `LISTAGG_ON_OVERFLOW_ERROR`) or `"TRUNCATE"` (requires set-function capability `LISTAGG_ON_OVERFLOW_TRUNCATE`). Only for `"TRUNCATE"` the members `truncationType` and optionally `truncationFiller` exist. `truncationType` is `"WITH COUNT"` or `"WITHOUT COUNT"`.
-* `orderBy`: Optional. The requested order-by clause, a list of `order_by_element` elements. The field `expression` contains the expression to order by. The `group by` clause of a `SELECT` query uses the same `order_by_element` element type. The clause requires the set-function capability `LISTAGG_ORDER_BY`.
+* `orderBy`: Optional. The requested order-by clause, a list of `order_by_element` elements. Requires the set-function capability `LISTAGG_ORDER_BY`.
