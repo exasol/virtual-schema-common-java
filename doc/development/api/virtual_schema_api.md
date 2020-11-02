@@ -9,13 +9,14 @@
   - [Drop Virtual Schema](#drop-virtual-schema)
   - [Get Capabilities](#get-capabilities)
   - [Pushdown](#pushdown)
-- [Embedded Commonly Used Json Elements](#embedded-commonly-used-json-elements)
+- [Embedded Commonly Used JSON Elements](#embedded-commonly-used-json-elements)
   - [Schema Metadata Info](#schema-metadata-info)
   - [Schema Metadata](#schema-metadata)
 - [Expressions](#expressions)
   - [Table](#table)
   - [Join](#join)
   - [Column Lookup](#column-lookup)
+  - [Data Types](#data-types)
   - [Literal](#literal)
   - [Predicates](#predicates)
   - [Scalar Functions](#scalar-functions)
@@ -609,6 +610,10 @@ Notes
 * **tableAlias**: This is an optional property and is added if the referenced table has an alias.
 * **columnNr**: Column number in the virtual table, starting with 0.
 
+### Data Types
+
+Refer to the [Exasol Data Types API Documentation](data_types_api.md)
+
 ### Literal
 
 ```json
@@ -834,7 +839,3 @@ Refer to the [Exasol Scalar Functions API Documentation](scalar_functions_api.md
 ### Aggregate Functions
 
 Refer to the [Exasol Aggregate Functions API Documentation](aggregate_functions_api.md)
-
-## Data Types
-
-Refer to the [Exasol Data Types API Documentation](data_types_api.md)
