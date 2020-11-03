@@ -32,7 +32,7 @@ The following Exasol data types are supported:
 
 Notes:
 
-* `characterSet`: Optional. The value is `UTF8` or `ASCII`.
+* `characterSet`: Optional. The value is `UTF8` or `ASCII`. The default value is `UTF8`.
 
 ## Char
 
@@ -46,7 +46,7 @@ Notes:
 
 Notes:
 
-* `characterSet`: Optional. The value is `UTF8` or `ASCII`.
+* `characterSet`: Optional. The value is `UTF8` or `ASCII`. The default value is `UTF8`.
 
 ## Date
 
@@ -67,7 +67,7 @@ Notes:
 
 Notes:
 
-* `withLocalTimeZone`: Optional. The value is `true` or `false`.
+* `withLocalTimeZone`: Optional. The value is `true` or `false`. The default value is `false`.
 
 ## Boolean
 
@@ -108,8 +108,8 @@ Notes:
 Notes:
 
 * `fromTo`: The value is `DAY TO SECONDS` or `YEAR TO MONTH`.
-* `precision`: Optional.
-* `fraction`: Optional. Only for `DAY TO SECONDS` value of 
+* `precision`: Optional. The default value is 2.
+* `fraction`: Optional. May only be used with `DAY TO SECONDS`. The default value is 3.
 
 ## Hashtype
 

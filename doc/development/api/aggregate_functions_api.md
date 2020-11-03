@@ -6,15 +6,12 @@ This page describes how Exasol aggregate functions map to the Virtual Schemas pu
 
 ### Functions With a Common API
 
-* [Functions with a single argument](#functions-with-a-single-argument);
-* [Functions with multiple arguments](#functions-with-multiple-arguments);
+* [Functions with a single argument](#functions-with-a-single-argument)
+* [Functions with multiple arguments](#functions-with-multiple-arguments)
 
-### Functions that Support an Optional `distinct` Value
+### Functions Supporting an Optional `distinct` Field
 
-The aggregate functions from the table below support an optional `distinct` field. 
-They also require an additional capability `*_DISTINCT`. 
-
-* [Functions with `distinct` field](#)
+The aggregate functions from the table below support an optional [`distinct` field](#functions-with-distinct-field). For this field they require an additional capability `*_DISTINCT`.
 
 | Function Name | Required Set-Function Capabilities         |
 |---------------|--------------------------------------------|
@@ -91,7 +88,7 @@ An aggregate function with multiple arguments:
 }
 ```
 
-### Functions with `distinct` Field
+### Functions With `distinct` Field
 
 `distinct` is an optional field.
 
