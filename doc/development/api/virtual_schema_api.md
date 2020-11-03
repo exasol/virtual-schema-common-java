@@ -9,13 +9,15 @@
   - [Drop Virtual Schema](#drop-virtual-schema)
   - [Get Capabilities](#get-capabilities)
   - [Pushdown](#pushdown)
-- [Embedded Commonly Used Json Elements](#embedded-commonly-used-json-elements)
+- [Embedded Commonly Used JSON Elements](#embedded-commonly-used-json-elements)
   - [Schema Metadata Info](#schema-metadata-info)
   - [Schema Metadata](#schema-metadata)
 - [Expressions](#expressions)
   - [Table](#table)
   - [Join](#join)
   - [Column Lookup](#column-lookup)
+  - [Order By Element](#order-by-element)
+  - [Data Types](#data-types)
   - [Literal](#literal)
   - [Predicates](#predicates)
   - [Scalar Functions](#scalar-functions)
@@ -104,12 +106,12 @@ Notes
 ```
 
 Notes
-* `schemaMetadata` is optional. It can be skipped if the adapter does not want to refresh (e.g. because he detected that there is no change).
+* `schemaMetadata` is optional. It can be skipped if the adapter does not want to refresh (e.g. because it detected that there is no change).
 * `requestedTables` must exist if and only if the element existed in the request. The values must be the same as in the request (to make sure that Adapter only refreshed these tables).
 
 ### Set Properties
 
-Request to set properties. The Adapter can decide whether he needs to send back new metadata. The Adapter is allowed to throw an Exception if the user provided invalid properties or in case of any other problems (e.g. connectivity).
+Request to set properties. The Adapter can decide whether it needs to send back new metadata. The Adapter is allowed to throw an Exception if the user provided invalid properties or in case of any other problems (e.g. connectivity).
 
 **Request:**
 
@@ -145,7 +147,7 @@ Notes
 
 ### Drop Virtual Schema
 
-Inform the Adapter that a Virtual Schema is about to be dropped. The Adapter can update external dependencies if he has such. The Adapter is not expected to throw an exception, and if he does, it will be ignored.
+Inform the Adapter that a Virtual Schema is about to be dropped. The Adapter can update external dependencies if it has such. The Adapter is not expected to throw an exception, and if it does, it will be ignored.
 
 **Request:**
 
@@ -418,10 +420,9 @@ Notes
   * `aggregationType`Optional element, set if an aggregation is requested. Either `group_by` or `single_group`, if a aggregate function is used but no group by.
   * `groupBy`: The requested group by clause, a list of expressions.
   * `having`: The requested having clause, a single expression.
-  * `orderBy`: The requested order-by clause, a list of `order_by_element` elements. The field `expression` contains the expression to order by.
+  * `orderBy`: The requested order-by clause, a list of `order_by_element` elements.
   * `limit` The requested limit of the result set, with an optional offset.
 * `involvedTables`: Metadata of the involved tables, encoded like in schemaMetadata.
-
 
 **Response:**
 
@@ -537,221 +538,6 @@ This example also demonstrates serialization in adapter notes via key-value enco
 }}
 ```
 
-The following EXASOL data types are supported:
-
-#### Decimal
-
-```json
-{
-    "name": "C_DECIMAL",
-    "dataType": {
-        "type": "DECIMAL",
-        "precision": 18,
-        "scale": 2
-    }
-}
-```
-
-#### Double
-
-```json
-{
-    "name": "C_DOUBLE",
-    "dataType": {
-        "type": "DOUBLE"
-    }
-}
-```
-
-#### Varchar
-
-```json
-{
-    "name": "C_VARCHAR_UTF8_1",
-    "dataType": {
-        "type": "VARCHAR",
-        "size": 10000,
-        "characterSet": "UTF8"
-    }
-}
-```
-
-```json
-{
-    "name": "C_VARCHAR_UTF8_2",
-    "dataType": {
-        "type": "VARCHAR",
-        "size": 10000
-    }
-}
-```
-
-```json
-{
-    "name": "C_VARCHAR_ASCII",
-    "dataType": {
-        "type": "VARCHAR",
-        "size": 10000,
-        "characterSet": "ASCII"
-    }
-}
-```
-
-#### Char
-
-```json
-{
-    "name": "C_CHAR_UTF8_1",
-    "dataType": {
-        "type": "CHAR",
-        "size": 3
-    }
-}
-```
-
-```json
-{
-    "name": "C_CHAR_UTF8_2",
-    "dataType": {
-        "type": "CHAR",
-        "size": 3,
-        "characterSet": "UTF8"
-    }
-}
-```
-
-```json
-{
-    "name": "C_CHAR_ASCII",
-    "dataType": {
-        "type": "CHAR",
-        "size": 3,
-        "characterSet": "ASCII"
-    }
-}
-```
-
-#### Date
-
-```json
-{
-    "name": "C_DATE",
-    "dataType": {
-        "type": "DATE"
-    }
-}
-```
-
-#### Timestamp
-
-```json
-{
-    "name": "C_TIMESTAMP_1",
-    "dataType": {
-        "type": "TIMESTAMP"
-    }
-}
-```
-```json
-{
-    "name": "C_TIMESTAMP_2",
-    "dataType": {
-        "type": "TIMESTAMP",
-        "withLocalTimeZone": false
-    }
-}
-```
-```json
-{
-    "name": "C_TIMESTAMP_3",
-    "dataType": {
-        "type": "TIMESTAMP",
-        "withLocalTimeZone": true
-    }
-}
-```
-
-#### Boolean
-
-```json
-{
-    "name": "C_BOOLEAN",
-    "dataType": {
-        "type": "BOOLEAN"
-    }
-}
-```
-
-#### Geometry
-
-```json
-{
-    "name": "C_GEOMETRY",
-    "dataType": {
-        "type": "GEOMETRY",
-        "srid": 1
-    }
-}
-```
-
-#### Interval
-
-```json
-{
-    "name": "C_INTERVAL_DS_1",
-    "dataType": {
-        "type": "INTERVAL",
-        "fromTo": "DAY TO SECONDS"
-    }
-}
-```
-
-```json
-{
-    "name": "C_INTERVAL_DS_2",
-    "dataType": {
-        "type": "INTERVAL",
-        "fromTo": "DAY TO SECONDS",
-        "precision": 3,
-        "fraction": 4
-    }
-}
-```
-
-```json
-{
-    "name": "C_INTERVAL_YM_1",
-    "dataType": {
-        "type": "INTERVAL",
-        "fromTo": "YEAR TO MONTH"
-    }
-}
-```
-
-```json
-{
-    "name": "C_INTERVAL_YM_2",
-    "dataType": {
-        "type": "INTERVAL",
-        "fromTo": "YEAR TO MONTH",
-        "precision": 3
-    }
-}
-```
-
-#### Hashtype
-
-```json
-{
-    "name": "C_HASHTYPE",
-    "dataType": {
-        "type" : "HASHTYPE",
-        "bytesize" : 16
-        
-    }
-}
-```
-
 ## Expressions
 
 This section handles the expressions that can occur in a pushdown request. Expressions are consistently encoded in the following way. This allows easy and consisting parsing and serialization.
@@ -823,6 +609,27 @@ A column lookup is a reference to a table column. It can reference the table dir
 Notes
 * **tableAlias**: This is an optional property and is added if the referenced table has an alias.
 * **columnNr**: Column number in the virtual table, starting with 0.
+
+### Order By Element
+
+```json
+{
+    "type": "order_by_element",
+    "expression":
+    {
+        ...
+    },
+    "isAscending": true,
+    "nullsLast": true
+}
+```
+
+Notes
+* The field `expression` contains the expression to order by.
+
+### Data Types
+
+Refer to the [Exasol Data Types API Documentation](data_types_api.md)
 
 ### Literal
 
@@ -1048,199 +855,4 @@ Refer to the [Exasol Scalar Functions API Documentation](scalar_functions_api.md
 
 ### Aggregate Functions
 
-#### Functions With a Common API
-
-An aggregate function with a single argument (consistent with multiple argument version):
-
-```json
-{
-    "type": "function_aggregate",
-    "name": "SUM",
-    "arguments": [
-    {
-        ...
-    }
-    ]
-}
-```
-
-An aggregate function with multiple arguments:
-
-```json
-{
-    "type": "function_aggregate",
-    "name": "CORR",
-    "arguments": [
-    {
-        ...
-    },
-    {
-        ...
-    }
-    ]
-}
-```
-
-The aggregate functions from the table below support an optional `distinct` field:
-
-| Function Name | Required Set-Function Capabilities         |
-|---------------|--------------------------------------------|
-| AVG           | `AVG` and `AVG_DISTINCT`                   |
-| COUNT         | `COUNT` and `COUNT_DISTINCT`               |
-| GROUP_CONCAT  | `GROUP_CONCAT` and `GROUP_CONCAT_DISTINCT` |
-| LISTAGG       | `LISTAGG` and `LISTAGG_DISTINCT`           |
-| MUL           | `MUL` and `MUL_DISTINCT`                   |
-| STDDEV        | `STDDEV` and `STDDEV_DISTINCT`             |
-| STDDEV_POP    | `STDDEV_POP` and `STDDEV_POP_DISTINCT`     |
-| STDDEV_SAMP   | `STDDEV_SAMP` and `STDDEV_SAMP_DISTINCT`   |
-| SUM           | `SUM` and `SUM_DISTINCT`                   |
-| VARIANCE      | `VARIANCE` and `VARIANCE_DISTINCT`         |
-| VAR_POP       | `VAR_POP` and `VAR_POP_DISTINCT`           |
-| VAR_SAMP      | `VAR_SAMP` and `VAR_SAMP_DISTINCT`         |
-
-```json
-{
-    "type": "function_aggregate",
-    "name": "AVG",
-    "distinct": true,
-    "arguments": [
-        ...
-    ],
-
-    ...
-}
-```
-
-#### Other Special Cases of Aggregate Functions
-
-This section contains functions that have a special API mapping.
-
-| Function Name       | API Mapping Link                                   |
-|---------------------|----------------------------------------------------|
-| COUNT               | [COUNT function](#count)                           |
-| GROUP_CONCAT        | [GROUP_CONCAT function](#group_concat)             |
-| LISTAGG             | [LISTAGG function](#listagg)                       |
-
-#### Aggregate Functions Not Included in the API
-
-| Function Name       | Comment                                 |
-|---------------------|-----------------------------------------|
-| ANY                 | The API uses the SOME function.         |
-| CORR                | Not included in the API.                |
-| COVAR_POP           | Not included in the API.                |
-| COVAR_SAMP          | Not included in the API.                |
-| GROUPING            | Not included in the API.                |
-| PERCENTILE_CONT     | Not included in the API.                |
-| PERCENTILE_DISC     | Not included in the API.                |
-| REGR_*              | Not included in the API.                |
-
-##### COUNT
-
-`COUNT(*)`
- (Requires set-function capability `COUNT_STAR`. Please notice, that the set-function capability `COUNT` is not required in this case.)
-
-```json
-{
-    "type": "function_aggregate",
-    "name": "COUNT"
-}
-```
-
-`COUNT([DISTINCT] exp)`
-(requires set-function capability `COUNT`)
-
-`COUNT([DISTINCT] (exp1, exp2, ...))`
-(requires set-function capabilities `COUNT` and `COUNT_TUPLE`)
-
-```json
-{
-    "type": "function_aggregate",
-    "name": "COUNT",
-    "distinct": true,
-    "arguments": [
-    {
-        ...
-    },
-    {
-        ...
-    }
-    ]
-}
-```
-
-Notes:
-* `distinct`: Optional. Requires set-function capability `COUNT_DISTINCT.`
-
-##### GROUP_CONCAT
-
-`GROUP_CONCAT([DISTINCT] arg [orderBy] [SEPARATOR 'separator'])`
- (requires set-function capability `GROUP_CONCAT`)
-
-```json
-{
-    "type": "function_aggregate_group_concat",
-    "name": "GROUP_CONCAT",
-    "distinct": true,
-    "arguments": [
-    {
-        ...
-    }
-    ],
-    "orderBy" : [
-        ...
-    ],
-    "separator":
-    {
-        "type": "literal_string",
-        "value": "..."
-    }
-}
-```
-
-Notes:
-* `distinct`: Optional. Requires set-function capability `GROUP_CONCAT_DISTINCT.`
-* `orderBy`: Optional. The requested order-by clause, a list of `order_by_element` elements. The field `expression` contains the expression to order by. The `group by` clause of a `SELECT` query uses the same `order_by_element` element type. The clause requires the set-function capability `GROUP_CONCAT_ORDER_BY`.
-* `separator`: Optional. Requires set-function capability `GROUP_CONCAT_SEPARATOR`.
-
-##### LISTAGG
-
-`LISTAGG([DISTINCT] arg[, 'separator'] ON OVERFLOW {ERROR | TRUNCATE ['truncationFiller'] {WITH | WITHOUT} COUNT}) [WITHIN GROUP (orderBy)]`
- (requires set-function capability `LISTAGG`)
-
-```json
-{
-    "type": "function_aggregate_listagg",
-    "name": "LISTAGG",
-    "distinct": true,
-    "arguments": [
-    {
-        ...
-    }
-    ],
-    "separator":
-    {
-        "type": "literal_string",
-        "value": "..."
-    },
-    "overflowBehavior":
-    {
-        "type": "TRUNCATE",
-        "truncationType": "WITH COUNT",
-        "truncationFiller":
-        {
-            "type": "literal_string",
-            "value": "..."
-        }    
-    },
-    "orderBy": [
-        ...
-    ]
-}
-```
-
-Notes:
-
-* `distinct`: Optional. Requires set-function capability `LISTAGG_DISTINCT`.
-* `separator`: Optional. Requires set-function capability `LISTAGG_SEPARATOR`.
-* `overflowBehavior`: `type` is `"ERROR"` (requires set-function capability `LISTAGG_ON_OVERFLOW_ERROR`) or `"TRUNCATE"` (requires set-function capability `LISTAGG_ON_OVERFLOW_TRUNCATE`). Only for `"TRUNCATE"` the members `truncationType` and optionally `truncationFiller` exist. `truncationType` is `"WITH COUNT"` or `"WITHOUT COUNT"`.
-* `orderBy`: Optional. The requested order-by clause, a list of `order_by_element` elements. The field `expression` contains the expression to order by. The `group by` clause of a `SELECT` query uses the same `order_by_element` element type. The clause requires the set-function capability `LISTAGG_ORDER_BY`.
+Refer to the [Exasol Aggregate Functions API Documentation](aggregate_functions_api.md)

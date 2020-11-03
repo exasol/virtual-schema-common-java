@@ -4,4 +4,8 @@ Code name: Changes the LISTAGG and GROUP_CONCAT API
 
 ## Refactoring
 
-* #181: Applied the API changes in the functions LISTAGG and GROUP_CONCAT
+* #181: Applied the API changes in the functions LISTAGG and GROUP_CONCAT.
+
+## Documentation
+
+* #182: Improved the API documentation.
