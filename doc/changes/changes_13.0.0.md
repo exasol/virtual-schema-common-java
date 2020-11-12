@@ -1,4 +1,4 @@
-# Virtual Schema Common Java 13.0.0, released 2020-??-??
+# Virtual Schema Common Java 13.0.0, released 2020-11-12
 
 Code name: Changes the LISTAGG and GROUP_CONCAT API
 
