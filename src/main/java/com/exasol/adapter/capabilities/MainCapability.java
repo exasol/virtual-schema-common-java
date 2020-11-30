@@ -6,7 +6,10 @@ package com.exasol.adapter.capabilities;
 public enum MainCapability {
     /**
      * Support projections, i.e. request only a subset of all columns of the table.
-     *
+     * <p>
+     * This capability contains a subset of SELECTLIST_PROJECTION. It allows projections, if the select list contains an
+     * expression.
+     * </p>
      * <p>
      * Example: SELECT a FROM t;
      * </p>
