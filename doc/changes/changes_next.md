@@ -1,4 +1,4 @@
-# Virtual Schema Common Java X.X.X, released 2020-11-12
+# Virtual Schema Common Java X.X.X, released 2020-XX-XX
 
 Code name: 
 
