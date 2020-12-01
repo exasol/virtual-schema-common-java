@@ -414,8 +414,10 @@ will produce the following Request, assuming that the Adapter has all required c
 Notes
 * `pushdownRequest`: Specification what needs to be pushed down. You can think of it like a parsed SQL statement.
   * `from`: The requested from clause. This can be a table or a join.
-  * `selectList`: The requested select list elements, a list of expression. The order of the selectlist elements matters. If the select list is an empty list, we request at least a single column/expression, which could also be constant TRUE.
-  * `selectList.columnNr`: Position of the column in the virtual table, starting with 0
+  * `selectList`: The requested select list. There are three options for this field:
+    * `selectList` is not given: This means `SELECT *`. The field `involvedTables` may be used to get the list of columns.
+    * `selectList` is an empty array: Select any column/expression. This is used, for example, if a query can not be pushed down completely. The adapter may choose something like `SELECT TRUE` to get the correct number of rows.
+    * Otherwise `selectList` contains the requested select list elements, a list of expressions. The order of the elements matters.
   * `filter`: The requested filter (`where` clause), a single expression.
   * `aggregationType`Optional element, set if an aggregation is requested. Either `group_by` or `single_group`, if a aggregate function is used but no group by.
   * `groupBy`: The requested group by clause, a list of expressions.
