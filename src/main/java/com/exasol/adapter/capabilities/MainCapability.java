@@ -15,9 +15,10 @@ public enum MainCapability {
     /**
      * Support expressions in the select list; Additional capabilities are required depending on the expression.
      * <p>
-     * This capability contains a subset of SELECTLIST_PROJECTION. It allows projections, if the select list contains an
-     * expression.
+     * Attention: This capability contains a subset of SELECTLIST_PROJECTION. It allows projections if the select list
+     * contains an expression.
      * </p>
+     *
      * <p>
      * Example: SELECT a+1, ucase(b) FROM t;
      * </p>
