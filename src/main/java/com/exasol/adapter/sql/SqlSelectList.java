@@ -13,15 +13,6 @@ public final class SqlSelectList extends SqlExpressionList {
     }
 
     /**
-     * Creates a SqlSelectList for SELECT *. See {@link SqlSelectListType#SELECT_STAR}.
-     *
-     * @return the new SqlSelectList.
-     */
-    public static SqlSelectList createSelectStarSelectList() {
-        return new SqlSelectList(SqlSelectListType.SELECT_STAR, null);
-    }
-
-    /**
      * Creates a SqlSelectList that uses an arbitrary value. See {@link SqlSelectListType#ANY_VALUE}.
      *
      * @return the new SqlSelectList.
@@ -44,15 +35,8 @@ public final class SqlSelectList extends SqlExpressionList {
         return new SqlSelectList(SqlSelectListType.REGULAR, selectList);
     }
 
-    public boolean isRequestAnyColumn() {
-        return this.type == SqlSelectListType.ANY_VALUE;
-    }
-
-    /**
-     * @return {@code true} if this is "{@code SELECT *}"
-     */
-    public boolean isSelectStar() {
-        return this.type == SqlSelectListType.SELECT_STAR;
+    public SqlSelectListType getSelectListType() {
+        return this.type;
     }
 
     @Override
