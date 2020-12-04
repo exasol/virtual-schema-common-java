@@ -5,8 +5,6 @@ import static com.exasol.adapter.metadata.DataType.createVarChar;
 import static com.exasol.adapter.metadata.DataType.ExaCharset.UTF8;
 import static com.exasol.adapter.sql.SqlFunctionAggregateListagg.BehaviorType.TRUNCATE;
 import static com.exasol.adapter.sql.SqlNodeType.*;
-import static com.exasol.adapter.sql.SqlSelectList.SqlSelectListType.ANY_VALUE;
-import static com.exasol.adapter.sql.SqlSelectList.SqlSelectListType.REGULAR;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -954,7 +952,7 @@ class PushDownSqlParserTest {
                 () -> assertThat(SqlNodeType.PREDICATE_EQUAL, sameInstance(from.getCondition().getType())),
                 () -> assertThat(SqlNodeType.TABLE, sameInstance(from.getLeft().getType())),
                 () -> assertThat(SqlNodeType.TABLE, sameInstance(from.getRight().getType())),
-                () -> assertThat(select.getSelectList().getSelectListType(), equalTo(REGULAR)),
+                () -> assertThat(select.getSelectList().hasExplicitColumnsList(), equalTo(true)),
                 () -> assertThat(select.getSelectList().getExpressions().size(), equalTo(4)));
     }
 
@@ -988,7 +986,7 @@ class PushDownSqlParserTest {
         final SqlColumn first = (SqlColumn) sqlStatementSelect.getSelectList().getExpressions().get(0);
         final SqlColumn second = (SqlColumn) sqlStatementSelect.getSelectList().getExpressions().get(1);
         assertAll(() -> assertThat(sqlStatementSelect.getType(), equalTo(SELECT)),
-                () -> assertThat(sqlStatementSelect.getSelectList().getSelectListType(), equalTo(REGULAR)), //
+                () -> assertThat(sqlStatementSelect.getSelectList().hasExplicitColumnsList(), equalTo(true)), //
                 () -> assertThat(sqlStatementSelect.getSelectList().getExpressions().size(), equalTo(2)), //
                 () -> assertThat(first.getName(), equalTo("ID")), //
                 () -> assertThat(first.getTableName(), equalTo("CUSTOMERS")), //
@@ -1012,7 +1010,7 @@ class PushDownSqlParserTest {
         final SqlStatementSelect sqlStatementSelect = (SqlStatementSelect) this.defaultParser
                 .parseExpression(jsonObject);
         assertAll(() -> assertThat(sqlStatementSelect.getType(), equalTo(SELECT)),
-                () -> assertThat(sqlStatementSelect.getSelectList().getSelectListType(), equalTo(ANY_VALUE)), //
+                () -> assertThat(sqlStatementSelect.getSelectList().hasExplicitColumnsList(), equalTo(false)), //
                 () -> assertThat(sqlStatementSelect.getSelectList().getExpressions().isEmpty(), equalTo(true)) //
         );
     }
@@ -1030,7 +1028,7 @@ class PushDownSqlParserTest {
                 () -> assertThat(SqlNodeType.PREDICATE_EQUAL, sameInstance(from.getCondition().getType())),
                 () -> assertThat(SqlNodeType.TABLE, sameInstance(from.getLeft().getType())),
                 () -> assertThat(SqlNodeType.TABLE, sameInstance(from.getRight().getType())),
-                () -> assertThat(select.getSelectList().getSelectListType(), equalTo(REGULAR)),
+                () -> assertThat(select.getSelectList().hasExplicitColumnsList(), equalTo(true)),
                 () -> assertThat(select.getSelectList().getExpressions().size(), equalTo(4)));
     }
 
@@ -1050,7 +1048,7 @@ class PushDownSqlParserTest {
         final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithThreeTables();
         final SqlStatementSelect select = (SqlStatementSelect) pushdownSqlParser.parseExpression(jsonObject);
         final SqlColumn column = (SqlColumn) select.getSelectList().getExpressions().get(columnNumber);
-        assertAll(() -> assertThat(select.getSelectList().getSelectListType(), equalTo(REGULAR)),
+        assertAll(() -> assertThat(select.getSelectList().hasExplicitColumnsList(), equalTo(true)),
                 () -> assertThat(select.getSelectList().getExpressions().size(), equalTo(6)),
                 () -> assertThat(column.getId(), equalTo(columnId)),
                 () -> assertThat(column.getName(), equalTo(columnName)),
@@ -1092,7 +1090,7 @@ class PushDownSqlParserTest {
         final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithTwoTables();
         final SqlStatementSelect select = (SqlStatementSelect) pushdownSqlParser.parseExpression(jsonObject);
         final SqlColumn column = (SqlColumn) select.getSelectList().getExpressions().get(columnNumber);
-        assertAll(() -> assertThat(select.getSelectList().getSelectListType(), equalTo(REGULAR)),
+        assertAll(() -> assertThat(select.getSelectList().hasExplicitColumnsList(), equalTo(true)),
                 () -> assertThat(select.getSelectList().getExpressions().size(), equalTo(6)),
                 () -> assertThat(column.getId(), equalTo(columnId)),
                 () -> assertThat(column.getName(), equalTo(columnName)),
