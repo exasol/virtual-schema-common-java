@@ -942,70 +942,9 @@ class PushDownSqlParserTest {
     }
 
     @Test
-    void testSimpleInnerJoinRequestWithExplicitSelectList() {
-        final String sqlAsJson = "{" //
-                + "    \"type\" : \"select\"," //
-                + "    \"from\" : " //
-                + "    {" //
-                + "        \"type\": \"join\"," //
-                + "        \"join_type\": \"inner\"," //
-                + "        \"left\":" //
-                + "        {" //
-                + "            \"name\" : \"T1\"," //
-                + "            \"type\" : \"table\"" //
-                + "        }," //
-                + "        \"right\":" //
-                + "        {" //
-                + "            \"name\" : \"T2\"," //
-                + "            \"type\" : \"table\"" //
-                + "        }," //
-                + "        \"condition\":" //
-                + "        {" //
-                + "            \"left\" :" //
-                + "            {" //
-                + "                    \"columnNr\" : 0," //
-                + "                    \"name\" : \"ID\"," //
-                + "                    \"tableName\" : \"T1\"," //
-                + "                    \"type\" : \"column\"" //
-                + "            }," //
-                + "            \"right\" :" //
-                + "            {" //
-                + "                    \"columnNr\" : 0," //
-                + "                    \"name\" : \"ID\"," //
-                + "                    \"tableName\" : \"T2\"," //
-                + "                    \"type\" : \"column\"" //
-                + "            }," //
-                + "            \"type\" : \"predicate_equal\"" //
-                + "        }" //
-                + "    }," //
-                + "    \"selectList\":" //
-                + "    [" //
-                + "        {" //
-                + "            \"columnNr\" : 0," //
-                + "            \"name\" : \"ID\"," //
-                + "            \"tableName\" : \"T1\"," //
-                + "            \"type\" : \"column\"" //
-                + "        }," //
-                + "        {" //
-                + "            \"columnNr\" : 1," //
-                + "            \"name\" : \"NAME\"," //
-                + "            \"tableName\" : \"T1\"," //
-                + "            \"type\" : \"column\"" //
-                + "        }," //
-                + "        {" //
-                + "            \"columnNr\" : 0," //
-                + "            \"name\" : \"ID\"," //
-                + "            \"tableName\" : \"T2\"," //
-                + "            \"type\" : \"column\"" //
-                + "        }," //
-                + "        {" //
-                + "            \"columnNr\" : 1," //
-                + "            \"name\" : \"ORDER\"," //
-                + "            \"tableName\" : \"T2\"," //
-                + "            \"type\" : \"column\"" //
-                + "        }" //
-                + "    ]" //
-                + "}";
+    void testSimpleInnerJoinRequestWithExplicitSelectList() throws IOException {
+        final String sqlAsJson = new String(Files
+                .readAllBytes(Paths.get("src/test/resources/json/simple_inner_join_request_with_select_list.json")));
         final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
         final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithTwoTables();
         final SqlStatementSelect select = (SqlStatementSelect) pushdownSqlParser.parseExpression(jsonObject);
@@ -1079,43 +1018,9 @@ class PushDownSqlParserTest {
     }
 
     @Test
-    void testSimpleInnerJoinRequestWithoutSelectList() {
-        final String sqlAsJson = "{" //
-                + "    \"type\" : \"select\"," //
-                + "    \"from\" : " //
-                + "    {" //
-                + "        \"type\": \"join\"," //
-                + "        \"join_type\": \"inner\"," //
-                + "        \"left\":" //
-                + "        {" //
-                + "            \"name\" : \"T1\"," //
-                + "            \"type\" : \"table\"" //
-                + "        }," //
-                + "        \"right\":" //
-                + "        {" //
-                + "            \"name\" : \"T2\"," //
-                + "            \"type\" : \"table\"" //
-                + "        }," //
-                + "        \"condition\":" //
-                + "        {" //
-                + "            \"left\" :" //
-                + "            {" //
-                + "                    \"columnNr\" : 0," //
-                + "                    \"name\" : \"ID\"," //
-                + "                    \"tableName\" : \"T1\"," //
-                + "                    \"type\" : \"column\"" //
-                + "            }," //
-                + "            \"right\" :" //
-                + "            {" //
-                + "                    \"columnNr\" : 0," //
-                + "                    \"name\" : \"ID\"," //
-                + "                    \"tableName\" : \"T2\"," //
-                + "                    \"type\" : \"column\"" //
-                + "            }," //
-                + "            \"type\" : \"predicate_equal\"" //
-                + "        }" //
-                + "    }" //
-                + "}";
+    void testSimpleInnerJoinRequestWithoutSelectList() throws IOException {
+        final String sqlAsJson = new String(Files
+                .readAllBytes(Paths.get("src/test/resources/json/simple_inner_join_request_without_select_list.json")));
         final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
         final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithTwoTables();
         final SqlStatementSelect select = (SqlStatementSelect) pushdownSqlParser.parseExpression(jsonObject);
