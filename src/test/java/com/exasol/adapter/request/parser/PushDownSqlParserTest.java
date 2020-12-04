@@ -943,8 +943,8 @@ class PushDownSqlParserTest {
 
     @Test
     void testSimpleInnerJoinRequestWithExplicitSelectList() throws IOException {
-        final String sqlAsJson = new String(Files
-                .readAllBytes(Paths.get("src/test/resources/json/simple_inner_join_request_with_select_list.json")));
+        final String sqlAsJson = new String(Files.readAllBytes(
+                Paths.get("src/test/resources/json/pushdown_request_simple_inner_join_with_select_list.json")));
         final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
         final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithTwoTables();
         final SqlStatementSelect select = (SqlStatementSelect) pushdownSqlParser.parseExpression(jsonObject);
@@ -963,11 +963,11 @@ class PushDownSqlParserTest {
         final List<ColumnMetadata> columns = List.of( //
                 ColumnMetadata.builder().name("ID").adapterNotes("").type(createDecimal(18, 0)).build(), //
                 ColumnMetadata.builder().name("NAME").adapterNotes("").type(createVarChar(200, UTF8)).build());
-        tables.add(new TableMetadata("T1", "", columns, ""));
+        tables.add(new TableMetadata("CUSTOMERS", "", columns, ""));
         final List<ColumnMetadata> columns2 = List.of(
-                ColumnMetadata.builder().name("ID").adapterNotes("").type(createDecimal(18, 0)).build(), //
-                ColumnMetadata.builder().name("ORDER").adapterNotes("").type(createVarChar(200, UTF8)).build());
-        tables.add(new TableMetadata("T2", "", columns2, ""));
+                ColumnMetadata.builder().name("CUSTOMER_ID").adapterNotes("").type(createDecimal(18, 0)).build(), //
+                ColumnMetadata.builder().name("ITEM_ID").adapterNotes("").type(createVarChar(200, UTF8)).build());
+        tables.add(new TableMetadata("ORDERS", "", columns2, ""));
         return PushdownSqlParser.createWithTablesMetadata(tables);
     }
 
@@ -978,7 +978,7 @@ class PushDownSqlParserTest {
                 + "    \"from\" : " //
                 + "   { " //
                 + "        \"type\" : \"table\", " //
-                + "        \"name\" :  \"T1\" " //
+                + "        \"name\" :  \"CUSTOMERS\" " //
                 + "   }" //
                 + "}";
         final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
@@ -991,9 +991,9 @@ class PushDownSqlParserTest {
                 () -> assertThat(sqlStatementSelect.getSelectList().getSelectListType(), equalTo(REGULAR)), //
                 () -> assertThat(sqlStatementSelect.getSelectList().getExpressions().size(), equalTo(2)), //
                 () -> assertThat(first.getName(), equalTo("ID")), //
-                () -> assertThat(first.getTableName(), equalTo("T1")), //
+                () -> assertThat(first.getTableName(), equalTo("CUSTOMERS")), //
                 () -> assertThat(second.getName(), equalTo("NAME")), //
-                () -> assertThat(second.getTableName(), equalTo("T1")) //
+                () -> assertThat(second.getTableName(), equalTo("CUSTOMERS")) //
         );
     }
 
@@ -1019,8 +1019,8 @@ class PushDownSqlParserTest {
 
     @Test
     void testSimpleInnerJoinRequestWithoutSelectList() throws IOException {
-        final String sqlAsJson = new String(Files
-                .readAllBytes(Paths.get("src/test/resources/json/simple_inner_join_request_without_select_list.json")));
+        final String sqlAsJson = new String(Files.readAllBytes(
+                Paths.get("src/test/resources/json/pushdown_request_simple_inner_join_without_select_list.json")));
         final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
         final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithTwoTables();
         final SqlStatementSelect select = (SqlStatementSelect) pushdownSqlParser.parseExpression(jsonObject);
@@ -1037,15 +1037,15 @@ class PushDownSqlParserTest {
     @ParameterizedTest
     @CsvSource({ "0, 0, ID, CUSTOMERS, T1", //
             "1, 1, NAME, CUSTOMERS, T1", //
-            "2, 0, ITEMID, ITEMS, ", //
-            "3, 1, ITEMNAME, ITEMS, ", //
-            "4, 0, CUSTOMERID, ORDERS, ", //
-            "5, 1, ITEMID, ORDERS, " //
+            "2, 0, ITEM_ID, ITEMS, ", //
+            "3, 1, ITEM_NAME, ITEMS, ", //
+            "4, 0, CUSTOMER_ID, ORDERS, ", //
+            "5, 1, ITEM_ID, ORDERS, " //
     })
     void testNestedJoinRequestWithoutSelectList(final int columnNumber, final int columnId, final String columnName,
             final String tableName, final String tableAlias) throws IOException {
-        final String sqlAsJson = new String(
-                Files.readAllBytes(Paths.get("src/test/resources/json/nested_join_request_without_select_list.json")));
+        final String sqlAsJson = new String(Files.readAllBytes(
+                Paths.get("src/test/resources/json/pushdown_request_nested_join_without_select_list.json")));
         final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
         final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithThreeTables();
         final SqlStatementSelect select = (SqlStatementSelect) pushdownSqlParser.parseExpression(jsonObject);
@@ -1066,13 +1066,38 @@ class PushDownSqlParserTest {
                 ColumnMetadata.builder().name("NAME").adapterNotes("").type(createVarChar(200, UTF8)).build());
         tables.add(new TableMetadata("CUSTOMERS", "", columns, ""));
         final List<ColumnMetadata> columns2 = List.of(
-                ColumnMetadata.builder().name("CUSTOMERID").adapterNotes("").type(createVarChar(200, UTF8)).build(), //
-                ColumnMetadata.builder().name("ITEMID").adapterNotes("").type(createVarChar(200, UTF8)).build());
+                ColumnMetadata.builder().name("CUSTOMER_ID").adapterNotes("").type(createVarChar(200, UTF8)).build(), //
+                ColumnMetadata.builder().name("ITEM_ID").adapterNotes("").type(createVarChar(200, UTF8)).build());
         tables.add(new TableMetadata("ORDERS", "", columns2, ""));
         final List<ColumnMetadata> columns3 = List.of(
-                ColumnMetadata.builder().name("ITEMID").adapterNotes("").type(createVarChar(200, UTF8)).build(), //
-                ColumnMetadata.builder().name("ITEMNAME").adapterNotes("").type(createVarChar(200, UTF8)).build());
+                ColumnMetadata.builder().name("ITEM_ID").adapterNotes("").type(createVarChar(200, UTF8)).build(), //
+                ColumnMetadata.builder().name("ITEM_NAME").adapterNotes("").type(createVarChar(200, UTF8)).build());
         tables.add(new TableMetadata("ITEMS", "", columns3, ""));
         return PushdownSqlParser.createWithTablesMetadata(tables);
+    }
+
+    @ParameterizedTest
+    @CsvSource({ "0, 0, ID, CUSTOMERS, T1", //
+            "1, 1, NAME, CUSTOMERS, T1", //
+            "2, 0, ID, CUSTOMERS, ", //
+            "3, 1, NAME, CUSTOMERS, ", //
+            "4, 0, CUSTOMER_ID, ORDERS, ", //
+            "5, 1, ITEM_ID, ORDERS, " //
+    })
+    void testNestedJoinRequestRepeatedTableWithoutSelectList(final int columnNumber, final int columnId,
+            final String columnName, final String tableName, final String tableAlias) throws IOException {
+        final String sqlAsJson = new String(Files.readAllBytes(Paths.get(
+                "src/test/resources/json/pushdown_request_nested_join_with_repeated_table_without_select_list.json")));
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithTwoTables();
+        final SqlStatementSelect select = (SqlStatementSelect) pushdownSqlParser.parseExpression(jsonObject);
+        final SqlColumn column = (SqlColumn) select.getSelectList().getExpressions().get(columnNumber);
+        assertAll(() -> assertThat(select.getSelectList().getSelectListType(), equalTo(REGULAR)),
+                () -> assertThat(select.getSelectList().getExpressions().size(), equalTo(6)),
+                () -> assertThat(column.getId(), equalTo(columnId)),
+                () -> assertThat(column.getName(), equalTo(columnName)),
+                () -> assertThat(column.getType(), equalTo(COLUMN)),
+                () -> assertThat(column.getTableName(), equalTo(tableName)),
+                () -> assertThat(column.getTableAlias(), equalTo(tableAlias)));
     }
 }

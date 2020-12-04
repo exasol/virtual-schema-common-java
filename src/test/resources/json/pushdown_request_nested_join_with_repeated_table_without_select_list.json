@@ -10,7 +10,7 @@
       },
       "right": {
         "columnNr": 0,
-        "name": "CUSTOMERID",
+        "name": "CUSTOMER_ID",
         "tableName": "ORDERS",
         "type": "column"
       },
@@ -26,13 +26,13 @@
       "condition": {
         "left": {
           "columnNr": 0,
-          "name": "ITEMID",
-          "tableName": "ITEMS",
+          "name": "ID",
+          "tableName": "CUSTOMERS",
           "type": "column"
         },
         "right": {
-          "columnNr": 1,
-          "name": "ITEMID",
+          "columnNr": 0,
+          "name": "CUSTOMER_ID",
           "tableName": "ORDERS",
           "type": "column"
         },
@@ -40,7 +40,7 @@
       },
       "join_type": "inner",
       "left": {
-        "name": "ITEMS",
+        "name": "CUSTOMERS",
         "type": "table"
       },
       "right": {
