@@ -5,19 +5,25 @@ import static com.exasol.adapter.metadata.DataType.createVarChar;
 import static com.exasol.adapter.metadata.DataType.ExaCharset.UTF8;
 import static com.exasol.adapter.sql.SqlFunctionAggregateListagg.BehaviorType.TRUNCATE;
 import static com.exasol.adapter.sql.SqlNodeType.*;
-import static com.exasol.adapter.sql.SqlSelectListType.REGULAR;
+import static com.exasol.adapter.sql.SqlSelectList.SqlSelectListType.ANY_VALUE;
+import static com.exasol.adapter.sql.SqlSelectList.SqlSelectListType.REGULAR;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 import javax.json.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import com.exasol.adapter.metadata.*;
 import com.exasol.adapter.sql.*;
@@ -1036,7 +1042,6 @@ class PushDownSqlParserTest {
                 + "        \"name\" :  \"T1\" " //
                 + "   }" //
                 + "}";
-
         final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
         final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithTwoTables();
         final SqlStatementSelect sqlStatementSelect = (SqlStatementSelect) pushdownSqlParser
@@ -1050,6 +1055,26 @@ class PushDownSqlParserTest {
                 () -> assertThat(first.getTableName(), equalTo("T1")), //
                 () -> assertThat(second.getName(), equalTo("NAME")), //
                 () -> assertThat(second.getTableName(), equalTo("T1")) //
+        );
+    }
+
+    @Test
+    void testParseSelectWithEmptySelectList() {
+        final String sqlAsJson = "{" //
+                + "   \"type\" : \"select\", " //
+                + "    \"from\" : " //
+                + "   { " //
+                + "        \"type\" : \"table\", " //
+                + "        \"name\" :  \"CLICKS\" " //
+                + "   }," //
+                + "   \"selectList\" : []" //
+                + "}";
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlStatementSelect sqlStatementSelect = (SqlStatementSelect) this.defaultParser
+                .parseExpression(jsonObject);
+        assertAll(() -> assertThat(sqlStatementSelect.getType(), equalTo(SELECT)),
+                () -> assertThat(sqlStatementSelect.getSelectList().getSelectListType(), equalTo(ANY_VALUE)), //
+                () -> assertThat(sqlStatementSelect.getSelectList().getExpressions().isEmpty(), equalTo(true)) //
         );
     }
 
@@ -1102,5 +1127,47 @@ class PushDownSqlParserTest {
                 () -> assertThat(SqlNodeType.TABLE, sameInstance(from.getRight().getType())),
                 () -> assertThat(select.getSelectList().getSelectListType(), equalTo(REGULAR)),
                 () -> assertThat(select.getSelectList().getExpressions().size(), equalTo(4)));
+    }
+
+    @ParameterizedTest
+    @CsvSource({ "0, 0, ID, CUSTOMERS, T1", //
+            "1, 1, NAME, CUSTOMERS, T1", //
+            "2, 0, ITEMID, ITEMS, ", //
+            "3, 1, ITEMNAME, ITEMS, ", //
+            "4, 0, CUSTOMERID, ORDERS, ", //
+            "5, 1, ITEMID, ORDERS, " //
+    })
+    void testNestedJoinRequestWithoutSelectList(final int columnNumber, final int columnId, final String columnName,
+            final String tableName, final String tableAlias) throws IOException {
+        final String sqlAsJson = new String(
+                Files.readAllBytes(Paths.get("src/test/resources/json/nested_join_request_without_select_list.json")));
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithThreeTables();
+        final SqlStatementSelect select = (SqlStatementSelect) pushdownSqlParser.parseExpression(jsonObject);
+        final SqlColumn column = (SqlColumn) select.getSelectList().getExpressions().get(columnNumber);
+        assertAll(() -> assertThat(select.getSelectList().getSelectListType(), equalTo(REGULAR)),
+                () -> assertThat(select.getSelectList().getExpressions().size(), equalTo(6)),
+                () -> assertThat(column.getId(), equalTo(columnId)),
+                () -> assertThat(column.getName(), equalTo(columnName)),
+                () -> assertThat(column.getType(), equalTo(COLUMN)),
+                () -> assertThat(column.getTableName(), equalTo(tableName)),
+                () -> assertThat(column.getTableAlias(), equalTo(tableAlias)));
+    }
+
+    private PushdownSqlParser getCustomPushdownSqlParserWithThreeTables() {
+        final List<TableMetadata> tables = new ArrayList<>();
+        final List<ColumnMetadata> columns = List.of( //
+                ColumnMetadata.builder().name("ID").adapterNotes("").type(createVarChar(200, UTF8)).build(), //
+                ColumnMetadata.builder().name("NAME").adapterNotes("").type(createVarChar(200, UTF8)).build());
+        tables.add(new TableMetadata("CUSTOMERS", "", columns, ""));
+        final List<ColumnMetadata> columns2 = List.of(
+                ColumnMetadata.builder().name("CUSTOMERID").adapterNotes("").type(createVarChar(200, UTF8)).build(), //
+                ColumnMetadata.builder().name("ITEMID").adapterNotes("").type(createVarChar(200, UTF8)).build());
+        tables.add(new TableMetadata("ORDERS", "", columns2, ""));
+        final List<ColumnMetadata> columns3 = List.of(
+                ColumnMetadata.builder().name("ITEMID").adapterNotes("").type(createVarChar(200, UTF8)).build(), //
+                ColumnMetadata.builder().name("ITEMNAME").adapterNotes("").type(createVarChar(200, UTF8)).build());
+        tables.add(new TableMetadata("ITEMS", "", columns3, ""));
+        return PushdownSqlParser.createWithTablesMetadata(tables);
     }
 }

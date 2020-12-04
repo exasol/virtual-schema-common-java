@@ -181,21 +181,15 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private List<SqlNode> parseExpressionList(final JsonArray array) {
-        assert array != null;
         final List<SqlNode> sqlNodes = new ArrayList<>();
         for (final JsonObject expr : array.getValuesAs(JsonObject.class)) {
-            final SqlNode node = parseExpression(expr);
-            sqlNodes.add(node);
+            sqlNodes.add(parseExpression(expr));
         }
         return sqlNodes;
     }
 
     private SqlGroupBy parseGroupBy(final JsonArray groupBy) {
-        if (groupBy == null) {
-            return null;
-        }
-        final List<SqlNode> groupByElements = parseExpressionList(groupBy);
-        return new SqlGroupBy(groupByElements);
+        return groupBy == null ? null : new SqlGroupBy(parseExpressionList(groupBy));
     }
 
     private SqlNode parseLiteralDate(final JsonObject exp) {
@@ -214,48 +208,65 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private List<SqlNode> collectAllInvolvedColumns(final SqlNode from) {
-        final Map<String, TableMetadata> tableMetadataMap = new HashMap<>();
-        for (final TableMetadata involvedTable : this.involvedTablesMetadata) {
-            tableMetadataMap.put(involvedTable.getName(), involvedTable);
-        }
-        final List<SqlTable> involvedTables = collectAllTables(from);
-        final List<SqlNode> selectListElements = new LinkedList<>();
+        final List<SqlTable> involvedTables = collectInvolvedTables(from);
+        final Map<String, TableMetadata> tableMetadataMap = getInvolvedTablesMetadataMap();
+        final List<SqlNode> selectListElements = new ArrayList<>();
         for (final SqlTable table : involvedTables) {
-            if (tableMetadataMap.containsKey(table.getName())) {
-                final List<ColumnMetadata> columns = tableMetadataMap.get(table.getName()).getColumns();
-                for (int i = 0, columnsSize = columns.size(); i < columnsSize; i++) {
-                    final ColumnMetadata columnMetadata = columns.get(i);
-                    final String tableName = table.getName();
-                    if (table.hasAlias()) {
-                        final String tableAlias = table.getAlias();
-                        selectListElements.add(new SqlColumn(i, columnMetadata, tableName, tableAlias));
-                    } else {
-                        selectListElements.add(new SqlColumn(i, columnMetadata, tableName));
-                    }
+            final String tableName = table.getName();
+            if (tableMetadataMap.containsKey(tableName)) {
+                final List<ColumnMetadata> columns = tableMetadataMap.get(tableName).getColumns();
+                for (int i = 0, columnsSize = columns.size(); i < columnsSize; ++i) {
+                    selectListElements.add(createColumn(i, table, columns.get(i)));
                 }
             } else {
-                throw new IllegalStateException("Unable to find metadata for the following table: " + table.getName());
+                throw new IllegalStateException(
+                        "Unable to find a table metadata during collection involved columns for the table: "
+                                + table.getName());
             }
         }
         return selectListElements;
     }
 
-    private List<SqlTable> collectAllTables(final SqlNode from) {
+    /**
+     * We collect all tables from the FROM clause in a given order. We need the tables, because the
+     * involvedTablesMetadata field doesn't contain `tableAlias` information.
+     */
+    private List<SqlTable> collectInvolvedTables(final SqlNode from) {
         final List<SqlTable> involvedTables = new ArrayList<>();
         final Queue<SqlNode> nodes = new LinkedList<>();
         nodes.add(from);
         while (!nodes.isEmpty()) {
             final SqlNode node = nodes.poll();
-            if (node.getType() == SqlNodeType.TABLE) {
+            switch (node.getType()) {
+            case TABLE:
                 involvedTables.add((SqlTable) node);
-            } else if (node.getType() == SqlNodeType.JOIN) {
+                break;
+            case JOIN:
                 nodes.add(((SqlJoin) node).getLeft());
                 nodes.add(((SqlJoin) node).getRight());
-            } else {
-                throw new IllegalArgumentException("Illegal type of from node: " + node.getType());
+                break;
+            default:
+                throw new IllegalStateException(
+                        "Encountered illegal SqlNodeType during collection involved tables " + node.getType());
             }
         }
         return involvedTables;
+    }
+
+    private Map<String, TableMetadata> getInvolvedTablesMetadataMap() {
+        final Map<String, TableMetadata> tableMetadataMap = new HashMap<>();
+        for (final TableMetadata involvedTableMeta : this.involvedTablesMetadata) {
+            tableMetadataMap.put(involvedTableMeta.getName(), involvedTableMeta);
+        }
+        return tableMetadataMap;
+    }
+
+    private SqlColumn createColumn(final int index, final SqlTable table, final ColumnMetadata columnMetadata) {
+        if (table.hasAlias()) {
+            return new SqlColumn(index, columnMetadata, table.getName(), table.getAlias());
+        } else {
+            return new SqlColumn(index, columnMetadata, table.getName());
+        }
     }
 
     private SqlOrderBy parseOrderBy(final JsonArray orderByList) {

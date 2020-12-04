@@ -35,6 +35,11 @@ public final class SqlSelectList extends SqlExpressionList {
         return new SqlSelectList(SqlSelectListType.REGULAR, selectList);
     }
 
+    /**
+     * Get a select list type.
+     * 
+     * @return enum's value from {@link SqlSelectListType}
+     */
     public SqlSelectListType getSelectListType() {
         return this.type;
     }
@@ -47,5 +52,20 @@ public final class SqlSelectList extends SqlExpressionList {
     @Override
     public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
+    }
+
+    /**
+     * Specifies the type of a SelectList.
+     */
+    public enum SqlSelectListType {
+        /**
+         * We just need one arbitrary value for each row. Example: If user runs COUNT (*) and COUNT cannot be pushed
+         * down, we need to return any value for each row (e.g. constant TRUE) and then EXASOL can do the COUNT.
+         */
+        ANY_VALUE,
+        /**
+         * The user has to specify the desired elements.
+         */
+        REGULAR
     }
 }
