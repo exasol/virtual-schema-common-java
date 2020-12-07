@@ -8,4 +8,4 @@ Code name:
 
 ## Documentation
 
-* #190: Improved SELECTLIST_EXPRESSIONS documentation
+* #190: Improved `SELECTLIST_EXPRESSIONS` documentation

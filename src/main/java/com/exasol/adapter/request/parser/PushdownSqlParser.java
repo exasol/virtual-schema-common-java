@@ -220,8 +220,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
                 }
             } else {
                 throw new IllegalStateException(
-                        "Unable to find a table metadata during collection involved columns for the table: "
-                                + table.getName());
+                        "Unable to find a metadata for table \"" + table.getName() + "\" during collection of involved columns.");
             }
         }
         return selectListElements;
@@ -254,7 +253,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private Map<String, TableMetadata> getInvolvedTablesMetadataMap() {
-        final Map<String, TableMetadata> tableMetadataMap = new HashMap<>();
+        final Map<String, TableMetadata> tableMetadataMap = new HashMap<>(this.involvedTablesMetadata.size());
         for (final TableMetadata involvedTableMeta : this.involvedTablesMetadata) {
             tableMetadataMap.put(involvedTableMeta.getName(), involvedTableMeta);
         }
