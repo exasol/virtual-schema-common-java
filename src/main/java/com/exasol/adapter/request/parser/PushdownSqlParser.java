@@ -689,8 +689,8 @@ public final class PushdownSqlParser extends AbstractRequestParser {
                 return columnMetadata;
             }
         }
-        throw new IllegalStateException("Could not find column metadata for involved table '" + tableName
-                + "' and column '" + columnName + "'. All involved tables: " + this.involvedTablesMetadata.toString());
+        throw new IllegalStateException("Could not find column metadata for involved table \"" + tableName
+                + "\" and column \"" + columnName + "\". All involved tables: " + this.involvedTablesMetadata.toString());
     }
 
     /**
