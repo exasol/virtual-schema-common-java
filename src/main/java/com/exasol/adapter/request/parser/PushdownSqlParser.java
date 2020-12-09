@@ -198,8 +198,10 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private SqlSelectList parseSelectList(final JsonArray selectList, final SqlNode from) {
-        final List<SqlNode> selectListElements = (selectList == null) ? collectAllInvolvedColumns(from)
-                : parseExpressionList(selectList);
+        if (selectList == null) {
+            return SqlSelectList.createRegularSelectList(collectAllInvolvedColumns(from));
+        }
+        final List<SqlNode> selectListElements = parseExpressionList(selectList);
         if (selectListElements.isEmpty()) {
             return SqlSelectList.createAnyValueSelectList();
         } else {
@@ -219,8 +221,8 @@ public final class PushdownSqlParser extends AbstractRequestParser {
                     selectListElements.add(createColumn(i, table, columns.get(i)));
                 }
             } else {
-                throw new IllegalStateException(
-                        "Unable to find a metadata for table \"" + table.getName() + "\" during collection of involved columns.");
+                throw new IllegalStateException("Unable to find a metadata for table \"" + table.getName()
+                        + "\" during collection of involved columns.");
             }
         }
         return selectListElements;
@@ -678,8 +680,8 @@ public final class PushdownSqlParser extends AbstractRequestParser {
                 return tableMetadata;
             }
         }
-        throw new IllegalStateException("Could not find table metadata for involved table " + tableName
-                + ". All involved tables: " + this.involvedTablesMetadata.toString());
+        throw new IllegalStateException("Could not find table metadata for involved table \"" + tableName
+                + "\". All involved tables: " + this.involvedTablesMetadata.toString());
     }
 
     private ColumnMetadata findColumnMetadata(final String tableName, final String columnName) {
@@ -689,8 +691,9 @@ public final class PushdownSqlParser extends AbstractRequestParser {
                 return columnMetadata;
             }
         }
-        throw new IllegalStateException("Could not find column metadata for involved table \"" + tableName
-                + "\" and column \"" + columnName + "\". All involved tables: " + this.involvedTablesMetadata.toString());
+        throw new IllegalStateException(
+                "Could not find column metadata for involved table \"" + tableName + "\" and column \"" + columnName
+                        + "\". All involved tables: " + this.involvedTablesMetadata.toString());
     }
 
     /**

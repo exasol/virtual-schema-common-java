@@ -8,6 +8,7 @@ import static com.exasol.adapter.sql.SqlNodeType.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -939,21 +940,32 @@ class PushDownSqlParserTest {
                 () -> assertThat(sqlColumn.getId(), equalTo(1)));
     }
 
-    @Test
-    void testSimpleInnerJoinRequestWithExplicitSelectList() throws IOException {
+    @ParameterizedTest
+    @CsvSource({ "0, 0, ID, CUSTOMERS", //
+            "1, 1, NAME, CUSTOMERS", //
+            "2, 0, CUSTOMER_ID, ORDERS", //
+            "3, 1, ITEM_ID, ORDERS" //
+    })
+    void testSimpleInnerJoinRequestWithExplicitSelectList(final int columnNumber, final int columnId,
+            final String columnName, final String tableName) throws IOException {
         final String sqlAsJson = new String(Files.readAllBytes(
                 Paths.get("src/test/resources/json/pushdown_request_simple_inner_join_with_select_list.json")));
         final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
         final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithTwoTables();
         final SqlStatementSelect select = (SqlStatementSelect) pushdownSqlParser.parseExpression(jsonObject);
         final SqlJoin from = (SqlJoin) select.getFromClause();
+        final SqlColumn column = (SqlColumn) select.getSelectList().getExpressions().get(columnNumber);
         assertAll(() -> assertThat(SqlNodeType.JOIN, sameInstance(from.getType())),
                 () -> assertThat(JoinType.INNER, sameInstance(from.getJoinType())),
                 () -> assertThat(SqlNodeType.PREDICATE_EQUAL, sameInstance(from.getCondition().getType())),
                 () -> assertThat(SqlNodeType.TABLE, sameInstance(from.getLeft().getType())),
                 () -> assertThat(SqlNodeType.TABLE, sameInstance(from.getRight().getType())),
                 () -> assertThat(select.getSelectList().hasExplicitColumnsList(), equalTo(true)),
-                () -> assertThat(select.getSelectList().getExpressions().size(), equalTo(4)));
+                () -> assertThat(select.getSelectList().getExpressions().size(), equalTo(4)),
+                () -> assertThat(column.getId(), equalTo(columnId)),
+                () -> assertThat(column.getName(), equalTo(columnName)),
+                () -> assertThat(column.getType(), equalTo(COLUMN)),
+                () -> assertThat(column.getTableName(), equalTo(tableName)));
     }
 
     private PushdownSqlParser getCustomPushdownSqlParserWithTwoTables() {
@@ -1015,21 +1027,32 @@ class PushDownSqlParserTest {
         );
     }
 
-    @Test
-    void testSimpleInnerJoinRequestWithoutSelectList() throws IOException {
+    @ParameterizedTest
+    @CsvSource({ "0, 0, ID, CUSTOMERS", //
+            "1, 1, NAME, CUSTOMERS", //
+            "2, 0, CUSTOMER_ID, ORDERS", //
+            "3, 1, ITEM_ID, ORDERS" //
+    })
+    void testSimpleInnerJoinRequestWithoutSelectList(final int columnNumber, final int columnId,
+            final String columnName, final String tableName) throws IOException {
         final String sqlAsJson = new String(Files.readAllBytes(
                 Paths.get("src/test/resources/json/pushdown_request_simple_inner_join_without_select_list.json")));
         final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
         final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithTwoTables();
         final SqlStatementSelect select = (SqlStatementSelect) pushdownSqlParser.parseExpression(jsonObject);
         final SqlJoin from = (SqlJoin) select.getFromClause();
+        final SqlColumn column = (SqlColumn) select.getSelectList().getExpressions().get(columnNumber);
         assertAll(() -> assertThat(SqlNodeType.JOIN, sameInstance(from.getType())),
                 () -> assertThat(JoinType.INNER, sameInstance(from.getJoinType())),
                 () -> assertThat(SqlNodeType.PREDICATE_EQUAL, sameInstance(from.getCondition().getType())),
                 () -> assertThat(SqlNodeType.TABLE, sameInstance(from.getLeft().getType())),
                 () -> assertThat(SqlNodeType.TABLE, sameInstance(from.getRight().getType())),
                 () -> assertThat(select.getSelectList().hasExplicitColumnsList(), equalTo(true)),
-                () -> assertThat(select.getSelectList().getExpressions().size(), equalTo(4)));
+                () -> assertThat(select.getSelectList().getExpressions().size(), equalTo(4)),
+                () -> assertThat(column.getId(), equalTo(columnId)),
+                () -> assertThat(column.getName(), equalTo(columnName)),
+                () -> assertThat(column.getType(), equalTo(COLUMN)),
+                () -> assertThat(column.getTableName(), equalTo(tableName)));
     }
 
     @ParameterizedTest
@@ -1097,5 +1120,27 @@ class PushDownSqlParserTest {
                 () -> assertThat(column.getType(), equalTo(COLUMN)),
                 () -> assertThat(column.getTableName(), equalTo(tableName)),
                 () -> assertThat(column.getTableAlias(), equalTo(tableAlias)));
+    }
+
+    @Test
+    void testParseSelectWithoutSelectListAndInvolvedTablesMetadata() {
+        final String sqlAsJson = "{" //
+                + "   \"type\" : \"select\", " //
+                + "    \"from\" : " //
+                + "   { " //
+                + "        \"type\" : \"table\", " //
+                + "        \"name\" :  \"CUSTOMERS\" " //
+                + "   }" //
+                + "}";
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserTableWithoutColumns();
+        final IllegalStateException exception = assertThrows(IllegalStateException.class,
+                () -> pushdownSqlParser.parseExpression(jsonObject));
+        assertThat(exception.getMessage(), containsString("Cannot create a select list"));
+    }
+
+    private PushdownSqlParser getCustomPushdownSqlParserTableWithoutColumns() {
+        final List<TableMetadata> tables = List.of(new TableMetadata("CUSTOMERS", "", Collections.emptyList(), ""));
+        return PushdownSqlParser.createWithTablesMetadata(tables);
     }
 }

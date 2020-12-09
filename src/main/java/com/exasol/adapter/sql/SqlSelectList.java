@@ -26,8 +26,7 @@ public final class SqlSelectList extends SqlExpressionList {
      */
     public static SqlSelectList createRegularSelectList(final List<SqlNode> selectList) {
         if ((selectList == null) || selectList.isEmpty()) {
-            throw new IllegalArgumentException(
-                    "SqlFunctionAggregateGroupConcat constructor expects an argument." + "But the list is empty.");
+            throw new IllegalStateException("Cannot create a select list, because the list of arguments is empty.");
         }
         return new SqlSelectList(selectList);
     }
