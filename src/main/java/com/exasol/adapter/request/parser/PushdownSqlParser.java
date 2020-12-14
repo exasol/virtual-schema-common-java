@@ -116,7 +116,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         // FROM clause
         final SqlNode from = parseExpression(select.getJsonObject("from"));
         // SELECT list
-        final SqlSelectList selectList = parseSelectList(select.getJsonArray("selectList"), from);
+        final SqlSelectList selectList = createSelectList(select, from);
         final SqlExpressionList groupByClause = parseGroupBy(select.getJsonArray("groupBy"));
         // WHERE clause
         SqlNode whereClause = null;
@@ -137,6 +137,15 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         }
         return SqlStatementSelect.builder().selectList(selectList).fromClause(from).whereClause(whereClause)
                 .groupBy(groupByClause).having(having).orderBy(orderBy).limit(limit).build();
+    }
+
+    private SqlSelectList createSelectList(JsonObject select, SqlNode from) {
+        final JsonArray selectListJson = select.getJsonArray("selectList");
+        if (selectListJson == null) {
+            return SqlSelectList.createRegularSelectList(collectAllInvolvedColumns(from));
+        } else {
+            return parseSelectList(selectListJson);
+        }
     }
 
     private SqlNode parseTable(final JsonObject exp) {
@@ -197,10 +206,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         return new SqlLiteralDate(date);
     }
 
-    private SqlSelectList parseSelectList(final JsonArray selectList, final SqlNode from) {
-        if (selectList == null) {
-            return SqlSelectList.createRegularSelectList(collectAllInvolvedColumns(from));
-        }
+    private SqlSelectList parseSelectList(final JsonArray selectList) {
         final List<SqlNode> selectListElements = parseExpressionList(selectList);
         if (selectListElements.isEmpty()) {
             return SqlSelectList.createAnyValueSelectList();
