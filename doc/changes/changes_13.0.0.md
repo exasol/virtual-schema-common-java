@@ -9,3 +9,4 @@ Code name: Changes the LISTAGG and GROUP_CONCAT API
 ## Documentation
 
 * #182: Improved the API documentation.
+* #197: Improved AGGREGATE_GROUP_BY_COLUMN, AGGREGATE_GROUP_BY_EXPRESSION and AGGREGATE_GROUP_BY_TUPLE capabilities documentation.

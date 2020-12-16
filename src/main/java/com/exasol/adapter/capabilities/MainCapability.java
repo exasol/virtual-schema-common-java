@@ -45,29 +45,35 @@ public enum MainCapability {
     AGGREGATE_SINGLE_GROUP,
 
     /**
-     * Support aggregations with a group by clause consisting of columns.
+     * Support aggregations with a group by clause consisting of a single column.
      *
      * <p>
-     * Example: SELECT a, b, min(c) FROM t GROUP BY a, b;
+     * Example: GROUP BY A
      * </p>
      */
     AGGREGATE_GROUP_BY_COLUMN,
 
     /**
-     * Support aggregations with a group by clause that contains expressions.
+     * Support aggregations with a group by clause that contains a single column or a single expression.
      *
      * <p>
-     * Example: SELECT a+1, min(b) FROM t GROUP BY a+1;
+     * Example 1: GROUP BY A*
+     * </p>
+     * <p>
+     * Example 2: GROUP BY A+1
      * </p>
      */
     AGGREGATE_GROUP_BY_EXPRESSION,
 
     /**
-     * Support aggregations with a group by clause with multiple group by columns or expressions. Note that you might
-     * additionally require AGGREGATE_GROUP_BY_EXPRESSION or AGGREGATE_GROUP_BY_COLUMN.
+     * Support aggregations with a group by clause with multiple group by columns or expressions. Note that you
+     * additionally need AGGREGATE_GROUP_BY_EXPRESSION or AGGREGATE_GROUP_BY_COLUMN.
      *
      * <p>
-     * Example: SELECT a, b, min(c) FROM t GROUP BY a, b;
+     * Example 1: GROUP BY A, B (needs AGGREGATE_GROUP_BY_COLUMN and AGGREGATE_GROUP_BY_TUPLE)
+     * </p>
+     * <p>
+     * Example 2: GROUP BY A+1, B (needs AGGREGATE_GROUP_BY_EXPRESSION and AGGREGATE_GROUP_BY_TUPLE)
      * </p>
      */
     AGGREGATE_GROUP_BY_TUPLE,
