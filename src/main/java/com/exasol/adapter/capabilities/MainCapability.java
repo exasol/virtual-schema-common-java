@@ -45,22 +45,33 @@ public enum MainCapability {
     AGGREGATE_SINGLE_GROUP,
 
     /**
-     * Support aggregations with a group by clause consisting of a single column.
+     * Support aggregations with a group by clause consisting of columns.
      *
      * <p>
-     * Example: GROUP BY A
+     * Attention: Requires the additional capability AGGREGATE_GROUP_BY_TUPLE to support multiple columns.
+     * </p>
+     *
+     * <p>
+     * Example 1: GROUP BY A (needs AGGREGATE_GROUP_BY_COLUMN)
+     * </p>
+     * <p>
+     * Example 2: GROUP BY A, B (needs AGGREGATE_GROUP_BY_COLUMN and AGGREGATE_GROUP_BY_TUPLE)
      * </p>
      */
     AGGREGATE_GROUP_BY_COLUMN,
 
     /**
-     * Support aggregations with a group by clause that contains a single column or a single expression.
+     * Support aggregations with a group by clause that contains at least one expression.
      *
      * <p>
-     * Example 1: GROUP BY A*
+     * Attention: Requires the additional capability AGGREGATE_GROUP_BY_TUPLE to support multiple columns.
+     * </p>
+     *
+     * <p>
+     * Example 1: GROUP BY A + 1 (needs AGGREGATE_GROUP_BY_EXPRESSION)
      * </p>
      * <p>
-     * Example 2: GROUP BY A+1
+     * Example 2: GROUP BY A + 1, B (needs AGGREGATE_GROUP_BY_EXPRESSION and AGGREGATE_GROUP_BY_TUPLE)
      * </p>
      */
     AGGREGATE_GROUP_BY_EXPRESSION,
@@ -70,10 +81,7 @@ public enum MainCapability {
      * additionally need AGGREGATE_GROUP_BY_EXPRESSION or AGGREGATE_GROUP_BY_COLUMN.
      *
      * <p>
-     * Example 1: GROUP BY A, B (needs AGGREGATE_GROUP_BY_COLUMN and AGGREGATE_GROUP_BY_TUPLE)
-     * </p>
-     * <p>
-     * Example 2: GROUP BY A+1, B (needs AGGREGATE_GROUP_BY_EXPRESSION and AGGREGATE_GROUP_BY_TUPLE)
+     * See AGGREGATE_GROUP_BY_COLUMN and AGGREGATE_GROUP_BY_EXPRESSION for examples.
      * </p>
      */
     AGGREGATE_GROUP_BY_TUPLE,
