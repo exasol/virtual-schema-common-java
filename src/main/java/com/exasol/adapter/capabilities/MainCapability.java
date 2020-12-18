@@ -48,26 +48,40 @@ public enum MainCapability {
      * Support aggregations with a group by clause consisting of columns.
      *
      * <p>
-     * Example: SELECT a, b, min(c) FROM t GROUP BY a, b;
+     * Attention: Requires the additional capability AGGREGATE_GROUP_BY_TUPLE to support multiple columns.
+     * </p>
+     *
+     * <p>
+     * Example 1: GROUP BY A (needs AGGREGATE_GROUP_BY_COLUMN)
+     * </p>
+     * <p>
+     * Example 2: GROUP BY A, B (needs AGGREGATE_GROUP_BY_COLUMN and AGGREGATE_GROUP_BY_TUPLE)
      * </p>
      */
     AGGREGATE_GROUP_BY_COLUMN,
 
     /**
-     * Support aggregations with a group by clause that contains expressions.
+     * Support aggregations with a group by clause that contains at least one expression.
      *
      * <p>
-     * Example: SELECT a+1, min(b) FROM t GROUP BY a+1;
+     * Attention: Requires the additional capability AGGREGATE_GROUP_BY_TUPLE to support multiple columns.
+     * </p>
+     *
+     * <p>
+     * Example 1: GROUP BY A + 1 (needs AGGREGATE_GROUP_BY_EXPRESSION)
+     * </p>
+     * <p>
+     * Example 2: GROUP BY A + 1, B (needs AGGREGATE_GROUP_BY_EXPRESSION and AGGREGATE_GROUP_BY_TUPLE)
      * </p>
      */
     AGGREGATE_GROUP_BY_EXPRESSION,
 
     /**
-     * Support aggregations with a group by clause with multiple group by columns or expressions. Note that you might
-     * additionally require AGGREGATE_GROUP_BY_EXPRESSION or AGGREGATE_GROUP_BY_COLUMN.
+     * Support aggregations with a group by clause with multiple group by columns or expressions. Note that you
+     * additionally need AGGREGATE_GROUP_BY_EXPRESSION or AGGREGATE_GROUP_BY_COLUMN.
      *
      * <p>
-     * Example: SELECT a, b, min(c) FROM t GROUP BY a, b;
+     * See AGGREGATE_GROUP_BY_COLUMN and AGGREGATE_GROUP_BY_EXPRESSION for examples.
      * </p>
      */
     AGGREGATE_GROUP_BY_TUPLE,
