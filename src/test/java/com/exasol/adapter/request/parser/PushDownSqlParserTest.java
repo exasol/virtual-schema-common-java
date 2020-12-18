@@ -1122,6 +1122,31 @@ class PushDownSqlParserTest {
                 () -> assertThat(column.getTableAlias(), equalTo(tableAlias)));
     }
 
+    @ParameterizedTest
+    @CsvSource({ "0, 0, ITEM_ID, ITEMS, ", //
+            "1, 1, ITEM_NAME, ITEMS, ", //
+            "2, 0, CUSTOMER_ID, ORDERS, ", //
+            "3, 1, ITEM_ID, ORDERS, ", //
+            "4, 0, ID, CUSTOMERS, T1", //
+            "5, 1, NAME, CUSTOMERS, T1" //
+    })
+    void testNestedJoinRequestWithoutSelectListReversed(final int columnNumber, final int columnId,
+            final String columnName, final String tableName, final String tableAlias) throws IOException {
+        final String sqlAsJson = new String(Files.readAllBytes(
+                Paths.get("src/test/resources/json/pushdown_request_nested_join_without_select_list_reversed.json")));
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithThreeTables();
+        final SqlStatementSelect select = (SqlStatementSelect) pushdownSqlParser.parseExpression(jsonObject);
+        final SqlColumn column = (SqlColumn) select.getSelectList().getExpressions().get(columnNumber);
+        assertAll(() -> assertThat(select.getSelectList().hasExplicitColumnsList(), equalTo(true)),
+                () -> assertThat(select.getSelectList().getExpressions().size(), equalTo(6)),
+                () -> assertThat(column.getId(), equalTo(columnId)),
+                () -> assertThat(column.getName(), equalTo(columnName)),
+                () -> assertThat(column.getType(), equalTo(COLUMN)),
+                () -> assertThat(column.getTableName(), equalTo(tableName)),
+                () -> assertThat(column.getTableAlias(), equalTo(tableAlias)));
+    }
+
     @Test
     void testParseSelectWithoutSelectListAndInvolvedTablesMetadata() {
         final String sqlAsJson = "{" //

@@ -139,7 +139,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
                 .groupBy(groupByClause).having(having).orderBy(orderBy).limit(limit).build();
     }
 
-    private SqlSelectList createSelectList(JsonObject select, SqlNode from) {
+    private SqlSelectList createSelectList(final JsonObject select, final SqlNode from) {
         final JsonArray selectListJson = select.getJsonArray("selectList");
         if (selectListJson == null) {
             return SqlSelectList.createRegularSelectList(collectAllInvolvedColumns(from));
@@ -240,17 +240,17 @@ public final class PushdownSqlParser extends AbstractRequestParser {
      */
     private List<SqlTable> collectInvolvedTables(final SqlNode from) {
         final List<SqlTable> involvedTables = new ArrayList<>();
-        final Queue<SqlNode> nodes = new LinkedList<>();
+        final Stack<SqlNode> nodes = new Stack<>();
         nodes.add(from);
         while (!nodes.isEmpty()) {
-            final SqlNode node = nodes.poll();
+            final SqlNode node = nodes.pop();
             switch (node.getType()) {
             case TABLE:
                 involvedTables.add((SqlTable) node);
                 break;
             case JOIN:
-                nodes.add(((SqlJoin) node).getLeft());
                 nodes.add(((SqlJoin) node).getRight());
+                nodes.add(((SqlJoin) node).getLeft());
                 break;
             default:
                 throw new IllegalStateException(
