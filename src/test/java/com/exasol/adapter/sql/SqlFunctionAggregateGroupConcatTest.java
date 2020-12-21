@@ -2,8 +2,7 @@ package com.exasol.adapter.sql;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 import java.util.*;
@@ -92,5 +91,12 @@ class SqlFunctionAggregateGroupConcatTest {
     @Test
     void getSeparator() {
         assertThat(this.sqlFunctionAggregateGroupConcat.getSeparator(), equalTo(new SqlLiteralString(TEST_SEPARATOR)));
+    }
+
+    @Test
+    void testInvalidArgument() {
+        SqlFunctionAggregateGroupConcat.Builder builder = SqlFunctionAggregateGroupConcat.builder(null)
+                .distinct(TEST_DISTINCT).orderBy(this.sqlOrderBy).separator(new SqlLiteralString(TEST_SEPARATOR));
+        assertThrows(IllegalArgumentException.class, builder::build);
     }
 }
