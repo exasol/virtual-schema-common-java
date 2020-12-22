@@ -9,3 +9,8 @@ Code name:
 ## Documentation
 
 * #190: Improved `SELECTLIST_EXPRESSIONS` documentation
+* #197: Improved AGGREGATE_GROUP_BY_COLUMN, AGGREGATE_GROUP_BY_EXPRESSION and AGGREGATE_GROUP_BY_TUPLE capabilities documentation.
+
+## Refactoring
+
+* #196: Validated group concat argument is not null.

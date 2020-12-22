@@ -129,7 +129,14 @@ public class SqlFunctionAggregateGroupConcat extends SqlNode {
          * @return new {@link SqlFunctionAggregateGroupConcat} instance
          */
         public SqlFunctionAggregateGroupConcat build() {
+            validateArgument(this.argument);
             return new SqlFunctionAggregateGroupConcat(this);
+        }
+
+        private void validateArgument(final SqlNode argument) {
+            if (argument == null) {
+                throw new IllegalArgumentException("GROUP CONCAT function has a null argument.");
+            }
         }
 
         /**
