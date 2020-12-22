@@ -135,7 +135,7 @@ public class SqlFunctionAggregateGroupConcat extends SqlNode {
 
         private void validateArgument(final SqlNode argument) {
             if (argument == null) {
-                throw new IllegalArgumentException("SqlFunctionAggregateGroupConcat has a null argument.");
+                throw new IllegalArgumentException("GROUP CONCAT function has a null argument.");
             }
         }
 
