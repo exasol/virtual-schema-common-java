@@ -1,41 +1,56 @@
 package com.exasol.adapter.request.parser;
 
+import static com.exasol.adapter.metadata.DataType.createDecimal;
+import static com.exasol.adapter.metadata.DataType.createVarChar;
+import static com.exasol.adapter.metadata.DataType.ExaCharset.UTF8;
 import static com.exasol.adapter.sql.SqlFunctionAggregateListagg.BehaviorType.TRUNCATE;
 import static com.exasol.adapter.sql.SqlNodeType.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.StringReader;
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 import javax.json.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import com.exasol.adapter.metadata.*;
 import com.exasol.adapter.sql.*;
 
 class PushDownSqlParserTest {
-    private JsonObject jsonObject;
-    private ColumnMetadata columnMetadata;
-    private PushdownSqlParser pushdownSqlParser;
+    private PushdownSqlParser defaultParser;
 
     @BeforeEach
-    void SetUp() {
+    void beforeEach() {
         final List<TableMetadata> involvedTables = new ArrayList<>();
-        final List<ColumnMetadata> columnMetadatas = new ArrayList<>();
-        this.columnMetadata = ColumnMetadata.builder().name("USER_ID").adapterNotes("")
-                .type(DataType.createDecimal(18, 0)).nullable(true).identity(false).defaultValue("").comment("")
-                .build();
-        columnMetadatas.add(this.columnMetadata);
-        final TableMetadata tableMetadata = new TableMetadata("CLICKS", "", columnMetadatas, "");
+        final List<ColumnMetadata> defaultColumnMetadata = createDefaultColumnMetadata();
+        final TableMetadata tableMetadata = new TableMetadata("CLICKS", "", defaultColumnMetadata, "");
         involvedTables.add(tableMetadata);
-        this.pushdownSqlParser = PushdownSqlParser.createWithTablesMetadata(involvedTables);
+        this.defaultParser = PushdownSqlParser.createWithTablesMetadata(involvedTables);
+    }
+
+    private List<ColumnMetadata> createDefaultColumnMetadata() {
+        final List<ColumnMetadata> columnMetadataList = new ArrayList<>();
+        final ColumnMetadata columnMetadata = ColumnMetadata.builder().name("USER_ID").adapterNotes("")
+                .type(createDecimal(18, 0)).nullable(true).identity(false).defaultValue("").comment("").build();
+        columnMetadataList.add(columnMetadata);
+        return columnMetadataList;
+    }
+
+    private JsonObject createJsonObjectFromString(final String json) {
+        try (final JsonReader jsonReader = Json.createReader(new StringReader(json))) {
+            return jsonReader.readObject();
+        }
     }
 
     @Test
@@ -58,12 +73,9 @@ class PushDownSqlParserTest {
                 + "   } " //
                 + "   ] " //
                 + "}";
-
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlStatementSelect sqlStatementSelect = (SqlStatementSelect) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlStatementSelect sqlStatementSelect = (SqlStatementSelect) this.defaultParser
+                .parseExpression(jsonObject);
         final SqlGroupBy sqlGroupBy = (SqlGroupBy) sqlStatementSelect.getGroupBy();
         assertAll(() -> assertThat(sqlGroupBy, instanceOf(SqlGroupBy.class)),
                 () -> assertThat(sqlGroupBy.getType(), equalTo(GROUP_BY)),
@@ -84,12 +96,9 @@ class PushDownSqlParserTest {
                 + "        \"numElements\" : 10 " //
                 + "   } " //
                 + "}";
-
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlStatementSelect sqlStatementSelect = (SqlStatementSelect) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlStatementSelect sqlStatementSelect = (SqlStatementSelect) this.defaultParser
+                .parseExpression(jsonObject);
         final SqlLimit sqlLimit = sqlStatementSelect.getLimit();
         assertAll(() -> assertThat(sqlLimit, instanceOf(SqlLimit.class)),
                 () -> assertThat(sqlLimit.getType(), equalTo(LIMIT)),
@@ -105,15 +114,12 @@ class PushDownSqlParserTest {
                 + "   \"columnNr\" : 1, " //
                 + "   \"tableName\" : \"CLICKS\" " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlColumn sqlColumn = (SqlColumn) this.pushdownSqlParser.parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlColumn sqlColumn = (SqlColumn) this.defaultParser.parseExpression(jsonObject);
         assertAll(() -> assertThat(sqlColumn.getName(), equalTo("USER_ID")),
                 () -> assertThat(sqlColumn.getTableName(), equalTo("CLICKS")),
                 () -> assertThat(sqlColumn.getId(), equalTo(1)),
-                () -> assertThat(sqlColumn.getType(), equalTo(SqlNodeType.COLUMN)),
-                () -> assertThat(sqlColumn.getMetadata(), equalTo(this.columnMetadata)));
+                () -> assertThat(sqlColumn.getType(), equalTo(SqlNodeType.COLUMN)));
     }
 
     @Test
@@ -122,10 +128,8 @@ class PushDownSqlParserTest {
                 + "   \"type\" : \"literal_bool\", " //
                 + "   \"value\" : true " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlLiteralBool sqlLiteralBool = (SqlLiteralBool) this.pushdownSqlParser.parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlLiteralBool sqlLiteralBool = (SqlLiteralBool) this.defaultParser.parseExpression(jsonObject);
         assertAll(() -> assertThat(sqlLiteralBool.getType(), equalTo(LITERAL_BOOL)),
                 () -> assertThat(sqlLiteralBool.getValue(), equalTo(true)));
     }
@@ -135,10 +139,8 @@ class PushDownSqlParserTest {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"literal_null\"" //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlLiteralNull sqlLiteralNull = (SqlLiteralNull) this.pushdownSqlParser.parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlLiteralNull sqlLiteralNull = (SqlLiteralNull) this.defaultParser.parseExpression(jsonObject);
         assertThat(sqlLiteralNull.getType(), equalTo(LITERAL_NULL));
     }
 
@@ -148,10 +150,8 @@ class PushDownSqlParserTest {
                 + "   \"type\" : \"literal_date\", " //
                 + "   \"value\" : \"2015-12-01\" " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlLiteralDate sqlLiteralDate = (SqlLiteralDate) this.pushdownSqlParser.parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlLiteralDate sqlLiteralDate = (SqlLiteralDate) this.defaultParser.parseExpression(jsonObject);
         assertAll(() -> assertThat(sqlLiteralDate.getType(), equalTo(LITERAL_DATE)),
                 () -> assertThat(sqlLiteralDate.getValue(), equalTo("2015-12-01")));
     }
@@ -166,11 +166,9 @@ class PushDownSqlParserTest {
                 + "   }, " //
                 + "   \"value\" : \"2015-12-01\" " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlLiteralInterval sqlLiteralInterval = (SqlLiteralInterval) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlLiteralInterval sqlLiteralInterval = (SqlLiteralInterval) this.defaultParser
+                .parseExpression(jsonObject);
         assertAll(() -> assertThat(sqlLiteralInterval.getType(), equalTo(LITERAL_INTERVAL)),
                 () -> assertThat(sqlLiteralInterval.getValue(), equalTo("2015-12-01")));
     }
@@ -181,11 +179,9 @@ class PushDownSqlParserTest {
                 + "   \"type\" : \"literal_timestamp\", " //
                 + "   \"value\" : \"2015-12-01 12:01:01.1234\" " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlLiteralTimestamp sqlLiteralTimestamp = (SqlLiteralTimestamp) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlLiteralTimestamp sqlLiteralTimestamp = (SqlLiteralTimestamp) this.defaultParser
+                .parseExpression(jsonObject);
         assertAll(() -> assertThat(sqlLiteralTimestamp.getType(), equalTo(LITERAL_TIMESTAMP)),
                 () -> assertThat(sqlLiteralTimestamp.getValue(), equalTo("2015-12-01 12:01:01.1234")));
     }
@@ -196,11 +192,9 @@ class PushDownSqlParserTest {
                 + "   \"type\" : \"literal_timestamputc\", " //
                 + "   \"value\" : \"2015-12-01 12:01:01.1234\" " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlLiteralTimestampUtc sqlLiteralTimestampUtc = (SqlLiteralTimestampUtc) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlLiteralTimestampUtc sqlLiteralTimestampUtc = (SqlLiteralTimestampUtc) this.defaultParser
+                .parseExpression(jsonObject);
         assertAll(() -> assertThat(sqlLiteralTimestampUtc.getType(), equalTo(LITERAL_TIMESTAMPUTC)),
                 () -> assertThat(sqlLiteralTimestampUtc.getValue(), equalTo("2015-12-01 12:01:01.1234")));
     }
@@ -211,11 +205,8 @@ class PushDownSqlParserTest {
                 + "   \"type\" : \"literal_double\", " //
                 + "   \"value\" : \"1.234\" " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlLiteralDouble sqlLiteralDouble = (SqlLiteralDouble) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlLiteralDouble sqlLiteralDouble = (SqlLiteralDouble) this.defaultParser.parseExpression(jsonObject);
         assertAll(() -> assertThat(sqlLiteralDouble.getType(), equalTo(LITERAL_DOUBLE)),
                 () -> assertThat(sqlLiteralDouble.getValue(), equalTo(1.234)));
     }
@@ -226,11 +217,9 @@ class PushDownSqlParserTest {
                 + "   \"type\" : \"literal_exactnumeric\", " //
                 + "   \"value\" : \"12345\" " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlLiteralExactnumeric sqlLiteralExactnumeric = (SqlLiteralExactnumeric) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlLiteralExactnumeric sqlLiteralExactnumeric = (SqlLiteralExactnumeric) this.defaultParser
+                .parseExpression(jsonObject);
         assertAll(() -> assertThat(sqlLiteralExactnumeric.getType(), equalTo(LITERAL_EXACTNUMERIC)),
                 () -> assertThat(sqlLiteralExactnumeric.getValue(), equalTo(new BigDecimal(12345))));
     }
@@ -241,11 +230,8 @@ class PushDownSqlParserTest {
                 + "   \"type\" : \"literal_string\", " //
                 + "   \"value\" : \"my string\" " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlLiteralString sqlLiteralString = (SqlLiteralString) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlLiteralString sqlLiteralString = (SqlLiteralString) this.defaultParser.parseExpression(jsonObject);
         assertAll(() -> assertThat(sqlLiteralString.getType(), equalTo(LITERAL_STRING)),
                 () -> assertThat(sqlLiteralString.getValue(), equalTo("my string")));
     }
@@ -265,11 +251,8 @@ class PushDownSqlParserTest {
                 + "   } " //
                 + "   ] " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlPredicateAnd sqlPredicateAnd = (SqlPredicateAnd) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlPredicateAnd sqlPredicateAnd = (SqlPredicateAnd) this.defaultParser.parseExpression(jsonObject);
         final List<SqlNode> expressions = sqlPredicateAnd.getAndedPredicates();
         final SqlLiteralDouble sqlLiteralDouble1 = (SqlLiteralDouble) expressions.get(0);
         final SqlLiteralDouble sqlLiteralDouble2 = (SqlLiteralDouble) expressions.get(1);
@@ -285,11 +268,8 @@ class PushDownSqlParserTest {
                 + "   \"expressions\" : [ " //
                 + "   ] " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlPredicateAnd sqlPredicateAnd = (SqlPredicateAnd) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlPredicateAnd sqlPredicateAnd = (SqlPredicateAnd) this.defaultParser.parseExpression(jsonObject);
         assertAll(() -> assertThat(sqlPredicateAnd.getType(), equalTo(PREDICATE_AND)),
                 () -> assertThat(sqlPredicateAnd.getAndedPredicates(), is(empty())));
     }
@@ -309,10 +289,8 @@ class PushDownSqlParserTest {
                 + "   } " //
                 + "   ] " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlPredicateOr sqlPredicateAnd = (SqlPredicateOr) this.pushdownSqlParser.parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlPredicateOr sqlPredicateAnd = (SqlPredicateOr) this.defaultParser.parseExpression(jsonObject);
         final List<SqlNode> expressions = sqlPredicateAnd.getOrPredicates();
         final SqlLiteralDouble sqlLiteralDouble1 = (SqlLiteralDouble) expressions.get(0);
         final SqlLiteralDouble sqlLiteralDouble2 = (SqlLiteralDouble) expressions.get(1);
@@ -328,10 +306,8 @@ class PushDownSqlParserTest {
                 + "   \"expressions\" : [ " //
                 + "   ] " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlPredicateOr sqlPredicateOr = (SqlPredicateOr) this.pushdownSqlParser.parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlPredicateOr sqlPredicateOr = (SqlPredicateOr) this.defaultParser.parseExpression(jsonObject);
         assertAll(() -> assertThat(sqlPredicateOr.getType(), equalTo(PREDICATE_OR)),
                 () -> assertThat(sqlPredicateOr.getOrPredicates(), is(empty())));
     }
@@ -344,11 +320,8 @@ class PushDownSqlParserTest {
                 + "        \"type\" : \"literal_null\"" //
                 + "   } " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlPredicateNot sqlPredicateNot = (SqlPredicateNot) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlPredicateNot sqlPredicateNot = (SqlPredicateNot) this.defaultParser.parseExpression(jsonObject);
         assertAll(() -> assertThat(sqlPredicateNot.getType(), equalTo(PREDICATE_NOT)),
                 () -> assertThat(sqlPredicateNot.getExpression(), instanceOf(SqlLiteralNull.class)));
     }
@@ -366,11 +339,8 @@ class PushDownSqlParserTest {
                 + "        \"value\" : \"1.234\" " //
                 + "   } " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlPredicateEqual sqlPredicateEqual = (SqlPredicateEqual) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlPredicateEqual sqlPredicateEqual = (SqlPredicateEqual) this.defaultParser.parseExpression(jsonObject);
         final SqlLiteralDouble left = (SqlLiteralDouble) sqlPredicateEqual.getLeft();
         final SqlLiteralDouble right = (SqlLiteralDouble) sqlPredicateEqual.getRight();
         assertAll(() -> assertThat(sqlPredicateEqual.getType(), equalTo(PREDICATE_EQUAL)),
@@ -391,11 +361,9 @@ class PushDownSqlParserTest {
                 + "        \"value\" : \"1.234\" " //
                 + "   } " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlPredicateNotEqual sqlPredicateNotEqual = (SqlPredicateNotEqual) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlPredicateNotEqual sqlPredicateNotEqual = (SqlPredicateNotEqual) this.defaultParser
+                .parseExpression(jsonObject);
         final SqlLiteralDouble left = (SqlLiteralDouble) sqlPredicateNotEqual.getLeft();
         final SqlLiteralDouble right = (SqlLiteralDouble) sqlPredicateNotEqual.getRight();
         assertAll(() -> assertThat(sqlPredicateNotEqual.getType(), equalTo(PREDICATE_NOTEQUAL)),
@@ -416,11 +384,8 @@ class PushDownSqlParserTest {
                 + "        \"value\" : \"1.234\" " //
                 + "   } " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlPredicateLess sqlPredicateLess = (SqlPredicateLess) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlPredicateLess sqlPredicateLess = (SqlPredicateLess) this.defaultParser.parseExpression(jsonObject);
         final SqlLiteralDouble left = (SqlLiteralDouble) sqlPredicateLess.getLeft();
         final SqlLiteralDouble right = (SqlLiteralDouble) sqlPredicateLess.getRight();
         assertAll(() -> assertThat(sqlPredicateLess.getType(), equalTo(PREDICATE_LESS)),
@@ -441,11 +406,9 @@ class PushDownSqlParserTest {
                 + "        \"value\" : \"1.234\" " //
                 + "   } " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlPredicateLessEqual sqlPredicateLessEqual = (SqlPredicateLessEqual) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlPredicateLessEqual sqlPredicateLessEqual = (SqlPredicateLessEqual) this.defaultParser
+                .parseExpression(jsonObject);
         final SqlLiteralDouble left = (SqlLiteralDouble) sqlPredicateLessEqual.getLeft();
         final SqlLiteralDouble right = (SqlLiteralDouble) sqlPredicateLessEqual.getRight();
         assertAll(() -> assertThat(sqlPredicateLessEqual.getType(), equalTo(PREDICATE_LESSEQUAL)),
@@ -466,11 +429,8 @@ class PushDownSqlParserTest {
                 + "        \"value\" : \"a_d\" " //
                 + "   } " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlPredicateLike sqlPredicateLike = (SqlPredicateLike) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlPredicateLike sqlPredicateLike = (SqlPredicateLike) this.defaultParser.parseExpression(jsonObject);
         final SqlLiteralString left = (SqlLiteralString) sqlPredicateLike.getLeft();
         final SqlLiteralString pattern = (SqlLiteralString) sqlPredicateLike.getPattern();
         assertAll(() -> assertThat(sqlPredicateLike.getType(), equalTo(PREDICATE_LIKE)),
@@ -491,11 +451,9 @@ class PushDownSqlParserTest {
                 + "        \"value\" : \"a_d\" " //
                 + "   } " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlPredicateLikeRegexp sqlPredicateLike = (SqlPredicateLikeRegexp) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlPredicateLikeRegexp sqlPredicateLike = (SqlPredicateLikeRegexp) this.defaultParser
+                .parseExpression(jsonObject);
         final SqlLiteralString left = (SqlLiteralString) sqlPredicateLike.getLeft();
         final SqlLiteralString pattern = (SqlLiteralString) sqlPredicateLike.getPattern();
         assertAll(() -> assertThat(sqlPredicateLike.getType(), equalTo(PREDICATE_LIKE_REGEXP)),
@@ -520,11 +478,9 @@ class PushDownSqlParserTest {
                 + "        \"value\" : \"1.234\" " //
                 + "   } " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlPredicateBetween sqlPredicateLike = (SqlPredicateBetween) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlPredicateBetween sqlPredicateLike = (SqlPredicateBetween) this.defaultParser
+                .parseExpression(jsonObject);
         final SqlLiteralDouble left = (SqlLiteralDouble) sqlPredicateLike.getBetweenLeft();
         final SqlLiteralDouble right = (SqlLiteralDouble) sqlPredicateLike.getBetweenRight();
         final SqlLiteralDouble expression = (SqlLiteralDouble) sqlPredicateLike.getExpression();
@@ -543,11 +499,9 @@ class PushDownSqlParserTest {
                 + "        \"value\" : \"0.0\" " //
                 + "   } " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlPredicateIsNull sqlPredicateIsNull = (SqlPredicateIsNull) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlPredicateIsNull sqlPredicateIsNull = (SqlPredicateIsNull) this.defaultParser
+                .parseExpression(jsonObject);
         final SqlLiteralDouble expression = (SqlLiteralDouble) sqlPredicateIsNull.getExpression();
         assertAll(() -> assertThat(sqlPredicateIsNull.getType(), equalTo(PREDICATE_IS_NULL)),
                 () -> assertThat(expression.getValue(), equalTo(0.0)));
@@ -562,11 +516,9 @@ class PushDownSqlParserTest {
                 + "        \"value\" : \"1.0\" " //
                 + "   } " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlPredicateIsNotNull sqlPredicateIsNotNull = (SqlPredicateIsNotNull) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlPredicateIsNotNull sqlPredicateIsNotNull = (SqlPredicateIsNotNull) this.defaultParser
+                .parseExpression(jsonObject);
         final SqlLiteralDouble expression = (SqlLiteralDouble) sqlPredicateIsNotNull.getExpression();
         assertAll(() -> assertThat(sqlPredicateIsNotNull.getType(), equalTo(PREDICATE_IS_NOT_NULL)),
                 () -> assertThat(expression.getValue(), equalTo(1.0)));
@@ -585,11 +537,8 @@ class PushDownSqlParserTest {
                 + "   } " //
                 + "   ] " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlFunctionScalar sqlFunctionScalar = (SqlFunctionScalar) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlFunctionScalar sqlFunctionScalar = (SqlFunctionScalar) this.defaultParser.parseExpression(jsonObject);
         final List<SqlNode> expressions = sqlFunctionScalar.getArguments();
         final SqlLiteralDouble sqlLiteralDouble = (SqlLiteralDouble) expressions.get(0);
         assertAll(() -> assertThat(sqlFunctionScalar.getType(), equalTo(FUNCTION_SCALAR)),
@@ -609,11 +558,9 @@ class PushDownSqlParserTest {
                 + "   } " //
                 + "   ] " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlFunctionScalarExtract sqlFunctionScalarExtract = (SqlFunctionScalarExtract) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlFunctionScalarExtract sqlFunctionScalarExtract = (SqlFunctionScalarExtract) this.defaultParser
+                .parseExpression(jsonObject);
         final SqlLiteralTimestamp sqlLiteralTimestamp = (SqlLiteralTimestamp) sqlFunctionScalarExtract.getArgument();
         assertAll(() -> assertThat(sqlFunctionScalarExtract.getType(), equalTo(FUNCTION_SCALAR_EXTRACT)),
                 () -> assertThat(sqlFunctionScalarExtract.getToExtract(), equalTo("MINUTE")), //
@@ -636,11 +583,9 @@ class PushDownSqlParserTest {
                 + "   } " //
                 + "   ] " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlFunctionScalarCast sqlFunctionScalarCast = (SqlFunctionScalarCast) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlFunctionScalarCast sqlFunctionScalarCast = (SqlFunctionScalarCast) this.defaultParser
+                .parseExpression(jsonObject);
         final SqlLiteralDouble sqlLiteralDouble = (SqlLiteralDouble) sqlFunctionScalarCast.getArgument();
         assertAll(() -> assertThat(sqlFunctionScalarCast.getType(), equalTo(FUNCTION_SCALAR_CAST)),
                 () -> assertThat(sqlLiteralDouble.getValue(), equalTo(1.234)));
@@ -665,11 +610,9 @@ class PushDownSqlParserTest {
                 + "   } " //
                 + "   ] " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlPredicateInConstList sqlPredicateInConstList = (SqlPredicateInConstList) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlPredicateInConstList sqlPredicateInConstList = (SqlPredicateInConstList) this.defaultParser
+                .parseExpression(jsonObject);
         final List<SqlNode> arguments = sqlPredicateInConstList.getInArguments();
         final SqlLiteralDouble sqlLiteralDouble1 = (SqlLiteralDouble) arguments.get(0);
         final SqlLiteralDouble sqlLiteralDouble2 = (SqlLiteralDouble) arguments.get(1);
@@ -690,11 +633,9 @@ class PushDownSqlParserTest {
                 + "   }, " //
                 + "   \"typeConstraint\" : \"VALUE\", " //
                 + "   \"keyUniquenessConstraint\" : \"WITHOUT UNIQUE KEYS\"" + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlPredicateIsJson sqlPredicateIsJson = (SqlPredicateIsJson) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlPredicateIsJson sqlPredicateIsJson = (SqlPredicateIsJson) this.defaultParser
+                .parseExpression(jsonObject);
         final SqlLiteralString expression = (SqlLiteralString) sqlPredicateIsJson.getExpression();
         assertAll(() -> assertThat(sqlPredicateIsJson.getType(), equalTo(PREDICATE_IS_JSON)),
                 () -> assertThat(expression.getValue(), equalTo("'123'")),
@@ -712,11 +653,9 @@ class PushDownSqlParserTest {
                 + "   }, " //
                 + "   \"typeConstraint\" : \"VALUE\", " //
                 + "   \"keyUniquenessConstraint\" : \"WITHOUT UNIQUE KEYS\"" + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlPredicateIsNotJson sqlPredicateIsNotJson = (SqlPredicateIsNotJson) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlPredicateIsNotJson sqlPredicateIsNotJson = (SqlPredicateIsNotJson) this.defaultParser
+                .parseExpression(jsonObject);
         final SqlLiteralString expression = (SqlLiteralString) sqlPredicateIsNotJson.getExpression();
         assertAll(() -> assertThat(sqlPredicateIsNotJson.getType(), equalTo(PREDICATE_IS_NOT_JSON)),
                 () -> assertThat(expression.getValue(), equalTo("'123'")),
@@ -756,11 +695,9 @@ class PushDownSqlParserTest {
                 + "   } " //
                 + "   ] " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlFunctionScalarCase sqlFunctionScalarCase = (SqlFunctionScalarCase) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlFunctionScalarCase sqlFunctionScalarCase = (SqlFunctionScalarCase) this.defaultParser
+                .parseExpression(jsonObject);
         final List<SqlNode> arguments = sqlFunctionScalarCase.getArguments();
         final SqlLiteralExactnumeric sqlLiteralExactnumeric1 = (SqlLiteralExactnumeric) arguments.get(0);
         final SqlLiteralExactnumeric sqlLiteralExactnumeric2 = (SqlLiteralExactnumeric) arguments.get(1);
@@ -808,11 +745,9 @@ class PushDownSqlParserTest {
                 + "      } " //
                 + "   } " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlFunctionScalarJsonValue sqlFunctionScalarJsonValue = (SqlFunctionScalarJsonValue) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlFunctionScalarJsonValue sqlFunctionScalarJsonValue = (SqlFunctionScalarJsonValue) this.defaultParser
+                .parseExpression(jsonObject);
         final ScalarFunction scalarFunction = sqlFunctionScalarJsonValue.getScalarFunction();
         final List<SqlNode> arguments = sqlFunctionScalarJsonValue.getArguments();
         final SqlLiteralString firstArgument = (SqlLiteralString) arguments.get(0);
@@ -824,7 +759,7 @@ class PushDownSqlParserTest {
                 () -> assertThat(scalarFunction, equalTo(ScalarFunction.JSON_VALUE)),
                 () -> assertThat(firstArgument.getValue(), equalTo("'first argument'")),
                 () -> assertThat(secondArgument.getValue(), equalTo("'second argument'")),
-                () -> assertThat(returningDataType, equalTo(DataType.createVarChar(10000, DataType.ExaCharset.UTF8))),
+                () -> assertThat(returningDataType, equalTo(createVarChar(10000, UTF8))),
                 () -> assertThat(emptyBehavior,
                         equalTo(new SqlFunctionScalarJsonValue.Behavior(SqlFunctionScalarJsonValue.BehaviorType.NULL,
                                 Optional.empty()))),
@@ -849,11 +784,9 @@ class PushDownSqlParserTest {
                 + "   } " //
                 + "   ] " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlFunctionAggregate sqlFunctionAggregate = (SqlFunctionAggregate) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlFunctionAggregate sqlFunctionAggregate = (SqlFunctionAggregate) this.defaultParser
+                .parseExpression(jsonObject);
         final List<SqlNode> arguments = sqlFunctionAggregate.getArguments();
         final SqlLiteralDouble sqlLiteralDouble1 = (SqlLiteralDouble) arguments.get(0);
         final SqlLiteralDouble sqlLiteralDouble2 = (SqlLiteralDouble) arguments.get(1);
@@ -891,11 +824,9 @@ class PushDownSqlParserTest {
                 + "   ], " //
                 + "   \"separator\": \",\"  " //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlFunctionAggregateGroupConcat sqlFunctionAggregateGroupConcat = (SqlFunctionAggregateGroupConcat) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlFunctionAggregateGroupConcat sqlFunctionAggregateGroupConcat = (SqlFunctionAggregateGroupConcat) this.defaultParser
+                .parseExpression(jsonObject);
         final SqlLiteralDouble sqlLiteralDouble = (SqlLiteralDouble) sqlFunctionAggregateGroupConcat.getArgument();
         assertAll(() -> assertThat(sqlFunctionAggregateGroupConcat.getType(), equalTo(FUNCTION_AGGREGATE_GROUP_CONCAT)),
                 () -> assertThat(sqlFunctionAggregateGroupConcat.getFunctionName(), equalTo("GROUP_CONCAT")), //
@@ -934,11 +865,9 @@ class PushDownSqlParserTest {
                 + "        \"value\": \", \"" //
                 + "    }" //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlFunctionAggregateGroupConcat sqlFunctionAggregateGroupConcat = (SqlFunctionAggregateGroupConcat) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlFunctionAggregateGroupConcat sqlFunctionAggregateGroupConcat = (SqlFunctionAggregateGroupConcat) this.defaultParser
+                .parseExpression(jsonObject);
         final SqlLiteralDouble sqlLiteralDouble = (SqlLiteralDouble) sqlFunctionAggregateGroupConcat.getArgument();
         assertAll(() -> assertThat(sqlFunctionAggregateGroupConcat.getType(), equalTo(FUNCTION_AGGREGATE_GROUP_CONCAT)),
                 () -> assertThat(sqlFunctionAggregateGroupConcat.getFunctionName(), equalTo("GROUP_CONCAT")), //
@@ -993,11 +922,9 @@ class PushDownSqlParserTest {
                 + "        }" //
                 + "    ]" //
                 + "}";
-        try (final JsonReader jsonReader = Json.createReader(new StringReader(sqlAsJson))) {
-            this.jsonObject = jsonReader.readObject();
-        }
-        final SqlFunctionAggregateListagg listagg = (SqlFunctionAggregateListagg) this.pushdownSqlParser
-                .parseExpression(this.jsonObject);
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlFunctionAggregateListagg listagg = (SqlFunctionAggregateListagg) this.defaultParser
+                .parseExpression(jsonObject);
         final SqlColumn sqlColumn = (SqlColumn) listagg.getArgument();
         assertAll(() -> assertThat(listagg.getType(), equalTo(FUNCTION_AGGREGATE_LISTAGG)),
                 () -> assertThat(listagg.getFunctionName(), equalTo("LISTAGG")), //
@@ -1013,69 +940,232 @@ class PushDownSqlParserTest {
                 () -> assertThat(sqlColumn.getId(), equalTo(1)));
     }
 
-    @Test
-    void testSimpleInnerJoinRequest() {
-        final String sqlAsJson = "{" //
-                + "    \"type\" : \"select\"," //
-                + "    \"from\" : " //
-                + "    {" //
-                + "        \"type\": \"join\"," //
-                + "        \"join_type\": \"inner\"," //
-                + "        \"left\":" //
-                + "        {" //
-                + "            \"name\" : \"T1\"," //
-                + "            \"type\" : \"table\"" //
-                + "        }," //
-                + "        \"right\":" //
-                + "        {" //
-                + "            \"name\" : \"T2\"," //
-                + "            \"type\" : \"table\"" //
-                + "        }," //
-                + "        \"condition\":" //
-                + "        {" //
-                + "            \"left\" :" //
-                + "            {" //
-                + "                    \"columnNr\" : 0," //
-                + "                    \"name\" : \"ID\"," //
-                + "                    \"tableName\" : \"T1\"," //
-                + "                    \"type\" : \"column\"" //
-                + "            }," //
-                + "            \"right\" :" //
-                + "            {" //
-                + "                    \"columnNr\" : 0," //
-                + "                    \"name\" : \"ID\"," //
-                + "                    \"tableName\" : \"T2\"," //
-                + "                    \"type\" : \"column\"" //
-                + "            }," //
-                + "            \"type\" : \"predicate_equal\"" //
-                + "        }" //
-                + "    }" //
-                + "}";
-
-        final SqlStatementSelect select = parseSqlExpression(sqlAsJson);
+    @ParameterizedTest
+    @CsvSource({ "0, 0, ID, CUSTOMERS", //
+            "1, 1, NAME, CUSTOMERS", //
+            "2, 0, CUSTOMER_ID, ORDERS", //
+            "3, 1, ITEM_ID, ORDERS" //
+    })
+    void testSimpleInnerJoinRequestWithExplicitSelectList(final int columnNumber, final int columnId,
+            final String columnName, final String tableName) throws IOException {
+        final String sqlAsJson = new String(Files.readAllBytes(
+                Paths.get("src/test/resources/json/pushdown_request_simple_inner_join_with_select_list.json")));
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithTwoTables();
+        final SqlStatementSelect select = (SqlStatementSelect) pushdownSqlParser.parseExpression(jsonObject);
         final SqlJoin from = (SqlJoin) select.getFromClause();
-
+        final SqlColumn column = (SqlColumn) select.getSelectList().getExpressions().get(columnNumber);
         assertAll(() -> assertThat(SqlNodeType.JOIN, sameInstance(from.getType())),
                 () -> assertThat(JoinType.INNER, sameInstance(from.getJoinType())),
                 () -> assertThat(SqlNodeType.PREDICATE_EQUAL, sameInstance(from.getCondition().getType())),
                 () -> assertThat(SqlNodeType.TABLE, sameInstance(from.getLeft().getType())),
-                () -> assertThat(SqlNodeType.TABLE, sameInstance(from.getRight().getType())));
+                () -> assertThat(SqlNodeType.TABLE, sameInstance(from.getRight().getType())),
+                () -> assertThat(select.getSelectList().hasExplicitColumnsList(), equalTo(true)),
+                () -> assertThat(select.getSelectList().getExpressions().size(), equalTo(4)),
+                () -> assertThat(column.getId(), equalTo(columnId)),
+                () -> assertThat(column.getName(), equalTo(columnName)),
+                () -> assertThat(column.getType(), equalTo(COLUMN)),
+                () -> assertThat(column.getTableName(), equalTo(tableName)));
     }
 
-    private SqlStatementSelect parseSqlExpression(final String sqlAsJson) {
-        final ByteArrayInputStream rawRequestStream = new ByteArrayInputStream(
-                sqlAsJson.getBytes(StandardCharsets.UTF_8));
-        final JsonReader reader = Json.createReader(rawRequestStream);
+    private PushdownSqlParser getCustomPushdownSqlParserWithTwoTables() {
         final List<TableMetadata> tables = new ArrayList<>();
-        final List<ColumnMetadata> table1Columns = new ArrayList<>();
-        table1Columns.add(ColumnMetadata.builder().name("ID").adapterNotes("").type(DataType.createDecimal(18, 0))
-                .nullable(true).identity(true).defaultValue("0").comment("").build());
-        tables.add(new TableMetadata("T1", "", table1Columns, ""));
-        final List<ColumnMetadata> table2Columns = new ArrayList<>();
-        table2Columns.add(ColumnMetadata.builder().name("ID").adapterNotes("").type(DataType.createDecimal(18, 0))
-                .nullable(true).identity(true).defaultValue("0").comment("").build());
-        tables.add(new TableMetadata("T2", "", table2Columns, ""));
-        final PushdownSqlParser parser = PushdownSqlParser.createWithTablesMetadata(tables);
-        return (SqlStatementSelect) parser.parseExpression(reader.readObject());
+        final List<ColumnMetadata> columns = List.of( //
+                ColumnMetadata.builder().name("ID").adapterNotes("").type(createDecimal(18, 0)).build(), //
+                ColumnMetadata.builder().name("NAME").adapterNotes("").type(createVarChar(200, UTF8)).build());
+        tables.add(new TableMetadata("CUSTOMERS", "", columns, ""));
+        final List<ColumnMetadata> columns2 = List.of(
+                ColumnMetadata.builder().name("CUSTOMER_ID").adapterNotes("").type(createDecimal(18, 0)).build(), //
+                ColumnMetadata.builder().name("ITEM_ID").adapterNotes("").type(createVarChar(200, UTF8)).build());
+        tables.add(new TableMetadata("ORDERS", "", columns2, ""));
+        return PushdownSqlParser.createWithTablesMetadata(tables);
+    }
+
+    @Test
+    void testParseSelectWithoutSelectList() {
+        final String sqlAsJson = "{" //
+                + "   \"type\" : \"select\", " //
+                + "    \"from\" : " //
+                + "   { " //
+                + "        \"type\" : \"table\", " //
+                + "        \"name\" :  \"CUSTOMERS\" " //
+                + "   }" //
+                + "}";
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithTwoTables();
+        final SqlStatementSelect sqlStatementSelect = (SqlStatementSelect) pushdownSqlParser
+                .parseExpression(jsonObject);
+        final SqlColumn first = (SqlColumn) sqlStatementSelect.getSelectList().getExpressions().get(0);
+        final SqlColumn second = (SqlColumn) sqlStatementSelect.getSelectList().getExpressions().get(1);
+        assertAll(() -> assertThat(sqlStatementSelect.getType(), equalTo(SELECT)),
+                () -> assertThat(sqlStatementSelect.getSelectList().hasExplicitColumnsList(), equalTo(true)), //
+                () -> assertThat(sqlStatementSelect.getSelectList().getExpressions().size(), equalTo(2)), //
+                () -> assertThat(first.getName(), equalTo("ID")), //
+                () -> assertThat(first.getTableName(), equalTo("CUSTOMERS")), //
+                () -> assertThat(second.getName(), equalTo("NAME")), //
+                () -> assertThat(second.getTableName(), equalTo("CUSTOMERS")) //
+        );
+    }
+
+    @Test
+    void testParseSelectWithEmptySelectList() {
+        final String sqlAsJson = "{" //
+                + "   \"type\" : \"select\", " //
+                + "    \"from\" : " //
+                + "   { " //
+                + "        \"type\" : \"table\", " //
+                + "        \"name\" :  \"CLICKS\" " //
+                + "   }," //
+                + "   \"selectList\" : []" //
+                + "}";
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlStatementSelect sqlStatementSelect = (SqlStatementSelect) this.defaultParser
+                .parseExpression(jsonObject);
+        assertAll(() -> assertThat(sqlStatementSelect.getType(), equalTo(SELECT)),
+                () -> assertThat(sqlStatementSelect.getSelectList().hasExplicitColumnsList(), equalTo(false)), //
+                () -> assertThat(sqlStatementSelect.getSelectList().getExpressions().isEmpty(), equalTo(true)) //
+        );
+    }
+
+    @ParameterizedTest
+    @CsvSource({ "0, 0, ID, CUSTOMERS", //
+            "1, 1, NAME, CUSTOMERS", //
+            "2, 0, CUSTOMER_ID, ORDERS", //
+            "3, 1, ITEM_ID, ORDERS" //
+    })
+    void testSimpleInnerJoinRequestWithoutSelectList(final int columnNumber, final int columnId,
+            final String columnName, final String tableName) throws IOException {
+        final String sqlAsJson = new String(Files.readAllBytes(
+                Paths.get("src/test/resources/json/pushdown_request_simple_inner_join_without_select_list.json")));
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithTwoTables();
+        final SqlStatementSelect select = (SqlStatementSelect) pushdownSqlParser.parseExpression(jsonObject);
+        final SqlJoin from = (SqlJoin) select.getFromClause();
+        final SqlColumn column = (SqlColumn) select.getSelectList().getExpressions().get(columnNumber);
+        assertAll(() -> assertThat(SqlNodeType.JOIN, sameInstance(from.getType())),
+                () -> assertThat(JoinType.INNER, sameInstance(from.getJoinType())),
+                () -> assertThat(SqlNodeType.PREDICATE_EQUAL, sameInstance(from.getCondition().getType())),
+                () -> assertThat(SqlNodeType.TABLE, sameInstance(from.getLeft().getType())),
+                () -> assertThat(SqlNodeType.TABLE, sameInstance(from.getRight().getType())),
+                () -> assertThat(select.getSelectList().hasExplicitColumnsList(), equalTo(true)),
+                () -> assertThat(select.getSelectList().getExpressions().size(), equalTo(4)),
+                () -> assertThat(column.getId(), equalTo(columnId)),
+                () -> assertThat(column.getName(), equalTo(columnName)),
+                () -> assertThat(column.getType(), equalTo(COLUMN)),
+                () -> assertThat(column.getTableName(), equalTo(tableName)));
+    }
+
+    @ParameterizedTest
+    @CsvSource({ "0, 0, ID, CUSTOMERS, T1", //
+            "1, 1, NAME, CUSTOMERS, T1", //
+            "2, 0, ITEM_ID, ITEMS, ", //
+            "3, 1, ITEM_NAME, ITEMS, ", //
+            "4, 0, CUSTOMER_ID, ORDERS, ", //
+            "5, 1, ITEM_ID, ORDERS, " //
+    })
+    void testNestedJoinRequestWithoutSelectList(final int columnNumber, final int columnId, final String columnName,
+            final String tableName, final String tableAlias) throws IOException {
+        final String sqlAsJson = new String(Files.readAllBytes(
+                Paths.get("src/test/resources/json/pushdown_request_nested_join_without_select_list.json")));
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithThreeTables();
+        final SqlStatementSelect select = (SqlStatementSelect) pushdownSqlParser.parseExpression(jsonObject);
+        final SqlColumn column = (SqlColumn) select.getSelectList().getExpressions().get(columnNumber);
+        assertAll(() -> assertThat(select.getSelectList().hasExplicitColumnsList(), equalTo(true)),
+                () -> assertThat(select.getSelectList().getExpressions().size(), equalTo(6)),
+                () -> assertThat(column.getId(), equalTo(columnId)),
+                () -> assertThat(column.getName(), equalTo(columnName)),
+                () -> assertThat(column.getType(), equalTo(COLUMN)),
+                () -> assertThat(column.getTableName(), equalTo(tableName)),
+                () -> assertThat(column.getTableAlias(), equalTo(tableAlias)));
+    }
+
+    private PushdownSqlParser getCustomPushdownSqlParserWithThreeTables() {
+        final List<TableMetadata> tables = new ArrayList<>();
+        final List<ColumnMetadata> columns = List.of( //
+                ColumnMetadata.builder().name("ID").adapterNotes("").type(createVarChar(200, UTF8)).build(), //
+                ColumnMetadata.builder().name("NAME").adapterNotes("").type(createVarChar(200, UTF8)).build());
+        tables.add(new TableMetadata("CUSTOMERS", "", columns, ""));
+        final List<ColumnMetadata> columns2 = List.of(
+                ColumnMetadata.builder().name("CUSTOMER_ID").adapterNotes("").type(createVarChar(200, UTF8)).build(), //
+                ColumnMetadata.builder().name("ITEM_ID").adapterNotes("").type(createVarChar(200, UTF8)).build());
+        tables.add(new TableMetadata("ORDERS", "", columns2, ""));
+        final List<ColumnMetadata> columns3 = List.of(
+                ColumnMetadata.builder().name("ITEM_ID").adapterNotes("").type(createVarChar(200, UTF8)).build(), //
+                ColumnMetadata.builder().name("ITEM_NAME").adapterNotes("").type(createVarChar(200, UTF8)).build());
+        tables.add(new TableMetadata("ITEMS", "", columns3, ""));
+        return PushdownSqlParser.createWithTablesMetadata(tables);
+    }
+
+    @ParameterizedTest
+    @CsvSource({ "0, 0, ID, CUSTOMERS, T1", //
+            "1, 1, NAME, CUSTOMERS, T1", //
+            "2, 0, ID, CUSTOMERS, ", //
+            "3, 1, NAME, CUSTOMERS, ", //
+            "4, 0, CUSTOMER_ID, ORDERS, ", //
+            "5, 1, ITEM_ID, ORDERS, " //
+    })
+    void testNestedJoinRequestRepeatedTableWithoutSelectList(final int columnNumber, final int columnId,
+            final String columnName, final String tableName, final String tableAlias) throws IOException {
+        final String sqlAsJson = new String(Files.readAllBytes(Paths.get(
+                "src/test/resources/json/pushdown_request_nested_join_with_repeated_table_without_select_list.json")));
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithTwoTables();
+        final SqlStatementSelect select = (SqlStatementSelect) pushdownSqlParser.parseExpression(jsonObject);
+        final SqlColumn column = (SqlColumn) select.getSelectList().getExpressions().get(columnNumber);
+        assertAll(() -> assertThat(select.getSelectList().hasExplicitColumnsList(), equalTo(true)),
+                () -> assertThat(select.getSelectList().getExpressions().size(), equalTo(6)),
+                () -> assertThat(column.getId(), equalTo(columnId)),
+                () -> assertThat(column.getName(), equalTo(columnName)),
+                () -> assertThat(column.getType(), equalTo(COLUMN)),
+                () -> assertThat(column.getTableName(), equalTo(tableName)),
+                () -> assertThat(column.getTableAlias(), equalTo(tableAlias)));
+    }
+
+    @ParameterizedTest
+    @CsvSource({ "0, 0, ITEM_ID, ITEMS, ", //
+            "1, 1, ITEM_NAME, ITEMS, ", //
+            "2, 0, CUSTOMER_ID, ORDERS, ", //
+            "3, 1, ITEM_ID, ORDERS, ", //
+            "4, 0, ID, CUSTOMERS, T1", //
+            "5, 1, NAME, CUSTOMERS, T1" //
+    })
+    void testNestedJoinRequestWithoutSelectListReversed(final int columnNumber, final int columnId,
+            final String columnName, final String tableName, final String tableAlias) throws IOException {
+        final String sqlAsJson = new String(Files.readAllBytes(
+                Paths.get("src/test/resources/json/pushdown_request_nested_join_without_select_list_reversed.json")));
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithThreeTables();
+        final SqlStatementSelect select = (SqlStatementSelect) pushdownSqlParser.parseExpression(jsonObject);
+        final SqlColumn column = (SqlColumn) select.getSelectList().getExpressions().get(columnNumber);
+        assertAll(() -> assertThat(select.getSelectList().hasExplicitColumnsList(), equalTo(true)),
+                () -> assertThat(select.getSelectList().getExpressions().size(), equalTo(6)),
+                () -> assertThat(column.getId(), equalTo(columnId)),
+                () -> assertThat(column.getName(), equalTo(columnName)),
+                () -> assertThat(column.getType(), equalTo(COLUMN)),
+                () -> assertThat(column.getTableName(), equalTo(tableName)),
+                () -> assertThat(column.getTableAlias(), equalTo(tableAlias)));
+    }
+
+    @Test
+    void testParseSelectWithoutSelectListAndInvolvedTablesMetadata() {
+        final String sqlAsJson = "{" //
+                + "   \"type\" : \"select\", " //
+                + "    \"from\" : " //
+                + "   { " //
+                + "        \"type\" : \"table\", " //
+                + "        \"name\" :  \"CUSTOMERS\" " //
+                + "   }" //
+                + "}";
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserTableWithoutColumns();
+        final IllegalStateException exception = assertThrows(IllegalStateException.class,
+                () -> pushdownSqlParser.parseExpression(jsonObject));
+        assertThat(exception.getMessage(), containsString("Cannot create a select list"));
+    }
+
+    private PushdownSqlParser getCustomPushdownSqlParserTableWithoutColumns() {
+        final List<TableMetadata> tables = List.of(new TableMetadata("CUSTOMERS", "", Collections.emptyList(), ""));
+        return PushdownSqlParser.createWithTablesMetadata(tables);
     }
 }

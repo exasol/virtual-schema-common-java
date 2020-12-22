@@ -5,8 +5,7 @@ Code name: Changes the LISTAGG and GROUP_CONCAT API
 ## Refactoring
 
 * #181: Applied the API changes in the functions LISTAGG and GROUP_CONCAT.
-* #196: Added an argument validation to SqlFunctionAggregateGroupConcat builder.
-
+git pull
 ## Documentation
 
 * #182: Improved the API documentation.
