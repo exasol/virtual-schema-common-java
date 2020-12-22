@@ -1,0 +1,55 @@
+{
+  "from": {
+    "condition": {
+      "left": {
+        "columnNr": 0,
+        "name": "ID",
+        "tableAlias": "T1",
+        "tableName": "CUSTOMERS",
+        "type": "column"
+      },
+      "right": {
+        "columnNr": 0,
+        "name": "CUSTOMER_ID",
+        "tableName": "ORDERS",
+        "type": "column"
+      },
+      "type": "predicate_equal"
+    },
+    "join_type": "inner",
+    "left": {
+      "alias": "T1",
+      "name": "CUSTOMERS",
+      "type": "table"
+    },
+    "right": {
+      "condition": {
+        "left": {
+          "columnNr": 0,
+          "name": "ITEM_ID",
+          "tableName": "ITEMS",
+          "type": "column"
+        },
+        "right": {
+          "columnNr": 1,
+          "name": "ITEM_ID",
+          "tableName": "ORDERS",
+          "type": "column"
+        },
+        "type": "predicate_equal"
+      },
+      "join_type": "inner",
+      "left": {
+        "name": "ITEMS",
+        "type": "table"
+      },
+      "right": {
+        "name": "ORDERS",
+        "type": "table"
+      },
+      "type": "join"
+    },
+    "type": "join"
+  },
+  "type": "select"
+}
