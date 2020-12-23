@@ -1,6 +1,6 @@
 # Virtual Schema Common Java 14.0.0, released 2020-12-23
 
-Code name: 
+Code name: Replaces SELECT * with an explicit columns list.
 
 ## Feature
 
