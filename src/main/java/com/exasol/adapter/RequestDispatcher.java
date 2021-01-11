@@ -82,8 +82,7 @@ public final class RequestDispatcher {
         default:
             throw new AdapterException(ExaError.messageBuilder("E-VS-COM-JAVA-30")
                     .message("The request dispatcher encountered a request type {{type}} which it does not recognize.")
-                    .mitigation("Please create an issue ticket quoting this error message.")
-                    .parameter("type", type.toString()).toString());
+                    .ticketMitigation().parameter("type", type.toString()).toString());
         }
     }
 
