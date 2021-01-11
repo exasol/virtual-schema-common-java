@@ -1,5 +1,7 @@
 package com.exasol.adapter;
 
+import com.exasol.errorreporting.ExaError;
+
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -17,9 +19,9 @@ public final class AdapterRegistry {
      *
      * @return singleton instance
      */
-    public static final synchronized AdapterRegistry getInstance() {
+    public static synchronized AdapterRegistry getInstance() {
         if (instance == null) {
-            LOGGER.finer(() -> "Instanciating Virtual Schema Adapter registry and loading adapter factories.");
+            LOGGER.finer(() -> "Instantiating Virtual Schema Adapter registry and loading adapter factories.");
             instance = new AdapterRegistry();
             instance.loadAdapterFactories();
         }
@@ -72,8 +74,10 @@ public final class AdapterRegistry {
                     + factory.getAdapterVersion());
             return factory.createAdapter();
         } else {
-            throw new IllegalArgumentException(
-                    "Unknown Virtual Schema Adapter \"" + name + "\" requested. " + describe());
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-29")
+                    .message("Unknown Virtual Schema Adapter \"{{name}}\" requested. {{description}}")
+                    .unquotedParameter("name", name) //
+                    .unquotedParameter("description", describe()).toString());
         }
     }
 
@@ -101,7 +105,7 @@ public final class AdapterRegistry {
      */
     public String describe() {
         if (this.registeredFactories.isEmpty()) {
-            return "No Virtual Schema Adapter factories are currently reqistered.";
+            return "No Virtual Schema Adapter factories are currently registered.";
         } else {
             final StringBuilder builder = new StringBuilder("Currently registered Virtual Schema Adapter factories: ");
             boolean first = true;

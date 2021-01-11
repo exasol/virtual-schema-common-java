@@ -1,7 +1,6 @@
 package com.exasol.adapter;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.collection.IsEmptyCollection.emptyCollectionOf;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -55,7 +54,9 @@ class AdapterRegistryTest {
 
     @Test
     void testGetAdapterForNameThrowsExceptionIfNameIsUnknown() {
-        assertThrows(IllegalArgumentException.class, () -> this.registry.getAdapterForName("FooBar"));
+        final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> this.registry.getAdapterForName("FooBar"));
+        assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-29"));
     }
 
     @Test
@@ -68,6 +69,6 @@ class AdapterRegistryTest {
 
     @Test
     void testDescribeWithNoFactories() {
-        assertThat(this.registry.describe(), equalTo("No Virtual Schema Adapter factories are currently reqistered."));
+        assertThat(this.registry.describe(), equalTo("No Virtual Schema Adapter factories are currently registered."));
     }
 }

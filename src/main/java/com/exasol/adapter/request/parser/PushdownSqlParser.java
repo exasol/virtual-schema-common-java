@@ -14,6 +14,7 @@ import com.exasol.adapter.metadata.DataType.IntervalType;
 import com.exasol.adapter.sql.*;
 import com.exasol.adapter.sql.SqlFunctionAggregateListagg.Behavior.TruncationType;
 import com.exasol.adapter.sql.SqlFunctionAggregateListagg.*;
+import com.exasol.errorreporting.ExaError;
 
 public final class PushdownSqlParser extends AbstractRequestParser {
     private static final String ORDER_BY_KEY = "orderBy";
@@ -108,7 +109,9 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         case FUNCTION_AGGREGATE_LISTAGG:
             return parseFunctionAggregateListagg(expression);
         default:
-            throw new IllegalArgumentException("Unknown node type: " + typeName);
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-8") //
+                    .message("Unknown node type: {{typeName}}") //
+                    .parameter("typeName", typeName).toString());
         }
     }
 
@@ -227,8 +230,9 @@ public final class PushdownSqlParser extends AbstractRequestParser {
                     selectListElements.add(createColumn(i, table, columns.get(i)));
                 }
             } else {
-                throw new IllegalStateException("Unable to find a metadata for table \"" + table.getName()
-                        + "\" during collection of involved columns.");
+                throw new IllegalStateException(ExaError.messageBuilder("E-VS-COM-JAVA-9").message(
+                        "Unable to find a metadata for table \"{{tableName}}\" during collecting involved columns.")
+                        .unquotedParameter("tableName", tableName).toString());
             }
         }
         return selectListElements;
@@ -253,8 +257,9 @@ public final class PushdownSqlParser extends AbstractRequestParser {
                 nodes.add(((SqlJoin) node).getLeft());
                 break;
             default:
-                throw new IllegalStateException(
-                        "Encountered illegal SqlNodeType during collection involved tables " + node.getType());
+                throw new IllegalStateException(ExaError.messageBuilder("E-VS-COM-JAVA-10")
+                        .message("Encountered illegal SqlNodeType during collection involved tables: {{nodeType}}")
+                        .parameter("nodeType", node.getType()).toString());
             }
         }
         return involvedTables;
@@ -399,7 +404,9 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         case "HASHTYPE":
             return getHashtype(dataType);
         default:
-            throw new IllegalArgumentException("Unsupported data type encountered: " + typeName);
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-11")
+                    .message("Unsupported data type encountered: {{typeName}}.") //
+                    .parameter("typeName", typeName).toString());
         }
     }
 
@@ -424,17 +431,14 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private DataType getInterval(final JsonObject dataType) {
-        final DataType type;
         final int precision = dataType.getInt("precision", 2);
         final IntervalType intervalType = intervalTypeFromString(dataType.getString("fromTo"));
         if (intervalType == IntervalType.DAY_TO_SECOND) {
             final int fraction = dataType.getInt("fraction", 3);
-            type = DataType.createIntervalDaySecond(precision, fraction);
+            return DataType.createIntervalDaySecond(precision, fraction);
         } else {
-            assert intervalType == IntervalType.YEAR_TO_MONTH;
-            type = DataType.createIntervalYearMonth(precision);
+            return DataType.createIntervalYearMonth(precision);
         }
-        return type;
     }
 
     private DataType getGeometry(final JsonObject dataType) {
@@ -448,8 +452,9 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         } else if (charset.equals("ASCII")) {
             return ExaCharset.ASCII;
         } else {
-            throw new IllegalArgumentException(
-                    "Unsupported charset encountered: " + charset + ". Supported charsets are \"UTF8\" and \"ASCII\".");
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-12")
+                    .message("Unsupported charset encountered: {{charset}}. Supported charsets are 'UTF8' and 'ASCII'.")
+                    .parameter("charset", charset).toString());
         }
     }
 
@@ -459,8 +464,9 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         } else if (intervalType.equals("YEAR TO MONTH")) {
             return IntervalType.YEAR_TO_MONTH;
         } else {
-            throw new IllegalArgumentException("Unsupported interval data type encountered: " + intervalType //
-                    + " Supported intervals are \"DAY TO SECONDS\" and \"YEAR TO MONTH\".");
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-13").message(
+                    "Unsupported interval data type encountered: {{intervalType}}. Supported intervals are 'DAY TO SECONDS' and 'YEAR TO MONTH'.")
+                    .parameter("intervalType", intervalType).toString());
         }
     }
 
@@ -686,8 +692,10 @@ public final class PushdownSqlParser extends AbstractRequestParser {
                 return tableMetadata;
             }
         }
-        throw new IllegalStateException("Could not find table metadata for involved table \"" + tableName
-                + "\". All involved tables: " + this.involvedTablesMetadata.toString());
+        throw new IllegalStateException(ExaError.messageBuilder("E-VS-COM-JAVA-14").message(
+                "Could not find table metadata for involved table \"{{tableName}}\". All involved tables: {{involvedTables}}")
+                .unquotedParameter("tableName", tableName)
+                .parameter("involvedTables", this.involvedTablesMetadata.toString()).toString());
     }
 
     private ColumnMetadata findColumnMetadata(final String tableName, final String columnName) {
@@ -697,9 +705,11 @@ public final class PushdownSqlParser extends AbstractRequestParser {
                 return columnMetadata;
             }
         }
-        throw new IllegalStateException(
-                "Could not find column metadata for involved table \"" + tableName + "\" and column \"" + columnName
-                        + "\". All involved tables: " + this.involvedTablesMetadata.toString());
+        throw new IllegalStateException(ExaError.messageBuilder("E-VS-COM-JAVA-15").message(
+                "Could not find column metadata for involved table \"{{tableName}}\" and column \"{{columnName}}\". "
+                        + "All involved tables: {{involvedTables}}.")
+                .unquotedParameter("tableName", tableName).unquotedParameter("columnName", columnName)
+                .parameter("involvedTables", this.involvedTablesMetadata.toString()).toString());
     }
 
     /**

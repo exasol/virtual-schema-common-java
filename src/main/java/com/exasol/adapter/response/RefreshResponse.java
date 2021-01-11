@@ -2,6 +2,7 @@ package com.exasol.adapter.response;
 
 import com.exasol.adapter.metadata.SchemaMetadata;
 import com.exasol.adapter.response.converter.ResponseException;
+import com.exasol.errorreporting.ExaError;
 
 /**
  * This class is an abstract representation of a response created by a Virtual Schema Adapter as result of a request to
@@ -50,8 +51,11 @@ public final class RefreshResponse extends AbstractResponse {
 
         private void validate(final SchemaMetadata schemaMetadata) {
             if (schemaMetadata == null) {
-                throw new ResponseException("SchemaMetadata should be not null. Please, add SchemaMetadata using " //
-                        + "'schemaMetadata(yourSchemaMetadata)' method of this builder before you build.");
+                throw new ResponseException(ExaError.messageBuilder("E-VS-COM-JAVA-23") //
+                        .message("SchemaMetadata should be not null.")
+                        .mitigation("Please, add SchemaMetadata using 'schemaMetadata(yourSchemaMetadata)' "
+                                + "method of this builder before you build.")
+                        .toString());
             }
         }
     }

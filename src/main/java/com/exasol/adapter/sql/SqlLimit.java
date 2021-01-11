@@ -1,6 +1,7 @@
 package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
+import com.exasol.errorreporting.ExaError;
 
 public class SqlLimit extends SqlNode {
     private int limit;
@@ -12,23 +13,24 @@ public class SqlLimit extends SqlNode {
 
     public SqlLimit(final int limit, final int offset) {
         if (offset < 0 || limit < 0) {
-            throw new IllegalArgumentException(
-                    "SqlLimit constructor expects offset and limit values to be greater than zero");
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-27")
+                    .message("SqlLimit constructor expects offset and limit values to be greater than zero")
+                    .toString());
         }
         this.limit = limit;
         this.offset = offset;
     }
 
     public int getLimit() {
-        return limit;
+        return this.limit;
     }
 
     public int getOffset() {
-        return offset;
+        return this.offset;
     }
 
     public boolean hasOffset() {
-        return offset != 0;
+        return this.offset != 0;
     }
 
     public void setLimit(final int limit) {

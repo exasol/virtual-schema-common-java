@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.exasol</groupId>
     <artifactId>virtual-schema-common-java</artifactId>
-    <version>14.0.0</version>
+    <version>14.0.1</version>
     <name>Common module of Exasol Virtual Schemas Adapters</name>
     <description>This is one of the modules of Virtual Schemas Adapters. The libraries provided by this project are the
         foundation of the adapter development, i.e. adapters must be implemented on top of them.
@@ -108,6 +108,11 @@
             <artifactId>equalsverifier</artifactId>
             <version>3.4.3</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.exasol</groupId>
+            <artifactId>error-reporting-java</artifactId>
+            <version>0.2.2</version>
         </dependency>
     </dependencies>
     <build>

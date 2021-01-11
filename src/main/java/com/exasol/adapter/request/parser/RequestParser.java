@@ -12,6 +12,7 @@ import com.exasol.adapter.metadata.SchemaMetadataInfo;
 import com.exasol.adapter.metadata.TableMetadata;
 import com.exasol.adapter.request.*;
 import com.exasol.adapter.sql.SqlStatement;
+import com.exasol.errorreporting.ExaError;
 
 /**
  * Parser for JSON structures representing a Virtual Schema Adapter request.
@@ -52,8 +53,10 @@ public class RequestParser extends AbstractRequestParser {
         case REQUEST_TYPE_PUSHDOWN:
             return parsePushdownRequest(root, metadataInfo, adapterName);
         default:
-            throw new RequestParserException("Could not parse unknown adapter request type identifier \"" + type
-                    + "\". Check whether versions of Exasol database and Virtual Schema Adapter are compatible.");
+            throw new RequestParserException(ExaError.messageBuilder("E-VS-COM-JAVA-16")
+                    .message("Could not parse unknown adapter request type identifier {{type}}. "
+                            + "Check whether versions of Exasol database and Virtual Schema Adapter are compatible.")
+                    .parameter("type", type).toString());
         }
     }
 

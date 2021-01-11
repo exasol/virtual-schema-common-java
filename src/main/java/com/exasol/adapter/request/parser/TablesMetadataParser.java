@@ -3,6 +3,7 @@ package com.exasol.adapter.request.parser;
 import com.exasol.adapter.metadata.ColumnMetadata;
 import com.exasol.adapter.metadata.DataType;
 import com.exasol.adapter.metadata.TableMetadata;
+import com.exasol.errorreporting.ExaError;
 
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -102,7 +103,9 @@ public class TablesMetadataParser {
         case "HASHTYPE":
             return getHashtypeDataType(dataType);
         default:
-            throw new RequestParserException("Unsupported data type encountered: " + typeName);
+            throw new RequestParserException(ExaError.messageBuilder("E-VS-COM-JAVA-18")
+                    .message("Unsupported data type encountered: {{typeName}}.") //
+                    .parameter("typeName", typeName).toString());
         }
     }
 
@@ -164,7 +167,9 @@ public class TablesMetadataParser {
         } else if (charset.equals("ASCII")) {
             return DataType.ExaCharset.ASCII;
         } else {
-            throw new RequestParserException("Unsupported charset encountered: " + charset);
+            throw new RequestParserException(ExaError.messageBuilder("E-VS-COM-JAVA-19") //
+                    .message("Unsupported charset encountered: {{charset}}.") //
+                    .parameter("charset", charset).toString());
         }
     }
 
@@ -174,7 +179,9 @@ public class TablesMetadataParser {
         } else if (intervalType.equals("YEAR TO MONTH")) {
             return DataType.IntervalType.YEAR_TO_MONTH;
         } else {
-            throw new RequestParserException("Unsupported interval data type encountered: " + intervalType);
+            throw new RequestParserException(ExaError.messageBuilder("E-VS-COM-JAVA-20") //
+                    .message("Unsupported interval data type encountered: {{intervalType}}.") //
+                    .parameter("intervalType", intervalType).toString());
         }
     }
 
