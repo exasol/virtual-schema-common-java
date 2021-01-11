@@ -231,7 +231,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
                 }
             } else {
                 throw new IllegalStateException(ExaError.messageBuilder("E-VS-COM-JAVA-9").message(
-                        "Unable to find a metadata for table \"{{tableName}}\" during collecting involved columns.")
+                        "Unable to find metadata for table \"{{tableName}}\" during collecting involved columns.")
                         .unquotedParameter("tableName", tableName).toString());
             }
         }

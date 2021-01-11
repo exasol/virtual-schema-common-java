@@ -44,7 +44,7 @@ public class SchemaMetadataInfoParser extends AbstractRequestParser {
                 return adapterNotes.toString();
             default:
                 throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-17").message(
-                        "Error parsing adapter notes. Must be a JSON string or a JSON object but was type {{type}}")
+                        "Error parsing adapter notes. Tha adapter notes must be a JSON string or a JSON object but were of type {{type}}")
                         .parameter("type", type).toString());
             }
         } else {

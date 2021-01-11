@@ -137,7 +137,7 @@ public final class SchemaMetadataJsonConverter {
             break;
         default:
             throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-2")
-                    .message("Unexpected data type {{dataType}} encountered trying to serialize schema metadata.")
+                    .message("Unexpected data type {{dataType}} encountered while trying to serialize schema metadata.")
                     .parameter("dataType", dataType.getExaDataType()).toString());
         }
         return typeAsJson.build();
@@ -203,7 +203,7 @@ public final class SchemaMetadataJsonConverter {
             return "YEAR TO MONTH";
         default:
             throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-4")
-                    .message("Unexpected interval type {{intervalType}} trying to serialize an interval. {{report}}")
+                    .message("Unexpected interval type {{intervalType}} encountered while trying to serialize an interval. {{report}}")
                     .parameter("intervalType", intervalType)
                     .unquotedParameter("report", ErrorMessages.askForBugReport()).toString());
         }

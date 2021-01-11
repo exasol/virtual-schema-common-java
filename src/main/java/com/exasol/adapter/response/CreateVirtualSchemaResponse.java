@@ -52,7 +52,7 @@ public final class CreateVirtualSchemaResponse extends AbstractResponse {
         private void validate(final SchemaMetadata schemaMetadata) {
             if (schemaMetadata == null) {
                 throw new ResponseException(ExaError.messageBuilder("E-VS-COM-JAVA-21")
-                        .message("SchemaMetadata should be not null.") //
+                        .message("SchemaMetadata must not be null.") //
                         .mitigation("Please, add SchemaMetadata using 'schemaMetadata(yourSchemaMetadata)' method "
                                 + "of this builder before you build.")
                         .toString());
