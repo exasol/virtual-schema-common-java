@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import com.exasol.adapter.AdapterException;
+import com.exasol.errorreporting.ExaError;
 
 /**
  * Represents a LISTAGG aggregate function.
@@ -210,10 +211,13 @@ public class SqlFunctionAggregateListagg extends SqlNode {
                 } else if (value.equalsIgnoreCase("WITHOUT COUNT")) {
                     return WITHOUT_COUNT;
                 } else {
-                    throw new IllegalArgumentException("Illegal value " + value
-                            + " was set for a 'truncation type' parameter of the LISTAGG function. Possible values: "
-                            + Arrays.stream(TruncationType.values()).map(TruncationType::toString)
-                                    .collect(Collectors.joining(", ")));
+                    throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-25").message(
+                            "Illegal value {{value}} was set for a 'truncation type' parameter of the LISTAGG function. "
+                                    + "Possible values: {{possibleValues}}.")
+                            .parameter("value", value)
+                            .unquotedParameter("possibleValues", Arrays.stream(TruncationType.values())
+                                    .map(TruncationType::toString).collect(Collectors.joining(", ")))
+                            .toString());
                 }
             }
 

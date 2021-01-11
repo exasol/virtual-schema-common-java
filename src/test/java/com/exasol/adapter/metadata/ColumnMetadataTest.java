@@ -1,5 +1,6 @@
 package com.exasol.adapter.metadata;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -32,18 +33,23 @@ class ColumnMetadataTest {
 
     @Test
     void testBuildWithoutNameThrowsException() {
-        assertThrows(IllegalStateException.class, () -> ColumnMetadata.builder().type(DataType.createBool()).build());
+        final ColumnMetadata.Builder builder = ColumnMetadata.builder().type(DataType.createBool());
+        final IllegalStateException exception = assertThrows(IllegalStateException.class, builder::build);
+        assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-5"));
     }
 
     @Test
     void testBuildWithEmptyNameThrowsException() {
-        assertThrows(IllegalStateException.class,
-                () -> ColumnMetadata.builder().name("").type(DataType.createBool()).build());
+        final ColumnMetadata.Builder builder = ColumnMetadata.builder().name("").type(DataType.createBool());
+        final IllegalStateException exception = assertThrows(IllegalStateException.class, builder::build);
+        assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-5"));
     }
 
     @Test
     void testBuildWithoutTypeThrowsException() {
-        assertThrows(IllegalStateException.class, () -> ColumnMetadata.builder().name("The_column_name").build());
+        final ColumnMetadata.Builder builder = ColumnMetadata.builder().name("The_column_name");
+        final IllegalStateException exception = assertThrows(IllegalStateException.class, builder::build);
+        assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-6"));
     }
 
     @Test

@@ -65,6 +65,8 @@ class SchemaMetadataParserTest {
                 + "    \"name\": \"SCHEMA_NAME\",\n" //
                 + "    \"adapterNotes\": 0\n" //
                 + "}";
-        assertThrows(IllegalArgumentException.class, () -> parseSchemaMetadata(rawSchemaMetadata));
+        final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> parseSchemaMetadata(rawSchemaMetadata));
+        assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-17"));
     }
 }

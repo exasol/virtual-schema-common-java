@@ -1,5 +1,6 @@
 package com.exasol.adapter.metadata.converter;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -105,7 +106,7 @@ class SchemaMetadataJsonConverterTest {
         final int bytesize = 16;
         final JsonObject jsonObject = CONVERTER.convertType(DataType.createHashtype(bytesize));
         assertAll(() -> assertTypeName(jsonObject, "hashtype"),
-              () -> assertThat(jsonObject.getInt("bytesize"), equalTo(bytesize)));
+                () -> assertThat(jsonObject.getInt("bytesize"), equalTo(bytesize)));
     }
 
     @Test
@@ -141,6 +142,8 @@ class SchemaMetadataJsonConverterTest {
     void testConvertTypeUnsupportedThrowsException() {
         final DataType dataType = Mockito.mock(DataType.class);
         when(dataType.getExaDataType()).thenReturn(DataType.ExaDataType.UNSUPPORTED);
-        assertThrows(IllegalArgumentException.class, () -> CONVERTER.convertType(dataType));
+        final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> CONVERTER.convertType(dataType));
+        assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-1"));
     }
 }

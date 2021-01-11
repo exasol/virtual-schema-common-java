@@ -4,6 +4,7 @@ import java.util.*;
 
 import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.DataType;
+import com.exasol.errorreporting.ExaError;
 
 /**
  * This class represents the {@link ScalarFunction#JSON_VALUE} scalar function.
@@ -27,8 +28,9 @@ public class SqlFunctionScalarJsonValue extends SqlNode {
 
     private void validateFunctionName(final ScalarFunction scalarFunction) {
         if (scalarFunction != ScalarFunction.JSON_VALUE) {
-            throw new IllegalArgumentException(
-                    "Invalid function name for function_scalar_json_value. Only JSON_VALUE is supported.");
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-26").message(
+                    "Invalid function name for function_scalar_json_value: {{functionName}}. Only JSON_VALUE is supported.")
+                    .parameter("functionName", scalarFunction.name()).toString());
         }
     }
 

@@ -27,7 +27,9 @@ class RequestParserTest {
     @Test
     void testParseThrowsExceptionIfRequestTypeUnknown() {
         final String rawRequest = "{ \"type\" : \"UNKNOWN\", \"schemaMetadataInfo\" : { \"name\" : \"foo\" } }";
-        assertThrows(RequestParserException.class, () -> this.parser.parse(rawRequest));
+        final RequestParserException exception = assertThrows(RequestParserException.class,
+                () -> this.parser.parse(rawRequest));
+        assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-16"));
     }
 
     @Test
@@ -73,6 +75,21 @@ class RequestParserTest {
                 () -> assertThat(properties, hasEntry(equalTo("YES"), equalTo("true"))),
                 () -> assertThat(properties, hasEntry(equalTo("NO"), equalTo("false"))),
                 () -> assertThat(properties, hasEntry(equalTo("NULL_value"), equalTo(null))));
+    }
+
+    @Test
+    void testParseRequestWithUnsupportedPropertyType() {
+        final String rawRequest = "{" //
+                + "    \"type\" : \"setProperties\"," //
+                + "    \"properties\" :" //
+                + "    {" //
+                + "        \"A\" : { \"value\" : \"some_value\"}" //
+                + "    }," //
+                + SCHEMA_METADATA_INFO //
+                + "}";
+        final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> this.parser.parse(rawRequest));
+        assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-7"));
     }
 
     @Test

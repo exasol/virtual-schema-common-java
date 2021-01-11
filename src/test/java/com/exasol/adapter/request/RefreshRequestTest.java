@@ -1,5 +1,6 @@
 package com.exasol.adapter.request;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,8 +33,10 @@ class RefreshRequestTest {
 
     @Test
     void testCreateWithEmptyTablesThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> this.refreshRequest = new RefreshRequest(ADAPTER_NAME,
-                this.schemaMetadataInfo, Collections.emptyList()));
+        final List<String> tables = Collections.emptyList();
+        final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> new RefreshRequest(ADAPTER_NAME, this.schemaMetadataInfo, tables));
+        assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-32"));
     }
 
     @Test

@@ -1161,7 +1161,19 @@ class PushDownSqlParserTest {
         final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserTableWithoutColumns();
         final IllegalStateException exception = assertThrows(IllegalStateException.class,
                 () -> pushdownSqlParser.parseExpression(jsonObject));
-        assertThat(exception.getMessage(), containsString("Cannot create a select list"));
+        assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-28"));
+    }
+
+    @Test
+    void testParseInvalidExpressionType() {
+        final String sqlAsJson = "{" //
+                + "   \"type\" : \"limit\"" //
+                + "}";
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserTableWithoutColumns();
+        final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> pushdownSqlParser.parseExpression(jsonObject));
+        assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-8"));
     }
 
     private PushdownSqlParser getCustomPushdownSqlParserTableWithoutColumns() {

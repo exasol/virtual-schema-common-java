@@ -9,6 +9,7 @@ import javax.json.*;
 import javax.json.JsonValue.ValueType;
 
 import com.exasol.adapter.metadata.SchemaMetadataInfo;
+import com.exasol.errorreporting.ExaError;
 
 /**
  * This parser reads the so called Schema Metadata Information sent alongside each request.
@@ -42,9 +43,9 @@ public class SchemaMetadataInfoParser extends AbstractRequestParser {
             case OBJECT:
                 return adapterNotes.toString();
             default:
-                throw new IllegalArgumentException(
-                        "Error parsing adapter notes. Must be a JSON string or a JSON object but was type \"" + type
-                                + "\".");
+                throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-17").message(
+                        "Error parsing adapter notes. The adapter notes must be a JSON string or a JSON object but were of type {{type}}")
+                        .parameter("type", type).toString());
             }
         } else {
             return "";

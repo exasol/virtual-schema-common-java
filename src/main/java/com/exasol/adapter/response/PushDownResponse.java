@@ -1,6 +1,7 @@
 package com.exasol.adapter.response;
 
 import com.exasol.adapter.response.converter.ResponseException;
+import com.exasol.errorreporting.ExaError;
 
 /**
  * This class is an abstract representation of a response created by a Virtual Schema Adapter as result of a request to
@@ -60,8 +61,11 @@ public final class PushDownResponse {
 
         private void validate(final String pushDownSql) {
             if (pushDownSql == null) {
-                throw new ResponseException("Push down SQL string should be not null. Please, add push down SQL string " //
-                        + "using 'pushDownSql(yourPushDownSqlString)' method of this builder before you build.");
+                throw new ResponseException(ExaError.messageBuilder("E-VS-COM-JAVA-22")
+                        .message("Push down SQL string should be not null.")
+                        .mitigation("Please, add push down SQL string using 'pushDownSql(yourPushDownSqlString)' "
+                                + "method of this builder before you build.")
+                        .toString());
             }
         }
     }

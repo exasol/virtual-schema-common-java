@@ -1,5 +1,7 @@
 package com.exasol.adapter.request.parser;
 
+import com.exasol.errorreporting.ExaError;
+
 import static com.exasol.adapter.request.parser.RequestParserConstants.PROPERTIES_KEY;
 
 import java.io.ByteArrayInputStream;
@@ -54,7 +56,7 @@ class AbstractRequestParser {
         final String key = entry.getKey();
         final JsonValue value = entry.getValue();
         final ValueType type = value.getValueType();
-        String stringValue;
+        final String stringValue;
         switch (type) {
         case STRING:
             stringValue = ((JsonString) value).getString();
@@ -72,8 +74,10 @@ class AbstractRequestParser {
             stringValue = null;
             break;
         default:
-            throw new IllegalArgumentException("Unable to parse adapter property value of type \"" + type
-                    + "\". Supported types are strings, booleans, numbers and NULL.");
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-7")
+                    .message("Unable to parse adapter property value of type {{type}}. "
+                            + "Supported types are strings, booleans, numbers and NULL.")
+                    .parameter("type", type).toString());
         }
         LOGGER.finer(() -> "Parsed property: \"" + key + "\" = \"" + stringValue + "\"");
         properties.put(key, stringValue);

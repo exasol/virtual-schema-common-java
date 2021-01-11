@@ -1,6 +1,7 @@
 package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
+import com.exasol.errorreporting.ExaError;
 
 /**
  * Represents a GROUP_CONCAT aggregate function.
@@ -135,7 +136,8 @@ public class SqlFunctionAggregateGroupConcat extends SqlNode {
 
         private void validateArgument(final SqlNode argument) {
             if (argument == null) {
-                throw new IllegalArgumentException("GROUP CONCAT function has a null argument.");
+                throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-24")
+                        .message("GROUP CONCAT function cannot have a null argument.").toString());
             }
         }
 

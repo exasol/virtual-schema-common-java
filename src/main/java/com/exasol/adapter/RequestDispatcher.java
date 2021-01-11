@@ -8,6 +8,7 @@ import com.exasol.adapter.request.*;
 import com.exasol.adapter.request.parser.RequestParser;
 import com.exasol.adapter.response.*;
 import com.exasol.adapter.response.converter.ResponseJsonConverter;
+import com.exasol.errorreporting.ExaError;
 import com.exasol.logging.RemoteLogManager;
 import com.exasol.logging.VersionCollector;
 
@@ -79,8 +80,9 @@ public final class RequestDispatcher {
         case PUSHDOWN:
             return dispatchPushDownRequestToAdapter(request, adapter, metadata);
         default:
-            throw new AdapterException("The request dispatcher encountered a request type \"" + type.toString()
-                    + "\" which it does not recognize. Please create an issue ticket quoting this error message.");
+            throw new AdapterException(ExaError.messageBuilder("E-VS-COM-JAVA-30")
+                    .message("The request dispatcher encountered a request type {{type}} which it does not recognize.")
+                    .ticketMitigation().parameter("type", type.toString()).toString());
         }
     }
 

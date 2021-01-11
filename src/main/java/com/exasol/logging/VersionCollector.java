@@ -1,5 +1,7 @@
 package com.exasol.logging;
 
+import com.exasol.errorreporting.ExaError;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -27,8 +29,9 @@ public class VersionCollector {
         try {
             properties.load(stream);
         } catch (final IOException exception) {
-            throw new IllegalArgumentException("Unable to read the version from the file: " + this.path + ".",
-                    exception);
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-31")
+                    .message("Unable to read the version from the file: {{path}}.") //
+                    .parameter("path", this.path).toString(), exception);
         }
         return properties.getProperty(VERSION);
     }

@@ -3,6 +3,7 @@ package com.exasol.adapter.sql;
 import java.util.List;
 
 import com.exasol.adapter.AdapterException;
+import com.exasol.errorreporting.ExaError;
 
 public final class SqlSelectList extends SqlExpressionList {
     private SqlSelectList(final List<SqlNode> selectList) {
@@ -26,7 +27,8 @@ public final class SqlSelectList extends SqlExpressionList {
      */
     public static SqlSelectList createRegularSelectList(final List<SqlNode> selectList) {
         if ((selectList == null) || selectList.isEmpty()) {
-            throw new IllegalStateException("Cannot create a select list, because the list of arguments is empty.");
+            throw new IllegalStateException(ExaError.messageBuilder("E-VS-COM-JAVA-28")
+                    .message("Cannot create a select list, because the list of arguments is empty.").toString());
         }
         return new SqlSelectList(selectList);
     }

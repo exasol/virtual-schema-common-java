@@ -1,6 +1,7 @@
 package com.exasol.adapter.sql;
 
 import static com.exasol.mocking.MockUtils.mockSqlNodeVisitor;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,12 +24,16 @@ class SqlLimitTest {
 
     @Test
     void testCreateAssertWithNegativeLimitThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> this.sqlLimit = new SqlLimit(-1));
+        final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> this.sqlLimit = new SqlLimit(-1));
+        assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-27"));
     }
 
     @Test
     void testCreateAssertWithNegativeOffsetThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> this.sqlLimit = new SqlLimit(1, -5));
+        final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> this.sqlLimit = new SqlLimit(1, -5));
+        assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-27"));
     }
 
     @Test

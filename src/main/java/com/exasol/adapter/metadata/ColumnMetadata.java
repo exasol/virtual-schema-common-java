@@ -1,5 +1,7 @@
 package com.exasol.adapter.metadata;
 
+import com.exasol.errorreporting.ExaError;
+
 import java.util.Objects;
 
 /**
@@ -293,15 +295,17 @@ public final class ColumnMetadata {
 
         private void validateName() {
             if ((this.name == null) || this.name.isEmpty()) {
-                throw new IllegalStateException(
-                        "Failed to build column metadata because mandatory column name was missing");
+                throw new IllegalStateException(ExaError.messageBuilder("E-VS-COM-JAVA-5")
+                        .message("Failed to build column metadata because mandatory column name is missing.")
+                        .toString());
             }
         }
 
         private void validateType() {
             if (this.type == null) {
-                throw new IllegalStateException(
-                        "Failed to build column \"" + this.name + "\" metadata because mandatory data type is missng");
+                throw new IllegalStateException(ExaError.messageBuilder("E-VS-COM-JAVA-6")
+                        .message("Failed to build column {{name}} metadata because mandatory data type is missing.")
+                        .parameter("name", this.name).toString());
             }
         }
     }

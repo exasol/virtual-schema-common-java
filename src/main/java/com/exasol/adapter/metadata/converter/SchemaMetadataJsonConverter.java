@@ -7,6 +7,7 @@ import javax.json.*;
 import com.exasol.adapter.metadata.*;
 import com.exasol.adapter.metadata.DataType.*;
 import com.exasol.errorhandling.ErrorMessages;
+import com.exasol.errorreporting.ExaError;
 
 /**
  * This class converts the schema metadata to its JSON representation.
@@ -106,8 +107,9 @@ public final class SchemaMetadataJsonConverter {
         typeAsJson.add(TYPE_KEY, getExasolDataTypeName(dataType.getExaDataType()));
         switch (dataType.getExaDataType()) {
         case UNSUPPORTED:
-            throw new IllegalArgumentException("Unsupported data type found trying to serialize schema metadata. "
-                    + ErrorMessages.askForBugReport());
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-1")
+                    .message("Unsupported data type found trying to serialize schema metadata. {{report}}")
+                    .unquotedParameter("report", ErrorMessages.askForBugReport()).toString());
         case DECIMAL:
             typeAsJson.add("precision", dataType.getPrecision());
             typeAsJson.add("scale", dataType.getScale());
@@ -134,8 +136,9 @@ public final class SchemaMetadataJsonConverter {
         case BOOLEAN:
             break;
         default:
-            throw new IllegalArgumentException("Unexpected data type \"" + dataType.getExaDataType()
-                    + "\" encountered trying to serialize schema metadata.");
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-2")
+                    .message("Unexpected data type {{dataType}} encountered while trying to serialize schema metadata.")
+                    .parameter("dataType", dataType.getExaDataType()).toString());
         }
         return typeAsJson.build();
     }
@@ -184,9 +187,11 @@ public final class SchemaMetadataJsonConverter {
         case ASCII:
             return "ASCII";
         default:
-            throw new IllegalArgumentException("Unexpected charset \"" + charset
-                    + "\" encounted while trying to serialize character string type information. "
-                    + ErrorMessages.askForBugReport());
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-3")
+                    .message("Unexpected charset {{charset}} encountered while trying to serialize character "
+                            + "string type information. {{report}}")
+                    .parameter("charset", charset) //
+                    .unquotedParameter("report", ErrorMessages.askForBugReport()).toString());
         }
     }
 
@@ -197,8 +202,10 @@ public final class SchemaMetadataJsonConverter {
         case YEAR_TO_MONTH:
             return "YEAR TO MONTH";
         default:
-            throw new IllegalArgumentException("Unexpected interval type \"" + intervalType
-                    + "\" trying to serialize an interval. " + ErrorMessages.askForBugReport());
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-4")
+                    .message("Unexpected interval type {{intervalType}} encountered while trying to serialize an interval. {{report}}")
+                    .parameter("intervalType", intervalType)
+                    .unquotedParameter("report", ErrorMessages.askForBugReport()).toString());
         }
     }
 }

@@ -3,6 +3,7 @@ package com.exasol.adapter.request;
 import java.util.List;
 
 import com.exasol.adapter.metadata.SchemaMetadataInfo;
+import com.exasol.errorreporting.ExaError;
 
 /**
  * This class represents a request that tells a Virtual Schema Adapter to present the current metadata
@@ -33,8 +34,10 @@ public class RefreshRequest extends AbstractAdapterRequest {
             final List<String> tables) {
         super(adapterName, schemaMetadataInfo, AdapterRequestType.REFRESH);
         if ((tables == null) || tables.isEmpty()) {
-            throw new IllegalArgumentException(
-                    "The RefreshRequest constructor expects a list of requested tables, but the list is currently empty.");
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-32")
+                    .message("The RefreshRequest constructor expects a list of requested tables, "
+                            + "but the list is currently empty.")
+                    .toString());
         }
         this.refreshSelectedTablesOnly = true;
         this.tables = tables;

@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -24,6 +25,7 @@ class RefreshResponseTest {
 
     @Test
     void testRefreshResponseThrowsException() {
-        assertThrows(ResponseException.class, RefreshResponse.builder()::build);
+        final ResponseException exception = assertThrows(ResponseException.class, RefreshResponse.builder()::build);
+        assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-23"));
     }
 }
