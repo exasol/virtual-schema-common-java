@@ -4,6 +4,7 @@ Code name:
 
 ## Refactoring
 
+* #189: Unified `parseInvolvedTables` method in the `RequestParser`.
 * #195: Added a builder for unified error handling.
 
 ## Dependency updates

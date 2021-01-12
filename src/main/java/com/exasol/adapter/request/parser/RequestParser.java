@@ -76,12 +76,12 @@ public class RequestParser extends AbstractRequestParser {
     private AbstractAdapterRequest parsePushdownRequest(final JsonObject root, final SchemaMetadataInfo metadataInfo,
             final String adapterName) {
         final SqlStatement statement = parsePushdownStatement(root);
-        final List<TableMetadata> involvedTables = parseInvolvedTablesMetadata(root);
+        final List<TableMetadata> involvedTables = parseInvolvedTables(root);
         return new PushDownRequest(adapterName, metadataInfo, statement, involvedTables);
     }
 
-    private List<TableMetadata> parseInvolvedTablesMetadata(final JsonObject root) {
-        return new TablesMetadataParser().parse(root.getJsonArray("involvedTables"));
+    private List<TableMetadata> parseInvolvedTables(final JsonObject root) {
+        return TablesMetadataParser.create().parse(root.getJsonArray(INVOLVED_TABLES_KEY));
     }
 
     private String extractAdapterNameFromMetadataInfo(final SchemaMetadataInfo metadataInfo) {
@@ -112,10 +112,6 @@ public class RequestParser extends AbstractRequestParser {
         final PushdownSqlParser pushdownSqlParser = PushdownSqlParser.createWithTablesMetadata(involvedTables);
         final JsonObject jsonPushdownStatement = root.getJsonObject(PUSHDOW_REQUEST_KEY);
         return (SqlStatement) pushdownSqlParser.parseExpression(jsonPushdownStatement);
-    }
-
-    private List<TableMetadata> parseInvolvedTables(final JsonObject root) {
-        return TablesMetadataParser.create().parse(root.getJsonArray(INVOLVED_TABLES_KEY));
     }
 
     /**
