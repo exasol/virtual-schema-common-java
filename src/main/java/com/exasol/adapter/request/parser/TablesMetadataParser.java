@@ -1,28 +1,36 @@
 package com.exasol.adapter.request.parser;
 
-import com.exasol.adapter.metadata.ColumnMetadata;
-import com.exasol.adapter.metadata.DataType;
-import com.exasol.adapter.metadata.TableMetadata;
-import com.exasol.errorreporting.ExaError;
+import static com.exasol.adapter.request.parser.RequestParserConstants.*;
 
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonString;
-import javax.json.JsonValue;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.exasol.adapter.request.parser.RequestParserConstants.*;
+import javax.json.*;
+
+import com.exasol.adapter.metadata.*;
+import com.exasol.errorreporting.ExaError;
 
 /**
  * This class provides a parser for table metadata
  */
 public class TablesMetadataParser {
     /**
-     * Create a new parser for table metadata
+     * Create a new instance of a {@link TablesMetadataParser}
+     *
+     * @return new {@link TablesMetadataParser} instance
+     */
+    public static TablesMetadataParser create() {
+        return new TablesMetadataParser();
+    }
+
+    private TablesMetadataParser() {
+    }
+
+    /**
+     * Parse a list of tables in JsonArray format to a list of {@link TableMetadata}
      *
      * @param tablesAsJson JSON array of table metadata
-     * @return parser instance
+     * @return list of {@link TableMetadata}
      */
     public List<TableMetadata> parse(final JsonArray tablesAsJson) {
         return parseTables(tablesAsJson);
@@ -183,14 +191,5 @@ public class TablesMetadataParser {
                     .message("Unsupported interval data type encountered: {{intervalType}}.") //
                     .parameter("intervalType", intervalType).toString());
         }
-    }
-
-    /**
-     * Create a new instance of a {@link TablesMetadataParser}
-     *
-     * @return new parser instance
-     */
-    public static TablesMetadataParser create() {
-        return new TablesMetadataParser();
     }
 }

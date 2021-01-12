@@ -1,25 +1,21 @@
 package com.exasol.adapter.request.parser;
 
-import com.exasol.adapter.metadata.ColumnMetadata;
-import com.exasol.adapter.metadata.DataType;
-import com.exasol.adapter.metadata.TableMetadata;
-import org.junit.jupiter.api.Test;
-
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.StringReader;
-import java.nio.charset.*;
-import java.nio.file.*;
-import java.util.ArrayList;
-import java.util.List;
-
 import static com.exasol.adapter.metadata.DataType.ExaCharset.ASCII;
 import static com.exasol.adapter.metadata.DataType.ExaCharset.UTF8;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.json.*;
+
+import org.junit.jupiter.api.Test;
+
+import com.exasol.adapter.metadata.*;
 
 class TablesMetadataParserTest {
     @Test
@@ -37,8 +33,7 @@ class TablesMetadataParserTest {
         final List<TableMetadata> expectedInvolvedTablesMetadata = new ArrayList<>();
         expectedInvolvedTablesMetadata.add(new TableMetadata("CLICKS", "", tableColumns, ""));
         final JsonArray tablesAsJson = readInvolvedTablesFromJsonFile("target/test-classes/pushdown_request.json");
-        final TablesMetadataParser tablesMetadataParser = new TablesMetadataParser();
-        final List<TableMetadata> tables = tablesMetadataParser.parse(tablesAsJson);
+        final List<TableMetadata> tables = TablesMetadataParser.create().parse(tablesAsJson);
         assertThat(tables, equalTo(expectedInvolvedTablesMetadata));
     }
 
@@ -60,8 +55,7 @@ class TablesMetadataParserTest {
         final List<TableMetadata> expectedInvolvedTablesMetadata = createExpectedTableMetadata();
         final JsonArray tablesAsJson = readInvolvedTablesFromJsonFile(
                 "target/test-classes/pushdown_request_alltypes.json");
-        final TablesMetadataParser tablesMetadataParser = new TablesMetadataParser();
-        final List<TableMetadata> tables = tablesMetadataParser.parse(tablesAsJson);
+        final List<TableMetadata> tables = TablesMetadataParser.create().parse(tablesAsJson);
         assertThat(tables, equalTo(expectedInvolvedTablesMetadata));
     }
 
