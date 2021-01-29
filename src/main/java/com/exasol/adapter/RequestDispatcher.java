@@ -34,7 +34,7 @@ public final class RequestDispatcher {
         final AdapterRequest adapterRequest = parseRequest(rawRequest);
         configureAdapterLoggingAccordingToRequestSettings(adapterRequest);
         final AdapterCallExecutor adapterCallExecutor = getAdapterCallExecutor();
-        return adapterCallExecutor.executeAdapterCall(metadata, adapterRequest);
+        return adapterCallExecutor.executeAdapterCall(adapterRequest, metadata);
     }
 
     private static void logVersionInformation() {

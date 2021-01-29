@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import com.exasol.ExaMetadata;
+import com.exasol.adapter.request.parser.RequestParserException;
 
 @ExtendWith(SystemErrGuard.class)
 class RequestDispatcherIT {
@@ -139,21 +140,11 @@ class RequestDispatcherIT {
     }
 
     @Test
-    void testExecuteAdapterCallThrowsException(final Capturable stream) throws AdapterException {
-        final String rawRequest = "{\n" //
-                + "    \"type\" : \"createVirtualSchema\",\n" //
-                + "    \"schemaMetadataInfo\" :\n" //
-                + "    {\n" //
-                + "          \"name\" : \"EXCEPTION_TEST\",\n" //
-                + "          \"properties\" :\n" //
-                + "          {\n" //
-                + "              \"SQL_DIALECT\" : \"NON-EXISTENT\"\n" //
-                + "          }\n" //
-                + "    }\n" //
-                + "}";
+    void testUnknownRequestTypeThrowsException(final Capturable stream) throws AdapterException {
+        final String rawRequest = "{ \"type\" : \"NON_EXISTENT_REQUEST_TYPE\" }";
         stream.capture();
         assertAll(
-                () -> assertThrows(IllegalArgumentException.class,
+                () -> assertThrows(RequestParserException.class,
                         () -> RequestDispatcher.adapterCall(this.metadata, rawRequest)),
                 () -> assertThat(stream.getCapturedData(), containsString("SEVERE")));
     }
