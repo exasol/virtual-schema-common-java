@@ -39,8 +39,8 @@ class AdapterCallExecutorTest {
         when(this.mockAdapter.createVirtualSchema(any(), any())).thenReturn(expectedResponse);
         final String response = this.adapterCallExecutor.executeAdapterCall(new CreateVirtualSchemaRequest(null, null),
                 null);
-        assertEquals(response,
-                "{\"type\":\"createVirtualSchema\",\"schemaMetadata\":{\"tables\":[],\"adapterNotes\":\"\"}}");
+        assertEquals("{\"type\":\"createVirtualSchema\",\"schemaMetadata\":{\"tables\":[],\"adapterNotes\":\"\"}}",
+                response);
         verify(this.mockAdapter).createVirtualSchema(any(), any(CreateVirtualSchemaRequest.class));
     }
 
@@ -54,7 +54,7 @@ class AdapterCallExecutorTest {
         when(this.mockAdapter.dropVirtualSchema(any(), any())).thenReturn(expectedResponse);
         final String response = this.adapterCallExecutor.executeAdapterCall(new DropVirtualSchemaRequest(null, null),
                 null);
-        assertEquals(response, "{\"type\":\"dropVirtualSchema\"}");
+        assertEquals("{\"type\":\"dropVirtualSchema\"}", response);
         verify(this.mockAdapter).dropVirtualSchema(any(), any(DropVirtualSchemaRequest.class));
     }
 
@@ -63,7 +63,7 @@ class AdapterCallExecutorTest {
         final RefreshResponse expectedResponse = RefreshResponse.builder().schemaMetadata(getSchemaMetadata()).build();
         when(this.mockAdapter.refresh(any(), any())).thenReturn(expectedResponse);
         final String response = this.adapterCallExecutor.executeAdapterCall(new RefreshRequest(null, null), null);
-        assertEquals(response, "{\"type\":\"refresh\",\"schemaMetadata\":{\"tables\":[],\"adapterNotes\":\"\"}}");
+        assertEquals("{\"type\":\"refresh\",\"schemaMetadata\":{\"tables\":[],\"adapterNotes\":\"\"}}", response);
         verify(this.mockAdapter).refresh(any(), any(RefreshRequest.class));
     }
 
@@ -74,7 +74,7 @@ class AdapterCallExecutorTest {
         when(this.mockAdapter.setProperties(any(), any())).thenReturn(expectedResponse);
         final String response = this.adapterCallExecutor.executeAdapterCall(new SetPropertiesRequest(null, null, null),
                 null);
-        assertEquals(response, "{\"type\":\"setProperties\",\"schemaMetadata\":{\"tables\":[],\"adapterNotes\":\"\"}}");
+        assertEquals("{\"type\":\"setProperties\",\"schemaMetadata\":{\"tables\":[],\"adapterNotes\":\"\"}}", response);
         verify(this.mockAdapter).setProperties(any(), any(SetPropertiesRequest.class));
     }
 
@@ -84,7 +84,7 @@ class AdapterCallExecutorTest {
         when(this.mockAdapter.getCapabilities(any(), any())).thenReturn(expectedResponse);
         final String response = this.adapterCallExecutor.executeAdapterCall(new GetCapabilitiesRequest(null, null),
                 null);
-        assertEquals(response, "{\"type\":\"getCapabilities\",\"capabilities\":[]}");
+        assertEquals("{\"type\":\"getCapabilities\",\"capabilities\":[]}", response);
         verify(this.mockAdapter).getCapabilities(any(), any(GetCapabilitiesRequest.class));
     }
 
@@ -95,7 +95,7 @@ class AdapterCallExecutorTest {
         when(this.mockAdapter.pushdown(any(), any())).thenReturn(expectedResponse);
         final String response = this.adapterCallExecutor.executeAdapterCall(new PushDownRequest(null, null, null, null),
                 null);
-        assertEquals(response, "{\"type\":\"pushdown\",\"sql\":\"SELECT * FROM FOOBAR\"}");
+        assertEquals("{\"type\":\"pushdown\",\"sql\":\"SELECT * FROM FOOBAR\"}", response);
         verify(this.mockAdapter).pushdown(any(), any(PushDownRequest.class));
     }
 }
