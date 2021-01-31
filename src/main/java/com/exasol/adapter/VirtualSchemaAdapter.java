@@ -75,4 +75,14 @@ public interface VirtualSchemaAdapter {
      * @throws AdapterException if the adapter can't handle the request
      */
     public PushDownResponse pushdown(final ExaMetadata metadata, final PushDownRequest request) throws AdapterException;
+
+    /**
+     * @return the name of this {@link VirtualSchemaAdapter}
+     */
+    public String getName();
+
+    /**
+     * @return the version of this {@link VirtualSchemaAdapter}
+     */
+    public String getVersion();
 }

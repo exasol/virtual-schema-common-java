@@ -1,7 +1,6 @@
 package com.exasol.adapter;
 
-import java.util.NoSuchElementException;
-import java.util.ServiceLoader;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -76,9 +75,10 @@ public final class RequestDispatcher {
     private static VirtualSchemaAdapter getVirtualSchemaAdapter() {
         final ServiceLoader<VirtualSchemaAdapter> virtualSchemaAdapterLoader = ServiceLoader
                 .load(VirtualSchemaAdapter.class);
-        return virtualSchemaAdapterLoader.findFirst().orElseThrow(() -> new NoSuchElementException(
+        final Optional<VirtualSchemaAdapter> virtualSchemaAdapter = virtualSchemaAdapterLoader.findFirst();
+        virtualSchemaAdapter.ifPresent(
+                vsa -> LOGGER.config("Loading Virtual Schema Adapter: " + vsa.getName() + " " + vsa.getVersion()));
+        return virtualSchemaAdapter.orElseThrow(() -> new NoSuchElementException(
                 ExaError.messageBuilder("E-VS-COM-JAVA-29").message("No VirtualSchemaAdapter was found.").toString()));
-//        LOGGER.config(() -> "Loading Virtual Schema Adapter: " + factory.getAdapterName() + " "
-//                + factory.getAdapterVersion());
     }
 }
