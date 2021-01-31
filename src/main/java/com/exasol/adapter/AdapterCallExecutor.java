@@ -1,8 +1,5 @@
 package com.exasol.adapter;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.exasol.ExaMetadata;
 import com.exasol.adapter.request.*;
 import com.exasol.adapter.response.*;
@@ -13,7 +10,6 @@ import com.exasol.errorreporting.ExaError;
  * Executor for adapter calls issued by the Exasol database.
  */
 public class AdapterCallExecutor {
-    private static final Logger LOGGER = Logger.getLogger(AdapterCallExecutor.class.getName());
     private final VirtualSchemaAdapter adapter;
 
     /**
@@ -28,16 +24,6 @@ public class AdapterCallExecutor {
     @SuppressWarnings("squid:S2139")
     protected String executeAdapterCall(final AdapterRequest request, final ExaMetadata metadata)
             throws AdapterException {
-        try {
-            return processRequest(request, metadata);
-        } catch (final Exception exception) {
-            LOGGER.severe(exception::getMessage);
-            LOGGER.log(Level.FINE, "Stack trace:", exception);
-            throw exception;
-        }
-    }
-
-    private String processRequest(final AdapterRequest request, final ExaMetadata metadata) throws AdapterException {
         final AdapterRequestType type = request.getType();
         switch (type) {
         case CREATE_VIRTUAL_SCHEMA:

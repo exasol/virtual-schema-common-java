@@ -2,6 +2,7 @@ package com.exasol.adapter;
 
 import java.util.NoSuchElementException;
 import java.util.ServiceLoader;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.exasol.ExaMetadata;
@@ -29,12 +30,18 @@ public final class RequestDispatcher {
      * @throws AdapterException in case the request type is not recognized
      */
     public static String adapterCall(final ExaMetadata metadata, final String rawRequest) throws AdapterException {
-        logVersionInformation();
-        logRawRequest(rawRequest);
-        final AdapterRequest adapterRequest = parseRequest(rawRequest);
-        configureAdapterLoggingAccordingToRequestSettings(adapterRequest);
-        final AdapterCallExecutor adapterCallExecutor = getAdapterCallExecutor();
-        return adapterCallExecutor.executeAdapterCall(adapterRequest, metadata);
+        try {
+            logVersionInformation();
+            logRawRequest(rawRequest);
+            final AdapterRequest adapterRequest = parseRequest(rawRequest);
+            configureAdapterLoggingAccordingToRequestSettings(adapterRequest);
+            final AdapterCallExecutor adapterCallExecutor = getAdapterCallExecutor();
+            return adapterCallExecutor.executeAdapterCall(adapterRequest, metadata);
+        } catch (final Exception exception) {
+            LOGGER.severe(exception::getMessage);
+            LOGGER.log(Level.FINE, "Stack trace:", exception);
+            throw exception;
+        }
     }
 
     private static void logVersionInformation() {
