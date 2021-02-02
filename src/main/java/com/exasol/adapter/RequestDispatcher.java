@@ -30,17 +30,22 @@ public final class RequestDispatcher {
      */
     public static String adapterCall(final ExaMetadata metadata, final String rawRequest) throws AdapterException {
         try {
-            logVersionInformation();
-            logRawRequest(rawRequest);
-            final AdapterRequest adapterRequest = parseRequest(rawRequest);
-            configureAdapterLoggingAccordingToRequestSettings(adapterRequest);
-            final AdapterCallExecutor adapterCallExecutor = getAdapterCallExecutor();
-            return adapterCallExecutor.executeAdapterCall(adapterRequest, metadata);
+            return processAdapterCall(metadata, rawRequest);
         } catch (final Exception exception) {
             LOGGER.severe(exception::getMessage);
             LOGGER.log(Level.FINE, "Stack trace:", exception);
             throw exception;
         }
+    }
+
+    private static String processAdapterCall(final ExaMetadata metadata, final String rawRequest)
+            throws AdapterException {
+        logVersionInformation();
+        logRawRequest(rawRequest);
+        final AdapterRequest adapterRequest = parseRequest(rawRequest);
+        configureAdapterLoggingAccordingToRequestSettings(adapterRequest);
+        final AdapterCallExecutor adapterCallExecutor = getAdapterCallExecutor();
+        return adapterCallExecutor.executeAdapterCall(adapterRequest, metadata);
     }
 
     private static void logVersionInformation() {

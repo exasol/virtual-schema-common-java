@@ -2,7 +2,9 @@ package com.exasol.adapter;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.itsallcode.io.Capturable;
 import org.itsallcode.junit.sysextensions.SystemErrGuard;
@@ -28,36 +30,38 @@ class RequestDispatcherTest {
     void testDispatchCreateVirtualSchemaRequest() throws AdapterException {
         final String rawRequest = "{ \"type\" : \"createVirtualSchema\", " + DEFAULT_REQUEST_PARTS + "}";
         final String response = RequestDispatcher.adapterCall(null, rawRequest);
-        assertEquals("{\"type\":\"createVirtualSchema\",\"schemaMetadata\":{\"tables\":[],\"adapterNotes\":\"\"}}",
-                response);
+        assertThat(response,
+                equalTo("{\"type\":\"createVirtualSchema\",\"schemaMetadata\":{\"tables\":[],\"adapterNotes\":\"\"}}"));
     }
 
     @Test
     void testDispatchDropVirtualSchemaRequest() throws AdapterException {
         final String rawRequest = "{ \"type\" : \"dropVirtualSchema\", " + DEFAULT_REQUEST_PARTS + "}";
         final String response = RequestDispatcher.adapterCall(this.metadata, rawRequest);
-        assertEquals("{\"type\":\"dropVirtualSchema\"}", response);
+        assertThat(response, equalTo("{\"type\":\"dropVirtualSchema\"}"));
     }
 
     @Test
     void testDispatchRefreshRequest() throws AdapterException {
         final String rawRequest = "{ \"type\" : \"refresh\", " + DEFAULT_REQUEST_PARTS + "}";
         final String response = RequestDispatcher.adapterCall(this.metadata, rawRequest);
-        assertEquals("{\"type\":\"refresh\",\"schemaMetadata\":{\"tables\":[],\"adapterNotes\":\"\"}}", response);
+        assertThat(response,
+                equalTo("{\"type\":\"refresh\",\"schemaMetadata\":{\"tables\":[],\"adapterNotes\":\"\"}}"));
     }
 
     @Test
     void testDispatchSetPropertiesRequest() throws AdapterException {
         final String rawRequest = "{ \"type\" : \"setProperties\", " + DEFAULT_REQUEST_PARTS + "}";
         final String response = RequestDispatcher.adapterCall(this.metadata, rawRequest);
-        assertEquals("{\"type\":\"setProperties\",\"schemaMetadata\":{\"tables\":[],\"adapterNotes\":\"\"}}", response);
+        assertThat(response,
+                equalTo("{\"type\":\"setProperties\",\"schemaMetadata\":{\"tables\":[],\"adapterNotes\":\"\"}}"));
     }
 
     @Test
     void testDispatchGetCapabilitiesRequest() throws AdapterException {
         final String rawRequest = "{ \"type\" : \"getCapabilities\", " + DEFAULT_REQUEST_PARTS + "}";
         final String response = RequestDispatcher.adapterCall(this.metadata, rawRequest);
-        assertEquals("{\"type\":\"getCapabilities\",\"capabilities\":[]}", response);
+        assertThat(response, equalTo("{\"type\":\"getCapabilities\",\"capabilities\":[]}"));
     }
 
     @Test
@@ -94,7 +98,7 @@ class RequestDispatcherTest {
                 + "    ]\n" //
                 + "}";
         final String response = RequestDispatcher.adapterCall(this.metadata, rawRequest);
-        assertEquals("{\"type\":\"pushdown\",\"sql\":\"SELECT * FROM FOOBAR\"}", response);
+        assertThat(response, equalTo("{\"type\":\"pushdown\",\"sql\":\"SELECT * FROM FOOBAR\"}"));
     }
 
     @Test
