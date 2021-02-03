@@ -1,8 +1,8 @@
 package com.exasol.adapter.sql;
 
-import com.exasol.adapter.AdapterException;
-
 import java.math.BigDecimal;
+
+import com.exasol.adapter.AdapterException;
 
 public class SqlLiteralExactnumeric extends SqlNode {
     private final BigDecimal value;
@@ -14,7 +14,8 @@ public class SqlLiteralExactnumeric extends SqlNode {
     /**
      * Get a value of the exactnumeric converted to a plain string without E notation.
      * <p>
-     * For example: 1E-36 becomes 0.00000000000000000000000000000000000</>
+     * For example: 1E-36 becomes 0.00000000000000000000000000000000000
+     * </p>
      * 
      * @return exactnumeric value as a string
      */
