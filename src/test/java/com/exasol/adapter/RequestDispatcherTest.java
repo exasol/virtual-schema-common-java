@@ -6,8 +6,11 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.logging.ConsoleHandler;
+
 import org.itsallcode.io.Capturable;
 import org.itsallcode.junit.sysextensions.SystemErrGuard;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -25,6 +28,12 @@ class RequestDispatcherTest {
             + "        }\n" //
             + "    }\n";
     private final ExaMetadata metadata = null;
+
+    @BeforeEach
+    void beforeEach() {
+        RequestDispatcher.LOGGER.setUseParentHandlers(false);
+        RequestDispatcher.LOGGER.addHandler(new ConsoleHandler());
+    }
 
     @Test
     void testDispatchCreateVirtualSchemaRequest() throws AdapterException {
@@ -115,11 +124,8 @@ class RequestDispatcherTest {
                 + "          }\n" //
                 + "    }\n" //
                 + "}";
-//        final SchemaMetadata metadata = createSchemaMetadata(rawRequest);
-//        when(this.mockAdapter.createVirtualSchema(any(), any()))
-//                .thenReturn(CreateVirtualSchemaResponse.builder().schemaMetadata(metadata).build());
         stream.capture();
-        final String response = RequestDispatcher.adapterCall(this.metadata, rawRequest);
+        RequestDispatcher.adapterCall(this.metadata, rawRequest);
         assertThat(stream.getCapturedData(), containsString("level FINE."));
     }
 
@@ -147,9 +153,9 @@ class RequestDispatcherTest {
     void testUnknownRequestTypeThrowsException(final Capturable stream) throws AdapterException {
         final String rawRequest = "{ \"type\" : \"NON_EXISTENT_REQUEST_TYPE\" }";
         stream.capture();
-        assertAll(() -> assertThrows(RequestParserException.class,
-                () -> RequestDispatcher.adapterCall(this.metadata, rawRequest))
-        // ,() -> assertThat(stream.getCapturedData(), containsString("SEVERE"))
-        );
+        assertAll(
+                () -> assertThrows(RequestParserException.class,
+                        () -> RequestDispatcher.adapterCall(this.metadata, rawRequest)),
+                () -> assertThat(stream.getCapturedData(), containsString("SEVERE")));
     }
 }

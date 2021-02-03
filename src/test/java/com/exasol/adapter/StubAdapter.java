@@ -1,10 +1,9 @@
 package com.exasol.adapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.exasol.ExaMetadata;
-import com.exasol.adapter.metadata.*;
+import com.exasol.adapter.metadata.SchemaMetadata;
 import com.exasol.adapter.request.*;
 import com.exasol.adapter.response.*;
 
@@ -21,21 +20,12 @@ public class StubAdapter implements VirtualSchemaAdapter {
     @Override
     public DropVirtualSchemaResponse dropVirtualSchema(final ExaMetadata metadata,
             final DropVirtualSchemaRequest request) {
-        return null;
+        return DropVirtualSchemaResponse.builder().build();
     }
 
     @Override
     public RefreshResponse refresh(final ExaMetadata metadata, final RefreshRequest request) {
         return RefreshResponse.builder().schemaMetadata(new SchemaMetadata("", List.of())).build();
-    }
-
-    private SchemaMetadata createSchemaMetadata(final AdapterRequest request) {
-        final List<ColumnMetadata> columns = new ArrayList<>();
-        columns.add(ColumnMetadata.builder().name("BAR").adapterNotes("").type(DataType.createDecimal(18, 0))
-                .nullable(true).identity(false).defaultValue("").comment("").build());
-        final List<TableMetadata> tables = new ArrayList<>();
-        tables.add(new TableMetadata("FOO", null, columns, ""));
-        return new SchemaMetadata("", tables);
     }
 
     @Override
