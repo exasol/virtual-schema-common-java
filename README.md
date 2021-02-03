@@ -75,6 +75,6 @@ Please note that the artifact name changed from "virtualschema-common" to "virtu
 
 ## Open Source Project Support
 
-Please note that this is an open source project which is officially supported by Exasol. This module is part of a larger project called [Virtual Schemas](https://github.com/exasol/virtual-schema).
+Please note that this is an open source project which is officially supported by Exasol. This module is part of a larger project called [Virtual Schemas](https://github.com/exasol/virtual-schemas).
 
 Unless you are writing your own adapter based on this common module here, please check for problem solutions in the master project first.
