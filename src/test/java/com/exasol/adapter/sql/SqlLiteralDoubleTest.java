@@ -21,7 +21,7 @@ class SqlLiteralDoubleTest {
 
     @Test
     void testGetValue() {
-        assertThat(this.sqlLiteralDouble.getValue(), equalTo(VALUE));
+        assertThat(this.sqlLiteralDouble.getValue(), equalTo("2.01E1"));
     }
 
     @Test

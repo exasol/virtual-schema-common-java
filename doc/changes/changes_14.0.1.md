@@ -2,6 +2,14 @@
 
 Code name: 
 
+## Bug Fixes
+
+* #209: Fixed wrong values format of literal_exactnumeric and literal_double.
+
+## Documentation
+
+* #208: Fixed API Documentation for literal_exactnumeric and literal_double.
+
 ## Refactoring
 
 * #189: Unified `parseInvolvedTables` method in the `RequestParser`.

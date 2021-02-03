@@ -11,8 +11,15 @@ public class SqlLiteralExactnumeric extends SqlNode {
         this.value = value;
     }
 
-    public BigDecimal getValue() {
-        return value;
+    /**
+     * Get a value of the exactnumeric converted to a plain string without E notation.
+     * <p>
+     * For example: 1E-36 becomes 0.00000000000000000000000000000000000</>
+     * 
+     * @return exactnumeric value as a string
+     */
+    public String getValue() {
+        return this.value.toPlainString();
     }
 
     @Override
