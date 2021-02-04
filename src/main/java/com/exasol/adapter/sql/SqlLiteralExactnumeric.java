@@ -14,7 +14,7 @@ public class SqlLiteralExactnumeric extends SqlNode {
     /**
      * Get a value of the exactnumeric converted to a plain string without E notation.
      * <p>
-     * For example: 1E-36 becomes 0.00000000000000000000000000000000000
+     * For example: 1E-35 becomes 0.00000000000000000000000000000000001
      * </p>
      * 
      * @return exactnumeric value as a string
