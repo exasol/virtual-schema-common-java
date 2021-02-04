@@ -2,7 +2,7 @@
 
 Code name: 
 
-In release 15.0.0, we optimized adapter loading by limiting the number of `Virtual Schema Adapter` to be loaded to one.
+In release 15.0.0, we optimized the deployment so that each dialect gets its own jar. With this change, also the `SQL_DIALECT` property used for when executing a `CREATE VIRTUAL SCHEMA` command from Exasol database is obsolete.
 
 ## Information for Developers
 

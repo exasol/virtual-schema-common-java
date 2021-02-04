@@ -31,7 +31,7 @@ class AdapterCallExecutorTest {
     }
 
     @Test
-    void testDispatchCreateVtirtualSchemaRequest() throws AdapterException {
+    void testExecuteCreateVtirtualSchemaRequest() throws AdapterException {
         final CreateVirtualSchemaResponse expectedResponse = CreateVirtualSchemaResponse.builder()
                 .schemaMetadata(getSchemaMetadata()).build();
         when(this.mockAdapter.createVirtualSchema(any(), any())).thenReturn(expectedResponse);
@@ -47,7 +47,7 @@ class AdapterCallExecutorTest {
     }
 
     @Test
-    void testDispatchDropVirtualSchemaRequest() throws AdapterException {
+    void testExecuteDropVirtualSchemaRequest() throws AdapterException {
         final DropVirtualSchemaResponse expectedResponse = DropVirtualSchemaResponse.builder().build();
         when(this.mockAdapter.dropVirtualSchema(any(), any())).thenReturn(expectedResponse);
         final String response = this.adapterCallExecutor.executeAdapterCall(new DropVirtualSchemaRequest(null, null),
@@ -57,7 +57,7 @@ class AdapterCallExecutorTest {
     }
 
     @Test
-    void testDispatchRefreshRequest() throws AdapterException {
+    void testExecuteRefreshRequest() throws AdapterException {
         final RefreshResponse expectedResponse = RefreshResponse.builder().schemaMetadata(getSchemaMetadata()).build();
         when(this.mockAdapter.refresh(any(), any())).thenReturn(expectedResponse);
         final String response = this.adapterCallExecutor.executeAdapterCall(new RefreshRequest(null, null), null);
@@ -66,7 +66,7 @@ class AdapterCallExecutorTest {
     }
 
     @Test
-    void testDispatchSetPropertiesRequest() throws AdapterException {
+    void testExecuteSetPropertiesRequest() throws AdapterException {
         final SetPropertiesResponse expectedResponse = SetPropertiesResponse.builder()
                 .schemaMetadata(getSchemaMetadata()).build();
         when(this.mockAdapter.setProperties(any(), any())).thenReturn(expectedResponse);
@@ -77,7 +77,7 @@ class AdapterCallExecutorTest {
     }
 
     @Test
-    void testDispatchGetCapabilitiesRequest() throws AdapterException {
+    void testExecuteGetCapabilitiesRequest() throws AdapterException {
         final GetCapabilitiesResponse expectedResponse = GetCapabilitiesResponse.builder().build();
         when(this.mockAdapter.getCapabilities(any(), any())).thenReturn(expectedResponse);
         final String response = this.adapterCallExecutor.executeAdapterCall(new GetCapabilitiesRequest(null, null),
@@ -87,7 +87,7 @@ class AdapterCallExecutorTest {
     }
 
     @Test
-    void testDispatchPushDownRequest() throws AdapterException {
+    void testExecutePushDownRequest() throws AdapterException {
         final PushDownResponse expectedResponse = PushDownResponse.builder().pushDownSql("SELECT * FROM FOOBAR")
                 .build();
         when(this.mockAdapter.pushdown(any(), any())).thenReturn(expectedResponse);
