@@ -3,6 +3,7 @@ package com.exasol.adapter;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.logging.*;
@@ -161,8 +162,9 @@ class RequestDispatcherTest {
     void testUnknownRequestTypeThrowsException(final Capturable stream) throws AdapterException {
         final String rawRequest = "{ \"type\" : \"NON_EXISTENT_REQUEST_TYPE\" }";
         stream.capture();
-        assertThrows(RequestParserException.class, () -> RequestDispatcher.adapterCall(this.metadata, rawRequest));
-        final String s = stream.getCapturedData();
-        assertThat(stream.getCapturedData(), containsString("SEVERE"));
+        assertAll(
+                () -> assertThrows(RequestParserException.class,
+                        () -> RequestDispatcher.adapterCall(this.metadata, rawRequest)),
+                () -> assertThat(stream.getCapturedData(), containsString("SEVERE")));
     }
 }
