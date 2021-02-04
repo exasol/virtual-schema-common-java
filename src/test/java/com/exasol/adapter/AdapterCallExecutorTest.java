@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
-import org.itsallcode.junit.sysextensions.SystemErrGuard;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +19,6 @@ import com.exasol.adapter.request.*;
 import com.exasol.adapter.response.*;
 
 @ExtendWith(MockitoExtension.class)
-@ExtendWith(SystemErrGuard.class)
 class AdapterCallExecutorTest {
     @Mock
     private VirtualSchemaAdapter mockAdapter;

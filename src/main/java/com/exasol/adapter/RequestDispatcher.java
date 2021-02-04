@@ -17,7 +17,7 @@ import com.exasol.logging.VersionCollector;
  * to the {@link AdapterCallExecutor}.
  */
 public final class RequestDispatcher {
-    protected static final Logger LOGGER = Logger.getLogger(RequestDispatcher.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(RequestDispatcher.class.getName());
 
     /**
      * Main entry point for all Virtual Schema Adapter requests issued by the Exasol database.

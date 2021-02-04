@@ -3,10 +3,9 @@ package com.exasol.adapter;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.logging.ConsoleHandler;
+import java.util.logging.*;
 
 import org.itsallcode.io.Capturable;
 import org.itsallcode.junit.sysextensions.SystemErrGuard;
@@ -31,8 +30,15 @@ class RequestDispatcherTest {
 
     @BeforeEach
     void beforeEach() {
-        RequestDispatcher.LOGGER.setUseParentHandlers(false);
-        RequestDispatcher.LOGGER.addHandler(new ConsoleHandler());
+        resetRootLogger();
+    }
+
+    private void resetRootLogger() {
+        final Logger rootLogger = LogManager.getLogManager().getLogger("");
+        for (final Handler handler : rootLogger.getHandlers()) {
+            rootLogger.removeHandler(handler);
+        }
+        rootLogger.addHandler(new ConsoleHandler());
     }
 
     @Test
@@ -153,9 +159,8 @@ class RequestDispatcherTest {
     void testUnknownRequestTypeThrowsException(final Capturable stream) throws AdapterException {
         final String rawRequest = "{ \"type\" : \"NON_EXISTENT_REQUEST_TYPE\" }";
         stream.capture();
-        assertAll(
-                () -> assertThrows(RequestParserException.class,
-                        () -> RequestDispatcher.adapterCall(this.metadata, rawRequest)),
-                () -> assertThat(stream.getCapturedData(), containsString("SEVERE")));
+        assertThrows(RequestParserException.class, () -> RequestDispatcher.adapterCall(this.metadata, rawRequest));
+        final String s = stream.getCapturedData();
+        assertThat(stream.getCapturedData(), containsString("SEVERE"));
     }
 }
