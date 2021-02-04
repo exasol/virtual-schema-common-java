@@ -30,6 +30,8 @@ class RequestDispatcherTest {
 
     @BeforeEach
     void beforeEach() {
+        // required work around for log verifying test cases
+        // (see https://github.com/itsallcode/junit5-system-extensions/issues/20)
         resetRootLogger();
     }
 
