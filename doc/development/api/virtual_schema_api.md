@@ -651,14 +651,14 @@ Refer to the [Exasol Data Types API Documentation](data_types_api.md)
 ```json
 {
     "type": "literal_double",
-    "value": "1.234"
+    "value": "1.2345000000000000e+02"
 }
 ```
 
 ```json
 {
     "type": "literal_exactnumeric",
-    "value": "12345"
+    "value": "123.45"
 }
 ```
 

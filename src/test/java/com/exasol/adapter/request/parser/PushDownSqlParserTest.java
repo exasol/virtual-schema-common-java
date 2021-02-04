@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -199,29 +198,45 @@ class PushDownSqlParserTest {
                 () -> assertThat(sqlLiteralTimestampUtc.getValue(), equalTo("2015-12-01 12:01:01.1234")));
     }
 
-    @Test
-    void testParseLiteralDouble() {
+    @ParameterizedTest
+    @CsvSource({ "1.0, 1E0", //
+            "1.234, 1.234E0", //
+            "345600000000, 3.456E11", //
+            "0.0000000000000000009236, 9.236E-19", //
+            "0.00098, 9.8E-4", //
+            "1.2345000000000000e+02, 1.2345E2" //
+    })
+    void testParseLiteralDouble(final String input, final String expected) {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"literal_double\", " //
-                + "   \"value\" : \"1.234\" " //
+                + "   \"value\" : \"" + input + "\" " //
                 + "}";
         final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
         final SqlLiteralDouble sqlLiteralDouble = (SqlLiteralDouble) this.defaultParser.parseExpression(jsonObject);
         assertAll(() -> assertThat(sqlLiteralDouble.getType(), equalTo(LITERAL_DOUBLE)),
-                () -> assertThat(sqlLiteralDouble.getValue(), equalTo(1.234)));
+                () -> assertThat(sqlLiteralDouble.getValue(), equalTo(expected)));
     }
 
-    @Test
-    void testParseLiteralExactNumeric() {
+    @ParameterizedTest
+    @CsvSource({ "1E-35, 0.00000000000000000000000000000000001", //
+            "1E35, 100000000000000000000000000000000000", //
+            "12345, 12345", //
+            "3.456e11, 345600000000", //
+            "9.8e-4, 0.00098", //
+            "9.236E-19, 0.0000000000000000009236", //
+            "123.45, 123.45", //
+            "12345, 12345" //
+    })
+    void testParseLiteralExactNumeric(final String input, final String expected) {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"literal_exactnumeric\", " //
-                + "   \"value\" : \"12345\" " //
+                + "   \"value\" : \"" + input + "\" " //
                 + "}";
         final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
         final SqlLiteralExactnumeric sqlLiteralExactnumeric = (SqlLiteralExactnumeric) this.defaultParser
                 .parseExpression(jsonObject);
         assertAll(() -> assertThat(sqlLiteralExactnumeric.getType(), equalTo(LITERAL_EXACTNUMERIC)),
-                () -> assertThat(sqlLiteralExactnumeric.getValue(), equalTo(new BigDecimal(12345))));
+                () -> assertThat(sqlLiteralExactnumeric.getValue(), equalTo(expected)));
     }
 
     @Test
@@ -257,8 +272,8 @@ class PushDownSqlParserTest {
         final SqlLiteralDouble sqlLiteralDouble1 = (SqlLiteralDouble) expressions.get(0);
         final SqlLiteralDouble sqlLiteralDouble2 = (SqlLiteralDouble) expressions.get(1);
         assertAll(() -> assertThat(sqlPredicateAnd.getType(), equalTo(PREDICATE_AND)),
-                () -> assertThat(sqlLiteralDouble1.getValue(), equalTo(1.0)), //
-                () -> assertThat(sqlLiteralDouble2.getValue(), equalTo(2.0)));
+                () -> assertThat(sqlLiteralDouble1.getValue(), equalTo("1E0")), //
+                () -> assertThat(sqlLiteralDouble2.getValue(), equalTo("2E0")));
     }
 
     @Test
@@ -295,8 +310,8 @@ class PushDownSqlParserTest {
         final SqlLiteralDouble sqlLiteralDouble1 = (SqlLiteralDouble) expressions.get(0);
         final SqlLiteralDouble sqlLiteralDouble2 = (SqlLiteralDouble) expressions.get(1);
         assertAll(() -> assertThat(sqlPredicateAnd.getType(), equalTo(PREDICATE_OR)),
-                () -> assertThat(sqlLiteralDouble1.getValue(), equalTo(1.0)), //
-                () -> assertThat(sqlLiteralDouble2.getValue(), equalTo(2.0)));
+                () -> assertThat(sqlLiteralDouble1.getValue(), equalTo("1E0")), //
+                () -> assertThat(sqlLiteralDouble2.getValue(), equalTo("2E0")));
     }
 
     @Test
@@ -344,8 +359,8 @@ class PushDownSqlParserTest {
         final SqlLiteralDouble left = (SqlLiteralDouble) sqlPredicateEqual.getLeft();
         final SqlLiteralDouble right = (SqlLiteralDouble) sqlPredicateEqual.getRight();
         assertAll(() -> assertThat(sqlPredicateEqual.getType(), equalTo(PREDICATE_EQUAL)),
-                () -> assertThat(left.getValue(), equalTo(1.234)), //
-                () -> assertThat(right.getValue(), equalTo(1.234)));
+                () -> assertThat(left.getValue(), equalTo("1.234E0")), //
+                () -> assertThat(right.getValue(), equalTo("1.234E0")));
     }
 
     @Test
@@ -367,8 +382,8 @@ class PushDownSqlParserTest {
         final SqlLiteralDouble left = (SqlLiteralDouble) sqlPredicateNotEqual.getLeft();
         final SqlLiteralDouble right = (SqlLiteralDouble) sqlPredicateNotEqual.getRight();
         assertAll(() -> assertThat(sqlPredicateNotEqual.getType(), equalTo(PREDICATE_NOTEQUAL)),
-                () -> assertThat(left.getValue(), equalTo(1.2)), //
-                () -> assertThat(right.getValue(), equalTo(1.234)));
+                () -> assertThat(left.getValue(), equalTo("1.2E0")), //
+                () -> assertThat(right.getValue(), equalTo("1.234E0")));
     }
 
     @Test
@@ -389,8 +404,8 @@ class PushDownSqlParserTest {
         final SqlLiteralDouble left = (SqlLiteralDouble) sqlPredicateLess.getLeft();
         final SqlLiteralDouble right = (SqlLiteralDouble) sqlPredicateLess.getRight();
         assertAll(() -> assertThat(sqlPredicateLess.getType(), equalTo(PREDICATE_LESS)),
-                () -> assertThat(left.getValue(), equalTo(1.2)), //
-                () -> assertThat(right.getValue(), equalTo(1.234)));
+                () -> assertThat(left.getValue(), equalTo("1.2E0")), //
+                () -> assertThat(right.getValue(), equalTo("1.234E0")));
     }
 
     @Test
@@ -412,8 +427,8 @@ class PushDownSqlParserTest {
         final SqlLiteralDouble left = (SqlLiteralDouble) sqlPredicateLessEqual.getLeft();
         final SqlLiteralDouble right = (SqlLiteralDouble) sqlPredicateLessEqual.getRight();
         assertAll(() -> assertThat(sqlPredicateLessEqual.getType(), equalTo(PREDICATE_LESSEQUAL)),
-                () -> assertThat(left.getValue(), equalTo(1.2)), //
-                () -> assertThat(right.getValue(), equalTo(1.234)));
+                () -> assertThat(left.getValue(), equalTo("1.2E0")), //
+                () -> assertThat(right.getValue(), equalTo("1.234E0")));
     }
 
     @Test
@@ -485,9 +500,9 @@ class PushDownSqlParserTest {
         final SqlLiteralDouble right = (SqlLiteralDouble) sqlPredicateLike.getBetweenRight();
         final SqlLiteralDouble expression = (SqlLiteralDouble) sqlPredicateLike.getExpression();
         assertAll(() -> assertThat(sqlPredicateLike.getType(), equalTo(PREDICATE_BETWEEN)),
-                () -> assertThat(left.getValue(), equalTo(1.1)), //
-                () -> assertThat(expression.getValue(), equalTo(1.2)), //
-                () -> assertThat(right.getValue(), equalTo(1.234)));
+                () -> assertThat(left.getValue(), equalTo("1.1E0")), //
+                () -> assertThat(expression.getValue(), equalTo("1.2E0")), //
+                () -> assertThat(right.getValue(), equalTo("1.234E0")));
     }
 
     @Test
@@ -504,7 +519,7 @@ class PushDownSqlParserTest {
                 .parseExpression(jsonObject);
         final SqlLiteralDouble expression = (SqlLiteralDouble) sqlPredicateIsNull.getExpression();
         assertAll(() -> assertThat(sqlPredicateIsNull.getType(), equalTo(PREDICATE_IS_NULL)),
-                () -> assertThat(expression.getValue(), equalTo(0.0)));
+                () -> assertThat(expression.getValue(), equalTo("0E0")));
     }
 
     @Test
@@ -521,7 +536,7 @@ class PushDownSqlParserTest {
                 .parseExpression(jsonObject);
         final SqlLiteralDouble expression = (SqlLiteralDouble) sqlPredicateIsNotNull.getExpression();
         assertAll(() -> assertThat(sqlPredicateIsNotNull.getType(), equalTo(PREDICATE_IS_NOT_NULL)),
-                () -> assertThat(expression.getValue(), equalTo(1.0)));
+                () -> assertThat(expression.getValue(), equalTo("1E0")));
     }
 
     @Test
@@ -542,7 +557,7 @@ class PushDownSqlParserTest {
         final List<SqlNode> expressions = sqlFunctionScalar.getArguments();
         final SqlLiteralDouble sqlLiteralDouble = (SqlLiteralDouble) expressions.get(0);
         assertAll(() -> assertThat(sqlFunctionScalar.getType(), equalTo(FUNCTION_SCALAR)),
-                () -> assertThat(sqlLiteralDouble.getValue(), equalTo(1.0)));
+                () -> assertThat(sqlLiteralDouble.getValue(), equalTo("1E0")));
     }
 
     @Test
@@ -588,7 +603,7 @@ class PushDownSqlParserTest {
                 .parseExpression(jsonObject);
         final SqlLiteralDouble sqlLiteralDouble = (SqlLiteralDouble) sqlFunctionScalarCast.getArgument();
         assertAll(() -> assertThat(sqlFunctionScalarCast.getType(), equalTo(FUNCTION_SCALAR_CAST)),
-                () -> assertThat(sqlLiteralDouble.getValue(), equalTo(1.234)));
+                () -> assertThat(sqlLiteralDouble.getValue(), equalTo("1.234E0")));
     }
 
     @Test
@@ -618,9 +633,9 @@ class PushDownSqlParserTest {
         final SqlLiteralDouble sqlLiteralDouble2 = (SqlLiteralDouble) arguments.get(1);
         final SqlLiteralDouble expression = (SqlLiteralDouble) sqlPredicateInConstList.getExpression();
         assertAll(() -> assertThat(sqlPredicateInConstList.getType(), equalTo(PREDICATE_IN_CONSTLIST)),
-                () -> assertThat(sqlLiteralDouble1.getValue(), equalTo(1.0)),
-                () -> assertThat(sqlLiteralDouble2.getValue(), equalTo(2.0)),
-                () -> assertThat(expression.getValue(), equalTo(2.0)));
+                () -> assertThat(sqlLiteralDouble1.getValue(), equalTo("1E0")),
+                () -> assertThat(sqlLiteralDouble2.getValue(), equalTo("2E0")),
+                () -> assertThat(expression.getValue(), equalTo("2E0")));
     }
 
     @Test
@@ -706,8 +721,8 @@ class PushDownSqlParserTest {
         final SqlLiteralString sqlLiteralString2 = (SqlLiteralString) results.get(1);
         assertAll(() -> assertThat(sqlFunctionScalarCase.getType(), equalTo(FUNCTION_SCALAR_CASE)),
                 () -> assertThat(sqlFunctionScalarCase.getBasis(), instanceOf(SqlNode.class)),
-                () -> assertThat(sqlLiteralExactnumeric1.getValue(), equalTo(new BigDecimal(1))),
-                () -> assertThat(sqlLiteralExactnumeric2.getValue(), equalTo(new BigDecimal(2))),
+                () -> assertThat(sqlLiteralExactnumeric1.getValue(), equalTo("1")),
+                () -> assertThat(sqlLiteralExactnumeric2.getValue(), equalTo("2")),
                 () -> assertThat(sqlLiteralString1.getValue(), equalTo("VERY GOOD")),
                 () -> assertThat(sqlLiteralString2.getValue(), equalTo("GOOD")));
     }
@@ -792,8 +807,8 @@ class PushDownSqlParserTest {
         final SqlLiteralDouble sqlLiteralDouble2 = (SqlLiteralDouble) arguments.get(1);
         assertAll(() -> assertThat(sqlFunctionAggregate.getType(), equalTo(FUNCTION_AGGREGATE)),
                 () -> assertThat(sqlFunctionAggregate.getFunctionName(), equalTo("SUM")), //
-                () -> assertThat(sqlLiteralDouble1.getValue(), equalTo(1.0)),
-                () -> assertThat(sqlLiteralDouble2.getValue(), equalTo(2.0)));
+                () -> assertThat(sqlLiteralDouble1.getValue(), equalTo("1E0")),
+                () -> assertThat(sqlLiteralDouble2.getValue(), equalTo("2E0")));
     }
 
     @Test
@@ -830,7 +845,7 @@ class PushDownSqlParserTest {
         final SqlLiteralDouble sqlLiteralDouble = (SqlLiteralDouble) sqlFunctionAggregateGroupConcat.getArgument();
         assertAll(() -> assertThat(sqlFunctionAggregateGroupConcat.getType(), equalTo(FUNCTION_AGGREGATE_GROUP_CONCAT)),
                 () -> assertThat(sqlFunctionAggregateGroupConcat.getFunctionName(), equalTo("GROUP_CONCAT")), //
-                () -> assertThat(sqlLiteralDouble.getValue(), equalTo(2.0)));
+                () -> assertThat(sqlLiteralDouble.getValue(), equalTo("2E0")));
     }
 
     @Test
@@ -871,7 +886,7 @@ class PushDownSqlParserTest {
         final SqlLiteralDouble sqlLiteralDouble = (SqlLiteralDouble) sqlFunctionAggregateGroupConcat.getArgument();
         assertAll(() -> assertThat(sqlFunctionAggregateGroupConcat.getType(), equalTo(FUNCTION_AGGREGATE_GROUP_CONCAT)),
                 () -> assertThat(sqlFunctionAggregateGroupConcat.getFunctionName(), equalTo("GROUP_CONCAT")), //
-                () -> assertThat(sqlLiteralDouble.getValue(), equalTo(2.0)),
+                () -> assertThat(sqlLiteralDouble.getValue(), equalTo("2E0")),
                 () -> assertThat(sqlFunctionAggregateGroupConcat.getSeparator(), equalTo(new SqlLiteralString(", "))),
                 () -> assertThat(sqlFunctionAggregateGroupConcat.hasDistinct(), equalTo(true)),
                 () -> assertThat(sqlFunctionAggregateGroupConcat.hasOrderBy(), equalTo(true)),
