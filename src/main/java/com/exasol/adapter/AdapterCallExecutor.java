@@ -27,17 +27,17 @@ public class AdapterCallExecutor {
         final AdapterRequestType type = request.getType();
         switch (type) {
         case CREATE_VIRTUAL_SCHEMA:
-            return dispatchCreateVirtualSchemaRequestToAdapter(request, metadata);
+            return executeCreateVirtualSchemaRequest(request, metadata);
         case DROP_VIRTUAL_SCHEMA:
-            return dispatchDropVirtualSchemaRequestToAdapter(request, metadata);
+            return executeDropVirtualSchemaRequest(request, metadata);
         case REFRESH:
-            return dispatchRefreshRequestToAdapter(request, metadata);
+            return executeRefreshRequest(request, metadata);
         case SET_PROPERTIES:
-            return dispatchSetPropertiesRequestToAdapter(request, metadata);
+            return executeSetPropertiesRequest(request, metadata);
         case GET_CAPABILITIES:
-            return dispatchGetCapabilitiesRequestToAdapter(request, metadata);
+            return executehGetCapabilitiesRequest(request, metadata);
         case PUSHDOWN:
-            return dispatchPushDownRequestToAdapter(request, metadata);
+            return executePushDownRequest(request, metadata);
         default:
             throw new AdapterException(ExaError.messageBuilder("E-VS-COM-JAVA-30")
                     .message("The request dispatcher encountered a request type {{type}} which it does not recognize.")
@@ -45,40 +45,40 @@ public class AdapterCallExecutor {
         }
     }
 
-    private String dispatchCreateVirtualSchemaRequestToAdapter(final AdapterRequest request, final ExaMetadata metadata)
+    private String executeCreateVirtualSchemaRequest(final AdapterRequest request, final ExaMetadata metadata)
             throws AdapterException {
         final CreateVirtualSchemaResponse response = this.adapter.createVirtualSchema(metadata,
                 (CreateVirtualSchemaRequest) request);
         return ResponseJsonConverter.getInstance().convertCreateVirtualSchemaResponse(response);
     }
 
-    private String dispatchDropVirtualSchemaRequestToAdapter(final AdapterRequest request, final ExaMetadata metadata)
+    private String executeDropVirtualSchemaRequest(final AdapterRequest request, final ExaMetadata metadata)
             throws AdapterException {
         final DropVirtualSchemaResponse response = this.adapter.dropVirtualSchema(metadata,
                 (DropVirtualSchemaRequest) request);
         return ResponseJsonConverter.getInstance().convertDropVirtualSchemaResponse(response);
     }
 
-    private String dispatchRefreshRequestToAdapter(final AdapterRequest request, final ExaMetadata metadata)
+    private String executeRefreshRequest(final AdapterRequest request, final ExaMetadata metadata)
             throws AdapterException {
         final RefreshResponse response = this.adapter.refresh(metadata, (RefreshRequest) request);
         return ResponseJsonConverter.getInstance().convertRefreshResponse(response);
     }
 
-    private String dispatchSetPropertiesRequestToAdapter(final AdapterRequest request, final ExaMetadata metadata)
+    private String executeSetPropertiesRequest(final AdapterRequest request, final ExaMetadata metadata)
             throws AdapterException {
         final SetPropertiesResponse response = this.adapter.setProperties(metadata, (SetPropertiesRequest) request);
         return ResponseJsonConverter.getInstance().convertSetPropertiesResponse(response);
     }
 
-    private String dispatchGetCapabilitiesRequestToAdapter(final AdapterRequest request, final ExaMetadata metadata)
+    private String executehGetCapabilitiesRequest(final AdapterRequest request, final ExaMetadata metadata)
             throws AdapterException {
         final GetCapabilitiesResponse response = this.adapter.getCapabilities(metadata,
                 (GetCapabilitiesRequest) request);
         return ResponseJsonConverter.getInstance().convertGetCapabilitiesResponse(response);
     }
 
-    private String dispatchPushDownRequestToAdapter(final AdapterRequest request, final ExaMetadata metadata)
+    private String executePushDownRequest(final AdapterRequest request, final ExaMetadata metadata)
             throws AdapterException {
         final PushDownResponse response = this.adapter.pushdown(metadata, (PushDownRequest) request);
         return ResponseJsonConverter.getInstance().convertPushDownResponse(response);
