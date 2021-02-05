@@ -42,14 +42,4 @@ public class StubAdapter implements VirtualSchemaAdapter {
     public PushDownResponse pushdown(final ExaMetadata metadata, final PushDownRequest request) {
         return PushDownResponse.builder().pushDownSql("SELECT * FROM FOOBAR").build();
     }
-
-    @Override
-    public String getName() {
-        return "Stub Adapter Name";
-    }
-
-    @Override
-    public String getVersion() {
-        return "Stub Adapter Version";
-    }
 }
