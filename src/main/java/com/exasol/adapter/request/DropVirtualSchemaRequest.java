@@ -9,10 +9,9 @@ public class DropVirtualSchemaRequest extends AbstractAdapterRequest {
     /**
      * Create a new request of type {@link DropVirtualSchemaRequest}
      *
-     * @param adapterName        name of the adapter that should handle the request
      * @param schemaMetadataInfo schema metadata
      */
-    public DropVirtualSchemaRequest(final String adapterName, final SchemaMetadataInfo schemaMetadataInfo) {
-        super(adapterName, schemaMetadataInfo, AdapterRequestType.DROP_VIRTUAL_SCHEMA);
+    public DropVirtualSchemaRequest(final SchemaMetadataInfo schemaMetadataInfo) {
+        super(schemaMetadataInfo, AdapterRequestType.DROP_VIRTUAL_SCHEMA);
     }
 }

@@ -32,8 +32,32 @@ class RequestParserTest {
         assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-16"));
     }
 
+    /**
+     * @implNote This test is required until we remove the `SQL_DIALECT` field when executing a `CREATE VIRTUAL SCHEMA`
+     *           command from the Exasol database.
+     */
     @Test
-    void testParseAdapterName() {
+    void testNoAdapterNameProvided() {
+        final String rawRequest = "{\n" //
+                + "    \"type\" : \"setProperties\",\n" //
+                + "    \"schemaMetadataInfo\" :\n" //
+                + "    {\n" //
+                + "        \"name\" : \"foo\",\n"//
+                + "        \"properties\" :\n"//
+                + "        {\n" //
+                + "        }\n" //
+                + "    }\n" //
+                + "}";
+        final AdapterRequest request = this.parser.parse(rawRequest);
+        assertThat(request.getType(), equalTo(AdapterRequestType.SET_PROPERTIES));
+    }
+
+    /**
+     * @implNote This test is required until we remove the `SQL_DIALECT` field when executing a `CREATE VIRTUAL SCHEMA`
+     *           command from the Exasol database.
+     */
+    @Test
+    void testAdapterNameProvided() {
         final String rawRequest = "{\n" //
                 + "    \"type\" : \"setProperties\",\n" //
                 + "    \"schemaMetadataInfo\" :\n" //
@@ -46,7 +70,7 @@ class RequestParserTest {
                 + "    }\n" //
                 + "}";
         final AdapterRequest request = this.parser.parse(rawRequest);
-        assertThat(request.getAdapterName(), equalTo("THE_DIALECT"));
+        assertThat(request.getType(), equalTo(AdapterRequestType.SET_PROPERTIES));
     }
 
     @Test
@@ -165,6 +189,6 @@ class RequestParserTest {
                 + "    \"type\" : \"refresh\"\n" //
                 + "}";
         final AdapterRequest request = this.parser.parse(rawRequest);
-        assertThat(request.getAdapterName(), equalTo("UNKNOWN"));
+        assertThat(request.getVirtualSchemaName(), equalTo("UNKNOWN"));
     }
 }
