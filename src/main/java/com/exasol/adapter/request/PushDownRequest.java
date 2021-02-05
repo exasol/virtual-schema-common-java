@@ -2,6 +2,9 @@ package com.exasol.adapter.request;
 
 import java.util.List;
 
+import com.exasol.ExaMetadata;
+import com.exasol.adapter.AdapterCallExecutor;
+import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.SchemaMetadataInfo;
 import com.exasol.adapter.metadata.TableMetadata;
 import com.exasol.adapter.sql.SqlStatement;
@@ -44,5 +47,11 @@ public class PushDownRequest extends AbstractAdapterRequest {
      */
     public List<TableMetadata> getInvolvedTablesMetadata() {
         return this.involvedTablesMetadata;
+    }
+
+    @Override
+    public String executeWith(final AdapterCallExecutor adapterCallExecutor, final ExaMetadata metadata)
+            throws AdapterException {
+        return adapterCallExecutor.executePushDownRequest(this, metadata);
     }
 }

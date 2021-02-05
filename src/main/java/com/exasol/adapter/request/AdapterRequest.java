@@ -1,5 +1,8 @@
 package com.exasol.adapter.request;
 
+import com.exasol.ExaMetadata;
+import com.exasol.adapter.AdapterCallExecutor;
+import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.SchemaMetadataInfo;
 
 /**
@@ -26,4 +29,14 @@ public interface AdapterRequest {
      * @return Virtual Schema name
      */
     public String getVirtualSchemaName();
+
+    /**
+     * Execute an adapter call.
+     * 
+     * @param adapterCallExecutor instance of {@link AdapterCallExecutor}
+     * @param metadata            metadata for the context in which the adapter exists
+     * @return response in a JSON format
+     * @throws AdapterException if some problem occurs
+     */
+    public String executeWith(AdapterCallExecutor adapterCallExecutor, ExaMetadata metadata) throws AdapterException;
 }

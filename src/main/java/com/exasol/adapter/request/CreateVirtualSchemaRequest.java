@@ -1,5 +1,8 @@
 package com.exasol.adapter.request;
 
+import com.exasol.ExaMetadata;
+import com.exasol.adapter.AdapterCallExecutor;
+import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.SchemaMetadataInfo;
 
 /**
@@ -13,5 +16,11 @@ public class CreateVirtualSchemaRequest extends AbstractAdapterRequest {
      */
     public CreateVirtualSchemaRequest(final SchemaMetadataInfo schemaMetadataInfo) {
         super(schemaMetadataInfo, AdapterRequestType.CREATE_VIRTUAL_SCHEMA);
+    }
+
+    @Override
+    public String executeWith(final AdapterCallExecutor adapterCallExecutor, final ExaMetadata metadata)
+            throws AdapterException {
+        return adapterCallExecutor.executeCreateVirtualSchemaRequest(this, metadata);
     }
 }

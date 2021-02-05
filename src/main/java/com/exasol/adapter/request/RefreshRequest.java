@@ -2,6 +2,9 @@ package com.exasol.adapter.request;
 
 import java.util.List;
 
+import com.exasol.ExaMetadata;
+import com.exasol.adapter.AdapterCallExecutor;
+import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.SchemaMetadataInfo;
 import com.exasol.errorreporting.ExaError;
 
@@ -54,5 +57,11 @@ public class RefreshRequest extends AbstractAdapterRequest {
      */
     public boolean refreshesOnlySelectedTables() {
         return this.refreshSelectedTablesOnly;
+    }
+
+    @Override
+    public String executeWith(final AdapterCallExecutor adapterCallExecutor, final ExaMetadata metadata)
+            throws AdapterException {
+        return adapterCallExecutor.executeRefreshRequest(this, metadata);
     }
 }

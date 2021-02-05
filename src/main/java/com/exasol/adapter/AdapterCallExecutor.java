@@ -4,7 +4,6 @@ import com.exasol.ExaMetadata;
 import com.exasol.adapter.request.*;
 import com.exasol.adapter.response.*;
 import com.exasol.adapter.response.converter.ResponseJsonConverter;
-import com.exasol.errorreporting.ExaError;
 
 /**
  * Executor for adapter calls issued by the Exasol database.
@@ -24,63 +23,90 @@ public class AdapterCallExecutor {
     @SuppressWarnings("squid:S2139")
     protected String executeAdapterCall(final AdapterRequest request, final ExaMetadata metadata)
             throws AdapterException {
-        final AdapterRequestType type = request.getType();
-        switch (type) {
-        case CREATE_VIRTUAL_SCHEMA:
-            return executeCreateVirtualSchemaRequest(request, metadata);
-        case DROP_VIRTUAL_SCHEMA:
-            return executeDropVirtualSchemaRequest(request, metadata);
-        case REFRESH:
-            return executeRefreshRequest(request, metadata);
-        case SET_PROPERTIES:
-            return executeSetPropertiesRequest(request, metadata);
-        case GET_CAPABILITIES:
-            return executehGetCapabilitiesRequest(request, metadata);
-        case PUSHDOWN:
-            return executePushDownRequest(request, metadata);
-        default:
-            throw new AdapterException(ExaError.messageBuilder("E-VS-COM-JAVA-30")
-                    .message("The request dispatcher encountered a request type {{type}} which it does not recognize.")
-                    .ticketMitigation().parameter("type", type.toString()).toString());
-        }
+        return request.executeWith(this, metadata);
     }
 
-    private String executeCreateVirtualSchemaRequest(final AdapterRequest request, final ExaMetadata metadata)
-            throws AdapterException {
-        final CreateVirtualSchemaResponse response = this.adapter.createVirtualSchema(metadata,
-                (CreateVirtualSchemaRequest) request);
+    /**
+     * Execute a create virtual schema request.
+     * 
+     * @param request  instance of {@link CreateVirtualSchemaRequest}
+     * @param metadata metadata for the context in which the adapter exists
+     * @return response in a JSON format
+     * @throws AdapterException if some problem occurs
+     */
+    public String executeCreateVirtualSchemaRequest(final CreateVirtualSchemaRequest request,
+            final ExaMetadata metadata) throws AdapterException {
+        final CreateVirtualSchemaResponse response = this.adapter.createVirtualSchema(metadata, request);
         return ResponseJsonConverter.getInstance().convertCreateVirtualSchemaResponse(response);
     }
 
-    private String executeDropVirtualSchemaRequest(final AdapterRequest request, final ExaMetadata metadata)
+    /**
+     * Execute a drop virtual schema request.
+     *
+     * @param request  instance of {@link DropVirtualSchemaRequest}
+     * @param metadata metadata for the context in which the adapter exists
+     * @return response in a JSON format
+     * @throws AdapterException if some problem occurs
+     */
+    public String executeDropVirtualSchemaRequest(final DropVirtualSchemaRequest request, final ExaMetadata metadata)
             throws AdapterException {
-        final DropVirtualSchemaResponse response = this.adapter.dropVirtualSchema(metadata,
-                (DropVirtualSchemaRequest) request);
+        final DropVirtualSchemaResponse response = this.adapter.dropVirtualSchema(metadata, request);
         return ResponseJsonConverter.getInstance().convertDropVirtualSchemaResponse(response);
     }
 
-    private String executeRefreshRequest(final AdapterRequest request, final ExaMetadata metadata)
+    /**
+     * Execute a refresh virtual schema request.
+     *
+     * @param request  instance of {@link RefreshRequest}
+     * @param metadata metadata for the context in which the adapter exists
+     * @return response in a JSON format
+     * @throws AdapterException if some problem occurs
+     */
+    public String executeRefreshRequest(final RefreshRequest request, final ExaMetadata metadata)
             throws AdapterException {
-        final RefreshResponse response = this.adapter.refresh(metadata, (RefreshRequest) request);
+        final RefreshResponse response = this.adapter.refresh(metadata, request);
         return ResponseJsonConverter.getInstance().convertRefreshResponse(response);
     }
 
-    private String executeSetPropertiesRequest(final AdapterRequest request, final ExaMetadata metadata)
+    /**
+     * Execute a set properties virtual schema request.
+     *
+     * @param request  instance of {@link SetPropertiesRequest}
+     * @param metadata metadata for the context in which the adapter exists
+     * @return response in a JSON format
+     * @throws AdapterException if some problem occurs
+     */
+    public String executeSetPropertiesRequest(final SetPropertiesRequest request, final ExaMetadata metadata)
             throws AdapterException {
-        final SetPropertiesResponse response = this.adapter.setProperties(metadata, (SetPropertiesRequest) request);
+        final SetPropertiesResponse response = this.adapter.setProperties(metadata, request);
         return ResponseJsonConverter.getInstance().convertSetPropertiesResponse(response);
     }
 
-    private String executehGetCapabilitiesRequest(final AdapterRequest request, final ExaMetadata metadata)
+    /**
+     * Execute a get capabilities virtual schema request.
+     *
+     * @param request  instance of {@link GetCapabilitiesRequest}
+     * @param metadata metadata for the context in which the adapter exists
+     * @return response in a JSON format
+     * @throws AdapterException if some problem occurs
+     */
+    public String executeGetCapabilitiesRequest(final GetCapabilitiesRequest request, final ExaMetadata metadata)
             throws AdapterException {
-        final GetCapabilitiesResponse response = this.adapter.getCapabilities(metadata,
-                (GetCapabilitiesRequest) request);
+        final GetCapabilitiesResponse response = this.adapter.getCapabilities(metadata, request);
         return ResponseJsonConverter.getInstance().convertGetCapabilitiesResponse(response);
     }
 
-    private String executePushDownRequest(final AdapterRequest request, final ExaMetadata metadata)
+    /**
+     * Execute a push down virtual schema request.
+     *
+     * @param request  instance of {@link PushDownRequest}
+     * @param metadata metadata for the context in which the adapter exists
+     * @return response in a JSON format
+     * @throws AdapterException if some problem occurs
+     */
+    public String executePushDownRequest(final PushDownRequest request, final ExaMetadata metadata)
             throws AdapterException {
-        final PushDownResponse response = this.adapter.pushdown(metadata, (PushDownRequest) request);
+        final PushDownResponse response = this.adapter.pushdown(metadata, request);
         return ResponseJsonConverter.getInstance().convertPushDownResponse(response);
     }
 }

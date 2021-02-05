@@ -2,6 +2,9 @@ package com.exasol.adapter.request;
 
 import java.util.Map;
 
+import com.exasol.ExaMetadata;
+import com.exasol.adapter.AdapterCallExecutor;
+import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.SchemaMetadataInfo;
 
 /**
@@ -28,5 +31,11 @@ public class SetPropertiesRequest extends AbstractAdapterRequest {
      */
     public Map<String, String> getProperties() {
         return this.properties;
+    }
+
+    @Override
+    public String executeWith(final AdapterCallExecutor adapterCallExecutor, final ExaMetadata metadata)
+            throws AdapterException {
+        return adapterCallExecutor.executeSetPropertiesRequest(this, metadata);
     }
 }
