@@ -48,40 +48,36 @@ class RequestDispatcherTest {
 
     @Test
     void testDispatchCreateVirtualSchemaRequest() throws AdapterException {
-        final String rawRequest = "{ \"type\" : \"createVirtualSchema\", " + DEFAULT_REQUEST_PARTS + "}";
-        final String response = RequestDispatcher.adapterCall(null, rawRequest);
-        assertThat(response,
-                equalTo("{\"type\":\"createVirtualSchema\",\"schemaMetadata\":{\"tables\":[],\"adapterNotes\":\"\"}}"));
+        adapterCall("{ \"type\" : \"createVirtualSchema\", " + DEFAULT_REQUEST_PARTS + "}")
+                .withResponse(
+                        "{\"type\":\"createVirtualSchema\",\"schemaMetadata\":{\"tables\":[],\"adapterNotes\":\"\"}}")
+                .verify();
     }
 
     @Test
     void testDispatchDropVirtualSchemaRequest() throws AdapterException {
-        final String rawRequest = "{ \"type\" : \"dropVirtualSchema\", " + DEFAULT_REQUEST_PARTS + "}";
-        final String response = RequestDispatcher.adapterCall(this.metadata, rawRequest);
-        assertThat(response, equalTo("{\"type\":\"dropVirtualSchema\"}"));
+        adapterCall("{ \"type\" : \"dropVirtualSchema\", " + DEFAULT_REQUEST_PARTS + "}")
+                .withResponse("{\"type\":\"dropVirtualSchema\"}").verify();
     }
 
     @Test
     void testDispatchRefreshRequest() throws AdapterException {
-        final String rawRequest = "{ \"type\" : \"refresh\", " + DEFAULT_REQUEST_PARTS + "}";
-        final String response = RequestDispatcher.adapterCall(this.metadata, rawRequest);
-        assertThat(response,
-                equalTo("{\"type\":\"refresh\",\"schemaMetadata\":{\"tables\":[],\"adapterNotes\":\"\"}}"));
+        adapterCall("{ \"type\" : \"refresh\", " + DEFAULT_REQUEST_PARTS + "}")
+                .withResponse("{\"type\":\"refresh\",\"schemaMetadata\":{\"tables\":[],\"adapterNotes\":\"\"}}")
+                .verify();
     }
 
     @Test
     void testDispatchSetPropertiesRequest() throws AdapterException {
-        final String rawRequest = "{ \"type\" : \"setProperties\", " + DEFAULT_REQUEST_PARTS + "}";
-        final String response = RequestDispatcher.adapterCall(this.metadata, rawRequest);
-        assertThat(response,
-                equalTo("{\"type\":\"setProperties\",\"schemaMetadata\":{\"tables\":[],\"adapterNotes\":\"\"}}"));
+        adapterCall("{ \"type\" : \"setProperties\", " + DEFAULT_REQUEST_PARTS + "}")
+                .withResponse("{\"type\":\"setProperties\",\"schemaMetadata\":{\"tables\":[],\"adapterNotes\":\"\"}}")
+                .verify();
     }
 
     @Test
     void testDispatchGetCapabilitiesRequest() throws AdapterException {
-        final String rawRequest = "{ \"type\" : \"getCapabilities\", " + DEFAULT_REQUEST_PARTS + "}";
-        final String response = RequestDispatcher.adapterCall(this.metadata, rawRequest);
-        assertThat(response, equalTo("{\"type\":\"getCapabilities\",\"capabilities\":[]}"));
+        adapterCall("{ \"type\" : \"getCapabilities\", " + DEFAULT_REQUEST_PARTS + "}")
+                .withResponse("{\"type\":\"getCapabilities\",\"capabilities\":[]}").verify();
     }
 
     @Test
@@ -117,8 +113,29 @@ class RequestDispatcherTest {
                 + "        }\n" //
                 + "    ]\n" //
                 + "}";
-        final String response = RequestDispatcher.adapterCall(this.metadata, rawRequest);
-        assertThat(response, equalTo("{\"type\":\"pushdown\",\"sql\":\"SELECT * FROM FOOBAR\"}"));
+        adapterCall(rawRequest).withResponse("{\"type\":\"pushdown\",\"sql\":\"SELECT * FROM FOOBAR\"}").verify();
+    }
+
+    private AdapterCallVerifier adapterCall(final String rawRequest) {
+        return new AdapterCallVerifier(rawRequest);
+    }
+
+    private class AdapterCallVerifier {
+        private final String rawRequest;
+        private String expectedResponse;
+
+        private AdapterCallVerifier(final String rawRequest) {
+            this.rawRequest = rawRequest;
+        }
+
+        private AdapterCallVerifier withResponse(final String expectedResponse) {
+            this.expectedResponse = expectedResponse;
+            return this;
+        }
+
+        private void verify() throws AdapterException {
+            assertThat(RequestDispatcher.adapterCall(null, this.rawRequest), equalTo(this.expectedResponse));
+        }
     }
 
     @Test
