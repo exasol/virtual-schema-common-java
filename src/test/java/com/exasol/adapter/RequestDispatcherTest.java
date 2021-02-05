@@ -31,11 +31,13 @@ class RequestDispatcherTest {
 
     @BeforeEach
     void beforeEach() {
-        // required work around for log verifying test cases
-        // (see https://github.com/itsallcode/junit5-system-extensions/issues/20)
         resetRootLogger();
     }
 
+    /**
+     * @implNote this is a required work around for log verifying test cases (see
+     *           https://github.com/itsallcode/junit5-system-extensions/issues/20)
+     */
     private void resetRootLogger() {
         final Logger rootLogger = LogManager.getLogManager().getLogger("");
         for (final Handler handler : rootLogger.getHandlers()) {
