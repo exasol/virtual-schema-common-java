@@ -9,8 +9,7 @@ In release 15.0.0, we optimized the deployment so that each dialect gets its own
 Since we limited the number of `Virtual Schema Adapter` to be loaded to one, please note the following breaking changes in
 design and interface:
 
-The `com.exasol.adapter.AdapterRegistry` class was removed, and the `com.exasol.adapter.AdapterFactory` was renamed to `com.exasol.adapter.VirtualSchemaAdapterFactory`.
-This also affects the `src/main/resources/META-INF/services/com.exasol.adapter.AdapterFactory`, renamed to `src/main/resources/META-INF/services/com.exasol.adapter.VirtualSchemaAdapterFactory`.
+* `com.exasol.adapter.AdapterRegistry` class was removed.
 
 ## Bug Fixes
 

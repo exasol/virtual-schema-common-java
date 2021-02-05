@@ -78,16 +78,13 @@ public final class RequestDispatcher {
     }
 
     private static VirtualSchemaAdapter getVirtualSchemaAdapter() {
-        return getVirtualSchemaAdapterFactory().createVirtualSchemaAdapter();
+        return getAdapterFactory().createAdapter();
     }
 
-    private static VirtualSchemaAdapterFactory getVirtualSchemaAdapterFactory() {
-        final ServiceLoader<VirtualSchemaAdapterFactory> adapterFactoryLoader = ServiceLoader
-                .load(VirtualSchemaAdapterFactory.class);
-        final Optional<VirtualSchemaAdapterFactory> adapterFactory = adapterFactoryLoader.findFirst();
-        adapterFactory.ifPresent(factory -> LOGGER.config("Loading Virtual Schema Adapter: "
-                + factory.getVirtualSchemaAdapterName() + " " + factory.getVirtualSchemaAdapterVersion()));
-        return adapterFactory.orElseThrow(() -> new NoSuchElementException(ExaError.messageBuilder("E-VS-COM-JAVA-29")
-                .message("No VirtualSchemaAdapterFactory was found.").toString()));
+    private static AdapterFactory getAdapterFactory() {
+        final ServiceLoader<AdapterFactory> adapterFactoryLoader = ServiceLoader.load(AdapterFactory.class);
+        final Optional<AdapterFactory> adapterFactory = adapterFactoryLoader.findFirst();
+        return adapterFactory.orElseThrow(() -> new NoSuchElementException(
+                ExaError.messageBuilder("E-VS-COM-JAVA-29").message("No AdapterFactory was found.").toString()));
     }
 }

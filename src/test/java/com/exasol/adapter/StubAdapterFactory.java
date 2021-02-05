@@ -1,18 +1,18 @@
 package com.exasol.adapter;
 
-public class StubAdapterFactory implements VirtualSchemaAdapterFactory {
+public class StubAdapterFactory implements AdapterFactory {
     @Override
-    public VirtualSchemaAdapter createVirtualSchemaAdapter() {
+    public VirtualSchemaAdapter createAdapter() {
         return new StubAdapter();
     }
 
     @Override
-    public String getVirtualSchemaAdapterVersion() {
+    public String getAdapterVersion() {
         return "Stub Adapter Version";
     }
 
     @Override
-    public String getVirtualSchemaAdapterName() {
+    public String getAdapterName() {
         return "Stub Adapter Name";
     }
 }

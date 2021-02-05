@@ -3,25 +3,25 @@ package com.exasol.adapter;
 /**
  * Factory that creates a {@link VirtualSchemaAdapter}
  */
-public interface VirtualSchemaAdapterFactory {
+public interface AdapterFactory {
     /**
      * Create a new {@link VirtualSchemaAdapter}
      *
      * @return new instance
      */
-    public VirtualSchemaAdapter createVirtualSchemaAdapter();
+    public VirtualSchemaAdapter createAdapter();
 
     /**
      * Get the version of the {@link VirtualSchemaAdapter}
      *
      * @return Virtual Schema Adapter version
      */
-    public String getVirtualSchemaAdapterVersion();
+    public String getAdapterVersion();
 
     /**
      * Get the name of the {@link VirtualSchemaAdapter}
      *
      * @return Virtual Schema Adapter name
      */
-    public String getVirtualSchemaAdapterName();
+    public String getAdapterName();
 }
