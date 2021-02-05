@@ -45,5 +45,5 @@ public interface AdapterRequest {
      * @return response in a JSON format
      * @throws AdapterException if some problem occurs
      */
-    public String execute(AdapterCallExecutor adapterCallExecutor, ExaMetadata metadata) throws AdapterException;
+    public String executeWith(AdapterCallExecutor adapterCallExecutor, ExaMetadata metadata) throws AdapterException;
 }

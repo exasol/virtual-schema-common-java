@@ -23,7 +23,7 @@ public class AdapterCallExecutor {
     @SuppressWarnings("squid:S2139")
     protected String executeAdapterCall(final AdapterRequest request, final ExaMetadata metadata)
             throws AdapterException {
-        return request.execute(this, metadata);
+        return request.executeWith(this, metadata);
     }
 
     /**

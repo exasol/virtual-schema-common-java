@@ -51,7 +51,7 @@ public class PushDownRequest extends AbstractAdapterRequest {
     }
 
     @Override
-    public String execute(final AdapterCallExecutor adapterCallExecutor, final ExaMetadata metadata)
+    public String executeWith(final AdapterCallExecutor adapterCallExecutor, final ExaMetadata metadata)
             throws AdapterException {
         return adapterCallExecutor.executePushDownRequest(this, metadata);
     }
