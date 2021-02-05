@@ -1,6 +1,7 @@
 package com.exasol.adapter.metadata;
 
-import java.util.*;
+import java.util.Map;
+import java.util.StringJoiner;
 
 /**
  * Represents the metadata of an EXASOL Virtual Schema which are sent with each request. The metadata are just "for
@@ -16,15 +17,6 @@ public class SchemaMetadataInfo {
         this.schemaName = schemaName;
         this.adapterNotes = adapterNotes;
         this.properties = properties;
-    }
-
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", SchemaMetadataInfo.class.getSimpleName() + "{", "}")
-                .add("schemaName=" + this.schemaName) //
-                .add("adapterNotes=" + this.adapterNotes) //
-                .add("properties=" + this.properties) //
-                .toString();
     }
 
     public String getSchemaName() {
@@ -56,11 +48,20 @@ public class SchemaMetadataInfo {
 
     /**
      * Check if the property with the given key is set
-     * 
+     *
      * @param key key to check
      * @return <code>true</code> if the property with the given key is set
      */
     public boolean containsProperty(final String key) {
         return this.properties.containsKey(key);
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", SchemaMetadataInfo.class.getSimpleName() + "{", "}")
+                .add("schemaName=" + this.schemaName) //
+                .add("adapterNotes=" + this.adapterNotes) //
+                .add("properties=" + this.properties) //
+                .toString();
     }
 }

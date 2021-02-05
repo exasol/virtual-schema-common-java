@@ -27,7 +27,8 @@ The `src/main/resources/META-INF/services/com.exasol.adapter.AdapterFactory` fil
 
 * #189: Unified `parseInvolvedTables` method in the `RequestParser`.
 * #195: Added a builder for unified error handling.
-* #195: Refactored building phase of the application.
+* #206: Refactored building phase of the application.
+* #211: Removed `AdapterName` property from `AdapterRequest`.
 
 ## Dependency updates
 

@@ -18,7 +18,6 @@ import com.exasol.adapter.metadata.SchemaMetadataInfo;
 
 @ExtendWith(MockitoExtension.class)
 class RefreshRequestTest {
-    private static final String ADAPTER_NAME = "THE_NAME";
     @Mock
     private SchemaMetadataInfo schemaMetadataInfo;
     private RefreshRequest refreshRequest;
@@ -28,14 +27,14 @@ class RefreshRequestTest {
     void setUp() throws AdapterException {
         this.tables = new ArrayList<>();
         this.tables.add("TEST_TABLE");
-        this.refreshRequest = new RefreshRequest(ADAPTER_NAME, this.schemaMetadataInfo, this.tables);
+        this.refreshRequest = new RefreshRequest(this.schemaMetadataInfo, this.tables);
     }
 
     @Test
     void testCreateWithEmptyTablesThrowsException() {
         final List<String> tables = Collections.emptyList();
         final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> new RefreshRequest(ADAPTER_NAME, this.schemaMetadataInfo, tables));
+                () -> new RefreshRequest(this.schemaMetadataInfo, tables));
         assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-32"));
     }
 
@@ -51,7 +50,7 @@ class RefreshRequestTest {
 
     @Test
     void testIsRefreshForTablesFalse() {
-        this.refreshRequest = new RefreshRequest(ADAPTER_NAME, this.schemaMetadataInfo);
+        this.refreshRequest = new RefreshRequest(this.schemaMetadataInfo);
         assertFalse(this.refreshRequest.refreshesOnlySelectedTables());
     }
 }

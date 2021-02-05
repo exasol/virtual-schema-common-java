@@ -33,7 +33,22 @@ class RequestParserTest {
     }
 
     @Test
-    void testParseAdapterName() {
+    void testNoAdapterNameProvided() {
+        final String rawRequest = "{\n" //
+                + "    \"type\" : \"setProperties\",\n" //
+                + "    \"schemaMetadataInfo\" :\n" //
+                + "    {\n" //
+                + "        \"name\" : \"foo\",\n"//
+                + "        \"properties\" :\n"//
+                + "        {\n" //
+                + "        }\n" //
+                + "    }\n" //
+                + "}";
+        this.parser.parse(rawRequest);
+    }
+
+    @Test
+    void testAdapterNameProvided() {
         final String rawRequest = "{\n" //
                 + "    \"type\" : \"setProperties\",\n" //
                 + "    \"schemaMetadataInfo\" :\n" //
@@ -45,8 +60,7 @@ class RequestParserTest {
                 + "        }\n" //
                 + "    }\n" //
                 + "}";
-        final AdapterRequest request = this.parser.parse(rawRequest);
-        assertThat(request.getAdapterName(), equalTo("THE_DIALECT"));
+        this.parser.parse(rawRequest);
     }
 
     @Test
@@ -165,6 +179,6 @@ class RequestParserTest {
                 + "    \"type\" : \"refresh\"\n" //
                 + "}";
         final AdapterRequest request = this.parser.parse(rawRequest);
-        assertThat(request.getAdapterName(), equalTo("UNKNOWN"));
+        assertThat(request.getVirtualSchemaName(), equalTo("UNKNOWN"));
     }
 }

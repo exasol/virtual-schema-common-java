@@ -37,21 +37,20 @@ public class RequestParser extends AbstractRequestParser {
         final JsonObject root = reader.readObject();
         final String type = readRequestType(root);
         final SchemaMetadataInfo metadataInfo = readSchemaMetadataInfo(root);
-        final String adapterName = extractAdapterNameFromMetadataInfo(metadataInfo);
         final Map<String, String> adapterProperties = parseProperties(root);
         switch (type) {
         case REQUEST_TYPE_DROP_VIRTUAL_SCHEMA:
-            return new DropVirtualSchemaRequest(adapterName, metadataInfo);
+            return new DropVirtualSchemaRequest(metadataInfo);
         case REQUEST_TYPE_CREATE_VIRTUAL_SCHEMA:
-            return new CreateVirtualSchemaRequest(adapterName, metadataInfo);
+            return new CreateVirtualSchemaRequest(metadataInfo);
         case REQUEST_TYPE_REFRESH:
-            return parseRefreshRequest(root, metadataInfo, adapterName);
+            return parseRefreshRequest(root, metadataInfo);
         case REQUEST_TYPE_SET_PROPERTIES:
-            return new SetPropertiesRequest(adapterName, metadataInfo, adapterProperties);
+            return new SetPropertiesRequest(metadataInfo, adapterProperties);
         case REQUEST_TYPE_GET_CAPABILITIES:
-            return new GetCapabilitiesRequest(adapterName, metadataInfo);
+            return new GetCapabilitiesRequest(metadataInfo);
         case REQUEST_TYPE_PUSHDOWN:
-            return parsePushdownRequest(root, metadataInfo, adapterName);
+            return parsePushdownRequest(root, metadataInfo);
         default:
             throw new RequestParserException(ExaError.messageBuilder("E-VS-COM-JAVA-16")
                     .message("Could not parse unknown adapter request type identifier {{type}}.")
@@ -60,37 +59,26 @@ public class RequestParser extends AbstractRequestParser {
         }
     }
 
-    private AbstractAdapterRequest parseRefreshRequest(final JsonObject root, final SchemaMetadataInfo metadataInfo,
-            final String adapterName) {
+    private AbstractAdapterRequest parseRefreshRequest(final JsonObject root, final SchemaMetadataInfo metadataInfo) {
         if (root.containsKey(REFRESH_TABLES_KEY)) {
             final List<String> tables = root.getJsonArray(REFRESH_TABLES_KEY) //
                     .stream() //
                     .map((table -> ((JsonString) table).getString())) //
                     .collect(Collectors.toList());
-            return new RefreshRequest(adapterName, metadataInfo, tables);
+            return new RefreshRequest(metadataInfo, tables);
         } else {
-            return new RefreshRequest(adapterName, metadataInfo);
+            return new RefreshRequest(metadataInfo);
         }
     }
 
-    private AbstractAdapterRequest parsePushdownRequest(final JsonObject root, final SchemaMetadataInfo metadataInfo,
-            final String adapterName) {
+    private AbstractAdapterRequest parsePushdownRequest(final JsonObject root, final SchemaMetadataInfo metadataInfo) {
         final SqlStatement statement = parsePushdownStatement(root);
         final List<TableMetadata> involvedTables = parseInvolvedTables(root);
-        return new PushDownRequest(adapterName, metadataInfo, statement, involvedTables);
+        return new PushDownRequest(metadataInfo, statement, involvedTables);
     }
 
     private List<TableMetadata> parseInvolvedTables(final JsonObject root) {
         return TablesMetadataParser.create().parse(root.getJsonArray(INVOLVED_TABLES_KEY));
-    }
-
-    private String extractAdapterNameFromMetadataInfo(final SchemaMetadataInfo metadataInfo) {
-        if (metadataInfo.containsProperty(ADAPTER_NAME_PROPERTY_KEY)) {
-            return metadataInfo.getProperty(ADAPTER_NAME_PROPERTY_KEY);
-        } else {
-            LOGGER.severe("Missing adapter name trying to parse metadata information.");
-            return "UNKNOWN";
-        }
     }
 
     private String readRequestType(final JsonObject root) {

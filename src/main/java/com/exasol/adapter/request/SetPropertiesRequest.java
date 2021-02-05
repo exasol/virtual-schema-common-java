@@ -13,13 +13,11 @@ public class SetPropertiesRequest extends AbstractAdapterRequest {
     /**
      * Create a new request of type {@link SetPropertiesRequest}
      *
-     * @param adapterName        name of the adapter that should handle the request
      * @param schemaMetadataInfo schema metadata
      * @param properties         the properties to be set
      */
-    public SetPropertiesRequest(final String adapterName, final SchemaMetadataInfo schemaMetadataInfo,
-            final Map<String, String> properties) {
-        super(adapterName, schemaMetadataInfo, AdapterRequestType.SET_PROPERTIES);
+    public SetPropertiesRequest(final SchemaMetadataInfo schemaMetadataInfo, final Map<String, String> properties) {
+        super(schemaMetadataInfo, AdapterRequestType.SET_PROPERTIES);
         this.properties = properties;
     }
 
