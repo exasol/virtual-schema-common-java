@@ -32,6 +32,10 @@ class RequestParserTest {
         assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-16"));
     }
 
+    /**
+     * @implNote This test is required until we remove the `SQL_DIALECT` field when executing a `CREATE VIRTUAL SCHEMA`
+     *           command from the Exasol database.
+     */
     @Test
     void testNoAdapterNameProvided() {
         final String rawRequest = "{\n" //
@@ -44,9 +48,14 @@ class RequestParserTest {
                 + "        }\n" //
                 + "    }\n" //
                 + "}";
-        this.parser.parse(rawRequest);
+        final AdapterRequest request = this.parser.parse(rawRequest);
+        assertThat(request.getType(), equalTo(AdapterRequestType.SET_PROPERTIES));
     }
 
+    /**
+     * @implNote This test is required until we remove the `SQL_DIALECT` field when executing a `CREATE VIRTUAL SCHEMA`
+     *           command from the Exasol database.
+     */
     @Test
     void testAdapterNameProvided() {
         final String rawRequest = "{\n" //
@@ -60,7 +69,8 @@ class RequestParserTest {
                 + "        }\n" //
                 + "    }\n" //
                 + "}";
-        this.parser.parse(rawRequest);
+        final AdapterRequest request = this.parser.parse(rawRequest);
+        assertThat(request.getType(), equalTo(AdapterRequestType.SET_PROPERTIES));
     }
 
     @Test
