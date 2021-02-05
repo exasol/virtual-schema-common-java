@@ -1,5 +1,8 @@
 package com.exasol.adapter.request;
 
+import com.exasol.ExaMetadata;
+import com.exasol.adapter.AdapterCallExecutor;
+import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.SchemaMetadataInfo;
 
 /**
@@ -14,5 +17,11 @@ public class GetCapabilitiesRequest extends AbstractAdapterRequest {
      */
     public GetCapabilitiesRequest(final String adapterName, final SchemaMetadataInfo schemaMetadataInfo) {
         super(adapterName, schemaMetadataInfo, AdapterRequestType.GET_CAPABILITIES);
+    }
+
+    @Override
+    public String execute(final AdapterCallExecutor adapterCallExecutor, final ExaMetadata metadata)
+            throws AdapterException {
+        return adapterCallExecutor.executeGetCapabilitiesRequest(this, metadata);
     }
 }
