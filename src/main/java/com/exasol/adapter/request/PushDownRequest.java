@@ -20,14 +20,13 @@ public class PushDownRequest extends AbstractAdapterRequest {
     /**
      * Create a new request of type {@link PushDownRequest}
      *
-     * @param adapterName            name of the adapter that should handle the request
      * @param schemaMetadataInfo     schema metadata
      * @param select                 SQL statement to be pushed down to the external data source
      * @param involvedTablesMetadata tables involved in the push-down request
      */
-    public PushDownRequest(final String adapterName, final SchemaMetadataInfo schemaMetadataInfo,
-            final SqlStatement select, final List<TableMetadata> involvedTablesMetadata) {
-        super(adapterName, schemaMetadataInfo, AdapterRequestType.PUSHDOWN);
+    public PushDownRequest(final SchemaMetadataInfo schemaMetadataInfo, final SqlStatement select,
+            final List<TableMetadata> involvedTablesMetadata) {
+        super(schemaMetadataInfo, AdapterRequestType.PUSHDOWN);
         this.select = select;
         this.involvedTablesMetadata = involvedTablesMetadata;
     }

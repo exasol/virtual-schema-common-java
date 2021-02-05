@@ -12,11 +12,10 @@ public class CreateVirtualSchemaRequest extends AbstractAdapterRequest {
     /**
      * Create a new request of type {@link CreateVirtualSchemaRequest}
      *
-     * @param adapterName        name of the adapter that should handle the request
      * @param schemaMetadataInfo schema metadata
      */
-    public CreateVirtualSchemaRequest(final String adapterName, final SchemaMetadataInfo schemaMetadataInfo) {
-        super(adapterName, schemaMetadataInfo, AdapterRequestType.CREATE_VIRTUAL_SCHEMA);
+    public CreateVirtualSchemaRequest(final SchemaMetadataInfo schemaMetadataInfo) {
+        super(schemaMetadataInfo, AdapterRequestType.CREATE_VIRTUAL_SCHEMA);
     }
 
     @Override

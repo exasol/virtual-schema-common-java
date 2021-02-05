@@ -24,13 +24,6 @@ public interface AdapterRequest {
     public AdapterRequestType getType();
 
     /**
-     * Get the name of the adapter that should handle the request
-     *
-     * @return adapter name
-     */
-    public String getAdapterName();
-
-    /**
      * Get the name of the Virtual Schema that this request is addressing
      *
      * @return Virtual Schema name

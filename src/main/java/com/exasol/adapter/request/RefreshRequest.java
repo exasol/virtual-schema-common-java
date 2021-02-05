@@ -18,24 +18,21 @@ public class RefreshRequest extends AbstractAdapterRequest {
     /**
      * Create a new request of type {@link RefreshRequest} for the whole Virtual Schema
      *
-     * @param adapterName        name of the adapter that should handle the request
      * @param schemaMetadataInfo schema metadata
      */
-    public RefreshRequest(final String adapterName, final SchemaMetadataInfo schemaMetadataInfo) {
-        super(adapterName, schemaMetadataInfo, AdapterRequestType.REFRESH);
+    public RefreshRequest(final SchemaMetadataInfo schemaMetadataInfo) {
+        super(schemaMetadataInfo, AdapterRequestType.REFRESH);
         this.refreshSelectedTablesOnly = false;
     }
 
     /**
      * Create a new request of type {@link RefreshRequest} for selected tables
      *
-     * @param adapterName        name of the adapter that should handle the request
      * @param schemaMetadataInfo schema metadata
      * @param tables             tables for which the metadata should be refreshed
      */
-    public RefreshRequest(final String adapterName, final SchemaMetadataInfo schemaMetadataInfo,
-            final List<String> tables) {
-        super(adapterName, schemaMetadataInfo, AdapterRequestType.REFRESH);
+    public RefreshRequest(final SchemaMetadataInfo schemaMetadataInfo, final List<String> tables) {
+        super(schemaMetadataInfo, AdapterRequestType.REFRESH);
         if ((tables == null) || tables.isEmpty()) {
             throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-32")
                     .message("The RefreshRequest constructor expects a list of requested tables, "

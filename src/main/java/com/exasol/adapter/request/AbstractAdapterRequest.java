@@ -8,13 +8,10 @@ import com.exasol.adapter.metadata.SchemaMetadataInfo;
 public abstract class AbstractAdapterRequest implements AdapterRequest {
     private final SchemaMetadataInfo schemaMetadataInfo;
     private final AdapterRequestType type;
-    private final String adapterName;
 
-    AbstractAdapterRequest(final String adapterName, final SchemaMetadataInfo schemaMetadataInfo,
-            final AdapterRequestType type) {
+    AbstractAdapterRequest(final SchemaMetadataInfo schemaMetadataInfo, final AdapterRequestType type) {
         this.schemaMetadataInfo = schemaMetadataInfo;
         this.type = type;
-        this.adapterName = adapterName;
     }
 
     @Override
@@ -28,12 +25,12 @@ public abstract class AbstractAdapterRequest implements AdapterRequest {
     }
 
     @Override
-    public String getAdapterName() {
-        return this.adapterName;
+    public String getVirtualSchemaName() {
+        return this.schemaMetadataInfo.getSchemaName();
     }
 
     @Override
-    public String getVirtualSchemaName() {
-        return this.schemaMetadataInfo.getSchemaName();
+    public String toString() {
+        return "AbstractAdapterRequest [schemaMetadataInfo=" + this.schemaMetadataInfo + ", type=" + this.type + "]";
     }
 }
