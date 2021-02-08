@@ -420,7 +420,7 @@ Notes
     * Otherwise `selectList` contains the requested select list elements, a list of expressions. The order of the elements matters.
   * `filter`: The requested filter (`where` clause), a single expression.
   * `aggregationType`: An optional element, set if an aggregation is requested. Either `group_by` or `single_group`, if a aggregate function is used but no group by.
-  * `groupBy`: The requested group by a clause, a list of expressions.
+  * `groupBy`: The requested group by clause, a list of expressions.
   * `having`: The requested having clause, a single expression.
   * `orderBy`: The requested order-by clause, a list of `order_by_element` elements.
   * `limit` The requested limit of the result set, with an optional offset.
