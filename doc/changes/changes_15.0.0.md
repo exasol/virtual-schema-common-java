@@ -18,6 +18,7 @@ design and interface:
 ## Documentation
 
 * #208: Fixed API Documentation for literal_exactnumeric and literal_double.
+* #186: Updated select list API description.
 
 ## Refactoring
 
