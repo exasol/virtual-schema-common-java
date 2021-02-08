@@ -22,6 +22,7 @@ The `src/main/resources/META-INF/services/com.exasol.adapter.AdapterFactory` fil
 ## Documentation
 
 * #208: Fixed API Documentation for literal_exactnumeric and literal_double.
+* #186: Updated select list API description.
 
 ## Refactoring
 

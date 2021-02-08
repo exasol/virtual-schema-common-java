@@ -415,12 +415,12 @@ Notes
 * `pushdownRequest`: Specification what needs to be pushed down. You can think of it like a parsed SQL statement.
   * `from`: The requested from clause. This can be a table or a join.
   * `selectList`: The requested select list. There are three options for this field:
-    * `selectList` is not given: This means `SELECT *`. The field `involvedTables` may be used to get the list of columns.
+    * `selectList` is not given: This means `SELECT *`. Adapters requiring an explicit select list can use the field `from` to get the names and aliases of the tables (depth-first search on joins) and the field `involvedTables` to get the columns for each table.
     * `selectList` is an empty array: Select any column/expression. This is used, for example, if a query can not be pushed down completely. The adapter may choose something like `SELECT TRUE` to get the correct number of rows.
     * Otherwise `selectList` contains the requested select list elements, a list of expressions. The order of the elements matters.
   * `filter`: The requested filter (`where` clause), a single expression.
-  * `aggregationType`Optional element, set if an aggregation is requested. Either `group_by` or `single_group`, if a aggregate function is used but no group by.
-  * `groupBy`: The requested group by clause, a list of expressions.
+  * `aggregationType`: An optional element, set if an aggregation is requested. Either `group_by` or `single_group`, if a aggregate function is used but no group by.
+  * `groupBy`: The requested group by a clause, a list of expressions.
   * `having`: The requested having clause, a single expression.
   * `orderBy`: The requested order-by clause, a list of `order_by_element` elements.
   * `limit` The requested limit of the result set, with an optional offset.
