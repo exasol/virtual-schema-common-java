@@ -17,7 +17,6 @@ public class AdapterProperties extends AbstractAdapterProperties {
     public static final String CONNECTION_NAME_PROPERTY = "CONNECTION_NAME";
     public static final String DEBUG_ADDRESS_PROPERTY = "DEBUG_ADDRESS";
     public static final String LOG_LEVEL_PROPERTY = "LOG_LEVEL";
-    public static final String SQL_DIALECT_PROPERTY = "SQL_DIALECT";
     public static final String EXCLUDED_CAPABILITIES_PROPERTY = "EXCLUDED_CAPABILITIES";
     public static final String EXCEPTION_HANDLING_PROPERTY = "EXCEPTION_HANDLING";
     public static final String IGNORE_ERRORS_PROPERTY = "IGNORE_ERRORS";
@@ -79,15 +78,6 @@ public class AdapterProperties extends AbstractAdapterProperties {
     }
 
     /**
-     * Get the sql dialect
-     *
-     * @return sql dialect
-     */
-    public String getSqlDialect() {
-        return get(SQL_DIALECT_PROPERTY);
-    }
-
-    /**
      * Get the excluded capabilities
      *
      * @return excluded capabilities
@@ -140,7 +130,7 @@ public class AdapterProperties extends AbstractAdapterProperties {
      * @return <code>true</code> if any of the changes makes refreshing the virtual schema necessary
      */
     public static boolean isRefreshingVirtualSchemaRequired(final Map<String, String> changedProperties) {
-        return  changedProperties.containsKey(CONNECTION_NAME_PROPERTY) //
+        return changedProperties.containsKey(CONNECTION_NAME_PROPERTY) //
                 || changedProperties.containsKey(SCHEMA_NAME_PROPERTY) //
                 || changedProperties.containsKey(CATALOG_NAME_PROPERTY) //
                 || changedProperties.containsKey(TABLE_FILTER_PROPERTY)
@@ -222,15 +212,6 @@ public class AdapterProperties extends AbstractAdapterProperties {
      */
     public boolean hasLogLevel() {
         return containsKey(LOG_LEVEL_PROPERTY);
-    }
-
-    /**
-     * Check if the SQL dialect property is set
-     *
-     * @return <code>true</code> if SQL dialect property is set
-     */
-    public boolean hasSqlDialect() {
-        return containsKey(SQL_DIALECT_PROPERTY);
     }
 
     /**
