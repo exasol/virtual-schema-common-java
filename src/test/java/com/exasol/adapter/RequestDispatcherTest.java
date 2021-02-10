@@ -22,10 +22,7 @@ class RequestDispatcherTest {
     private static final String DEFAULT_REQUEST_PARTS = "\"schemaMetadataInfo\" :\n" //
             + "    {\n" //
             + "        \"name\" : \"foo\",\n" //
-            + "        \"properties\" :\n" //
-            + "        {\n" //
-            + "            \"SQL_DIALECT\" : \"MOCKADAPTER\"\n" //
-            + "        }\n" //
+            + "        \"properties\" : {}\n" //
             + "    }\n";
     private final ExaMetadata metadata = null;
 
@@ -147,7 +144,6 @@ class RequestDispatcherTest {
                 + "          \"name\" : \"REMOTE_DEBUG_TEST\",\n" //
                 + "          \"properties\" :\n" //
                 + "          {\n" //
-                + "              \"SQL_DIALECT\" : \"MOCKADAPTER\",\n" //
                 + "              \"LOG_LEVEL\" : \"FINE\"\n" //
                 + "          }\n" //
                 + "    }\n" //
@@ -167,7 +163,6 @@ class RequestDispatcherTest {
                 + "          \"name\" : \"REMOTE_DEBUG_TEST\",\n" //
                 + "          \"properties\" :\n" //
                 + "          {\n" //
-                + "              \"SQL_DIALECT\" : \"MOCKADAPTER\",\n" //
                 + "              \"DEBUG_ADDRESS\" : \"this.host.does.not.exist.exasol.com\"\n" //
                 + "          }\n" //
                 + "    }\n" //

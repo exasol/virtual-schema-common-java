@@ -31,8 +31,7 @@ class AdapterPropertiesTest {
     }
 
     @ValueSource(strings = { CATALOG_NAME_PROPERTY, SCHEMA_NAME_PROPERTY, CONNECTION_NAME_PROPERTY,
-            DEBUG_ADDRESS_PROPERTY, LOG_LEVEL_PROPERTY, SQL_DIALECT_PROPERTY, EXCLUDED_CAPABILITIES_PROPERTY,
-            EXCEPTION_HANDLING_PROPERTY })
+            DEBUG_ADDRESS_PROPERTY, LOG_LEVEL_PROPERTY, EXCLUDED_CAPABILITIES_PROPERTY, EXCEPTION_HANDLING_PROPERTY })
     @ParameterizedTest
     void testGetStringProperty(final String property) throws IllegalAccessException, IllegalArgumentException,
             InvocationTargetException, NoSuchMethodException, SecurityException {
