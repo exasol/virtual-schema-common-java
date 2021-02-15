@@ -5,4 +5,4 @@ Code name:
 ## Refactoring
 
 * #216: Removed `SQL_DIALECT_PROPERTY` from `AdapterProperties`.
-* #219: Moved Double and Exactnumeric formatting to the JDBC part of Virtual Schemas.
+* #219: Moved `Double` and `Exactnumeric` formatting to the `Virtual Schemas JDBC`  (https://github.com/exasol/virtual-schema-common-jdbc).

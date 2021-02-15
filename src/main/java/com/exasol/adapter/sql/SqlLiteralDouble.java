@@ -10,9 +10,8 @@ public class SqlLiteralDouble extends SqlNode {
     }
 
     /**
-     * Get a value of the double converted to an E-notation format.
      * 
-     * @return double value as a string
+     * @return underlying value as double
      */
     public double getValue() {
         return this.value;
