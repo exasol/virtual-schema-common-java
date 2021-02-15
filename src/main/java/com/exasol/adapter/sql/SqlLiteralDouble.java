@@ -1,8 +1,5 @@
 package com.exasol.adapter.sql;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-
 import com.exasol.adapter.AdapterException;
 
 public class SqlLiteralDouble extends SqlNode {
@@ -13,16 +10,11 @@ public class SqlLiteralDouble extends SqlNode {
     }
 
     /**
-     * Get a value of the double converted to an E-notation format.
-     * <p>
-     * For example: 1.234 becomes 1.234E0
-     * </p>
-     *
-     * @return double value as a string
+     * 
+     * @return underlying value as double
      */
-    public String getValue() {
-        final NumberFormat numFormat = new DecimalFormat("0.################E0");
-        return numFormat.format(this.value);
+    public double getValue() {
+        return this.value;
     }
 
     @Override
