@@ -1,6 +1,6 @@
 # Virtual Schema Common Java 15.0.1, released 2021-02-16
 
-Code name: 
+Code name: Removed `SQL_DIALECT_PROPERTY and removed `Double` and `Exactnumeric` formatting 
 
 ## Refactoring
 
