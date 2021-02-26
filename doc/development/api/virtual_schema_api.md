@@ -1,6 +1,10 @@
 # Virtual Schema API Documentation
 
+The Exasol database provides a [ZeroMQ](https://zeromq.org/) interface with JSON messages for Virtual Schema adapters. This page documents this API (what the possible JSON messages are).
+
 ## Table of Contents
+
+- [Introduction](#introduction)
 - [Introduction](#introduction)
 - [Requests and Responses](#requests-and-responses)
   - [Create Virtual Schema](#create-virtual-schema)
@@ -25,6 +29,14 @@
 
 ## Introduction
 
+To get a better understanding let's take a look on how the Exasol database processes a Virtual Schema query:
+
+![virtual schema query processing](../../../src/uml/requestHandling.png)
+
+The diagram show how Exasol handles Virtual Schema queries: When the core receives an SQL query on a Virtual Schema table, it first checks the capabilities of the corresponding Virtual Schema adapter. Based on that information it removes all functions and literals that are not supported by the adapter. Next the Exasol Core sends the query to the Virtual Schema adapter as a `PushdownRequest`. The Virtual Schema adapter now rewrites the query into a new SQL statement that invokes the Exasol importer. The importer statement contains the query to the external database as a string. Next the Exasol database parses this statement again and invokes the importer. Finally, the Exasol core applies the functions that were not supported by the remote database itself as post processing and returns that result to the SQL client.
+
+## Requests and Responses
+
 There are the following request and response types:
 
 | Type                        | Called ...                                                            |
@@ -37,10 +49,7 @@ There are the following request and response types:
 | **Pushdown**                | &hellip; whenever a virtual table is queried in a `SELECT` statement. |
 
 We describe each of the types in the following sections.
-
 **Please note:** To keep the documentation concise we defined the elements which are commonly in separate sections below, e.g. `schemaMetadataInfo` and `schemaMetadata`.
-
-## Requests and Responses
 
 ### Create Virtual Schema
 
