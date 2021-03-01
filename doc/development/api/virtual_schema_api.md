@@ -1,6 +1,7 @@
 # Virtual Schema API Documentation
 
-The Exasol database provides a [ZeroMQ](https://zeromq.org/) interface with JSON messages for Virtual Schema adapters. This page documents this API (what the possible JSON messages are).
+In the Exasol database, a Virtual Schema adapter is basically a [UDF](https://docs.exasol.com/database_concepts/udf_scripts.htm). The Exasol core invokes this UDF in different situations, for example when creating a Virtual Schema or during query processing.
+In order to communicate with the Virtual Schema adapter UDF, the Exasol database sends a JSON parameter to the Virtual Schema adapter UDF and retrieves also a JSON string as return value. This page documents these JSON messages.
 
 ## Table of Contents
 
