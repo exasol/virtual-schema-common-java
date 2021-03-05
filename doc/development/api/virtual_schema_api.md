@@ -34,7 +34,13 @@ To get a better understanding let's take a look on how the Exasol database proce
 
 ![virtual schema query processing](../../../src/uml/requestHandling.png)
 
-The diagram show how Exasol handles Virtual Schema queries: When the core receives an SQL query on a Virtual Schema table, it first checks the capabilities of the corresponding Virtual Schema adapter. Based on that information it removes all functions and literals that are not supported by the adapter. Next the Exasol Core sends the query to the Virtual Schema adapter as a `PushdownRequest`. The Virtual Schema adapter now rewrites the query into a new SQL statement that invokes the Exasol importer. The importer statement contains the query to the external database as a string. Next the Exasol database parses this statement again and invokes the importer. Finally, the Exasol core applies the functions that were not supported by the remote database itself as post processing and returns that result to the SQL client.
+The diagram shows how Exasol handles Virtual Schema queries: 
+
+- When the core receives an SQL query on a Virtual Schema table, it first checks the capabilities of the corresponding Virtual Schema adapter. Based on that information it removes all functions and literals that are not supported by the adapter. 
+- Next, the Exasol Core sends a query to the Virtual Schema adapter as a `PushdownRequest`. 
+- The Virtual Schema adapter now rewrites the query into a new SQL statement that invokes the Exasol importer. The importer statement contains a query to the external database as a string. 
+- Next, the Exasol database parses this statement again and invokes the importer. 
+- Finally, the Exasol core applies the functions that were not supported by the remote database itself as post processing and returns that result to the SQL client.
 
 ## Requests and Responses
 
