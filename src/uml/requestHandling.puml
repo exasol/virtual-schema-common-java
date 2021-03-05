@@ -14,9 +14,9 @@ activate "Virtual Schema Adapter"
 deactivate "Virtual Schema Adapter"
 "Exasol Core" -> Importer: IMPORT FROM JDBC ...
 activate "Importer"
-"Exasol Core" <<-- Importer: rows
+"Exasol Core" <<-- Importer: result
 deactivate "Importer"
 "Exasol Core" -> "Exasol Core": post process
-"SQL Client" <<-- "Exasol Core": rows
+"SQL Client" <<-- "Exasol Core": result
 deactivate "Exasol Core"
 @enduml

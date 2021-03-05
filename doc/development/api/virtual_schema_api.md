@@ -38,9 +38,13 @@ The diagram shows how Exasol handles Virtual Schema queries:
 
 - When the core receives an SQL query on a Virtual Schema table, it first checks the capabilities of the corresponding Virtual Schema adapter. Based on that information it removes all functions and literals that are not supported by the adapter. 
 - Next, the Exasol Core sends a query to the Virtual Schema adapter as a `PushdownRequest`. 
-- The Virtual Schema adapter now rewrites the query into a new SQL statement that invokes the Exasol importer. The importer statement contains a query to the external database as a string. 
+- The Virtual Schema adapter now rewrites the query into a new SQL statement that typically invokes the Exasol importer `IMPORT INTO ...`. For details see the [`IMPORT` statements documentation](https://docs.exasol.com/sql/import.htm). The importer statement contains a query to the external database as a string. 
 - Next, the Exasol database parses this statement again and invokes the importer. 
 - Finally, the Exasol core applies the functions that were not supported by the remote database itself as post processing and returns that result to the SQL client.
+
+Instead of the `IMPORT` statement the adapter can also create other SQL statements.
+The important part is, that the Virtual Schema adapter receives an SQL statement and rewrites it into another SQL statement.
+For example, it can create a `SELECT FROM VALUES` statement with an inlined result.
 
 ## Requests and Responses
 
