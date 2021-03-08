@@ -21,6 +21,8 @@ This is one of the modules of Virtual Schemas Adapters.
 The libraries provided by this project are the foundation of the adapter development, i.e. adapters must be implemented on top of them.
 You can find the full description of the project here: https://github.com/exasol/virtual-schemas
 
+A Virtual Schema adapter is basically a [UDF](https://docs.exasol.com/database_concepts/udf_scripts.htm). The Exasol core database communicates with this UDF using JSON strings. There are different types of messages, that define the API for a virtual Schema adapter ([protocol reference](doc/development/api/virtual_schema_api.md)). This repository wraps this JSON API with a Java API to facilitate the implementation of Virtual Schema adapters in Java.
+
 Please note that the artifact name changed from "virtualschema-common" to "virtual-schema-common-java". First to unify the naming schemes, second to make sure the new adapters do not accidentally use the old line of libraries.
 
 ## Information for Users

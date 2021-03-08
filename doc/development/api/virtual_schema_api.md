@@ -1,6 +1,11 @@
 # Virtual Schema API Documentation
 
+In the Exasol database, a Virtual Schema adapter is basically a [UDF](https://docs.exasol.com/database_concepts/udf_scripts.htm). The Exasol core invokes this UDF in different situations, for example when creating a Virtual Schema or during query processing.
+In order to communicate with the Virtual Schema adapter UDF, the Exasol database sends a JSON parameter to the Virtual Schema adapter UDF and retrieves also a JSON string as return value. This page documents these JSON messages.
+
 ## Table of Contents
+
+- [Introduction](#introduction)
 - [Introduction](#introduction)
 - [Requests and Responses](#requests-and-responses)
   - [Create Virtual Schema](#create-virtual-schema)
@@ -25,6 +30,24 @@
 
 ## Introduction
 
+To get a better understanding let's take a look on how the Exasol database processes a Virtual Schema query:
+
+![virtual schema query processing](../../../src/uml/requestHandling.png)
+
+The diagram shows how Exasol handles Virtual Schema queries: 
+
+- When the core receives an SQL query on a Virtual Schema table, it first checks the capabilities of the corresponding Virtual Schema adapter. Based on that information it removes all functions and literals that are not supported by the adapter. 
+- Next, the Exasol Core sends a query to the Virtual Schema adapter as a `PushdownRequest`. 
+- The Virtual Schema adapter now rewrites the query into a new SQL statement that typically invokes the Exasol importer `IMPORT INTO ...`. For details see the [`IMPORT` statements documentation](https://docs.exasol.com/sql/import.htm). The importer statement contains a query to the external database as a string. 
+- Next, the Exasol database parses this statement again and invokes the importer. 
+- Finally, the Exasol core applies the functions that were not supported by the remote database itself as post processing and returns that result to the SQL client.
+
+Instead of the `IMPORT` statement the adapter can also create other SQL statements.
+The important part is, that the Virtual Schema adapter receives an SQL statement and rewrites it into another SQL statement.
+For example, it can create a `SELECT FROM VALUES` statement with an inlined result.
+
+## Requests and Responses
+
 There are the following request and response types:
 
 | Type                        | Called ...                                                            |
@@ -37,10 +60,7 @@ There are the following request and response types:
 | **Pushdown**                | &hellip; whenever a virtual table is queried in a `SELECT` statement. |
 
 We describe each of the types in the following sections.
-
 **Please note:** To keep the documentation concise we defined the elements which are commonly in separate sections below, e.g. `schemaMetadataInfo` and `schemaMetadata`.
-
-## Requests and Responses
 
 ### Create Virtual Schema
 
