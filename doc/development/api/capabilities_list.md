@@ -237,6 +237,7 @@ Here you can find a list of available Virtual Schema capabilities.
 - FN_TRANSLATE
 - FN_TRIM
 - FN_TRUNC
+- FN_TYPEOF
 - FN_UNICODE
 - FN_UNICODECHR
 - FN_UPPER
