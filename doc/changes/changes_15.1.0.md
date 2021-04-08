@@ -9,6 +9,7 @@ Code name:
 ## Documentation
 
 * #156: Improved documentation on how the virtual schema query processing works.
+
 ## Dependency Updates
 
 ### Compile Dependency Updates
