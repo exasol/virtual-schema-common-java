@@ -1,6 +1,6 @@
-# Virtual Schema Common Java 15.1.0, released 2021-xx-xx
+# Virtual Schema Common Java 15.1.0, released 2021-05-17
 
-Code name: 
+Code name: Dependencies update
 
 ## Feature
 
@@ -18,11 +18,14 @@ Code name:
 
 ### Test Dependency Updates
 
-* Updated `nl.jqno.equalsverifier:equalsverifier:3.4.3` to `3.5.5`
-* Updated `org.junit.jupiter:junit-jupiter:5.7.0` to `5.7.1`
-* Updated `org.mockito:mockito-junit-jupiter:3.5.13` to `3.9.0`
+* Updated `nl.jqno.equalsverifier:equalsverifier:3.4.3` to `3.6`
+* Updated `org.itsallcode:junit5-system-extensions:1.1.0` to `1.2.0`
+* Updated `org.junit.jupiter:junit-jupiter:5.7.0` to `5.7.2`
+* Updated `org.mockito:mockito-junit-jupiter:3.5.13` to `3.10.0`
 
 ### Plugin Dependency Updates
 
 * Added `com.exasol:project-keeper-maven-plugin:0.6.1`
 * Added `io.github.zlika:reproducible-build-maven-plugin:0.13`
+* Updated `org.codehaus.mojo:versions-maven-plugin:2.7` to `2.8.1`
+* Updated `org.jacoco:jacoco-maven-plugin:0.8.5` to `0.8.6`
