@@ -27,3 +27,5 @@ Code name: Dependencies update
 
 * Added `com.exasol:project-keeper-maven-plugin:0.6.1`
 * Added `io.github.zlika:reproducible-build-maven-plugin:0.13`
+* Updated `org.codehaus.mojo:versions-maven-plugin:2.7` to `2.8.1`
+* Updated `org.jacoco:jacoco-maven-plugin:0.8.5` to `0.8.6`
