@@ -1,6 +1,6 @@
 # Common module of Exasol Virtual Schemas Adapters
 
-[![Build Status](https://api.travis-ci.org/exasol/virtual-schema-common-java.svg?branch=master)](https://travis-ci.org/exasol/virtual-schema-common-java)
+[![Build Status](https://travis-ci.com/exasol/virtual-schema-common-java.svg?branch=main)](https://travis-ci.com/exasol/virtual-schema-common-java)
 [![Maven Central](https://img.shields.io/maven-central/v/com.exasol/virtual-schema-common-java)](https://search.maven.org/artifact/com.exasol/virtual-schema-common-java)
 
 SonarCloud results:
@@ -79,4 +79,4 @@ Please note that the artifact name changed from "virtualschema-common" to "virtu
 
 Please note that this is an open source project which is officially supported by Exasol. This module is part of a larger project called [Virtual Schemas](https://github.com/exasol/virtual-schemas).
 
-Unless you are writing your own adapter based on this common module here, please check for problem solutions in the master project first.
+Unless you are writing your own adapter based on this common module here, please check for problem solutions in the main project first.
