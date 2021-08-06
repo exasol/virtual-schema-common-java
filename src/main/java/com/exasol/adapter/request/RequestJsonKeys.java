@@ -57,7 +57,7 @@ public class RequestJsonKeys {
     public static final String TO_EXTRACT = "toExtract";
     public static final String BYTE_SIZE = "bytesize";
 
-    public RequestJsonKeys() {
+    private RequestJsonKeys() {
         // no instantiation required
     }
 }

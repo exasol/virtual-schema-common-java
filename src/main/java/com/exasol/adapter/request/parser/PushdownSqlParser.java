@@ -210,6 +210,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         }
     }
 
+    @SuppressWarnings("java:S1192") // tableName is duplicated but that's ok since it's a parameter
     private List<SqlNode> collectAllInvolvedColumns(final SqlNode from) {
         final List<SqlTable> involvedTables = collectInvolvedTables(from);
         final Map<String, TableMetadata> tableMetadataMap = getInvolvedTablesMetadataMap();
