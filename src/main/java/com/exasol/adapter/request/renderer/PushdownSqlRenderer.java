@@ -34,7 +34,8 @@ public class PushdownSqlRenderer {
             return node.accept(new ConvertVisitor());
         } catch (final AdapterException exception) {
             throw new IllegalStateException(ExaError.messageBuilder("F-VS-COM-JAVA-34")
-                    .message("An unexpected error opccured.").ticketMitigation().toString(), exception);
+                    .message("n unexpected error occurred during request serialization.").ticketMitigation().toString(),
+                    exception);
         }
     }
 
@@ -48,7 +49,7 @@ public class PushdownSqlRenderer {
             addIfPresent(select.getGroupBy(), GROUP_BY, builder);
             addIfPresent(select.getWhereClause(), FILTER, builder);
             addIfPresent(select.getHaving(), HAVING, builder);
-            addIfPresent(select.getOrderBy(), ORDER_BY_KEY, builder);
+            addIfPresent(select.getOrderBy(), ORDER_BY, builder);
             addIfPresent(select.getLimit(), LIMIT, builder);
             return builder.build();
         }
@@ -85,7 +86,7 @@ public class PushdownSqlRenderer {
         @Override
         public JsonObject visit(final SqlColumn sqlColumn) throws AdapterException {
             final JsonObjectBuilder builder = createObjectBuilderFor(sqlColumn);
-            builder.add("columnNr", sqlColumn.getId());
+            builder.add(COLUMN_NR, sqlColumn.getId());
             builder.add(NAME, sqlColumn.getName());
             builder.add(TABLE_NAME, sqlColumn.getTableName());
             if (sqlColumn.hasTableAlias()) {
@@ -98,9 +99,9 @@ public class PushdownSqlRenderer {
         public JsonObject visit(final SqlFunctionAggregate sqlFunctionAggregate) throws AdapterException {
             final JsonObjectBuilder builder = createObjectBuilderFor(sqlFunctionAggregate);
             builder.add(NAME, sqlFunctionAggregate.getFunctionName());
-            builder.add(ARGUMENTS_KEY, convertListOfNodes(sqlFunctionAggregate.getArguments()));
+            builder.add(ARGUMENTS, convertListOfNodes(sqlFunctionAggregate.getArguments()));
             if (sqlFunctionAggregate.hasDistinct()) {
-                builder.add(DISTINCT_KEY, true);
+                builder.add(DISTINCT, true);
             }
             return builder.build();
         }
@@ -109,12 +110,12 @@ public class PushdownSqlRenderer {
         public JsonObject visit(final SqlFunctionAggregateGroupConcat function) throws AdapterException {
             final JsonObjectBuilder builder = createObjectBuilderFor(function);
             builder.add(NAME, function.getFunctionName());
-            builder.add(ARGUMENTS_KEY, convertListOfNodes(List.of(function.getArgument())));
+            builder.add(ARGUMENTS, convertListOfNodes(List.of(function.getArgument())));
             if (function.hasDistinct()) {
-                builder.add(DISTINCT_KEY, true);
+                builder.add(DISTINCT, true);
             }
-            addIfPresent(function.getOrderBy(), ORDER_BY_KEY, builder);
-            builder.add(SEPARATOR_KEY, function.getSeparator().accept(this));
+            addIfPresent(function.getOrderBy(), ORDER_BY, builder);
+            builder.add(SEPARATOR, function.getSeparator().accept(this));
             return builder.build();
         }
 
@@ -123,7 +124,7 @@ public class PushdownSqlRenderer {
             final JsonObjectBuilder builder = createObjectBuilderFor(function);
             builder.add(NAME, function.getFunctionName());
             builder.add(NUM_ARGS, function.getArguments().size());
-            builder.add(ARGUMENTS_KEY, convertListOfNodes(function.getArguments()));
+            builder.add(ARGUMENTS, convertListOfNodes(function.getArguments()));
             return builder.build();
         }
 
@@ -131,9 +132,9 @@ public class PushdownSqlRenderer {
         public JsonObject visit(final SqlFunctionScalarCase function) throws AdapterException {
             final JsonObjectBuilder builder = createObjectBuilderFor(function);
             builder.add(NAME, "CASE");
-            builder.add(ARGUMENTS_KEY, convertListOfNodes(function.getArguments()));
-            builder.add("results", convertListOfNodes(function.getResults()));
-            addIfPresent(function.getBasis(), "basis", builder);
+            builder.add(ARGUMENTS, convertListOfNodes(function.getArguments()));
+            builder.add(RESULTS, convertListOfNodes(function.getResults()));
+            addIfPresent(function.getBasis(), BASIS, builder);
             return builder.build();
         }
 
@@ -141,7 +142,7 @@ public class PushdownSqlRenderer {
         public JsonObject visit(final SqlFunctionScalarCast function) throws AdapterException {
             final JsonObjectBuilder builder = createObjectBuilderFor(function);
             builder.add(DATA_TYPE, render(function.getDataType()));
-            builder.add(ARGUMENTS_KEY, convertListOfNodes(List.of(function.getArgument())));
+            builder.add(ARGUMENTS, convertListOfNodes(List.of(function.getArgument())));
             builder.add(NAME, "CAST");
             return builder.build();
         }
@@ -152,26 +153,26 @@ public class PushdownSqlRenderer {
             builder.add(TYPE, type.name().toUpperCase());
             switch (type) {
             case DECIMAL:
-                builder.add("precision", dataType.getPrecision());
-                builder.add("scale", dataType.getScale());
+                builder.add(PRECISION, dataType.getPrecision());
+                builder.add(SCALE, dataType.getScale());
                 break;
             case VARCHAR:
             case CHAR:
-                builder.add("characterSet", dataType.getCharset().name().toLowerCase());
-                builder.add("size", dataType.getSize());
+                builder.add(CHARACTER_SET, dataType.getCharset().name().toLowerCase());
+                builder.add(SIZE, dataType.getSize());
                 break;
             case TIMESTAMP:
-                builder.add("withLocalTimeZone", dataType.isWithLocalTimezone());
+                builder.add(WITH_LOCAL_TIME_ZONE, dataType.isWithLocalTimezone());
                 break;
             case INTERVAL:
-                builder.add("precision", dataType.getPrecision());
-                builder.add("fromTo", render(dataType.getIntervalType()));
+                builder.add(PRECISION, dataType.getPrecision());
+                builder.add(FROM_TO, render(dataType.getIntervalType()));
                 if (dataType.getIntervalType().equals(DataType.IntervalType.DAY_TO_SECOND)) {
-                    builder.add("fraction", dataType.getIntervalFraction());
+                    builder.add(FRACTION, dataType.getIntervalFraction());
                 }
                 break;
             case GEOMETRY:
-                builder.add("srid", dataType.getGeometrySrid());
+                builder.add(SRID, dataType.getGeometrySrid());
                 break;
             default:
                 break;
@@ -195,8 +196,8 @@ public class PushdownSqlRenderer {
         public JsonObject visit(final SqlFunctionScalarExtract function) throws AdapterException {
             final JsonObjectBuilder builder = createObjectBuilderFor(function);
             builder.add(NAME, "EXTRACT");
-            builder.add("toExtract", function.getToExtract());
-            builder.add(ARGUMENTS_KEY, convertListOfNodes(List.of(function.getArgument())));
+            builder.add(TO_EXTRACT, function.getToExtract());
+            builder.add(ARGUMENTS, convertListOfNodes(List.of(function.getArgument())));
             return builder.build();
         }
 
@@ -204,10 +205,10 @@ public class PushdownSqlRenderer {
         public JsonObject visit(final SqlFunctionScalarJsonValue function) throws AdapterException {
             final JsonObjectBuilder builder = createObjectBuilderFor(function);
             builder.add(NAME, function.getScalarFunction().name());
-            builder.add(ARGUMENTS_KEY, convertListOfNodes(function.getArguments()));
-            builder.add("returningDataType", render(function.getReturningDataType()));
-            builder.add("emptyBehavior", render(function.getEmptyBehavior()));
-            builder.add("errorBehavior", render(function.getErrorBehavior()));
+            builder.add(ARGUMENTS, convertListOfNodes(function.getArguments()));
+            builder.add(RETURNING_DATA_TYPE, render(function.getReturningDataType()));
+            builder.add(EMPTY_BEHAVIOR, render(function.getEmptyBehavior()));
+            builder.add(ERROR_BEHAVIOR, render(function.getErrorBehavior()));
             return builder.build();
         }
 
@@ -224,8 +225,8 @@ public class PushdownSqlRenderer {
         @Override
         public JsonObject visit(final SqlLimit sqlLimit) throws AdapterException {
             final JsonObjectBuilder builder = createObjectBuilderFor(sqlLimit);
-            builder.add("numElements", sqlLimit.getLimit());
-            builder.add("offset", sqlLimit.getOffset());
+            builder.add(NUM_ELEMENTS, sqlLimit.getLimit());
+            builder.add(OFFSET, sqlLimit.getOffset());
             return builder.build();
         }
 
@@ -305,10 +306,10 @@ public class PushdownSqlRenderer {
             }
             for (int index = 0; index < expressionsSize; index++) {
                 final JsonObjectBuilder objectBuilder = JSON.createObjectBuilder();
-                objectBuilder.add(TYPE, "order_by_element");
+                objectBuilder.add(TYPE, ORDER_BY_ELEMENT);
                 objectBuilder.add(EXPRESSION, expressions.get(index).accept(this));
-                objectBuilder.add("isAscending", isAscendings.get(index));
-                objectBuilder.add("nullsLast", nullsLasts.get(index));
+                objectBuilder.add(IS_ASCENDING, isAscendings.get(index));
+                objectBuilder.add(NULLS_LAST, nullsLasts.get(index));
                 builder.add(objectBuilder);
             }
             return builder.build();
@@ -317,7 +318,7 @@ public class PushdownSqlRenderer {
         @Override
         public JsonObject visit(final SqlPredicateAnd sqlPredicateAnd) throws AdapterException {
             final JsonObjectBuilder builder = createObjectBuilderFor(sqlPredicateAnd);
-            builder.add("expressions", convertListOfNodes(sqlPredicateAnd.getAndedPredicates()));
+            builder.add(EXPRESSIONS, convertListOfNodes(sqlPredicateAnd.getAndedPredicates()));
             return builder.build();
         }
 
@@ -348,7 +349,7 @@ public class PushdownSqlRenderer {
         public JsonObject visit(final SqlPredicateInConstList sqlPredicateInConstList) throws AdapterException {
             final JsonObjectBuilder builder = createObjectBuilderFor(sqlPredicateInConstList);
             builder.add(EXPRESSION, sqlPredicateInConstList.getExpression().accept(this));
-            builder.add(ARGUMENTS_KEY, convertListOfNodes(sqlPredicateInConstList.getInArguments()));
+            builder.add(ARGUMENTS, convertListOfNodes(sqlPredicateInConstList.getInArguments()));
             return builder.build();
         }
 
@@ -356,8 +357,8 @@ public class PushdownSqlRenderer {
         public JsonObject visit(final SqlPredicateIsJson sqlPredicateIsJson) throws AdapterException {
             final JsonObjectBuilder builder = createObjectBuilderFor(sqlPredicateIsJson);
             builder.add(EXPRESSION, sqlPredicateIsJson.getExpression().accept(this));
-            builder.add("typeConstraint", sqlPredicateIsJson.getTypeConstraint());
-            builder.add("keyUniquenessConstraint", sqlPredicateIsJson.getKeyUniquenessConstraint());
+            builder.add(TYPE_CONSTRAINT, sqlPredicateIsJson.getTypeConstraint());
+            builder.add(KEY_UNIQUENESS_CONSTRAINT, sqlPredicateIsJson.getKeyUniquenessConstraint());
             return builder.build();
         }
 
@@ -365,8 +366,8 @@ public class PushdownSqlRenderer {
         public JsonObject visit(final SqlPredicateIsNotJson sqlPredicateIsNotJson) throws AdapterException {
             final JsonObjectBuilder builder = createObjectBuilderFor(sqlPredicateIsNotJson);
             builder.add(EXPRESSION, sqlPredicateIsNotJson.getExpression().accept(this));
-            builder.add("typeConstraint", sqlPredicateIsNotJson.getTypeConstraint());
-            builder.add("keyUniquenessConstraint", sqlPredicateIsNotJson.getKeyUniquenessConstraint());
+            builder.add(TYPE_CONSTRAINT, sqlPredicateIsNotJson.getTypeConstraint());
+            builder.add(KEY_UNIQUENESS_CONSTRAINT, sqlPredicateIsNotJson.getKeyUniquenessConstraint());
             return builder.build();
         }
 
@@ -386,8 +387,8 @@ public class PushdownSqlRenderer {
         public JsonObject visit(final SqlPredicateLike sqlPredicateLike) throws AdapterException {
             final JsonObjectBuilder builder = createObjectBuilderFor(sqlPredicateLike);
             builder.add(EXPRESSION, sqlPredicateLike.getLeft().accept(this));
-            addIfPresent(sqlPredicateLike.getPattern(), "pattern", builder);
-            addIfPresent(sqlPredicateLike.getEscapeChar(), "escapeChar", builder);
+            addIfPresent(sqlPredicateLike.getPattern(), PATTERN, builder);
+            addIfPresent(sqlPredicateLike.getEscapeChar(), ESCAPE_CHAR, builder);
             return builder.build();
         }
 
@@ -395,7 +396,7 @@ public class PushdownSqlRenderer {
         public JsonObject visit(final SqlPredicateLikeRegexp sqlPredicateLikeRegexp) throws AdapterException {
             final JsonObjectBuilder builder = createObjectBuilderFor(sqlPredicateLikeRegexp);
             builder.add(EXPRESSION, sqlPredicateLikeRegexp.getLeft().accept(this));
-            builder.add("pattern", sqlPredicateLikeRegexp.getPattern().accept(this));
+            builder.add(PATTERN, sqlPredicateLikeRegexp.getPattern().accept(this));
             return builder.build();
         }
 
@@ -415,7 +416,7 @@ public class PushdownSqlRenderer {
         @Override
         public JsonObject visit(final SqlPredicateOr sqlPredicateOr) throws AdapterException {
             final JsonObjectBuilder builder = createObjectBuilderFor(sqlPredicateOr);
-            builder.add("expressions", convertListOfNodes(sqlPredicateOr.getOrPredicates()));
+            builder.add(EXPRESSIONS, convertListOfNodes(sqlPredicateOr.getOrPredicates()));
             return builder.build();
         }
 
@@ -449,7 +450,7 @@ public class PushdownSqlRenderer {
             builder.add(LEFT, sqlJoin.getLeft().accept(this));
             builder.add(RIGHT, sqlJoin.getRight().accept(this));
             builder.add(CONDITION, sqlJoin.getCondition().accept(this));
-            builder.add("join_type", sqlJoin.getJoinType().name().toLowerCase());
+            builder.add(JOIN_TYPE, sqlJoin.getJoinType().name().toLowerCase());
             return builder.build();
         }
 
@@ -457,11 +458,11 @@ public class PushdownSqlRenderer {
         public JsonObject visit(final SqlFunctionAggregateListagg function) throws AdapterException {
             final JsonObjectBuilder builder = createObjectBuilderFor(function);
             builder.add(NAME, "LISTAGG");
-            builder.add(ARGUMENTS_KEY, convertListOfNodes(List.of(function.getArgument())));
+            builder.add(ARGUMENTS, convertListOfNodes(List.of(function.getArgument())));
             builder.add(OVERFLOW_BEHAVIOUR, render(function.getOverflowBehavior()));
-            builder.add(DISTINCT_KEY, function.hasDistinct());
-            addIfPresent(function.getOrderBy(), ORDER_BY_KEY, builder);
-            addIfPresent(function.getSeparator(), SEPARATOR_KEY, builder);
+            builder.add(DISTINCT, function.hasDistinct());
+            addIfPresent(function.getOrderBy(), ORDER_BY, builder);
+            addIfPresent(function.getSeparator(), SEPARATOR, builder);
             return builder.build();
         }
 
