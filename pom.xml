@@ -1,8 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.exasol</groupId>
     <artifactId>virtual-schema-common-java</artifactId>
-    <version>15.1.0</version>
+    <version>15.2.0</version>
     <name>Common module of Exasol Virtual Schemas Adapters</name>
     <description>This is one of the modules of Virtual Schemas Adapters. The libraries provided by this project are the
         foundation of the adapter development, i.e. adapters must be implemented on top of them.
@@ -92,7 +94,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>3.10.0</version>
+            <version>3.11.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -104,7 +106,7 @@
         <dependency>
             <groupId>nl.jqno.equalsverifier</groupId>
             <artifactId>equalsverifier</artifactId>
-            <version>3.6</version>
+            <version>3.7</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -130,36 +132,60 @@
                 <version>0.8.6</version>
                 <executions>
                     <execution>
+                        <id>prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
                     <execution>
+                        <id>prepare-agent-integration</id>
+                        <goals>
+                            <goal>prepare-agent-integration</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>merge-results</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>merge</goal>
+                        </goals>
+                        <configuration>
+                            <fileSets>
+                                <fileSet>
+                                    <directory>${project.build.directory}/</directory>
+                                    <includes>
+                                        <include>jacoco*.exec</include>
+                                    </includes>
+                                </fileSet>
+                            </fileSets>
+                            <destFile>${project.build.directory}/aggregate.exec</destFile>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>report</id>
-                        <phase>test</phase>
+                        <phase>verify</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
+                        <configuration>
+                            <dataFile>${project.build.directory}/aggregate.exec</dataFile>
+                        </configuration>
                     </execution>
-                <execution>
-            <id>prepare-agent</id>
-            <goals>
-                <goal>prepare-agent</goal>
-            </goals>
-        </execution></executions>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M4</version>
-            <configuration>
-        <!-- Set the highest log level for coverage testing, so that we
-          have a chance to reach branches in the logging lambdas too. -->
-        <argLine>-Djava.util.logging.config.file=src/test/resources/logging.properties ${argLine}</argLine>
-        <excludes>
-            <exclude>**IT.java</exclude>
-        </excludes>
-    </configuration></plugin>
+                <configuration>
+                    <!-- Set the highest log level for coverage testing, so that we
+                                have a chance to reach branches in the logging lambdas too. -->
+                    <argLine>-Djava.util.logging.config.file=src/test/resources/logging.properties ${argLine}</argLine>
+                    <excludes>
+                        <exclude>**IT.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -239,9 +265,10 @@
                         </goals>
                     </execution>
                 </executions>
-            <configuration>
-        <rulesUri>file:///${project.basedir}/versionsMavenPluginRules.xml</rulesUri>
-    </configuration></plugin>
+                <configuration>
+                    <rulesUri>file:///${project.basedir}/versionsMavenPluginRules.xml</rulesUri>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
@@ -291,7 +318,7 @@
             <plugin>
                 <groupId>com.exasol</groupId>
                 <artifactId>error-code-crawler-maven-plugin</artifactId>
-                <version>0.1.0</version>
+                <version>0.5.1</version>
                 <executions>
                     <execution>
                         <goals>
@@ -303,7 +330,7 @@
             <plugin>
                 <groupId>com.exasol</groupId>
                 <artifactId>project-keeper-maven-plugin</artifactId>
-                <version>0.6.1</version>
+                <version>0.10.0</version>
                 <executions>
                     <execution>
                         <goals>
@@ -315,21 +342,27 @@
                     <modules>
                         <module>maven_central</module>
                     </modules>
+                    <linkReplacements>
+                        <linkReplacement>
+                            LICENSE-exasol-script-api.txt|https://opensource.org/licenses/MIT
+                        </linkReplacement>
+                    </linkReplacements>
                 </configuration>
             </plugin>
-        <plugin>
-    <groupId>io.github.zlika</groupId>
-    <artifactId>reproducible-build-maven-plugin</artifactId>
-    <version>0.13</version>
-    <executions>
-        <execution>
-            <id>strip-jar</id>
-            <phase>package</phase>
-            <goals>
-                <goal>strip-jar</goal>
-            </goals>
-        </execution>
-    </executions>
-</plugin></plugins>
+            <plugin>
+                <groupId>io.github.zlika</groupId>
+                <artifactId>reproducible-build-maven-plugin</artifactId>
+                <version>0.13</version>
+                <executions>
+                    <execution>
+                        <id>strip-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>strip-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 </project>

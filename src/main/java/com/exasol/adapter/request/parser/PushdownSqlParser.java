@@ -1,5 +1,6 @@
 package com.exasol.adapter.request.parser;
 
+import static com.exasol.adapter.request.RequestJsonKeys.*;
 import static com.exasol.adapter.sql.SqlPredicateIsJson.KeyUniquenessConstraint;
 import static com.exasol.adapter.sql.SqlPredicateIsJson.TypeConstraints;
 
@@ -17,15 +18,6 @@ import com.exasol.adapter.sql.SqlFunctionAggregateListagg.*;
 import com.exasol.errorreporting.ExaError;
 
 public final class PushdownSqlParser extends AbstractRequestParser {
-    private static final String ORDER_BY_KEY = "orderBy";
-    private static final String EXPRESSION = "expression";
-    private static final String RIGHT = "right";
-    private static final String VALUE = "value";
-    private static final String ARGUMENTS_KEY = "arguments";
-    private static final String DISTINCT_KEY = "distinct";
-    private static final String DATA_TYPE = "dataType";
-    private static final String SEPARATOR_KEY = "separator";
-
     private final List<TableMetadata> involvedTablesMetadata;
 
     private PushdownSqlParser(final List<TableMetadata> involvedTablesMetadata) {
@@ -33,7 +25,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     public SqlNode parseExpression(final JsonObject expression) {
-        final String typeName = expression.getString("type", "");
+        final String typeName = expression.getString(TYPE, "");
         final SqlNodeType type = fromTypeName(typeName);
         switch (type) {
         case SELECT:
@@ -131,8 +123,8 @@ public final class PushdownSqlParser extends AbstractRequestParser {
             having = parseExpression(select.getJsonObject("having"));
         }
         SqlOrderBy orderBy = null;
-        if (select.containsKey(ORDER_BY_KEY)) {
-            orderBy = parseOrderBy(select.getJsonArray(ORDER_BY_KEY));
+        if (select.containsKey(ORDER_BY)) {
+            orderBy = parseOrderBy(select.getJsonArray(ORDER_BY));
         }
         SqlLimit limit = null;
         if (select.containsKey("limit")) {
@@ -152,10 +144,10 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private SqlNode parseTable(final JsonObject exp) {
-        final String tableName = exp.getString("name");
+        final String tableName = exp.getString(NAME);
         final TableMetadata tableMetadata = findInvolvedTableMetadata(tableName);
-        if (exp.containsKey("alias")) {
-            final String tableAlias = exp.getString("alias");
+        if (exp.containsKey(ALIAS)) {
+            final String tableAlias = exp.getString(ALIAS);
             return new SqlTable(tableName, tableAlias, tableMetadata);
         } else {
             return new SqlTable(tableName, tableMetadata);
@@ -163,20 +155,20 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private SqlNode parseJoin(final JsonObject exp) {
-        final SqlNode left = parseExpression(exp.getJsonObject("left"));
+        final SqlNode left = parseExpression(exp.getJsonObject(LEFT));
         final SqlNode right = parseExpression(exp.getJsonObject(RIGHT));
-        final SqlNode condition = parseExpression(exp.getJsonObject("condition"));
-        final JoinType joinType = fromJoinTypeName(exp.getString("join_type"));
+        final SqlNode condition = parseExpression(exp.getJsonObject(CONDITION));
+        final JoinType joinType = fromJoinTypeName(exp.getString(JOIN_TYPE));
         return new SqlJoin(left, right, condition, joinType);
     }
 
     private SqlNode parseColumn(final JsonObject exp) {
-        final int columnId = exp.getInt("columnNr");
-        final String columnName = exp.getString("name");
-        final String tableName = exp.getString("tableName");
+        final int columnId = exp.getInt(COLUMN_NR);
+        final String columnName = exp.getString(NAME);
+        final String tableName = exp.getString(TABLE_NAME);
         final ColumnMetadata columnMetadata = findColumnMetadata(tableName, columnName);
-        if (exp.containsKey("tableAlias")) {
-            final String tableAlias = exp.getString("tableAlias");
+        if (exp.containsKey(TABLE_ALIAS)) {
+            final String tableAlias = exp.getString(TABLE_ALIAS);
             return new SqlColumn(columnId, columnMetadata, tableName, tableAlias);
         } else {
             return new SqlColumn(columnId, columnMetadata, tableName);
@@ -218,6 +210,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         }
     }
 
+    @SuppressWarnings("java:S1192") // tableName is duplicated but that's ok since it's a parameter
     private List<SqlNode> collectAllInvolvedColumns(final SqlNode from) {
         final List<SqlTable> involvedTables = collectInvolvedTables(from);
         final Map<String, TableMetadata> tableMetadataMap = getInvolvedTablesMetadataMap();
@@ -231,8 +224,8 @@ public final class PushdownSqlParser extends AbstractRequestParser {
                 }
             } else {
                 throw new IllegalStateException(ExaError.messageBuilder("E-VS-COM-JAVA-9").message(
-                        "Unable to find metadata for table \"{{tableName}}\" during collecting involved columns.")
-                        .unquotedParameter("tableName", tableName).toString());
+                        "Unable to find metadata for table \"{{tableName|uq}}\" during collecting involved columns.")
+                        .parameter("tableName", tableName).toString());
             }
         }
         return selectListElements;
@@ -288,15 +281,15 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         for (int i = 0; i < orderByList.size(); ++i) {
             final JsonObject orderElem = orderByList.getJsonObject(i);
             orderByExpressions.add(parseExpression(orderElem.getJsonObject(EXPRESSION)));
-            isAsc.add(orderElem.getBoolean("isAscending", true));
-            nullsLast.add(orderElem.getBoolean("nullsLast", true));
+            isAsc.add(orderElem.getBoolean(IS_ASCENDING, true));
+            nullsLast.add(orderElem.getBoolean(NULLS_LAST, true));
         }
         return new SqlOrderBy(orderByExpressions, isAsc, nullsLast);
     }
 
     private SqlLimit parseLimit(final JsonObject limit) {
-        final int numElements = limit.getInt("numElements");
-        final int offset = limit.getInt("offset", 0);
+        final int numElements = limit.getInt(NUM_ELEMENTS);
+        final int offset = limit.getInt(OFFSET, 0);
         return new SqlLimit(numElements, offset);
     }
 
@@ -317,34 +310,34 @@ public final class PushdownSqlParser extends AbstractRequestParser {
 
     private SqlNode parsePredicateLike(final JsonObject exp) {
         final SqlNode likeLeft = parseExpression(exp.getJsonObject(EXPRESSION));
-        final SqlNode likePattern = parseExpression(exp.getJsonObject("pattern"));
-        if (exp.containsKey("escapeChar")) {
-            final SqlNode escapeChar = parseExpression(exp.getJsonObject("escapeChar"));
+        final SqlNode likePattern = parseExpression(exp.getJsonObject(PATTERN));
+        if (exp.containsKey(ESCAPE_CHAR)) {
+            final SqlNode escapeChar = parseExpression(exp.getJsonObject(ESCAPE_CHAR));
             return new SqlPredicateLike(likeLeft, likePattern, escapeChar);
         }
         return new SqlPredicateLike(likeLeft, likePattern);
     }
 
     private SqlNode parsePredicateLessEqual(final JsonObject exp) {
-        final SqlNode lessEqLeft = parseExpression(exp.getJsonObject("left"));
+        final SqlNode lessEqLeft = parseExpression(exp.getJsonObject(LEFT));
         final SqlNode lessEqRight = parseExpression(exp.getJsonObject(RIGHT));
         return new SqlPredicateLessEqual(lessEqLeft, lessEqRight);
     }
 
     private SqlNode parsePredicateLess(final JsonObject exp) {
-        final SqlNode lessLeft = parseExpression(exp.getJsonObject("left"));
+        final SqlNode lessLeft = parseExpression(exp.getJsonObject(LEFT));
         final SqlNode lessRight = parseExpression(exp.getJsonObject(RIGHT));
         return new SqlPredicateLess(lessLeft, lessRight);
     }
 
     private SqlNode parsePredicateNotEqual(final JsonObject exp) {
-        final SqlNode notEqualLeft = parseExpression(exp.getJsonObject("left"));
+        final SqlNode notEqualLeft = parseExpression(exp.getJsonObject(LEFT));
         final SqlNode notEqualRight = parseExpression(exp.getJsonObject(RIGHT));
         return new SqlPredicateNotEqual(notEqualLeft, notEqualRight);
     }
 
     private SqlNode parsePredicateEqual(final JsonObject exp) {
-        final SqlNode equalLeft = parseExpression(exp.getJsonObject("left"));
+        final SqlNode equalLeft = parseExpression(exp.getJsonObject(LEFT));
         final SqlNode equalRight = parseExpression(exp.getJsonObject(RIGHT));
         return new SqlPredicateEqual(equalLeft, equalRight);
     }
@@ -355,7 +348,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private SqlNode parsePredicateOr(final JsonObject exp) {
-        final List<SqlNode> orPredicates = getListOfSqlNodes(exp, "expressions");
+        final List<SqlNode> orPredicates = getListOfSqlNodes(exp, EXPRESSIONS);
         return new SqlPredicateOr(orPredicates);
     }
 
@@ -370,7 +363,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private SqlNode parsePredicateAnd(final JsonObject exp) {
-        final List<SqlNode> andedPredicates = getListOfSqlNodes(exp, "expressions");
+        final List<SqlNode> andedPredicates = getListOfSqlNodes(exp, EXPRESSIONS);
         return new SqlPredicateAnd(andedPredicates);
     }
 
@@ -381,10 +374,10 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private DataType getDataType(final JsonObject dataType) {
-        final String typeName = dataType.getString("type").toUpperCase();
+        final String typeName = dataType.getString(TYPE).toUpperCase();
         switch (typeName) {
         case "DECIMAL":
-            return DataType.createDecimal(dataType.getInt("precision"), dataType.getInt("scale"));
+            return DataType.createDecimal(dataType.getInt(PRECISION), dataType.getInt(SCALE));
         case "DOUBLE":
             return DataType.createDouble();
         case "VARCHAR":
@@ -411,30 +404,30 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private DataType getHashtype(final JsonObject dataType) {
-        final int byteSize = dataType.getInt("bytesize");
+        final int byteSize = dataType.getInt(BYTE_SIZE);
         return DataType.createHashtype(byteSize);
     }
 
     private DataType getVarchar(final JsonObject dataType) {
-        final String charSet = dataType.getString("characterSet", "UTF8");
-        return DataType.createVarChar(dataType.getInt("size"), charSetFromString(charSet));
+        final String charSet = dataType.getString(CHARACTER_SET, "UTF8");
+        return DataType.createVarChar(dataType.getInt(SIZE), charSetFromString(charSet));
     }
 
     private DataType getChar(final JsonObject dataType) {
-        final String charSet = dataType.getString("characterSet", "UTF8");
-        return DataType.createChar(dataType.getInt("size"), charSetFromString(charSet));
+        final String charSet = dataType.getString(CHARACTER_SET, "UTF8");
+        return DataType.createChar(dataType.getInt(SIZE), charSetFromString(charSet));
     }
 
     private DataType getTimestamp(final JsonObject dataType) {
-        final boolean withLocalTimezone = dataType.getBoolean("withLocalTimeZone", false);
+        final boolean withLocalTimezone = dataType.getBoolean(WITH_LOCAL_TIME_ZONE, false);
         return DataType.createTimestamp(withLocalTimezone);
     }
 
     private DataType getInterval(final JsonObject dataType) {
-        final int precision = dataType.getInt("precision", 2);
-        final IntervalType intervalType = intervalTypeFromString(dataType.getString("fromTo"));
+        final int precision = dataType.getInt(PRECISION, 2);
+        final IntervalType intervalType = intervalTypeFromString(dataType.getString(FROM_TO));
         if (intervalType == IntervalType.DAY_TO_SECOND) {
-            final int fraction = dataType.getInt("fraction", 3);
+            final int fraction = dataType.getInt(FRACTION, 3);
             return DataType.createIntervalDaySecond(precision, fraction);
         } else {
             return DataType.createIntervalYearMonth(precision);
@@ -442,7 +435,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private DataType getGeometry(final JsonObject dataType) {
-        final int srid = dataType.getInt("srid");
+        final int srid = dataType.getInt(SRID);
         return DataType.createGeometry(srid);
     }
 
@@ -492,13 +485,13 @@ public final class PushdownSqlParser extends AbstractRequestParser {
 
     private SqlNode parsePredicateLikeRegexp(final JsonObject exp) {
         final SqlNode likeRegexpLeft = parseExpression(exp.getJsonObject(EXPRESSION));
-        final SqlNode likeRegexpPattern = parseExpression(exp.getJsonObject("pattern"));
+        final SqlNode likeRegexpPattern = parseExpression(exp.getJsonObject(PATTERN));
         return new SqlPredicateLikeRegexp(likeRegexpLeft, likeRegexpPattern);
     }
 
     private SqlNode parsePredicateBetween(final JsonObject exp) {
         final SqlNode betweenExp = parseExpression(exp.getJsonObject(EXPRESSION));
-        final SqlNode betweenLeft = parseExpression(exp.getJsonObject("left"));
+        final SqlNode betweenLeft = parseExpression(exp.getJsonObject(LEFT));
         final SqlNode betweenRight = parseExpression(exp.getJsonObject(RIGHT));
         return new SqlPredicateBetween(betweenExp, betweenLeft, betweenRight);
     }
@@ -506,45 +499,45 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     private SqlNode parsePredicateIsJson(final JsonObject jsonExpression) {
         final SqlNode expression = parseExpression(jsonExpression.getJsonObject(EXPRESSION));
         final TypeConstraints typeConstraint = TypeConstraints
-                .valueOf(jsonExpression.getString("typeConstraint").toUpperCase());
+                .valueOf(jsonExpression.getString(TYPE_CONSTRAINT).toUpperCase());
         final KeyUniquenessConstraint keyUniquenessConstraint = KeyUniquenessConstraint
-                .of(jsonExpression.getString("keyUniquenessConstraint"));
+                .of(jsonExpression.getString(KEY_UNIQUENESS_CONSTRAINT));
         return new SqlPredicateIsJson(expression, typeConstraint, keyUniquenessConstraint);
     }
 
     private SqlNode parsePredicateIsNotJson(final JsonObject jsonExpression) {
         final SqlNode expression = parseExpression(jsonExpression.getJsonObject(EXPRESSION));
         final TypeConstraints typeConstraint = TypeConstraints
-                .valueOf(jsonExpression.getString("typeConstraint").toUpperCase());
+                .valueOf(jsonExpression.getString(TYPE_CONSTRAINT).toUpperCase());
         final KeyUniquenessConstraint keyUniquenessConstraint = KeyUniquenessConstraint
-                .of(jsonExpression.getString("keyUniquenessConstraint"));
+                .of(jsonExpression.getString(KEY_UNIQUENESS_CONSTRAINT));
         return new SqlPredicateIsNotJson(expression, typeConstraint, keyUniquenessConstraint);
     }
 
     private SqlNode parsePredicateInConstlist(final JsonObject exp) {
         final SqlNode inExp = parseExpression(exp.getJsonObject(EXPRESSION));
-        final List<SqlNode> inArguments = getListOfSqlNodes(exp, ARGUMENTS_KEY);
+        final List<SqlNode> inArguments = getListOfSqlNodes(exp, ARGUMENTS);
         return new SqlPredicateInConstList(inExp, inArguments);
     }
 
     private SqlNode parseFunctionScalar(final JsonObject exp) {
-        final String functionName = exp.getString("name");
-        final List<SqlNode> arguments = getListOfSqlNodes(exp, ARGUMENTS_KEY);
+        final String functionName = exp.getString(NAME);
+        final List<SqlNode> arguments = getListOfSqlNodes(exp, ARGUMENTS);
         return new SqlFunctionScalar(fromScalarFunctionName(functionName), arguments);
     }
 
     private SqlNode parseFunctionScalarExtract(final JsonObject expression) {
         final SqlNode argument = getSingleArgument(expression);
-        final String toExtract = expression.getString("toExtract");
+        final String toExtract = expression.getString(TO_EXTRACT);
         return new SqlFunctionScalarExtract(SqlFunctionScalarExtract.ExtractParameter.valueOf(toExtract), argument);
     }
 
     private SqlNode parseFunctionScalarCase(final JsonObject exp) {
-        final List<SqlNode> caseArguments = getListOfSqlNodes(exp, ARGUMENTS_KEY);
-        final List<SqlNode> caseResults = getListOfSqlNodes(exp, "results");
+        final List<SqlNode> caseArguments = getListOfSqlNodes(exp, ARGUMENTS);
+        final List<SqlNode> caseResults = getListOfSqlNodes(exp, RESULTS);
         SqlNode caseBasis = null;
-        if (exp.containsKey("basis")) {
-            caseBasis = parseExpression(exp.getJsonObject("basis"));
+        if (exp.containsKey(BASIS)) {
+            caseBasis = parseExpression(exp.getJsonObject(BASIS));
         }
         return new SqlFunctionScalarCase(caseArguments, caseResults, caseBasis);
     }
@@ -556,13 +549,13 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private SqlNode parseFunctionScalarJsonValue(final JsonObject jsonObject) {
-        final String functionName = jsonObject.getString("name");
-        final List<SqlNode> arguments = getListOfSqlNodes(jsonObject, ARGUMENTS_KEY);
-        final DataType returningDataType = getDataType(jsonObject.getJsonObject("returningDataType"));
+        final String functionName = jsonObject.getString(NAME);
+        final List<SqlNode> arguments = getListOfSqlNodes(jsonObject, ARGUMENTS);
+        final DataType returningDataType = getDataType(jsonObject.getJsonObject(RETURNING_DATA_TYPE));
         final SqlFunctionScalarJsonValue.Behavior emptyBehavior = getScalarJsonValueBehavior(jsonObject,
-                "emptyBehavior");
+                EMPTY_BEHAVIOR);
         final SqlFunctionScalarJsonValue.Behavior errorBehavior = getScalarJsonValueBehavior(jsonObject,
-                "errorBehavior");
+                ERROR_BEHAVIOR);
         return new SqlFunctionScalarJsonValue(fromScalarFunctionName(functionName), arguments, returningDataType,
                 emptyBehavior, errorBehavior);
     }
@@ -570,7 +563,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     private SqlFunctionScalarJsonValue.Behavior getScalarJsonValueBehavior(final JsonObject jsonObject,
             final String key) {
         final JsonObject behaviorJson = jsonObject.getJsonObject(key);
-        final String behaviorTypeString = behaviorJson.getString("type");
+        final String behaviorTypeString = behaviorJson.getString(TYPE);
         final SqlFunctionScalarJsonValue.BehaviorType behaviorType = SqlFunctionScalarJsonValue.BehaviorType
                 .valueOf(behaviorTypeString);
         final Optional<SqlNode> expression = getScalarJsonValueExpression(behaviorJson, behaviorType);
@@ -587,22 +580,22 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private SqlNode parseFunctionAggregate(final JsonObject exp) {
-        final String setFunctionName = exp.getString("name");
-        final List<SqlNode> setArguments = getListOfSqlNodes(exp, ARGUMENTS_KEY);
-        final boolean distinct = exp.containsKey(DISTINCT_KEY) && exp.getBoolean(DISTINCT_KEY);
+        final String setFunctionName = exp.getString(NAME);
+        final List<SqlNode> setArguments = getListOfSqlNodes(exp, ARGUMENTS);
+        final boolean distinct = exp.containsKey(DISTINCT) && exp.getBoolean(DISTINCT);
         return new SqlFunctionAggregate(fromAggregationFunctionName(setFunctionName), setArguments, distinct);
     }
 
     private SqlNode parseFunctionAggregateGroupConcat(final JsonObject expression) {
         final SqlNode argument = getSingleArgument(expression);
         final SqlFunctionAggregateGroupConcat.Builder builder = SqlFunctionAggregateGroupConcat.builder(argument);
-        if (expression.containsKey(DISTINCT_KEY)) {
-            builder.distinct(expression.getBoolean(DISTINCT_KEY));
+        if (expression.containsKey(DISTINCT)) {
+            builder.distinct(expression.getBoolean(DISTINCT));
         }
-        if (expression.containsKey(ORDER_BY_KEY)) {
-            builder.orderBy(parseOrderBy(expression.getJsonArray(ORDER_BY_KEY)));
+        if (expression.containsKey(ORDER_BY)) {
+            builder.orderBy(parseOrderBy(expression.getJsonArray(ORDER_BY)));
         }
-        if (expression.containsKey(SEPARATOR_KEY)) {
+        if (expression.containsKey(SEPARATOR)) {
             final SqlLiteralString separator = getSeparator(expression);
             builder.separator(separator);
         }
@@ -610,16 +603,16 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private SqlNode getSingleArgument(final JsonObject expression) {
-        final List<JsonObject> arguments = expression.getJsonArray(ARGUMENTS_KEY).getValuesAs(JsonObject.class);
+        final List<JsonObject> arguments = expression.getJsonArray(ARGUMENTS).getValuesAs(JsonObject.class);
         return parseExpression(arguments.get(0));
     }
 
     private SqlLiteralString getSeparator(final JsonObject expression) {
-        final JsonValue jsonSeparator = expression.get(SEPARATOR_KEY);
+        final JsonValue jsonSeparator = expression.get(SEPARATOR);
         if (jsonSeparator.getValueType() == JsonValue.ValueType.STRING) {
-            return new SqlLiteralString(expression.getString(SEPARATOR_KEY));
+            return new SqlLiteralString(expression.getString(SEPARATOR));
         } else {
-            return (SqlLiteralString) parseExpression(expression.getJsonObject(SEPARATOR_KEY));
+            return (SqlLiteralString) parseExpression(expression.getJsonObject(SEPARATOR));
         }
     }
 
@@ -627,30 +620,29 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         final SqlNode argument = getSingleArgument(expression);
         final Behavior overflowBehavior = parseOverflowBehavior(expression);
         final Builder builder = SqlFunctionAggregateListagg.builder(argument, overflowBehavior);
-        if (expression.containsKey(DISTINCT_KEY)) {
-            builder.distinct(expression.getBoolean(DISTINCT_KEY));
+        if (expression.containsKey(DISTINCT)) {
+            builder.distinct(expression.getBoolean(DISTINCT));
         }
-        if (expression.containsKey(ORDER_BY_KEY)) {
-            builder.orderBy(parseOrderBy(expression.getJsonArray(ORDER_BY_KEY)));
+        if (expression.containsKey(ORDER_BY)) {
+            builder.orderBy(parseOrderBy(expression.getJsonArray(ORDER_BY)));
         }
-        if (expression.containsKey(SEPARATOR_KEY)) {
-            final SqlLiteralString separator = (SqlLiteralString) parseExpression(
-                    expression.getJsonObject(SEPARATOR_KEY));
+        if (expression.containsKey(SEPARATOR)) {
+            final SqlLiteralString separator = (SqlLiteralString) parseExpression(expression.getJsonObject(SEPARATOR));
             builder.separator(separator);
         }
         return builder.build();
     }
 
     private Behavior parseOverflowBehavior(final JsonObject expression) {
-        final JsonObject overflowBehaviorJson = expression.getJsonObject("overflowBehavior");
-        final BehaviorType behaviorType = BehaviorType.valueOf(overflowBehaviorJson.getString("type").toUpperCase());
+        final JsonObject overflowBehaviorJson = expression.getJsonObject(OVERFLOW_BEHAVIOUR);
+        final BehaviorType behaviorType = BehaviorType.valueOf(overflowBehaviorJson.getString(TYPE).toUpperCase());
         final Behavior overflowBehavior = new Behavior(behaviorType);
         if (behaviorType == BehaviorType.TRUNCATE) {
             overflowBehavior.setTruncationType(
-                    TruncationType.parseTruncationType(overflowBehaviorJson.getString("truncationType")));
-            if (overflowBehaviorJson.containsKey("truncationFiller")) {
+                    TruncationType.parseTruncationType(overflowBehaviorJson.getString(TRUNCATION_TYPE)));
+            if (overflowBehaviorJson.containsKey(TRUNCATION_FILLER)) {
                 final SqlLiteralString truncationFiller = (SqlLiteralString) parseExpression(
-                        overflowBehaviorJson.getJsonObject("truncationFiller"));
+                        overflowBehaviorJson.getJsonObject(TRUNCATION_FILLER));
                 overflowBehavior.setTruncationFiller(truncationFiller);
             }
         }
@@ -693,9 +685,9 @@ public final class PushdownSqlParser extends AbstractRequestParser {
             }
         }
         throw new IllegalStateException(ExaError.messageBuilder("E-VS-COM-JAVA-14").message(
-                "Could not find table metadata for involved table \"{{tableName}}\". All involved tables: {{involvedTables}}")
-                .unquotedParameter("tableName", tableName)
-                .parameter("involvedTables", this.involvedTablesMetadata.toString()).toString());
+                "Could not find table metadata for involved table \"{{tableName|uq}}\". All involved tables: {{involvedTables}}")
+                .parameter("tableName", tableName).parameter("involvedTables", this.involvedTablesMetadata.toString())
+                .toString());
     }
 
     private ColumnMetadata findColumnMetadata(final String tableName, final String columnName) {
@@ -706,9 +698,9 @@ public final class PushdownSqlParser extends AbstractRequestParser {
             }
         }
         throw new IllegalStateException(ExaError.messageBuilder("E-VS-COM-JAVA-15").message(
-                "Could not find column metadata for involved table \"{{tableName}}\" and column \"{{columnName}}\". "
+                "Could not find column metadata for involved table \"{{tableName|uq}}\" and column \"{{columnName|uq}}\". "
                         + "All involved tables: {{involvedTables}}.")
-                .unquotedParameter("tableName", tableName).unquotedParameter("columnName", columnName)
+                .parameter("tableName", tableName).parameter("columnName", columnName)
                 .parameter("involvedTables", this.involvedTablesMetadata.toString()).toString());
     }
 
