@@ -1,0 +1,4 @@
+error-tags:
+  VS-COM-JAVA:
+    packages:
+      - com.exasol
