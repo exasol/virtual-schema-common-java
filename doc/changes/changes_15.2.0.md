@@ -21,4 +21,3 @@ In this release we added a renderer for the `SqlNode` structure.
 
 * Updated `com.exasol:error-code-crawler-maven-plugin:0.1.0` to `0.5.1`
 * Updated `com.exasol:project-keeper-maven-plugin:0.6.1` to `0.10.0`
-* Added `org.apache.maven.plugins:maven-failsafe-plugin:3.0.0-M3`
