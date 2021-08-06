@@ -1,29 +1,49 @@
 # Virtual Schema API Documentation
 
+In the Exasol database, a Virtual Schema adapter is basically a [UDF](https://docs.exasol.com/database_concepts/udf_scripts.htm). The Exasol core invokes this UDF in different situations, for example when creating a Virtual Schema or during query processing. In order to communicate with the Virtual Schema adapter UDF, the Exasol database sends a JSON parameter to the Virtual Schema adapter UDF and retrieves also a JSON string as return value. This page documents these JSON messages.
+
 ## Table of Contents
+
+- [Introduction](#introduction)
 - [Introduction](#introduction)
 - [Requests and Responses](#requests-and-responses)
-  - [Create Virtual Schema](#create-virtual-schema)
-  - [Refresh](#refresh)
-  - [Set Properties](#set-properties)
-  - [Drop Virtual Schema](#drop-virtual-schema)
-  - [Get Capabilities](#get-capabilities)
-  - [Pushdown](#pushdown)
+    - [Create Virtual Schema](#create-virtual-schema)
+    - [Refresh](#refresh)
+    - [Set Properties](#set-properties)
+    - [Drop Virtual Schema](#drop-virtual-schema)
+    - [Get Capabilities](#get-capabilities)
+    - [Pushdown](#pushdown)
 - [Embedded Commonly Used JSON Elements](#embedded-commonly-used-json-elements)
-  - [Schema Metadata Info](#schema-metadata-info)
-  - [Schema Metadata](#schema-metadata)
+    - [Schema Metadata Info](#schema-metadata-info)
+    - [Schema Metadata](#schema-metadata)
 - [Expressions](#expressions)
-  - [Table](#table)
-  - [Join](#join)
-  - [Column Lookup](#column-lookup)
-  - [Order By Element](#order-by-element)
-  - [Data Types](#data-types)
-  - [Literal](#literal)
-  - [Predicates](#predicates)
-  - [Scalar Functions](#scalar-functions)
-  - [Aggregate Functions](#aggregate-functions)
+    - [Table](#table)
+    - [Join](#join)
+    - [Column Lookup](#column-lookup)
+    - [Order By Element](#order-by-element)
+    - [Data Types](#data-types)
+    - [Literal](#literal)
+    - [Predicates](#predicates)
+    - [Scalar Functions](#scalar-functions)
+    - [Aggregate Functions](#aggregate-functions)
 
 ## Introduction
+
+To get a better understanding let's take a look on how the Exasol database processes a Virtual Schema query:
+
+![virtual schema query processing](../../../src/uml/requestHandling.png)
+
+The diagram shows how Exasol handles Virtual Schema queries:
+
+- When the core receives an SQL query on a Virtual Schema table, it first checks the capabilities of the corresponding Virtual Schema adapter. Based on that information it removes all functions and literals that are not supported by the adapter.
+- Next, the Exasol Core sends a query to the Virtual Schema adapter as a `PushdownRequest`.
+- The Virtual Schema adapter now rewrites the query into a new SQL statement that typically invokes the Exasol importer `IMPORT INTO ...`. For details see the [`IMPORT` statements documentation](https://docs.exasol.com/sql/import.htm). The importer statement contains a query to the external database as a string.
+- Next, the Exasol database parses this statement again and invokes the importer.
+- Finally, the Exasol core applies the functions that were not supported by the remote database itself as post processing and returns that result to the SQL client.
+
+Instead of the `IMPORT` statement the adapter can also create other SQL statements. The important part is, that the Virtual Schema adapter receives an SQL statement and rewrites it into another SQL statement. For example, it can create a `SELECT FROM VALUES` statement with an inlined result.
+
+## Requests and Responses
 
 There are the following request and response types:
 
@@ -37,10 +57,7 @@ There are the following request and response types:
 | **Pushdown**                | &hellip; whenever a virtual table is queried in a `SELECT` statement. |
 
 We describe each of the types in the following sections.
-
 **Please note:** To keep the documentation concise we defined the elements which are commonly in separate sections below, e.g. `schemaMetadataInfo` and `schemaMetadata`.
-
-## Requests and Responses
 
 ### Create Virtual Schema
 
@@ -71,8 +88,8 @@ The Adapter is allowed to throw an Exception if the user missed to provide manda
 ```
 
 Notes
-* `schemaMetadata` is mandatory. However, it is allowed to contain no tables.
 
+* `schemaMetadata` is mandatory. However, it is allowed to contain no tables.
 
 ### Refresh
 
@@ -91,6 +108,7 @@ Request to refresh the metadata for the whole Virtual Schema, or for specified t
 ```
 
 Notes
+
 * `requestedTables` is optional. If existing, only the specified tables shall be refreshed. The specified tables do not have to exist, it just tell Adapter to update these tables (which might be changed, deleted, added, or non-existing).
 
 **Response:**
@@ -106,6 +124,7 @@ Notes
 ```
 
 Notes
+
 * `schemaMetadata` is optional. It can be skipped if the adapter does not want to refresh (e.g. because it detected that there is no change).
 * `requestedTables` must exist if and only if the element existed in the request. The values must be the same as in the request (to make sure that Adapter only refreshed these tables).
 
@@ -141,9 +160,9 @@ Request to set properties. The Adapter can decide whether it needs to send back 
 ```
 
 Notes
+
 * Request: A property set to null means that this property was asked to be deleted. Properties set to null might also not have existed before.
 * Response: `schemaMetadata` is optional. It only exists if the adapter wants to send back new metadata. The existing metadata are overwritten completely.
-
 
 ### Drop Virtual Schema
 
@@ -167,7 +186,6 @@ Inform the Adapter that a Virtual Schema is about to be dropped. The Adapter can
     "type": "dropVirtualSchema"
 }
 ```
-
 
 ### Get Capabilities
 
@@ -218,6 +236,7 @@ Request the list of capabilities supported by the Adapter. Based on these capabi
 ```
 
 The set of capabilities in the example above would be sufficient to pushdown all aspects of the following query:
+
 ```sql
 SELECT user_id, COUNT(url)
 FROM   vs.clicks
@@ -239,6 +258,7 @@ LIMIT  10;
 See also [a list of supported Capabilities](capabilities_list.md).
 
 Capabilities can be also found in the sources of the Virtual Schema Common Java:
+
 * [Main Capabilities](https://github.com/exasol/virtual-schema-common-java/blob/master/src/main/java/com/exasol/adapter/capabilities/MainCapability.java)
 * [Literal Capabilities](https://github.com/exasol/virtual-schema-common-java/blob/master/src/main/java/com/exasol/adapter/capabilities/LiteralCapability.java)
 * [Predicate Capabilities](https://github.com/exasol/virtual-schema-common-java/blob/master/src/main/java/com/exasol/adapter/capabilities/PredicateCapability.java)
@@ -252,6 +272,7 @@ Contains an abstract specification of what to be pushed down, and requests an pu
 **Request:**
 
 Running the following query
+
 ```sql
 SELECT user_id, COUNT(url)
 FROM   vs.clicks
@@ -261,6 +282,7 @@ HAVING count(url)>1
 ORDER  BY user_id
 LIMIT  10;
 ```
+
 will produce the following Request, assuming that the Adapter has all required capabilities.
 
 ```json
@@ -412,18 +434,19 @@ will produce the following Request, assuming that the Adapter has all required c
 ```
 
 Notes
+
 * `pushdownRequest`: Specification what needs to be pushed down. You can think of it like a parsed SQL statement.
-  * `from`: The requested from clause. This can be a table or a join.
-  * `selectList`: The requested select list. There are three options for this field:
-    * `selectList` is not given: This means `SELECT *`. Adapters requiring an explicit select list can use the field `from` to get the names and aliases of the tables (depth-first search on joins) and the field `involvedTables` to get the columns for each table.
-    * `selectList` is an empty array: Select any column/expression. This is used, for example, if a query can not be pushed down completely. The adapter may choose something like `SELECT TRUE` to get the correct number of rows.
-    * Otherwise `selectList` contains the requested select list elements, a list of expressions. The order of the elements matters.
-  * `filter`: The requested filter (`where` clause), a single expression.
-  * `aggregationType`: An optional element, set if an aggregation is requested. Either `group_by` or `single_group`, if a aggregate function is used but no group by.
-  * `groupBy`: The requested group by clause, a list of expressions.
-  * `having`: The requested having clause, a single expression.
-  * `orderBy`: The requested order-by clause, a list of `order_by_element` elements.
-  * `limit` The requested limit of the result set, with an optional offset.
+    * `from`: The requested from clause. This can be a table or a join.
+    * `selectList`: The requested select list. There are three options for this field:
+        * `selectList` is not given: This means `SELECT *`. Adapters requiring an explicit select list can use the field `from` to get the names and aliases of the tables (depth-first search on joins) and the field `involvedTables` to get the columns for each table.
+        * `selectList` is an empty array: Select any column/expression. This is used, for example, if a query can not be pushed down completely. The adapter may choose something like `SELECT TRUE` to get the correct number of rows.
+        * Otherwise `selectList` contains the requested select list elements, a list of expressions. The order of the elements matters.
+    * `filter`: The requested filter (`where` clause), a single expression.
+    * `aggregationType`: An optional element, set if an aggregation is requested. Either `group_by` or `single_group`, if a aggregate function is used but no group by.
+    * `groupBy`: The requested group by clause, a list of expressions.
+    * `having`: The requested having clause, a single expression.
+    * `orderBy`: The requested order-by clause, a list of `order_by_element` elements.
+    * `limit` The requested limit of the result set, with an optional offset.
 * `involvedTables`: Metadata of the involved tables, encoded like in schemaMetadata.
 
 **Response:**
@@ -438,6 +461,7 @@ Following the example above, a valid result could look like this:
 ```
 
 Notes
+
 * `sql`: The pushdown SQL statement. It must be either an `SELECT` or `IMPORT` statement.
 
 ## Embedded Commonly Used JSON Elements
@@ -445,6 +469,7 @@ Notes
 The following Json objects can be embedded in a request or response. They have a fixed structure.
 
 ### Schema Metadata Info
+
 This document contains the most important metadata of the virtual schema and is sent to the adapter just "for information" with each request. It is the value of an element called `schemaMetadataInfo`.
 
 ```json
@@ -566,6 +591,7 @@ This element currently only occurs in from clause
 ```
 
 Notes
+
 * **alias**: This is an optional property and is added if the table has an alias in the original query.
 
 ### Join
@@ -589,6 +615,7 @@ This element currently only occurs in from clause
 ```
 
 Notes
+
 * **join_type**: Can be `inner`, `left_outer`, `right_outer` or `full_outer`.
 * **left**: This can be a `table` or a `join`.
 * **right**: This can be a `table` or a `join`.
@@ -609,6 +636,7 @@ A column lookup is a reference to a table column. It can reference the table dir
 ```
 
 Notes
+
 * **tableAlias**: This is an optional property and is added if the referenced table has an alias.
 * **columnNr**: Column number in the virtual table, starting with 0.
 
@@ -627,6 +655,7 @@ Notes
 ```
 
 Notes
+
 * The field `expression` contains the expression to order by.
 
 ### Data Types
@@ -779,6 +808,7 @@ The same can be used for `predicate_notequal`, `predicate_less` and `predicate_l
 ```
 
 Notes:
+
 * `escapeChar` is optional.
 
 ##### REGEXP_LIKE
@@ -831,7 +861,7 @@ Notes:
 ##### IS JSON / IS NOT JSON
 
 `exp1 IS JSON {VALUE | ARRAY | OBJECT | SCALAR} {WITH | WITHOUT} UNIQUE KEYS`
- (requires predicate capability `IS_JSON`)
+(requires predicate capability `IS_JSON`)
 
 ```json
 {

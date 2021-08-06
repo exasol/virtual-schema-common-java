@@ -1,6 +1,7 @@
 # Common module of Exasol Virtual Schemas Adapters
 
 [![Build Status](https://github.com/exasol/virtual-schema-common-java/actions/workflows/ci-build.yml/badge.svg)](https://github.com/exasol/virtual-schema-common-java/actions/workflows/ci-build.yml)
+[![Maven Central](https://img.shields.io/maven-central/v/com.exasol/virtual-schema-common-java)](https://search.maven.org/artifact/com.exasol/virtual-schema-common-java)
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Avirtual-schema-common-java&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.exasol%3Avirtual-schema-common-java)
 
@@ -15,6 +16,8 @@
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Avirtual-schema-common-java&metric=ncloc)](https://sonarcloud.io/dashboard?id=com.exasol%3Avirtual-schema-common-java)
 
 This is one of the modules of Virtual Schemas Adapters. The libraries provided by this project are the foundation of the adapter development, i.e. adapters must be implemented on top of them. You can find the full description of the project here: https://github.com/exasol/virtual-schemas
+
+A Virtual Schema adapter is basically a [UDF](https://docs.exasol.com/database_concepts/udf_scripts.htm). The Exasol core database communicates with this UDF using JSON strings. There are different types of messages, that define the API for a virtual Schema adapter ([protocol reference](doc/development/api/virtual_schema_api.md)). This repository wraps this JSON API with a Java API to facilitate the implementation of Virtual Schema adapters in Java.
 
 Please note that the artifact name changed from "virtualschema-common" to "virtual-schema-common-java". First to unify the naming schemes, second to make sure the new adapters do not accidentally use the old line of libraries.
 
@@ -32,4 +35,4 @@ Please note that the artifact name changed from "virtualschema-common" to "virtu
 
 Please note that this is an open source project which is officially supported by Exasol. This module is part of a larger project called [Virtual Schemas](https://github.com/exasol/virtual-schemas).
 
-Unless you are writing your own adapter based on this common module here, please check for problem solutions in the master project first.
+Unless you are writing your own adapter based on this common module here, please check for problem solutions in the main project first.
