@@ -1,5 +1,6 @@
 package com.exasol.adapter.request.parser;
 
+import static com.exasol.adapter.request.RequestJsonKeys.*;
 import static com.exasol.adapter.sql.SqlPredicateIsJson.KeyUniquenessConstraint;
 import static com.exasol.adapter.sql.SqlPredicateIsJson.TypeConstraints;
 
@@ -17,15 +18,6 @@ import com.exasol.adapter.sql.SqlFunctionAggregateListagg.*;
 import com.exasol.errorreporting.ExaError;
 
 public final class PushdownSqlParser extends AbstractRequestParser {
-    private static final String ORDER_BY_KEY = "orderBy";
-    private static final String EXPRESSION = "expression";
-    private static final String RIGHT = "right";
-    private static final String VALUE = "value";
-    private static final String ARGUMENTS_KEY = "arguments";
-    private static final String DISTINCT_KEY = "distinct";
-    private static final String DATA_TYPE = "dataType";
-    private static final String SEPARATOR_KEY = "separator";
-
     private final List<TableMetadata> involvedTablesMetadata;
 
     private PushdownSqlParser(final List<TableMetadata> involvedTablesMetadata) {
@@ -33,7 +25,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     public SqlNode parseExpression(final JsonObject expression) {
-        final String typeName = expression.getString("type", "");
+        final String typeName = expression.getString(TYPE, "");
         final SqlNodeType type = fromTypeName(typeName);
         switch (type) {
         case SELECT:
@@ -117,33 +109,33 @@ public final class PushdownSqlParser extends AbstractRequestParser {
 
     private SqlStatementSelect parseSelect(final JsonObject select) {
         // FROM clause
-        final SqlNode from = parseExpression(select.getJsonObject("from"));
+        final SqlNode from = parseExpression(select.getJsonObject(FROM));
         // SELECT list
         final SqlSelectList selectList = createSelectList(select, from);
-        final SqlExpressionList groupByClause = parseGroupBy(select.getJsonArray("groupBy"));
+        final SqlExpressionList groupByClause = parseGroupBy(select.getJsonArray(GROUP_BY));
         // WHERE clause
         SqlNode whereClause = null;
-        if (select.containsKey("filter")) {
-            whereClause = parseExpression(select.getJsonObject("filter"));
+        if (select.containsKey(FILTER)) {
+            whereClause = parseExpression(select.getJsonObject(FILTER));
         }
         SqlNode having = null;
-        if (select.containsKey("having")) {
-            having = parseExpression(select.getJsonObject("having"));
+        if (select.containsKey(HAVING)) {
+            having = parseExpression(select.getJsonObject(HAVING));
         }
         SqlOrderBy orderBy = null;
         if (select.containsKey(ORDER_BY_KEY)) {
             orderBy = parseOrderBy(select.getJsonArray(ORDER_BY_KEY));
         }
         SqlLimit limit = null;
-        if (select.containsKey("limit")) {
-            limit = parseLimit(select.getJsonObject("limit"));
+        if (select.containsKey(LIMIT)) {
+            limit = parseLimit(select.getJsonObject(LIMIT));
         }
         return SqlStatementSelect.builder().selectList(selectList).fromClause(from).whereClause(whereClause)
                 .groupBy(groupByClause).having(having).orderBy(orderBy).limit(limit).build();
     }
 
     private SqlSelectList createSelectList(final JsonObject select, final SqlNode from) {
-        final JsonArray selectListJson = select.getJsonArray("selectList");
+        final JsonArray selectListJson = select.getJsonArray(SELECT_LIST);
         if (selectListJson == null) {
             return SqlSelectList.createRegularSelectList(collectAllInvolvedColumns(from));
         } else {
@@ -152,10 +144,10 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private SqlNode parseTable(final JsonObject exp) {
-        final String tableName = exp.getString("name");
+        final String tableName = exp.getString(NAME);
         final TableMetadata tableMetadata = findInvolvedTableMetadata(tableName);
-        if (exp.containsKey("alias")) {
-            final String tableAlias = exp.getString("alias");
+        if (exp.containsKey(ALIAS)) {
+            final String tableAlias = exp.getString(ALIAS);
             return new SqlTable(tableName, tableAlias, tableMetadata);
         } else {
             return new SqlTable(tableName, tableMetadata);
@@ -163,20 +155,20 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private SqlNode parseJoin(final JsonObject exp) {
-        final SqlNode left = parseExpression(exp.getJsonObject("left"));
+        final SqlNode left = parseExpression(exp.getJsonObject(LEFT));
         final SqlNode right = parseExpression(exp.getJsonObject(RIGHT));
-        final SqlNode condition = parseExpression(exp.getJsonObject("condition"));
+        final SqlNode condition = parseExpression(exp.getJsonObject(CONDITION));
         final JoinType joinType = fromJoinTypeName(exp.getString("join_type"));
         return new SqlJoin(left, right, condition, joinType);
     }
 
     private SqlNode parseColumn(final JsonObject exp) {
         final int columnId = exp.getInt("columnNr");
-        final String columnName = exp.getString("name");
-        final String tableName = exp.getString("tableName");
+        final String columnName = exp.getString(NAME);
+        final String tableName = exp.getString(TABLE_NAME);
         final ColumnMetadata columnMetadata = findColumnMetadata(tableName, columnName);
-        if (exp.containsKey("tableAlias")) {
-            final String tableAlias = exp.getString("tableAlias");
+        if (exp.containsKey(TABLE_ALIAS)) {
+            final String tableAlias = exp.getString(TABLE_ALIAS);
             return new SqlColumn(columnId, columnMetadata, tableName, tableAlias);
         } else {
             return new SqlColumn(columnId, columnMetadata, tableName);
@@ -218,6 +210,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         }
     }
 
+    @SuppressWarnings("java:S1192") // tableName duplicated but a constant make no sense for parameter here
     private List<SqlNode> collectAllInvolvedColumns(final SqlNode from) {
         final List<SqlTable> involvedTables = collectInvolvedTables(from);
         final Map<String, TableMetadata> tableMetadataMap = getInvolvedTablesMetadataMap();
@@ -231,8 +224,8 @@ public final class PushdownSqlParser extends AbstractRequestParser {
                 }
             } else {
                 throw new IllegalStateException(ExaError.messageBuilder("E-VS-COM-JAVA-9").message(
-                        "Unable to find metadata for table \"{{tableName}}\" during collecting involved columns.")
-                        .unquotedParameter("tableName", tableName).toString());
+                        "Unable to find metadata for table \"{{tableName|uq}}\" during collecting involved columns.")
+                        .parameter("tableName", tableName).toString());
             }
         }
         return selectListElements;
@@ -326,25 +319,25 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private SqlNode parsePredicateLessEqual(final JsonObject exp) {
-        final SqlNode lessEqLeft = parseExpression(exp.getJsonObject("left"));
+        final SqlNode lessEqLeft = parseExpression(exp.getJsonObject(LEFT));
         final SqlNode lessEqRight = parseExpression(exp.getJsonObject(RIGHT));
         return new SqlPredicateLessEqual(lessEqLeft, lessEqRight);
     }
 
     private SqlNode parsePredicateLess(final JsonObject exp) {
-        final SqlNode lessLeft = parseExpression(exp.getJsonObject("left"));
+        final SqlNode lessLeft = parseExpression(exp.getJsonObject(LEFT));
         final SqlNode lessRight = parseExpression(exp.getJsonObject(RIGHT));
         return new SqlPredicateLess(lessLeft, lessRight);
     }
 
     private SqlNode parsePredicateNotEqual(final JsonObject exp) {
-        final SqlNode notEqualLeft = parseExpression(exp.getJsonObject("left"));
+        final SqlNode notEqualLeft = parseExpression(exp.getJsonObject(LEFT));
         final SqlNode notEqualRight = parseExpression(exp.getJsonObject(RIGHT));
         return new SqlPredicateNotEqual(notEqualLeft, notEqualRight);
     }
 
     private SqlNode parsePredicateEqual(final JsonObject exp) {
-        final SqlNode equalLeft = parseExpression(exp.getJsonObject("left"));
+        final SqlNode equalLeft = parseExpression(exp.getJsonObject(LEFT));
         final SqlNode equalRight = parseExpression(exp.getJsonObject(RIGHT));
         return new SqlPredicateEqual(equalLeft, equalRight);
     }
@@ -381,7 +374,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private DataType getDataType(final JsonObject dataType) {
-        final String typeName = dataType.getString("type").toUpperCase();
+        final String typeName = dataType.getString(TYPE).toUpperCase();
         switch (typeName) {
         case "DECIMAL":
             return DataType.createDecimal(dataType.getInt("precision"), dataType.getInt("scale"));
@@ -498,7 +491,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
 
     private SqlNode parsePredicateBetween(final JsonObject exp) {
         final SqlNode betweenExp = parseExpression(exp.getJsonObject(EXPRESSION));
-        final SqlNode betweenLeft = parseExpression(exp.getJsonObject("left"));
+        final SqlNode betweenLeft = parseExpression(exp.getJsonObject(LEFT));
         final SqlNode betweenRight = parseExpression(exp.getJsonObject(RIGHT));
         return new SqlPredicateBetween(betweenExp, betweenLeft, betweenRight);
     }
@@ -528,7 +521,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private SqlNode parseFunctionScalar(final JsonObject exp) {
-        final String functionName = exp.getString("name");
+        final String functionName = exp.getString(NAME);
         final List<SqlNode> arguments = getListOfSqlNodes(exp, ARGUMENTS_KEY);
         return new SqlFunctionScalar(fromScalarFunctionName(functionName), arguments);
     }
@@ -556,7 +549,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private SqlNode parseFunctionScalarJsonValue(final JsonObject jsonObject) {
-        final String functionName = jsonObject.getString("name");
+        final String functionName = jsonObject.getString(NAME);
         final List<SqlNode> arguments = getListOfSqlNodes(jsonObject, ARGUMENTS_KEY);
         final DataType returningDataType = getDataType(jsonObject.getJsonObject("returningDataType"));
         final SqlFunctionScalarJsonValue.Behavior emptyBehavior = getScalarJsonValueBehavior(jsonObject,
@@ -570,7 +563,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     private SqlFunctionScalarJsonValue.Behavior getScalarJsonValueBehavior(final JsonObject jsonObject,
             final String key) {
         final JsonObject behaviorJson = jsonObject.getJsonObject(key);
-        final String behaviorTypeString = behaviorJson.getString("type");
+        final String behaviorTypeString = behaviorJson.getString(TYPE);
         final SqlFunctionScalarJsonValue.BehaviorType behaviorType = SqlFunctionScalarJsonValue.BehaviorType
                 .valueOf(behaviorTypeString);
         final Optional<SqlNode> expression = getScalarJsonValueExpression(behaviorJson, behaviorType);
@@ -587,7 +580,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private SqlNode parseFunctionAggregate(final JsonObject exp) {
-        final String setFunctionName = exp.getString("name");
+        final String setFunctionName = exp.getString(NAME);
         final List<SqlNode> setArguments = getListOfSqlNodes(exp, ARGUMENTS_KEY);
         final boolean distinct = exp.containsKey(DISTINCT_KEY) && exp.getBoolean(DISTINCT_KEY);
         return new SqlFunctionAggregate(fromAggregationFunctionName(setFunctionName), setArguments, distinct);
@@ -642,15 +635,15 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private Behavior parseOverflowBehavior(final JsonObject expression) {
-        final JsonObject overflowBehaviorJson = expression.getJsonObject("overflowBehavior");
-        final BehaviorType behaviorType = BehaviorType.valueOf(overflowBehaviorJson.getString("type").toUpperCase());
+        final JsonObject overflowBehaviorJson = expression.getJsonObject(OVERFLOW_BEHAVIOUR);
+        final BehaviorType behaviorType = BehaviorType.valueOf(overflowBehaviorJson.getString(TYPE).toUpperCase());
         final Behavior overflowBehavior = new Behavior(behaviorType);
         if (behaviorType == BehaviorType.TRUNCATE) {
             overflowBehavior.setTruncationType(
-                    TruncationType.parseTruncationType(overflowBehaviorJson.getString("truncationType")));
-            if (overflowBehaviorJson.containsKey("truncationFiller")) {
+                    TruncationType.parseTruncationType(overflowBehaviorJson.getString(TRUNCATION_TYPE)));
+            if (overflowBehaviorJson.containsKey(TRUNCATION_FILLER)) {
                 final SqlLiteralString truncationFiller = (SqlLiteralString) parseExpression(
-                        overflowBehaviorJson.getJsonObject("truncationFiller"));
+                        overflowBehaviorJson.getJsonObject(TRUNCATION_FILLER));
                 overflowBehavior.setTruncationFiller(truncationFiller);
             }
         }
@@ -693,9 +686,9 @@ public final class PushdownSqlParser extends AbstractRequestParser {
             }
         }
         throw new IllegalStateException(ExaError.messageBuilder("E-VS-COM-JAVA-14").message(
-                "Could not find table metadata for involved table \"{{tableName}}\". All involved tables: {{involvedTables}}")
-                .unquotedParameter("tableName", tableName)
-                .parameter("involvedTables", this.involvedTablesMetadata.toString()).toString());
+                "Could not find table metadata for involved table \"{{tableName|uq}}\". All involved tables: {{involvedTables}}")
+                .parameter("tableName", tableName).parameter("involvedTables", this.involvedTablesMetadata.toString())
+                .toString());
     }
 
     private ColumnMetadata findColumnMetadata(final String tableName, final String columnName) {
@@ -706,9 +699,9 @@ public final class PushdownSqlParser extends AbstractRequestParser {
             }
         }
         throw new IllegalStateException(ExaError.messageBuilder("E-VS-COM-JAVA-15").message(
-                "Could not find column metadata for involved table \"{{tableName}}\" and column \"{{columnName}}\". "
+                "Could not find column metadata for involved table \"{{tableName|uq}}\" and column \"{{columnName|uq}}\". "
                         + "All involved tables: {{involvedTables}}.")
-                .unquotedParameter("tableName", tableName).unquotedParameter("columnName", columnName)
+                .parameter("tableName", tableName).parameter("columnName", columnName)
                 .parameter("involvedTables", this.involvedTablesMetadata.toString()).toString());
     }
 

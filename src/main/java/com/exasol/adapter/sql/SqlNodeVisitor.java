@@ -85,9 +85,9 @@ public interface SqlNodeVisitor<R> {
 
     public R visit(SqlPredicateOr sqlPredicateOr) throws AdapterException;
 
-    public R visit(SqlPredicateIsNotNull sqlPredicateOr) throws AdapterException;
+    public R visit(SqlPredicateIsNotNull sqlPredicateIsNotNull) throws AdapterException;
 
-    public R visit(SqlPredicateIsNull sqlPredicateOr) throws AdapterException;
+    public R visit(SqlPredicateIsNull sqlPredicateIsNull) throws AdapterException;
 
     public R visit(SqlTable sqlTable) throws AdapterException;
 
