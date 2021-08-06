@@ -7,7 +7,7 @@
 | ----------------------------------------------- | -------------------------------------------------------- |
 | [JSR 374 (JSON Processing) Default Provider][0] | [Dual license consisting of the CDDL v1.1 and GPL v2][1] |
 | [Java Interface for EXASOL Scripts][2]          | [MIT License][3]                                         |
-| [error-reporting-java][4]                       | [MIT][5]                                                 |
+| [error-reporting-java][4]                       | [MIT][3]                                                 |
 
 ## Test Dependencies
 
@@ -35,8 +35,8 @@
 | [Apache Maven Enforcer Plugin][34]                      | [Apache License, Version 2.0][19]             |
 | [Maven Deploy Plugin][36]                               | [The Apache Software License, Version 2.0][9] |
 | [Nexus Staging Maven Plugin][38]                        | [Eclipse Public License][39]                  |
-| [error-code-crawler-maven-plugin][40]                   | [MIT][5]                                      |
-| [Project keeper maven plugin][42]                       | [MIT][5]                                      |
+| [error-code-crawler-maven-plugin][40]                   | [MIT][3]                                      |
+| [Project keeper maven plugin][42]                       | [MIT][3]                                      |
 | [Reproducible Build Maven Plugin][44]                   | [Apache 2.0][9]                               |
 | [Maven Clean Plugin][46]                                | [The Apache Software License, Version 2.0][9] |
 | [Maven Resources Plugin][48]                            | [The Apache Software License, Version 2.0][9] |
@@ -53,7 +53,7 @@
 [22]: https://maven.apache.org/surefire/maven-surefire-plugin/
 [38]: http://www.sonatype.com/public-parent/nexus-maven-plugins/nexus-staging/nexus-staging-maven-plugin/
 [46]: http://maven.apache.org/plugins/maven-clean-plugin/
-[5]: https://opensource.org/licenses/MIT
+[3]: https://opensource.org/licenses/MIT
 [12]: https://github.com/mockito/mockito
 [32]: http://www.mojohaus.org/versions-maven-plugin/
 [7]: http://opensource.org/licenses/BSD-3-Clause
@@ -76,7 +76,6 @@
 [8]: https://github.com/skyscreamer/JSONassert
 [16]: http://www.jqno.nl/equalsverifier
 [24]: https://maven.apache.org/plugins/maven-source-plugin/
-[3]: LICENSE-exasol-script-api.txt
 [6]: http://hamcrest.org/JavaHamcrest/
 [36]: http://maven.apache.org/plugins/maven-deploy-plugin/
 [54]: http://maven.apache.org/plugins/maven-site-plugin/
