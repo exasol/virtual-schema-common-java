@@ -26,4 +26,8 @@ public class RequestJsonKeys {
     public static final String CONDITION = "condition";
     public static final String TABLE_NAME = "tableName";
     public static final String TABLE_ALIAS = "tableAlias";
+
+    private RequestJsonKeys() {
+        // no instantiation required
+    }
 }

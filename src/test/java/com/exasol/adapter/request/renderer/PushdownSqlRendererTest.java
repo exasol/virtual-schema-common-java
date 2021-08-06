@@ -6,8 +6,7 @@ import static com.exasol.adapter.metadata.DataType.ExaCharset.UTF8;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +15,8 @@ import javax.json.*;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import com.exasol.adapter.metadata.ColumnMetadata;
@@ -675,10 +676,12 @@ class PushdownSqlRendererTest {
         assertParseAndRenderGeneratesSameJson(sqlAsJson);
     }
 
-    @Test
-    void testSimpleInnerJoinRequestWithExplicitSelectList() throws IOException, JSONException {
-        final String sqlAsJson = new String(Files.readAllBytes(
-                Paths.get("src/test/resources/json/pushdown_request_simple_inner_join_with_select_list.json")));
+    @ParameterizedTest
+    @ValueSource(strings = { "pushdown_request_simple_inner_join_with_select_list.json",
+            "pushdown_request_simple_inner_join_without_select_list.json",
+            "pushdown_request_nested_join_with_repeated_table_without_select_list.json" })
+    void testJoin(final String testFile) throws IOException, JSONException {
+        final String sqlAsJson = new String(Files.readAllBytes(Path.of("src/test/resources/json/", testFile)));
         final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithTwoTables();
         assertParseAndRenderGeneratesSameJson(sqlAsJson, pushdownSqlParser);
     }
@@ -725,14 +728,6 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testSimpleInnerJoinRequestWithoutSelectList() throws IOException, JSONException {
-        final String sqlAsJson = new String(Files.readAllBytes(
-                Paths.get("src/test/resources/json/pushdown_request_simple_inner_join_without_select_list.json")));
-        final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithTwoTables();
-        assertParseAndRenderGeneratesSameJson(sqlAsJson, pushdownSqlParser);
-    }
-
-    @Test
     void testNestedJoinRequestWithoutSelectList() throws IOException, JSONException {
         final String sqlAsJson = new String(Files.readAllBytes(
                 Paths.get("src/test/resources/json/pushdown_request_nested_join_without_select_list.json")));
@@ -755,14 +750,6 @@ class PushdownSqlRendererTest {
                 ColumnMetadata.builder().name("ITEM_NAME").adapterNotes("").type(createVarChar(200, UTF8)).build());
         tables.add(new TableMetadata("ITEMS", "", columns3, ""));
         return PushdownSqlParser.createWithTablesMetadata(tables);
-    }
-
-    @Test
-    void testNestedJoinRequestRepeatedTableWithoutSelectList() throws IOException, JSONException {
-        final String sqlAsJson = new String(Files.readAllBytes(Paths.get(
-                "src/test/resources/json/pushdown_request_nested_join_with_repeated_table_without_select_list.json")));
-        final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithTwoTables();
-        assertParseAndRenderGeneratesSameJson(sqlAsJson, pushdownSqlParser);
     }
 
     @Test

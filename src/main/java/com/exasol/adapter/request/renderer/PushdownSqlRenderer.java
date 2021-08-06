@@ -438,7 +438,7 @@ public class PushdownSqlRenderer {
             final JsonObjectBuilder builder = createObjectBuilderFor(sqlTable);
             builder.add(NAME, sqlTable.getName());
             if (sqlTable.hasAlias()) {
-                builder.add("alias", sqlTable.getAlias());
+                builder.add(ALIAS, sqlTable.getAlias());
             }
             return builder.build();
         }

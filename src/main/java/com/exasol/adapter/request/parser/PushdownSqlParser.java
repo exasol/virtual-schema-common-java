@@ -1,5 +1,6 @@
 package com.exasol.adapter.request.parser;
 
+import static com.exasol.adapter.request.RequestJsonKeys.ALIAS;
 import static com.exasol.adapter.sql.SqlPredicateIsJson.KeyUniquenessConstraint;
 import static com.exasol.adapter.sql.SqlPredicateIsJson.TypeConstraints;
 
@@ -154,8 +155,8 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     private SqlNode parseTable(final JsonObject exp) {
         final String tableName = exp.getString("name");
         final TableMetadata tableMetadata = findInvolvedTableMetadata(tableName);
-        if (exp.containsKey("alias")) {
-            final String tableAlias = exp.getString("alias");
+        if (exp.containsKey(ALIAS)) {
+            final String tableAlias = exp.getString(ALIAS);
             return new SqlTable(tableName, tableAlias, tableMetadata);
         } else {
             return new SqlTable(tableName, tableMetadata);
