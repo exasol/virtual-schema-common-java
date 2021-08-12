@@ -1,12 +1,9 @@
 # Virtual Schema API Documentation
 
-In the Exasol database, a Virtual Schema adapter is basically a [UDF](https://docs.exasol.com/database_concepts/udf_scripts.htm). The Exasol core invokes this UDF in different situations, for example when creating a Virtual Schema or during query processing.
-In order to communicate with the Virtual Schema adapter UDF, the Exasol database sends a JSON parameter to the Virtual Schema adapter UDF and retrieves also a JSON string as return value. This page documents these JSON messages.
-
 ## Table of Contents
 
 - [Introduction](#introduction)
-- [Introduction](#introduction)
+- [Virtual Schema Query Process](#virtual-schema-query-process)
 - [Requests and Responses](#requests-and-responses)
   - [Create Virtual Schema](#create-virtual-schema)
   - [Refresh](#refresh)
@@ -29,6 +26,11 @@ In order to communicate with the Virtual Schema adapter UDF, the Exasol database
   - [Aggregate Functions](#aggregate-functions)
 
 ## Introduction
+
+In the Exasol database, a Virtual Schema adapter script is similar to a [UDF script](https://docs.exasol.com/database_concepts/udf_scripts.htm). The adapter script defines a [callback function](https://docs.exasol.com/database_concepts/udf_scripts/programming_languages_detail.htm) and the Exasol core calls this function in different situations, for example when creating a Virtual Schema or during query processing.
+In order to communicate with the Virtual Schema adapter script, the Exasol database passes a JSON parameter containing the Virtual Schema API request to the callback function which then returns a JSON string containing the response. This page documents these JSON messages.
+
+## Virtual Schema Query Process
 
 To get a better understanding let's take a look on how the Exasol database processes a Virtual Schema query:
 
