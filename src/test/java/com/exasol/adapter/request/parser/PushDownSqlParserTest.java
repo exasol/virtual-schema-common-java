@@ -7,8 +7,7 @@ import static com.exasol.adapter.sql.SqlFunctionAggregateListagg.BehaviorType.TR
 import static com.exasol.adapter.sql.SqlNodeType.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -17,14 +16,21 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
-import javax.json.*;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import com.exasol.adapter.metadata.*;
+import com.exasol.adapter.metadata.ColumnMetadata;
+import com.exasol.adapter.metadata.DataType;
+import com.exasol.adapter.metadata.TableMetadata;
 import com.exasol.adapter.sql.*;
 
 class PushDownSqlParserTest {
@@ -48,6 +54,7 @@ class PushDownSqlParserTest {
     }
 
     private JsonObject createJsonObjectFromString(final String json) {
+        System.out.println(json);
         try (final JsonReader jsonReader = Json.createReader(new StringReader(json))) {
             return jsonReader.readObject();
         }
@@ -1179,5 +1186,62 @@ class PushDownSqlParserTest {
     private PushdownSqlParser getCustomPushdownSqlParserTableWithoutColumns() {
         final List<TableMetadata> tables = List.of(new TableMetadata("CUSTOMERS", "", Collections.emptyList(), ""));
         return PushdownSqlParser.createWithTablesMetadata(tables);
+    }
+
+    @Test
+    void testParseSelectWithSingleGroupAggregation() {
+        final String sqlAsJson = "{" //
+                + "   \"type\" : \"select\", " //
+                + "   \"aggregationType\" : \"single_group\", " //
+                + "    \"from\" : " //
+                + "   { " //
+                + "        \"type\" : \"table\", " //
+                + "        \"name\" :  \"CLICKS\" " //
+                + "   }, " //
+                + "   \"selectList\" : [ " //
+                + "   { " //
+                + "        \"type\" : \"literal_null\" " //
+                + "   } " //
+                + "   ] " //
+                + "}";
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlStatementSelect sqlStatementSelect = (SqlStatementSelect) this.defaultParser
+                .parseExpression(jsonObject);
+        assertAll( //
+                () -> assertThat(sqlStatementSelect.getGroupBy().getExpressions().size(), equalTo(1)),
+                () -> assertThat(sqlStatementSelect.getGroupBy().getExpressions().get(0).getType(),
+                        equalTo(LITERAL_STRING)),
+                () -> assertThat(
+                        ((SqlLiteralString) (sqlStatementSelect.getGroupBy().getExpressions().get(0))).getValue(),
+                        equalTo("a")) //
+        );
+    }
+
+    @Test
+    void testParseSelectWithSingleGroupAggregationWithAggregateFunction() throws JSONException {
+        final JSONObject request = new JSONObject();
+        request.put("type", "select");
+        request.put("aggregationType", "single_group");
+        final JSONObject from = new JSONObject();
+        from.put("type", "table");
+        from.put("name", "CLICKS");
+        request.put("from", from);
+        final JSONArray selectList = new JSONArray();
+        final JSONObject aggregateFunction = new JSONObject();
+        aggregateFunction.put("name", "sum");
+        aggregateFunction.put("type", "function_aggregate");
+        final JSONArray arguments = new JSONArray();
+        final JSONObject argument = new JSONObject();
+        argument.put("type", "literal_exactnumeric");
+        argument.put("value", "5");
+        arguments.put(argument);
+        aggregateFunction.put("arguments", arguments);
+        selectList.put(aggregateFunction);
+        request.put("selectList", selectList);
+
+        final JsonObject jsonObject = createJsonObjectFromString(request.toString());
+        final SqlStatementSelect sqlStatementSelect = (SqlStatementSelect) this.defaultParser
+                .parseExpression(jsonObject);
+        assertFalse(sqlStatementSelect.hasGroupBy());
     }
 }
