@@ -20,9 +20,6 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -54,7 +51,6 @@ class PushDownSqlParserTest {
     }
 
     private JsonObject createJsonObjectFromString(final String json) {
-        System.out.println(json);
         try (final JsonReader jsonReader = Json.createReader(new StringReader(json))) {
             return jsonReader.readObject();
         }
@@ -1218,28 +1214,29 @@ class PushDownSqlParserTest {
     }
 
     @Test
-    void testParseSelectWithSingleGroupAggregationWithAggregateFunction() throws JSONException {
-        final JSONObject request = new JSONObject();
-        request.put("type", "select");
-        request.put("aggregationType", "single_group");
-        final JSONObject from = new JSONObject();
-        from.put("type", "table");
-        from.put("name", "CLICKS");
-        request.put("from", from);
-        final JSONArray selectList = new JSONArray();
-        final JSONObject aggregateFunction = new JSONObject();
-        aggregateFunction.put("name", "sum");
-        aggregateFunction.put("type", "function_aggregate");
-        final JSONArray arguments = new JSONArray();
-        final JSONObject argument = new JSONObject();
-        argument.put("type", "literal_exactnumeric");
-        argument.put("value", "5");
-        arguments.put(argument);
-        aggregateFunction.put("arguments", arguments);
-        selectList.put(aggregateFunction);
-        request.put("selectList", selectList);
+    void testParseSelectWithSingleGroupAggregationWithAggregateFunction() {
+        final String sqlAsJson = "{" //
+                + "   \"aggregationType\":\"single_group\"," //
+                + "   \"selectList\":[" //
+                + "      {" //
+                + "         \"name\":\"sum\"," //
+                + "         \"arguments\":[" //
+                + "            {" //
+                + "               \"type\":\"literal_exactnumeric\"," //
+                + "               \"value\":\"5\"" //
+                + "            }" //
+                + "         ]," //
+                + "         \"type\":\"function_aggregate\"" //
+                + "      }" //
+                + "   ]," //
+                + "   \"from\":{" //
+                + "      \"name\":\"CLICKS\"," //
+                + "      \"type\":\"table\"" //
+                + "   }," //
+                + "   \"type\":\"select\"" //
+                + "}";
 
-        final JsonObject jsonObject = createJsonObjectFromString(request.toString());
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
         final SqlStatementSelect sqlStatementSelect = (SqlStatementSelect) this.defaultParser
                 .parseExpression(jsonObject);
         assertFalse(sqlStatementSelect.hasGroupBy());

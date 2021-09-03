@@ -46,7 +46,7 @@ public class PushdownSqlRenderer {
             final JsonObjectBuilder builder = createObjectBuilderFor(select);
             builder.add(FROM, select.getFromClause().accept(this));
             addIfPresent(select.getSelectList(), SELECT_LIST, builder);
-            addIfPresent(select.getGroupBy(), GROUP_BY, builder);
+            addGroupByIfPresent(select.getGroupBy(), builder);
             addIfPresent(select.getWhereClause(), FILTER, builder);
             addIfPresent(select.getHaving(), HAVING, builder);
             addIfPresent(select.getOrderBy(), ORDER_BY, builder);
@@ -65,6 +65,19 @@ public class PushdownSqlRenderer {
             }
         }
 
+        private void addGroupByIfPresent(final SqlExpressionList groupBy, final JsonObjectBuilder builder)
+                throws AdapterException {
+            if (groupBy != null) {
+                final JsonValue groupByJson = groupBy.accept(this);
+                if (groupByJson.toString().contains("single_group")) {
+                    builder.add(AGGREGATION_TYPE, AGGREGATION_TYPE_SINGLE_GROUP);
+                } else {
+                    builder.add(GROUP_BY, groupByJson);
+                }
+            }
+
+        }
+
         @Override
         public JsonArray visit(final SqlSelectList selectList) throws AdapterException {
             return convertListOfNodes(selectList.getExpressions());
@@ -79,8 +92,14 @@ public class PushdownSqlRenderer {
         }
 
         @Override
-        public JsonArray visit(final SqlGroupBy groupBy) throws AdapterException {
-            return convertListOfNodes(groupBy.getExpressions());
+        public JsonValue visit(final SqlGroupBy groupBy) throws AdapterException {
+            if (groupBy.getExpressions().size() == 1
+                    && groupBy.getExpressions().get(0).getType() == SqlNodeType.LITERAL_STRING
+                    && ((SqlLiteralString) groupBy.getExpressions().get(0)).getValue().equals("a")) {
+                return JSON.createObjectBuilder().add("aggregationType", "single_group").build();
+            } else {
+                return convertListOfNodes(groupBy.getExpressions());
+            }
         }
 
         @Override
