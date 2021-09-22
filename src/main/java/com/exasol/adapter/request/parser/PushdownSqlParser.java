@@ -202,10 +202,10 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         if (hasSingleGroupAggregation(select) && !hasAggregateFunction(selectList)) {
             // If the aggregationType is single_group and there is no an aggregate function,
             // we limit the result to a single row.
-            return new SqlGroupBy(List.of(new SqlLiteralString("a")));
+            return new SqlGroupBy(List.of(new SqlLiteralString("a")), true);
         } else {
             final JsonArray groupBy = select.getJsonArray("groupBy");
-            return groupBy == null ? null : new SqlGroupBy(parseExpressionList(groupBy));
+            return groupBy == null ? null : new SqlGroupBy(parseExpressionList(groupBy), false);
         }
     }
 
@@ -220,8 +220,8 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private boolean hasSingleGroupAggregation(final JsonObject select) {
-        return select.getString("aggregationType", null) != null
-                && select.getString("aggregationType").equals("single_group");
+        return select.getString(AGGREGATION_TYPE, null) != null
+                && select.getString(AGGREGATION_TYPE).equals(AGGREGATION_TYPE_SINGLE_GROUP);
     }
 
     private SqlNode parseLiteralDate(final JsonObject exp) {

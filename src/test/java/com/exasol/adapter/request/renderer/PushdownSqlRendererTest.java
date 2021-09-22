@@ -45,11 +45,11 @@ class PushdownSqlRendererTest {
     }
 
     private List<ColumnMetadata> createDefaultColumnMetadata() {
-        final List<ColumnMetadata> columnMetadataList = new ArrayList<>();
-        final ColumnMetadata columnMetadata = ColumnMetadata.builder().name("USER_ID").adapterNotes("")
-                .type(createDecimal(18, 0)).nullable(true).identity(false).defaultValue("").comment("").build();
-        columnMetadataList.add(columnMetadata);
-        return columnMetadataList;
+        return List.of(
+                ColumnMetadata.builder().name("USER_ID").adapterNotes("").type(createDecimal(18, 0)).nullable(true)
+                        .identity(false).defaultValue("").comment("").build(),
+                ColumnMetadata.builder().name("single_group").adapterNotes("").type(createDecimal(18, 0)).nullable(true)
+                        .identity(false).defaultValue("").comment("").build());
     }
 
     private JsonObject createJsonObjectFromString(final String json) {
@@ -806,6 +806,28 @@ class PushdownSqlRendererTest {
                 + "      \"type\":\"table\"" //
                 + "   }," //
                 + "   \"type\":\"select\"" //
+                + "}";
+        assertParseAndRenderGeneratesSameJson(sqlAsJson);
+    }
+
+    @Test
+    void testParseGroupByWithSingleGroupColumnName() throws JSONException {
+        final String sqlAsJson = "{" //
+                + "   \"type\" : \"select\", " //
+                + "    \"from\" : " //
+                + "   { " //
+                + "        \"type\" : \"table\", " //
+                + "        \"name\" :  \"CLICKS\", " //
+                + "        \"alias\" :  \"A\" " //
+                + "   }, " //
+                + "   \"groupBy\" : [ " //
+                + "   { " //
+                + "        \"type\" : \"column\", " //
+                + "        \"name\" :  \"single_group\", " //
+                + "        \"columnNr\" : 2, " //
+                + "        \"tableName\" : \"CLICKS\" " //
+                + "   } " //
+                + "   ] " //
                 + "}";
         assertParseAndRenderGeneratesSameJson(sqlAsJson);
     }
