@@ -7,8 +7,7 @@ import static com.exasol.adapter.sql.SqlFunctionAggregateListagg.BehaviorType.TR
 import static com.exasol.adapter.sql.SqlNodeType.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -17,14 +16,18 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
-import javax.json.*;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import com.exasol.adapter.metadata.*;
+import com.exasol.adapter.metadata.ColumnMetadata;
+import com.exasol.adapter.metadata.DataType;
+import com.exasol.adapter.metadata.TableMetadata;
 import com.exasol.adapter.sql.*;
 
 class PushDownSqlParserTest {
@@ -1179,5 +1182,63 @@ class PushDownSqlParserTest {
     private PushdownSqlParser getCustomPushdownSqlParserTableWithoutColumns() {
         final List<TableMetadata> tables = List.of(new TableMetadata("CUSTOMERS", "", Collections.emptyList(), ""));
         return PushdownSqlParser.createWithTablesMetadata(tables);
+    }
+
+    @Test
+    void testParseSelectWithSingleGroupAggregation() {
+        final String sqlAsJson = "{" //
+                + "   \"type\" : \"select\", " //
+                + "   \"aggregationType\" : \"single_group\", " //
+                + "    \"from\" : " //
+                + "   { " //
+                + "        \"type\" : \"table\", " //
+                + "        \"name\" :  \"CLICKS\" " //
+                + "   }, " //
+                + "   \"selectList\" : [ " //
+                + "   { " //
+                + "        \"type\" : \"literal_null\" " //
+                + "   } " //
+                + "   ] " //
+                + "}";
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlStatementSelect sqlStatementSelect = (SqlStatementSelect) this.defaultParser
+                .parseExpression(jsonObject);
+        assertAll( //
+                () -> assertThat(sqlStatementSelect.getGroupBy().getExpressions().size(), equalTo(1)),
+                () -> assertThat(sqlStatementSelect.getGroupBy().getExpressions().get(0).getType(),
+                        equalTo(LITERAL_STRING)),
+                () -> assertThat(
+                        ((SqlLiteralString) (sqlStatementSelect.getGroupBy().getExpressions().get(0))).getValue(),
+                        equalTo("a")) //
+        );
+    }
+
+    @Test
+    void testParseSelectWithSingleGroupAggregationWithAggregateFunction() {
+        final String sqlAsJson = "{" //
+                + "   \"aggregationType\":\"single_group\"," //
+                + "   \"selectList\":[" //
+                + "      {" //
+                + "         \"name\":\"sum\"," //
+                + "         \"arguments\":[" //
+                + "            {" //
+                + "               \"type\":\"literal_exactnumeric\"," //
+                + "               \"value\":\"5\"" //
+                + "            }" //
+                + "         ]," //
+                + "         \"type\":\"function_aggregate\"" //
+                + "      }" //
+                + "   ]," //
+                + "   \"from\":{" //
+                + "      \"name\":\"CLICKS\"," //
+                + "      \"type\":\"table\"" //
+                + "   }," //
+                + "   \"type\":\"select\"" //
+                + "}";
+
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlStatementSelect sqlStatementSelect = (SqlStatementSelect) this.defaultParser
+                .parseExpression(jsonObject);
+        assertFalse(sqlStatementSelect.hasGroupBy());
     }
 }

@@ -47,6 +47,7 @@ public class PushdownSqlRenderer {
             builder.add(FROM, select.getFromClause().accept(this));
             addIfPresent(select.getSelectList(), SELECT_LIST, builder);
             addIfPresent(select.getGroupBy(), GROUP_BY, builder);
+            addAggregationTypeIfPresent(select.getGroupBy(), builder);
             addIfPresent(select.getWhereClause(), FILTER, builder);
             addIfPresent(select.getHaving(), HAVING, builder);
             addIfPresent(select.getOrderBy(), ORDER_BY, builder);
@@ -65,6 +66,12 @@ public class PushdownSqlRenderer {
             }
         }
 
+        private void addAggregationTypeIfPresent(final SqlExpressionList groupBy, final JsonObjectBuilder builder) {
+            if (groupBy instanceof SqlGroupBy && ((SqlGroupBy) groupBy).isSingleGroupAggregation()) {
+                builder.add(AGGREGATION_TYPE, AGGREGATION_TYPE_SINGLE_GROUP);
+            }
+        }
+
         @Override
         public JsonArray visit(final SqlSelectList selectList) throws AdapterException {
             return convertListOfNodes(selectList.getExpressions());
@@ -79,7 +86,7 @@ public class PushdownSqlRenderer {
         }
 
         @Override
-        public JsonArray visit(final SqlGroupBy groupBy) throws AdapterException {
+        public JsonValue visit(final SqlGroupBy groupBy) throws AdapterException {
             return convertListOfNodes(groupBy.getExpressions());
         }
 

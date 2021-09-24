@@ -7,14 +7,20 @@ import static com.exasol.adapter.sql.SqlPredicateIsJson.TypeConstraints;
 import java.math.BigDecimal;
 import java.util.*;
 
-import javax.json.*;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonValue;
 
-import com.exasol.adapter.metadata.*;
+import com.exasol.adapter.metadata.ColumnMetadata;
+import com.exasol.adapter.metadata.DataType;
 import com.exasol.adapter.metadata.DataType.ExaCharset;
 import com.exasol.adapter.metadata.DataType.IntervalType;
+import com.exasol.adapter.metadata.TableMetadata;
 import com.exasol.adapter.sql.*;
+import com.exasol.adapter.sql.SqlFunctionAggregateListagg.Behavior;
 import com.exasol.adapter.sql.SqlFunctionAggregateListagg.Behavior.TruncationType;
-import com.exasol.adapter.sql.SqlFunctionAggregateListagg.*;
+import com.exasol.adapter.sql.SqlFunctionAggregateListagg.BehaviorType;
+import com.exasol.adapter.sql.SqlFunctionAggregateListagg.Builder;
 import com.exasol.errorreporting.ExaError;
 
 public final class PushdownSqlParser extends AbstractRequestParser {
@@ -112,7 +118,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         final SqlNode from = parseExpression(select.getJsonObject("from"));
         // SELECT list
         final SqlSelectList selectList = createSelectList(select, from);
-        final SqlExpressionList groupByClause = parseGroupBy(select.getJsonArray("groupBy"));
+        final SqlExpressionList groupByClause = parseGroupBy(select, selectList);
         // WHERE clause
         SqlNode whereClause = null;
         if (select.containsKey("filter")) {
@@ -192,8 +198,30 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         return sqlNodes;
     }
 
-    private SqlGroupBy parseGroupBy(final JsonArray groupBy) {
-        return groupBy == null ? null : new SqlGroupBy(parseExpressionList(groupBy));
+    private SqlGroupBy parseGroupBy(final JsonObject select, final SqlSelectList selectList) {
+        if (hasSingleGroupAggregation(select) && !hasAggregateFunction(selectList)) {
+            // If the aggregationType is single_group and there is no an aggregate function,
+            // we limit the result to a single row.
+            return new SqlGroupBy(List.of(new SqlLiteralString("a")), true);
+        } else {
+            final JsonArray groupBy = select.getJsonArray("groupBy");
+            return groupBy == null ? null : new SqlGroupBy(parseExpressionList(groupBy), false);
+        }
+    }
+
+    private boolean hasAggregateFunction(final SqlSelectList selectList) {
+        final List<SqlNode> expressions = selectList.getExpressions();
+        for (final SqlNode expression : expressions) {
+            if (expression.getType().equals(SqlNodeType.FUNCTION_AGGREGATE)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasSingleGroupAggregation(final JsonObject select) {
+        return select.getString(AGGREGATION_TYPE, null) != null
+                && select.getString(AGGREGATION_TYPE).equals(AGGREGATION_TYPE_SINGLE_GROUP);
     }
 
     private SqlNode parseLiteralDate(final JsonObject exp) {

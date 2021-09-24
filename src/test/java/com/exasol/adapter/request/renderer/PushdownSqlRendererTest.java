@@ -3,6 +3,11 @@ package com.exasol.adapter.request.renderer;
 import static com.exasol.adapter.metadata.DataType.createDecimal;
 import static com.exasol.adapter.metadata.DataType.createVarChar;
 import static com.exasol.adapter.metadata.DataType.ExaCharset.UTF8;
+import static com.exasol.adapter.sql.SqlNodeType.LITERAL_STRING;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -12,6 +17,8 @@ import java.util.List;
 
 import javax.json.*;
 
+import com.exasol.adapter.sql.SqlLiteralString;
+import com.exasol.adapter.sql.SqlStatementSelect;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,11 +45,11 @@ class PushdownSqlRendererTest {
     }
 
     private List<ColumnMetadata> createDefaultColumnMetadata() {
-        final List<ColumnMetadata> columnMetadataList = new ArrayList<>();
-        final ColumnMetadata columnMetadata = ColumnMetadata.builder().name("USER_ID").adapterNotes("")
-                .type(createDecimal(18, 0)).nullable(true).identity(false).defaultValue("").comment("").build();
-        columnMetadataList.add(columnMetadata);
-        return columnMetadataList;
+        return List.of(
+                ColumnMetadata.builder().name("USER_ID").adapterNotes("").type(createDecimal(18, 0)).nullable(true)
+                        .identity(false).defaultValue("").comment("").build(),
+                ColumnMetadata.builder().name("single_group").adapterNotes("").type(createDecimal(18, 0)).nullable(true)
+                        .identity(false).defaultValue("").comment("").build());
     }
 
     private JsonObject createJsonObjectFromString(final String json) {
@@ -758,5 +765,70 @@ class PushdownSqlRendererTest {
                 Paths.get("src/test/resources/json/pushdown_request_nested_join_without_select_list_reversed.json")));
         final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithThreeTables();
         assertParseAndRenderGeneratesSameJson(sqlAsJson, pushdownSqlParser);
+    }
+
+    @Test
+    void testParseSelectWithSingleGroupAggregation() throws JSONException {
+        final String sqlAsJson = "{" //
+                + "   \"type\" : \"select\", " //
+                + "   \"aggregationType\" : \"single_group\", " //
+                + "    \"from\" : " //
+                + "   { " //
+                + "        \"type\" : \"table\", " //
+                + "        \"name\" :  \"CLICKS\" " //
+                + "   }, " //
+                + "   \"selectList\" : [ " //
+                + "   { " //
+                + "        \"type\" : \"literal_null\" " //
+                + "   } " //
+                + "   ] " //
+                + "}";
+        assertParseAndRenderGeneratesSameJson(sqlAsJson);
+    }
+
+    @Test
+    void testParseSelectWithSingleGroupAggregationWithAggregateFunction() throws JSONException {
+        final String sqlAsJson = "{" //
+                + "   \"selectList\":[" //
+                + "      {" //
+                + "         \"name\":\"SUM\"," //
+                + "         \"arguments\":[" //
+                + "            {" //
+                + "               \"type\":\"literal_exactnumeric\"," //
+                + "               \"value\":\"5\"" //
+                + "            }" //
+                + "         ]," //
+                + "         \"type\":\"function_aggregate\"" //
+                + "      }" //
+                + "   ]," //
+                + "   \"from\":{" //
+                + "      \"name\":\"CLICKS\"," //
+                + "      \"type\":\"table\"" //
+                + "   }," //
+                + "   \"type\":\"select\"" //
+                + "}";
+        assertParseAndRenderGeneratesSameJson(sqlAsJson);
+    }
+
+    @Test
+    void testParseGroupByWithSingleGroupColumnName() throws JSONException {
+        final String sqlAsJson = "{" //
+                + "   \"type\" : \"select\", " //
+                + "    \"from\" : " //
+                + "   { " //
+                + "        \"type\" : \"table\", " //
+                + "        \"name\" :  \"CLICKS\", " //
+                + "        \"alias\" :  \"A\" " //
+                + "   }, " //
+                + "   \"groupBy\" : [ " //
+                + "   { " //
+                + "        \"type\" : \"column\", " //
+                + "        \"name\" :  \"single_group\", " //
+                + "        \"columnNr\" : 2, " //
+                + "        \"tableName\" : \"CLICKS\" " //
+                + "   } " //
+                + "   ] " //
+                + "}";
+        assertParseAndRenderGeneratesSameJson(sqlAsJson);
     }
 }

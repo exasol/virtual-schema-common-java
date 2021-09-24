@@ -56,6 +56,8 @@ public class RequestJsonKeys {
     public static final String JOIN_TYPE = "join_type";
     public static final String TO_EXTRACT = "toExtract";
     public static final String BYTE_SIZE = "bytesize";
+    public static final String AGGREGATION_TYPE = "aggregationType";
+    public static final String AGGREGATION_TYPE_SINGLE_GROUP = "single_group";
 
     private RequestJsonKeys() {
         // no instantiation required
