@@ -11,11 +11,11 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.json.*;
-
 import org.junit.jupiter.api.Test;
 
 import com.exasol.adapter.metadata.*;
+
+import jakarta.json.*;
 
 class TablesMetadataParserTest {
     @Test

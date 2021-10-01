@@ -2,12 +2,12 @@ package com.exasol.adapter.metadata.converter;
 
 import java.util.Collections;
 
-import javax.json.*;
-
 import com.exasol.adapter.metadata.*;
 import com.exasol.adapter.metadata.DataType.*;
 import com.exasol.errorhandling.ErrorMessages;
 import com.exasol.errorreporting.ExaError;
+
+import jakarta.json.*;
 
 /**
  * This class converts the schema metadata to its JSON representation.
@@ -108,8 +108,8 @@ public final class SchemaMetadataJsonConverter {
         switch (dataType.getExaDataType()) {
         case UNSUPPORTED:
             throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-1")
-                    .message("Unsupported data type found trying to serialize schema metadata. {{report}}")
-                    .unquotedParameter("report", ErrorMessages.askForBugReport()).toString());
+                    .message("Unsupported data type found trying to serialize schema metadata. {{report|uq}}")
+                    .parameter("report", ErrorMessages.askForBugReport()).toString());
         case DECIMAL:
             typeAsJson.add("precision", dataType.getPrecision());
             typeAsJson.add("scale", dataType.getScale());
@@ -189,9 +189,9 @@ public final class SchemaMetadataJsonConverter {
         default:
             throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-3")
                     .message("Unexpected charset {{charset}} encountered while trying to serialize character "
-                            + "string type information. {{report}}")
+                            + "string type information. {{report|uq}}")
                     .parameter("charset", charset) //
-                    .unquotedParameter("report", ErrorMessages.askForBugReport()).toString());
+                    .parameter("report", ErrorMessages.askForBugReport()).toString());
         }
     }
 
@@ -202,10 +202,10 @@ public final class SchemaMetadataJsonConverter {
         case YEAR_TO_MONTH:
             return "YEAR TO MONTH";
         default:
-            throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-4")
-                    .message("Unexpected interval type {{intervalType}} encountered while trying to serialize an interval. {{report}}")
-                    .parameter("intervalType", intervalType)
-                    .unquotedParameter("report", ErrorMessages.askForBugReport()).toString());
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-4").message(
+                    "Unexpected interval type {{intervalType}} encountered while trying to serialize an interval. {{report|uq}}")
+                    .parameter("intervalType", intervalType).parameter("report", ErrorMessages.askForBugReport())
+                    .toString());
         }
     }
 }

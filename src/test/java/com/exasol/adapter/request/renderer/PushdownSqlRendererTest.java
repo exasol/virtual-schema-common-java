@@ -3,11 +3,6 @@ package com.exasol.adapter.request.renderer;
 import static com.exasol.adapter.metadata.DataType.createDecimal;
 import static com.exasol.adapter.metadata.DataType.createVarChar;
 import static com.exasol.adapter.metadata.DataType.ExaCharset.UTF8;
-import static com.exasol.adapter.sql.SqlNodeType.LITERAL_STRING;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -15,10 +10,6 @@ import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.json.*;
-
-import com.exasol.adapter.sql.SqlLiteralString;
-import com.exasol.adapter.sql.SqlStatementSelect;
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +21,8 @@ import com.exasol.adapter.metadata.ColumnMetadata;
 import com.exasol.adapter.metadata.TableMetadata;
 import com.exasol.adapter.request.parser.PushdownSqlParser;
 import com.exasol.adapter.sql.SqlNode;
+
+import jakarta.json.*;
 
 class PushdownSqlRendererTest {
 
