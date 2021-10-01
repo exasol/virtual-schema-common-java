@@ -27,11 +27,11 @@ In this release we fixed the support for the `aggregationType` field in requests
 
 ### Test Dependency Updates
 
-* Updated `nl.jqno.equalsverifier:equalsverifier:3.6` to `3.7.1`
+* Updated `nl.jqno.equalsverifier:equalsverifier:3.7` to `3.7.1`
 * Updated `org.junit.jupiter:junit-jupiter:5.7.2` to `5.8.1`
-* Updated `org.mockito:mockito-junit-jupiter:3.10.0` to `3.12.4`
+* Updated `org.mockito:mockito-junit-jupiter:3.11.2` to `3.12.4`
 
 ### Plugin Dependency Updates
 
-* Updated `com.exasol:error-code-crawler-maven-plugin:0.1.0` to `0.6.0`
-* Updated `com.exasol:project-keeper-maven-plugin:0.6.1` to `1.2.0`
+* Updated `com.exasol:error-code-crawler-maven-plugin:0.5.1` to `0.6.0`
+* Updated `com.exasol:project-keeper-maven-plugin:0.10.0` to `1.2.0`
