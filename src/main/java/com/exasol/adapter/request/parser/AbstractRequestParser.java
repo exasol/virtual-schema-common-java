@@ -1,7 +1,5 @@
 package com.exasol.adapter.request.parser;
 
-import com.exasol.errorreporting.ExaError;
-
 import static com.exasol.adapter.request.parser.RequestParserConstants.PROPERTIES_KEY;
 
 import java.io.ByteArrayInputStream;
@@ -10,8 +8,10 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 
-import javax.json.*;
-import javax.json.JsonValue.ValueType;
+import com.exasol.errorreporting.ExaError;
+
+import jakarta.json.*;
+import jakarta.json.JsonValue.ValueType;
 
 /**
  * Abstract base class for parsers reading fragments of the Virtual Schema requests.

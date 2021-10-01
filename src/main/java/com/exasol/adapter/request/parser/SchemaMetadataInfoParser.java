@@ -5,11 +5,11 @@ import static com.exasol.adapter.request.parser.RequestParserConstants.SCHEMA_NA
 
 import java.util.Map;
 
-import javax.json.*;
-import javax.json.JsonValue.ValueType;
-
 import com.exasol.adapter.metadata.SchemaMetadataInfo;
 import com.exasol.errorreporting.ExaError;
+
+import jakarta.json.*;
+import jakarta.json.JsonValue.ValueType;
 
 /**
  * This parser reads the so called Schema Metadata Information sent alongside each request.

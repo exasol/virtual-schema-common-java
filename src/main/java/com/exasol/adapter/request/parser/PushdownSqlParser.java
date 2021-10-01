@@ -7,21 +7,15 @@ import static com.exasol.adapter.sql.SqlPredicateIsJson.TypeConstraints;
 import java.math.BigDecimal;
 import java.util.*;
 
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonValue;
-
-import com.exasol.adapter.metadata.ColumnMetadata;
-import com.exasol.adapter.metadata.DataType;
+import com.exasol.adapter.metadata.*;
 import com.exasol.adapter.metadata.DataType.ExaCharset;
 import com.exasol.adapter.metadata.DataType.IntervalType;
-import com.exasol.adapter.metadata.TableMetadata;
 import com.exasol.adapter.sql.*;
-import com.exasol.adapter.sql.SqlFunctionAggregateListagg.Behavior;
 import com.exasol.adapter.sql.SqlFunctionAggregateListagg.Behavior.TruncationType;
-import com.exasol.adapter.sql.SqlFunctionAggregateListagg.BehaviorType;
-import com.exasol.adapter.sql.SqlFunctionAggregateListagg.Builder;
+import com.exasol.adapter.sql.SqlFunctionAggregateListagg.*;
 import com.exasol.errorreporting.ExaError;
+
+import jakarta.json.*;
 
 public final class PushdownSqlParser extends AbstractRequestParser {
     private final List<TableMetadata> involvedTablesMetadata;

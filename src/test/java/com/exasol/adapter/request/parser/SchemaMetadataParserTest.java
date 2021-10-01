@@ -7,11 +7,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.ByteArrayInputStream;
 
-import javax.json.*;
-
 import org.junit.jupiter.api.Test;
 
 import com.exasol.adapter.metadata.SchemaMetadataInfo;
+
+import jakarta.json.*;
 
 class SchemaMetadataParserTest {
     @Test
