@@ -1,10 +1,10 @@
 package com.exasol.adapter.response.converter;
 
-import javax.json.*;
-
 import com.exasol.adapter.capabilities.*;
 import com.exasol.adapter.metadata.converter.SchemaMetadataJsonConverter;
 import com.exasol.adapter.response.*;
+
+import jakarta.json.*;
 
 /**
  * Converts response into JSON format

@@ -5,10 +5,10 @@ import static com.exasol.adapter.request.parser.RequestParserConstants.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.json.*;
-
 import com.exasol.adapter.metadata.*;
 import com.exasol.errorreporting.ExaError;
+
+import jakarta.json.*;
 
 /**
  * This class provides a parser for table metadata

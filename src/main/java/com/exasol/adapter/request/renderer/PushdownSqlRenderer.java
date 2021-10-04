@@ -5,13 +5,13 @@ import static com.exasol.adapter.request.RequestJsonKeys.*;
 import java.util.List;
 import java.util.Optional;
 
-import javax.json.*;
-import javax.json.spi.JsonProvider;
-
 import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.DataType;
 import com.exasol.adapter.sql.*;
 import com.exasol.errorreporting.ExaError;
+
+import jakarta.json.*;
+import jakarta.json.spi.JsonProvider;
 
 /**
  * This class serializes {@link SqlNode}s to JSON.

@@ -16,19 +16,15 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import com.exasol.adapter.metadata.ColumnMetadata;
-import com.exasol.adapter.metadata.DataType;
-import com.exasol.adapter.metadata.TableMetadata;
+import com.exasol.adapter.metadata.*;
 import com.exasol.adapter.sql.*;
+
+import jakarta.json.*;
 
 class PushDownSqlParserTest {
     private PushdownSqlParser defaultParser;
