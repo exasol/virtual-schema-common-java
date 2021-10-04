@@ -94,6 +94,7 @@ Here you can find a list of available Virtual Schema capabilities.
 - FN_CONCAT
 - FN_CONVERT_TZ
 - FN_COT
+- FN_CURRENT_CLUSTER
 - FN_CURRENT_DATE
 - FN_CURRENT_SCHEMA
 - FN_CURRENT_SESSION
