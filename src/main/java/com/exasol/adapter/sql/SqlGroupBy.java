@@ -26,6 +26,15 @@ public class SqlGroupBy extends SqlExpressionList {
         }
     }
 
+    /**
+     * Create a new instance of {@link SqlGroupBy}.
+     *
+     * @param groupByList list of expressions
+     */
+    public SqlGroupBy(final List<SqlNode> groupByList) {
+        this(groupByList, false);
+    }
+
     @Override
     public SqlNodeType getType() {
         return SqlNodeType.GROUP_BY;
