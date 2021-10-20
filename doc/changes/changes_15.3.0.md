@@ -1,4 +1,4 @@
-# Common module of Exasol Virtual Schemas Adapters 15.3.0, released 2021-??-??
+# Common module of Exasol Virtual Schemas Adapters 15.3.0, released 2021-10-20
 
 Code name: New scalar function CURRENT_CLUSTER
 
