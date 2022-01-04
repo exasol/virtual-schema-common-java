@@ -40,10 +40,10 @@ public final class RequestDispatcher {
 
     private static String processAdapterCall(final ExaMetadata metadata, final String rawRequest)
             throws AdapterException {
-        logVersionInformation();
-        logRawRequest(rawRequest);
         final AdapterRequest adapterRequest = parseRequest(rawRequest);
         configureAdapterLoggingAccordingToRequestSettings(adapterRequest);
+        logVersionInformation();
+        logRawRequest(rawRequest);
         final AdapterCallExecutor adapterCallExecutor = getAdapterCallExecutor();
         return adapterCallExecutor.executeAdapterCall(adapterRequest, metadata);
     }
