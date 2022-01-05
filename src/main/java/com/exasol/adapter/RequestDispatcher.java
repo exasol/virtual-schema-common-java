@@ -38,12 +38,19 @@ public final class RequestDispatcher {
         }
     }
 
+    @SuppressWarnings("java:S106") // we need stdout since LOGGER is not yet available
     private static String processAdapterCall(final ExaMetadata metadata, final String rawRequest)
             throws AdapterException {
+        final AdapterRequest adapterRequest;
+        try {
+            adapterRequest = parseRequest(rawRequest);
+            configureAdapterLoggingAccordingToRequestSettings(adapterRequest);
+        } catch (final RuntimeException exception) {
+            System.out.println("Raw JSON request:\n" + rawRequest);
+            throw exception;
+        }
         logVersionInformation();
         logRawRequest(rawRequest);
-        final AdapterRequest adapterRequest = parseRequest(rawRequest);
-        configureAdapterLoggingAccordingToRequestSettings(adapterRequest);
         final AdapterCallExecutor adapterCallExecutor = getAdapterCallExecutor();
         return adapterCallExecutor.executeAdapterCall(adapterRequest, metadata);
     }
