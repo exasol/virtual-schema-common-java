@@ -142,12 +142,12 @@ Request to set properties. The Adapter can decide whether it needs to send back 
     "type": "setProperties",
     "schemaMetadataInfo": {
         ...
+        "properties": {
+            "JDBC_CONNECTION_STRING": "new-jdbc-connection-string",
+            "NEW_PROPERTY": "value of a not yet existing property",
+            "DELETED_PROPERTY": null
+        }
     },
-    "properties": {
-        "JDBC_CONNECTION_STRING": "new-jdbc-connection-string",
-        "NEW_PROPERTY": "value of a not yet existing property",
-        "DELETED_PROPERTY": null
-    }
 }
 ```
 
