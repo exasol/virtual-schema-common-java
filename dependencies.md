@@ -11,14 +11,14 @@
 
 ## Test Dependencies
 
-| Dependency                       | License                                        |
-| -------------------------------- | ---------------------------------------------- |
-| [Hamcrest][7]                    | [BSD License 3][8]                             |
-| [JSONassert][9]                  | [The Apache Software License, Version 2.0][10] |
-| [JUnit Jupiter (Aggregator)][11] | [Eclipse Public License v2.0][12]              |
-| [mockito-junit-jupiter][13]      | [The MIT License][14]                          |
-| [JUnit5 System Extensions][15]   | [Eclipse Public License v2.0][16]              |
-| [EqualsVerifier][17]             | [Apache License, Version 2.0][10]              |
+| Dependency                                | License                                        |
+| ----------------------------------------- | ---------------------------------------------- |
+| [Hamcrest][7]                             | [BSD License 3][8]                             |
+| [JSONassert][9]                           | [The Apache Software License, Version 2.0][10] |
+| [JUnit Jupiter (Aggregator)][11]          | [Eclipse Public License v2.0][12]              |
+| [mockito-junit-jupiter][13]               | [The MIT License][14]                          |
+| [JUnit5 System Extensions][15]            | [Eclipse Public License v2.0][16]              |
+| [EqualsVerifier | release normal jar][17] | [Apache License, Version 2.0][18]              |
 
 ## Runtime Dependencies
 
@@ -30,15 +30,15 @@
 
 | Dependency                                              | License                                        |
 | ------------------------------------------------------- | ---------------------------------------------- |
-| [Apache Maven Compiler Plugin][22]                      | [Apache License, Version 2.0][23]              |
+| [Apache Maven Compiler Plugin][22]                      | [Apache License, Version 2.0][18]              |
 | [JaCoCo :: Maven Plugin][24]                            | [Eclipse Public License 2.0][25]               |
-| [Maven Surefire Plugin][26]                             | [Apache License, Version 2.0][23]              |
-| [Apache Maven Source Plugin][28]                        | [Apache License, Version 2.0][23]              |
-| [Apache Maven Javadoc Plugin][30]                       | [Apache License, Version 2.0][23]              |
+| [Maven Surefire Plugin][26]                             | [Apache License, Version 2.0][18]              |
+| [Apache Maven Source Plugin][28]                        | [Apache License, Version 2.0][18]              |
+| [Apache Maven Javadoc Plugin][30]                       | [Apache License, Version 2.0][18]              |
 | [Apache Maven GPG Plugin][32]                           | [Apache License, Version 2.0][10]              |
 | [org.sonatype.ossindex.maven:ossindex-maven-plugin][34] | [ASL2][10]                                     |
-| [Versions Maven Plugin][36]                             | [Apache License, Version 2.0][23]              |
-| [Apache Maven Enforcer Plugin][38]                      | [Apache License, Version 2.0][23]              |
+| [Versions Maven Plugin][36]                             | [Apache License, Version 2.0][18]              |
+| [Apache Maven Enforcer Plugin][38]                      | [Apache License, Version 2.0][18]              |
 | [Maven Deploy Plugin][40]                               | [The Apache Software License, Version 2.0][10] |
 | [Nexus Staging Maven Plugin][42]                        | [Eclipse Public License][43]                   |
 | [error-code-crawler-maven-plugin][44]                   | [MIT][4]                                       |
@@ -70,7 +70,8 @@
 [48]: http://zlika.github.io/reproducible-build-maven-plugin
 [54]: http://maven.apache.org/plugins/maven-jar-plugin/
 [1]: https://projects.eclipse.org/license/epl-2.0
-[23]: https://www.apache.org/licenses/LICENSE-2.0.txt
+[18]: https://www.apache.org/licenses/LICENSE-2.0.txt
+[17]: https://www.jqno.nl/equalsverifier
 [38]: https://maven.apache.org/enforcer/maven-enforcer-plugin/
 [3]: http://www.exasol.com
 [12]: https://www.eclipse.org/legal/epl-v20.html
@@ -80,7 +81,6 @@
 [0]: https://github.com/eclipse-ee4j/jsonp
 [15]: https://github.com/itsallcode/junit5-system-extensions
 [9]: https://github.com/skyscreamer/JSONassert
-[17]: http://www.jqno.nl/equalsverifier
 [28]: https://maven.apache.org/plugins/maven-source-plugin/
 [2]: https://projects.eclipse.org/license/secondary-gpl-2.0-cp
 [7]: http://hamcrest.org/JavaHamcrest/
