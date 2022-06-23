@@ -35,7 +35,7 @@ class RefreshRequestTest {
         final List<String> tables = Collections.emptyList();
         final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> new RefreshRequest(this.schemaMetadataInfo, tables));
-        assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-32"));
+        assertThat(exception.getMessage(), containsString("E-VSCOMJAVA-32"));
     }
 
     @Test

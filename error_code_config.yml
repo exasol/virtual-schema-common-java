@@ -1,4 +1,5 @@
 error-tags:
-  VS-COM-JAVA:
+  VSCOMJAVA:
     packages:
       - com.exasol
+    highest-index: 35

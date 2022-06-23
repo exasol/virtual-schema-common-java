@@ -14,7 +14,7 @@ class SqlFunctionAggregateListaggTest {
     void testIllegalTruncationType() {
         final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> SqlFunctionAggregateListagg.Behavior.TruncationType.parseTruncationType("SOME STRING"));
-        assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-25"));
+        assertThat(exception.getMessage(), containsString("E-VSCOMJAVA-25"));
     }
 
     @ParameterizedTest

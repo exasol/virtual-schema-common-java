@@ -294,7 +294,7 @@ public class SqlFunctionAggregateListagg extends SqlNode {
                 } else if (value.equalsIgnoreCase("WITHOUT COUNT")) {
                     return WITHOUT_COUNT;
                 } else {
-                    throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-25").message(
+                    throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-25").message(
                             "Illegal value {{value}} was set for a 'truncation type' parameter of the LISTAGG function. "
                                     + "Possible values: {{possibleValues|uq}}.")
                             .parameter("value", value)

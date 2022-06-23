@@ -87,33 +87,15 @@ public class TablesMetadataParser {
         return true;
     }
 
-    private DataType getDataType(final JsonObject dataType) {
-        final String typeName = dataType.getString("type").toUpperCase();
-        switch (typeName) {
-        case "DECIMAL":
-            return getDecimalDataType(dataType);
-        case "DOUBLE":
-            return getDoubleDataType();
-        case "VARCHAR":
-            return getVarcharDataType(dataType);
-        case "CHAR":
-            return getCharDataType(dataType);
-        case "BOOLEAN":
-            return getBooleanDataType();
-        case "DATE":
-            return getDateDataType();
-        case "TIMESTAMP":
-            return getTimestampDataType(dataType);
-        case "INTERVAL":
-            return getIntervalDataType(dataType);
-        case "GEOMETRY":
-            return getGeometryDataType(dataType);
-        case "HASHTYPE":
-            return getHashtypeDataType(dataType);
-        default:
-            throw new RequestParserException(ExaError.messageBuilder("E-VS-COM-JAVA-18")
-                    .message("Unsupported data type encountered: {{typeName}}.") //
-                    .parameter("typeName", typeName).toString());
+    private static DataType.ExaCharset charSetFromString(final String charset) {
+        if (charset.equals("UTF8")) {
+            return DataType.ExaCharset.UTF8;
+        } else if (charset.equals("ASCII")) {
+            return DataType.ExaCharset.ASCII;
+        } else {
+            throw new RequestParserException(ExaError.messageBuilder("E-VSCOMJAVA-19") //
+                    .message("Unsupported charset encountered: {{charset}}.") //
+                    .parameter("charset", charset).toString());
         }
     }
 
@@ -169,27 +151,45 @@ public class TablesMetadataParser {
         return DataType.createDecimal(dataType.getInt("precision"), dataType.getInt("scale"));
     }
 
-    private static DataType.ExaCharset charSetFromString(final String charset) {
-        if (charset.equals("UTF8")) {
-            return DataType.ExaCharset.UTF8;
-        } else if (charset.equals("ASCII")) {
-            return DataType.ExaCharset.ASCII;
-        } else {
-            throw new RequestParserException(ExaError.messageBuilder("E-VS-COM-JAVA-19") //
-                    .message("Unsupported charset encountered: {{charset}}.") //
-                    .parameter("charset", charset).toString());
-        }
-    }
-
     private static DataType.IntervalType intervalTypeFromString(final String intervalType) {
         if (intervalType.equals("DAY TO SECONDS")) {
             return DataType.IntervalType.DAY_TO_SECOND;
         } else if (intervalType.equals("YEAR TO MONTH")) {
             return DataType.IntervalType.YEAR_TO_MONTH;
         } else {
-            throw new RequestParserException(ExaError.messageBuilder("E-VS-COM-JAVA-20") //
+            throw new RequestParserException(ExaError.messageBuilder("E-VSCOMJAVA-20") //
                     .message("Unsupported interval data type encountered: {{intervalType}}.") //
                     .parameter("intervalType", intervalType).toString());
+        }
+    }
+
+    private DataType getDataType(final JsonObject dataType) {
+        final String typeName = dataType.getString("type").toUpperCase();
+        switch (typeName) {
+        case "DECIMAL":
+            return getDecimalDataType(dataType);
+        case "DOUBLE":
+            return getDoubleDataType();
+        case "VARCHAR":
+            return getVarcharDataType(dataType);
+        case "CHAR":
+            return getCharDataType(dataType);
+        case "BOOLEAN":
+            return getBooleanDataType();
+        case "DATE":
+            return getDateDataType();
+        case "TIMESTAMP":
+            return getTimestampDataType(dataType);
+        case "INTERVAL":
+            return getIntervalDataType(dataType);
+        case "GEOMETRY":
+            return getGeometryDataType(dataType);
+        case "HASHTYPE":
+            return getHashtypeDataType(dataType);
+        default:
+            throw new RequestParserException(ExaError.messageBuilder("E-VSCOMJAVA-18")
+                    .message("Unsupported data type encountered: {{typeName}}.") //
+                    .parameter("typeName", typeName).toString());
         }
     }
 }

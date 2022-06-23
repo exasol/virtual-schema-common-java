@@ -107,7 +107,7 @@ public final class SchemaMetadataJsonConverter {
         typeAsJson.add(TYPE_KEY, getExasolDataTypeName(dataType.getExaDataType()));
         switch (dataType.getExaDataType()) {
         case UNSUPPORTED:
-            throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-1")
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-1")
                     .message("Unsupported data type found trying to serialize schema metadata. {{report|uq}}")
                     .parameter("report", ErrorMessages.askForBugReport()).toString());
         case DECIMAL:
@@ -136,7 +136,7 @@ public final class SchemaMetadataJsonConverter {
         case BOOLEAN:
             break;
         default:
-            throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-2")
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-2")
                     .message("Unexpected data type {{dataType}} encountered while trying to serialize schema metadata.")
                     .parameter("dataType", dataType.getExaDataType()).toString());
         }
@@ -187,7 +187,7 @@ public final class SchemaMetadataJsonConverter {
         case ASCII:
             return "ASCII";
         default:
-            throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-3")
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-3")
                     .message("Unexpected charset {{charset}} encountered while trying to serialize character "
                             + "string type information. {{report|uq}}")
                     .parameter("charset", charset) //
@@ -202,7 +202,7 @@ public final class SchemaMetadataJsonConverter {
         case YEAR_TO_MONTH:
             return "YEAR TO MONTH";
         default:
-            throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-4").message(
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-4").message(
                     "Unexpected interval type {{intervalType}} encountered while trying to serialize an interval. {{report|uq}}")
                     .parameter("intervalType", intervalType).parameter("report", ErrorMessages.askForBugReport())
                     .toString());

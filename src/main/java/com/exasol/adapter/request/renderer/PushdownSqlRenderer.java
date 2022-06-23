@@ -33,7 +33,7 @@ public class PushdownSqlRenderer {
         try {
             return node.accept(new ConvertVisitor());
         } catch (final AdapterException exception) {
-            throw new IllegalStateException(ExaError.messageBuilder("F-VS-COM-JAVA-34")
+            throw new IllegalStateException(ExaError.messageBuilder("F-VSCOMJAVA-34")
                     .message("n unexpected error occurred during request serialization.").ticketMitigation().toString(),
                     exception);
         }
@@ -194,7 +194,7 @@ public class PushdownSqlRenderer {
             case YEAR_TO_MONTH:
                 return "YEAR TO MONTH";
             default:
-                throw new IllegalStateException(ExaError.messageBuilder("F-VS-COM-JAVA-35")
+                throw new IllegalStateException(ExaError.messageBuilder("F-VSCOMJAVA-35")
                         .message("Unimplemented interval type {{type}}.", intervalType).ticketMitigation().toString());
             }
         }
@@ -307,7 +307,7 @@ public class PushdownSqlRenderer {
             final List<Boolean> nullsLasts = sqlOrderBy.nullsLast();
             final int expressionsSize = expressions.size();
             if (expressionsSize != isAscendings.size() || expressionsSize != nullsLasts.size()) {
-                throw new IllegalStateException(ExaError.messageBuilder("F-VS-COM-JAVA-33").message(
+                throw new IllegalStateException(ExaError.messageBuilder("F-VSCOMJAVA-33").message(
                         "Can not render SqlOrderBy as JSON because it has an invalid format. The size of the three lists must be equal.")
                         .ticketMitigation().toString());
             }

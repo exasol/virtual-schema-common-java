@@ -52,7 +52,7 @@ public class RequestParser extends AbstractRequestParser {
         case REQUEST_TYPE_PUSHDOWN:
             return parsePushdownRequest(root, metadataInfo);
         default:
-            throw new RequestParserException(ExaError.messageBuilder("E-VS-COM-JAVA-16")
+            throw new RequestParserException(ExaError.messageBuilder("E-VSCOMJAVA-16")
                     .message("Could not parse unknown adapter request type identifier {{type}}.")
                     .mitigation("Check whether versions of Exasol database and Virtual Schema Adapter are compatible.")
                     .parameter("type", type).toString());

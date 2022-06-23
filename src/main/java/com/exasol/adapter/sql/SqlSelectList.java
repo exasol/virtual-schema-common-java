@@ -30,7 +30,7 @@ public final class SqlSelectList extends SqlExpressionList {
      */
     public static SqlSelectList createRegularSelectList(final List<SqlNode> selectList) {
         if ((selectList == null) || selectList.isEmpty()) {
-            throw new IllegalStateException(ExaError.messageBuilder("E-VS-COM-JAVA-28")
+            throw new IllegalStateException(ExaError.messageBuilder("E-VSCOMJAVA-28")
                     .message("Cannot create a select list, because the list of arguments is empty.").toString());
         }
         return new SqlSelectList(selectList);

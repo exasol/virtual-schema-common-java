@@ -136,7 +136,7 @@ public class SqlFunctionAggregateGroupConcat extends SqlNode {
 
         private void validateArgument(final SqlNode argument) {
             if (argument == null) {
-                throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-24")
+                throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-24")
                         .message("GROUP CONCAT function cannot have a null argument.").toString());
             }
         }

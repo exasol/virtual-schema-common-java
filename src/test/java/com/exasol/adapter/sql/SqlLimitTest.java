@@ -26,14 +26,14 @@ class SqlLimitTest {
     void testCreateAssertWithNegativeLimitThrowsException() {
         final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> this.sqlLimit = new SqlLimit(-1));
-        assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-27"));
+        assertThat(exception.getMessage(), containsString("E-VSCOMJAVA-27"));
     }
 
     @Test
     void testCreateAssertWithNegativeOffsetThrowsException() {
         final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> this.sqlLimit = new SqlLimit(1, -5));
-        assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-27"));
+        assertThat(exception.getMessage(), containsString("E-VSCOMJAVA-27"));
     }
 
     @Test

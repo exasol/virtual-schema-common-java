@@ -80,7 +80,7 @@ class AbstractRequestParser {
             stringValue = null;
             break;
         default:
-            throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-7")
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-7")
                     .message("Unable to parse adapter property value of type {{type}}. "
                             + "Supported types are strings, booleans, numbers and NULL.")
                     .parameter("type", type).toString());

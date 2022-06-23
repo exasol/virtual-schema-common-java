@@ -27,7 +27,7 @@ public class SqlLimit extends SqlNode {
      */
     public SqlLimit(final int limit, final int offset) {
         if (offset < 0 || limit < 0) {
-            throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-27")
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-27")
                     .message("SqlLimit constructor expects offset and limit values to be greater than zero")
                     .toString());
         }

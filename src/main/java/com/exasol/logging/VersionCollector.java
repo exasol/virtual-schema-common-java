@@ -45,7 +45,7 @@ public class VersionCollector {
         try {
             properties.load(stream);
         } catch (final IOException exception) {
-            throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-31")
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-31")
                     .message("Unable to read the version from the file: {{path}}.") //
                     .parameter("path", this.path).toString(), exception);
         }

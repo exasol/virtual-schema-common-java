@@ -51,7 +51,7 @@ public final class RefreshResponse extends AbstractResponse {
 
         private void validate(final SchemaMetadata schemaMetadata) {
             if (schemaMetadata == null) {
-                throw new ResponseException(ExaError.messageBuilder("E-VS-COM-JAVA-23") //
+                throw new ResponseException(ExaError.messageBuilder("E-VSCOMJAVA-23") //
                         .message("SchemaMetadata should be not null.")
                         .mitigation("Please, add SchemaMetadata using 'schemaMetadata(yourSchemaMetadata)' "
                                 + "method of this builder before you build.")

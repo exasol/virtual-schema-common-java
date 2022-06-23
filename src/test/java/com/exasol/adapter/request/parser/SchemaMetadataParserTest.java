@@ -67,6 +67,6 @@ class SchemaMetadataParserTest {
                 + "}";
         final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> parseSchemaMetadata(rawSchemaMetadata));
-        assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-17"));
+        assertThat(exception.getMessage(), containsString("E-VSCOMJAVA-17"));
     }
 }
