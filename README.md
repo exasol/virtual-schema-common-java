@@ -1,7 +1,7 @@
 # Common module of Exasol Virtual Schemas Adapters
 
 [![Build Status](https://github.com/exasol/virtual-schema-common-java/actions/workflows/ci-build.yml/badge.svg)](https://github.com/exasol/virtual-schema-common-java/actions/workflows/ci-build.yml)
-[![Maven Central](https://img.shields.io/maven-central/v/com.exasol/virtual-schema-common-java)](https://search.maven.org/artifact/com.exasol/virtual-schema-common-java)
+[![Maven Central – Common module of Exasol Virtual Schemas Adapters](https://img.shields.io/maven-central/v/com.exasol/virtual-schema-common-java)](https://search.maven.org/artifact/com.exasol/virtual-schema-common-java)
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Avirtual-schema-common-java&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.exasol%3Avirtual-schema-common-java)
 
