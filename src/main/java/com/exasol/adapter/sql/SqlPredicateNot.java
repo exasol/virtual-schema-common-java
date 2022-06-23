@@ -2,9 +2,17 @@ package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
 
+/**
+ * Not predicate.
+ */
 public class SqlPredicateNot extends SqlPredicate {
     private final SqlNode expression;
 
+    /**
+     * Instantiates a new Sql predicate not.
+     *
+     * @param expression the expression
+     */
     public SqlPredicateNot(final SqlNode expression) {
         super(Predicate.NOT);
         this.expression = expression;
@@ -13,8 +21,13 @@ public class SqlPredicateNot extends SqlPredicate {
         }
     }
 
+    /**
+     * Gets expression.
+     *
+     * @return the expression
+     */
     public SqlNode getExpression() {
-        return expression;
+        return this.expression;
     }
 
     @Override

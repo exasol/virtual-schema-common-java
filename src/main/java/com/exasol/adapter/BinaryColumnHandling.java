@@ -14,5 +14,12 @@ package com.exasol.adapter;
  * </dl>
  */
 public enum BinaryColumnHandling {
-    IGNORE, ENCODE_BASE64
+    /**
+     * Ignore binary column handling.
+     */
+    IGNORE,
+    /**
+     * Encode base 64 binary column handling.
+     */
+    ENCODE_BASE64
 }

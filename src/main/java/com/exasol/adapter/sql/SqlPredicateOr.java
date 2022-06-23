@@ -5,9 +5,17 @@ import java.util.List;
 
 import com.exasol.adapter.AdapterException;
 
+/**
+ * {@code OR} predicate.
+ */
 public class SqlPredicateOr extends SqlPredicate {
     private final List<SqlNode> orPredicates;
 
+    /**
+     * Instantiates a new Sql predicate or.
+     *
+     * @param orPredicates the or predicates
+     */
     public SqlPredicateOr(final List<SqlNode> orPredicates) {
         super(Predicate.OR);
         this.orPredicates = orPredicates;
@@ -18,11 +26,16 @@ public class SqlPredicateOr extends SqlPredicate {
         }
     }
 
+    /**
+     * Gets or predicates.
+     *
+     * @return the or predicates
+     */
     public List<SqlNode> getOrPredicates() {
-        if (orPredicates == null) {
+        if (this.orPredicates == null) {
             return Collections.emptyList();
         } else {
-            return Collections.unmodifiableList(orPredicates);
+            return Collections.unmodifiableList(this.orPredicates);
         }
     }
 

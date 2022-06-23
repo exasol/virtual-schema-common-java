@@ -1,13 +1,21 @@
 package com.exasol.adapter.sql;
 
-import com.exasol.adapter.AdapterException;
-
 import java.util.Collections;
 import java.util.List;
 
+import com.exasol.adapter.AdapterException;
+
+/**
+ * {@code AND} predicate.
+ */
 public class SqlPredicateAnd extends SqlPredicate {
     private final List<SqlNode> andedPredicates;
 
+    /**
+     * Instantiates a new Sql predicate and.
+     *
+     * @param andedPredicates the anded predicates
+     */
     public SqlPredicateAnd(final List<SqlNode> andedPredicates) {
         super(Predicate.AND);
         this.andedPredicates = andedPredicates;
@@ -18,11 +26,16 @@ public class SqlPredicateAnd extends SqlPredicate {
         }
     }
 
+    /**
+     * Gets anded predicates.
+     *
+     * @return the anded predicates
+     */
     public List<SqlNode> getAndedPredicates() {
-        if (andedPredicates == null) {
+        if (this.andedPredicates == null) {
             return Collections.emptyList();
         } else {
-            return Collections.unmodifiableList(andedPredicates);
+            return Collections.unmodifiableList(this.andedPredicates);
         }
     }
 

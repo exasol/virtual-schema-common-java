@@ -4,13 +4,26 @@ import java.util.Objects;
 
 import com.exasol.adapter.AdapterException;
 
+/**
+ * String literal.
+ */
 public class SqlLiteralString extends SqlNode {
     private final String value;
 
+    /**
+     * Instantiates a new Sql literal string.
+     *
+     * @param value the value
+     */
     public SqlLiteralString(final String value) {
         this.value = value;
     }
 
+    /**
+     * Gets value.
+     *
+     * @return the value
+     */
     public String getValue() {
         return this.value;
     }
@@ -26,19 +39,19 @@ public class SqlLiteralString extends SqlNode {
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(final Object object) {
         if (this == object) {
             return true;
         }
         if (!(object instanceof SqlLiteralString)) {
             return false;
         }
-        SqlLiteralString that = (SqlLiteralString) object;
-        return Objects.equals(value, that.value);
+        final SqlLiteralString that = (SqlLiteralString) object;
+        return Objects.equals(this.value, that.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(value);
+        return Objects.hash(this.value);
     }
 }

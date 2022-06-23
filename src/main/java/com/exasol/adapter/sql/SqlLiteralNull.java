@@ -2,6 +2,9 @@ package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
 
+/**
+ * {@code NULL} literal.
+ */
 public class SqlLiteralNull extends SqlNode {
     @Override
     public SqlNodeType getType() {

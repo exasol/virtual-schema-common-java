@@ -16,6 +16,12 @@ public class SqlFunctionScalar extends SqlNode {
     private final List<SqlNode> arguments;
     private final ScalarFunction function;
 
+    /**
+     * Instantiates a new Sql function scalar.
+     *
+     * @param function  the function
+     * @param arguments the arguments
+     */
     public SqlFunctionScalar(final ScalarFunction function, final List<SqlNode> arguments) {
         this.arguments = arguments;
         this.function = function;
@@ -26,6 +32,11 @@ public class SqlFunctionScalar extends SqlNode {
         }
     }
 
+    /**
+     * Gets arguments.
+     *
+     * @return the arguments
+     */
     public List<SqlNode> getArguments() {
         if (this.arguments == null) {
             return Collections.emptyList();
@@ -34,10 +45,20 @@ public class SqlFunctionScalar extends SqlNode {
         }
     }
 
+    /**
+     * Gets function.
+     *
+     * @return the function
+     */
     public ScalarFunction getFunction() {
         return this.function;
     }
 
+    /**
+     * Gets function name.
+     *
+     * @return the function name
+     */
     public String getFunctionName() {
         return this.function.name();
     }

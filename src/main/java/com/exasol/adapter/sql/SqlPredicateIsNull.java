@@ -2,9 +2,17 @@ package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
 
+/**
+ * The type Sql predicate is null.
+ */
 public class SqlPredicateIsNull extends SqlPredicate {
     private final SqlNode expression;
 
+    /**
+     * Instantiates a new Sql predicate is null.
+     *
+     * @param expression the expression
+     */
     public SqlPredicateIsNull(final SqlNode expression) {
         super(Predicate.IS_NULL);
         this.expression = expression;
@@ -13,8 +21,13 @@ public class SqlPredicateIsNull extends SqlPredicate {
         }
     }
 
+    /**
+     * Gets expression.
+     *
+     * @return the expression
+     */
     public SqlNode getExpression() {
-        return expression;
+        return this.expression;
     }
 
     @Override

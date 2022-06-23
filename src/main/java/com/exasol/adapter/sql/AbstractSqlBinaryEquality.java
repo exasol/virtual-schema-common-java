@@ -1,9 +1,19 @@
 package com.exasol.adapter.sql;
 
+/**
+ * Abstract base for comparison operators with two operands.
+ */
 public abstract class AbstractSqlBinaryEquality extends SqlPredicate {
     private final SqlNode left;
     private final SqlNode right;
 
+    /**
+     * Instantiates a new Abstract sql binary equality.
+     *
+     * @param function the function
+     * @param left     the left
+     * @param right    the right
+     */
     public AbstractSqlBinaryEquality(final Predicate function, final SqlNode left, final SqlNode right) {
         super(function);
         this.left = left;
@@ -16,10 +26,20 @@ public abstract class AbstractSqlBinaryEquality extends SqlPredicate {
         }
     }
 
+    /**
+     * Gets left.
+     *
+     * @return the left
+     */
     public SqlNode getLeft() {
         return this.left;
     }
 
+    /**
+     * Gets right.
+     *
+     * @return the right
+     */
     public SqlNode getRight() {
         return this.right;
     }

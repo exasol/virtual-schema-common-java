@@ -12,6 +12,13 @@ public class SchemaMetadataInfo {
     private final String adapterNotes;
     private final Map<String, String> properties;
 
+    /**
+     * Instantiates a new Schema metadata info.
+     *
+     * @param schemaName   the schema name
+     * @param adapterNotes the adapter notes
+     * @param properties   the properties
+     */
     public SchemaMetadataInfo(final String schemaName, final String adapterNotes,
             final Map<String, String> properties) {
         this.schemaName = schemaName;
@@ -19,10 +26,20 @@ public class SchemaMetadataInfo {
         this.properties = properties;
     }
 
+    /**
+     * Gets schema name.
+     *
+     * @return the schema name
+     */
     public String getSchemaName() {
         return this.schemaName;
     }
 
+    /**
+     * Gets adapter notes.
+     *
+     * @return the adapter notes
+     */
     public String getAdapterNotes() {
         return this.adapterNotes;
     }

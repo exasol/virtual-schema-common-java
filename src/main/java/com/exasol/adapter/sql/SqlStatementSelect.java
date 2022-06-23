@@ -42,54 +42,119 @@ public class SqlStatementSelect extends SqlStatement {
         }
     }
 
+    /**
+     * Has projection boolean.
+     *
+     * @return the boolean
+     */
     public boolean hasProjection() {
         return this.selectList != null;
     }
 
+    /**
+     * Has group by boolean.
+     *
+     * @return the boolean
+     */
     public boolean hasGroupBy() {
         return this.groupBy != null;
     }
 
+    /**
+     * Has having boolean.
+     *
+     * @return the boolean
+     */
     public boolean hasHaving() {
         return this.having != null;
     }
 
+    /**
+     * Has filter boolean.
+     *
+     * @return the boolean
+     */
     public boolean hasFilter() {
         return this.whereClause != null;
     }
 
+    /**
+     * Has order by boolean.
+     *
+     * @return the boolean
+     */
     public boolean hasOrderBy() {
         return this.orderBy != null;
     }
 
+    /**
+     * Has limit boolean.
+     *
+     * @return the boolean
+     */
     public boolean hasLimit() {
         return this.limit != null;
     }
 
+    /**
+     * Gets from clause.
+     *
+     * @return the from clause
+     */
     public SqlNode getFromClause() {
         return this.fromClause;
     }
 
+    /**
+     * Gets select list.
+     *
+     * @return the select list
+     */
     public SqlSelectList getSelectList() {
         return this.selectList;
     }
 
+    /**
+     * Gets where clause.
+     *
+     * @return the where clause
+     */
     public SqlNode getWhereClause() {
         return this.whereClause;
     }
 
+    /**
+     * Gets group by.
+     *
+     * @return the group by
+     */
     public SqlExpressionList getGroupBy() {
         return this.groupBy;
     }
 
+    /**
+     * Gets having.
+     *
+     * @return the having
+     */
     public SqlNode getHaving() {
         return this.having;
     }
 
+    /**
+     * Gets order by.
+     *
+     * @return the order by
+     */
     public SqlOrderBy getOrderBy() {
         return this.orderBy;
     }
 
+    /**
+     * Gets limit.
+     *
+     * @return the limit
+     */
     public SqlLimit getLimit() {
         return this.limit;
     }

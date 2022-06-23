@@ -5,6 +5,9 @@ import java.util.List;
 import com.exasol.adapter.AdapterException;
 import com.exasol.errorreporting.ExaError;
 
+/**
+ * This class represents a select list.
+ */
 public final class SqlSelectList extends SqlExpressionList {
     private SqlSelectList(final List<SqlNode> selectList) {
         super(selectList);
@@ -35,7 +38,7 @@ public final class SqlSelectList extends SqlExpressionList {
 
     /**
      * Check if this SELECT has an explicit columns list.
-     * 
+     *
      * @return true if has an explicit columns list
      */
     public boolean hasExplicitColumnsList() {

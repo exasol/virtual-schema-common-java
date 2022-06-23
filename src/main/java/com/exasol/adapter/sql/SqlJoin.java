@@ -2,12 +2,23 @@ package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
 
+/**
+ * {@code JOIN} node.
+ */
 public class SqlJoin extends SqlNode {
     private final SqlNode left;
     private final SqlNode right;
     private final SqlNode condition;
     private final JoinType joinType;
 
+    /**
+     * Instantiates a new Sql join.
+     *
+     * @param left      the left table
+     * @param right     the right table
+     * @param condition the join condition
+     * @param joinType  the join type
+     */
     public SqlJoin(final SqlNode left, final SqlNode right, final SqlNode condition, final JoinType joinType) {
         this.left = left;
         if (this.left != null) {
@@ -25,6 +36,8 @@ public class SqlJoin extends SqlNode {
     }
 
     /**
+     * Gets left table.
+     *
      * @return the left
      */
     public SqlNode getLeft() {
@@ -32,6 +45,8 @@ public class SqlJoin extends SqlNode {
     }
 
     /**
+     * Gets right table.
+     *
      * @return the right
      */
     public SqlNode getRight() {
@@ -39,6 +54,8 @@ public class SqlJoin extends SqlNode {
     }
 
     /**
+     * Gets condition.
+     *
      * @return the condition
      */
     public SqlNode getCondition() {
@@ -46,6 +63,8 @@ public class SqlJoin extends SqlNode {
     }
 
     /**
+     * Gets join type.
+     *
      * @return the joinType
      */
     public JoinType getJoinType() {

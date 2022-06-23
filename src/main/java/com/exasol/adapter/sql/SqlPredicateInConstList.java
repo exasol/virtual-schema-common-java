@@ -1,10 +1,13 @@
 package com.exasol.adapter.sql;
 
-import com.exasol.adapter.AdapterException;
-
 import java.util.Collections;
 import java.util.List;
 
+import com.exasol.adapter.AdapterException;
+
+/**
+ * The type Sql predicate in const list.
+ */
 public class SqlPredicateInConstList extends SqlPredicate {
     private final SqlNode expression;
     private final List<SqlNode> inArguments;
@@ -29,10 +32,20 @@ public class SqlPredicateInConstList extends SqlPredicate {
         }
     }
 
+    /**
+     * Gets expression.
+     *
+     * @return the expression
+     */
     public SqlNode getExpression() {
         return this.expression;
     }
 
+    /**
+     * Gets in arguments.
+     *
+     * @return the in arguments
+     */
     public List<SqlNode> getInArguments() {
         if (this.inArguments == null) {
             return Collections.emptyList();

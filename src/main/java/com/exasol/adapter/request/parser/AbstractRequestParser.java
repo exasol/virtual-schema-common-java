@@ -34,9 +34,15 @@ class AbstractRequestParser {
         return Json.createReader(rawRequestStream);
     }
 
-    protected Map<String, String> parseProperties(final JsonObject jsonSchemaMedadataInfo) {
-        if (jsonSchemaMedadataInfo.containsKey(PROPERTIES_KEY)) {
-            return convertJsonObjectsToPropertyMap(jsonSchemaMedadataInfo);
+    /**
+     * Read the properties from the schema metadata.
+     * 
+     * @param jsonSchemaMetadataInfo json schema metadata info
+     * @return parsed Properties.
+     */
+    protected Map<String, String> parseProperties(final JsonObject jsonSchemaMetadataInfo) {
+        if (jsonSchemaMetadataInfo.containsKey(PROPERTIES_KEY)) {
+            return convertJsonObjectsToPropertyMap(jsonSchemaMetadataInfo);
         } else {
             return Collections.emptyMap();
         }

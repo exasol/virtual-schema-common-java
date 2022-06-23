@@ -20,6 +20,14 @@ public class AdapterCallExecutor {
         this.adapter = adapter;
     }
 
+    /**
+     * Execute an adapter call.
+     * 
+     * @param request  request coming from the core database.
+     * @param metadata metadata
+     * @return response in a JSON format
+     * @throws AdapterException if something goes wrong
+     */
     @SuppressWarnings("squid:S2139")
     protected String executeAdapterCall(final AdapterRequest request, final ExaMetadata metadata)
             throws AdapterException {

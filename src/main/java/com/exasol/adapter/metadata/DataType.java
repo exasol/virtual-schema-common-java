@@ -6,8 +6,17 @@ import java.util.Objects;
  * Represents an EXASOL data type.
  */
 public class DataType {
+    /**
+     * The constant MAX_EXASOL_CHAR_SIZE.
+     */
     public static final int MAX_EXASOL_CHAR_SIZE = 2000;
+    /**
+     * The constant MAX_EXASOL_VARCHAR_SIZE.
+     */
     public static final int MAX_EXASOL_VARCHAR_SIZE = 2000000;
+    /**
+     * The constant MAX_EXASOL_DECIMAL_PRECISION.
+     */
     public static final int MAX_EXASOL_DECIMAL_PRECISION = 36;
 
     private ExaDataType exaDataType;
@@ -21,16 +30,31 @@ public class DataType {
     private int intervalFraction;
     private int byteSize;
 
-    public enum ExaDataType {
-        UNSUPPORTED, DECIMAL, DOUBLE, VARCHAR, CHAR, DATE, TIMESTAMP, BOOLEAN, GEOMETRY, INTERVAL, HASHTYPE
+    /**
+     * Get the precision
+     *
+     * @return precision precision
+     */
+    public int getPrecision() {
+        return this.precision;
     }
 
-    public enum ExaCharset {
-        UTF8, ASCII
+    /**
+     * Get the scale
+     *
+     * @return scale scale
+     */
+    public int getScale() {
+        return this.scale;
     }
 
-    public enum IntervalType {
-        DAY_TO_SECOND, YEAR_TO_MONTH
+    /**
+     * Get the size
+     *
+     * @return size size
+     */
+    public int getSize() {
+        return this.size;
     }
 
     private DataType() {
@@ -232,30 +256,78 @@ public class DataType {
     }
 
     /**
-     * Get the precision
+     * Get the Spatial Reference System Identifier (SRID) that was used to encode the geometry
      *
-     * @return precision
+     * @return SRID geometry srid
+     * @see <a href="https://en.wikipedia.org/wiki/Spatial_reference_system#Identifier">Spatial Reference System
+     *      Identifier (Wikipedia)</a>
      */
-    public int getPrecision() {
-        return this.precision;
+    public int getGeometrySrid() {
+        return this.geometrySrid;
     }
 
     /**
-     * Get the scale
-     *
-     * @return scale
+     * The enum Exa data type.
      */
-    public int getScale() {
-        return this.scale;
+    public enum ExaDataType {
+        /**
+         * Unsupported exa data type.
+         */
+        UNSUPPORTED,
+        /**
+         * Decimal exa data type.
+         */
+        DECIMAL,
+        /**
+         * Double exa data type.
+         */
+        DOUBLE,
+        /**
+         * Varchar exa data type.
+         */
+        VARCHAR,
+        /**
+         * Char exa data type.
+         */
+        CHAR,
+        /**
+         * Date exa data type.
+         */
+        DATE,
+        /**
+         * Timestamp exa data type.
+         */
+        TIMESTAMP,
+        /**
+         * Boolean exa data type.
+         */
+        BOOLEAN,
+        /**
+         * Geometry exa data type.
+         */
+        GEOMETRY,
+        /**
+         * Interval exa data type.
+         */
+        INTERVAL,
+        /**
+         * Hashtype exa data type.
+         */
+        HASHTYPE
     }
 
     /**
-     * Get the size
-     *
-     * @return size
+     * The enum Exa charset.
      */
-    public int getSize() {
-        return this.size;
+    public enum ExaCharset {
+        /**
+         * Utf 8 exa charset.
+         */
+        UTF8,
+        /**
+         * Ascii exa charset.
+         */
+        ASCII
     }
 
     /**
@@ -277,14 +349,17 @@ public class DataType {
     }
 
     /**
-     * Get the Spatial Reference System Identifier (SRID) that was used to encode the geometry
-     *
-     * @return SRID
-     * @see <a href="https://en.wikipedia.org/wiki/Spatial_reference_system#Identifier">Spatial Reference System
-     *      Identifier (Wikipedia)</a>
+     * The enum Interval type.
      */
-    public int getGeometrySrid() {
-        return this.geometrySrid;
+    public enum IntervalType {
+        /**
+         * Day to second interval type.
+         */
+        DAY_TO_SECOND,
+        /**
+         * Year to month interval type.
+         */
+        YEAR_TO_MONTH
     }
 
     /**

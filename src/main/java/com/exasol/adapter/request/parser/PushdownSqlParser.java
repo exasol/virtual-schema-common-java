@@ -17,6 +17,9 @@ import com.exasol.errorreporting.ExaError;
 
 import jakarta.json.*;
 
+/**
+ * Parser for the JSON query AST.
+ */
 public final class PushdownSqlParser extends AbstractRequestParser {
     private final List<TableMetadata> involvedTablesMetadata;
 
@@ -24,6 +27,12 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         this.involvedTablesMetadata = involvedTablesMetadata;
     }
 
+    /**
+     * Parse an expression.
+     * 
+     * @param expression JSON object of the SQL expression
+     * @return parsed expression
+     */
     public SqlNode parseExpression(final JsonObject expression) {
         final String typeName = expression.getString(TYPE, "");
         final SqlNodeType type = fromTypeName(typeName);

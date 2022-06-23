@@ -44,7 +44,7 @@ public class SqlFunctionAggregateListagg extends SqlNode {
 
     /**
      * Check if the listagg function contains distinct.
-     * 
+     *
      * @return true if contains distinct
      */
     public boolean hasDistinct() {
@@ -53,7 +53,7 @@ public class SqlFunctionAggregateListagg extends SqlNode {
 
     /**
      * Check if the listagg function contains an order by clause.
-     * 
+     *
      * @return true if contains an order by clause
      */
     public boolean hasOrderBy() {
@@ -72,8 +72,8 @@ public class SqlFunctionAggregateListagg extends SqlNode {
 
     /**
      * Get a function argument.
-     * 
-     * @return argument
+     *
+     * @return argument argument
      */
     public SqlNode getArgument() {
         return this.argument;
@@ -81,8 +81,8 @@ public class SqlFunctionAggregateListagg extends SqlNode {
 
     /**
      * Get a separator.
-     * 
-     * @return separator
+     *
+     * @return separator separator
      */
     public SqlLiteralString getSeparator() {
         return this.separator;
@@ -90,7 +90,7 @@ public class SqlFunctionAggregateListagg extends SqlNode {
 
     /**
      * Get an order by clause.
-     * 
+     *
      * @return order by clause
      */
     public SqlOrderBy getOrderBy() {
@@ -99,7 +99,7 @@ public class SqlFunctionAggregateListagg extends SqlNode {
 
     /**
      * Get an overflow behavior.
-     * 
+     *
      * @return overflow behavior
      */
     public Behavior getOverflowBehavior() {
@@ -108,7 +108,7 @@ public class SqlFunctionAggregateListagg extends SqlNode {
 
     /**
      * Get a function name.
-     * 
+     *
      * @return function name as a string
      */
     public String getFunctionName() {
@@ -124,6 +124,20 @@ public class SqlFunctionAggregateListagg extends SqlNode {
      */
     public static Builder builder(final SqlNode argument, final Behavior overflowBehavior) {
         return new Builder(argument, overflowBehavior);
+    }
+
+    /**
+     * Expected behavior types.
+     */
+    public enum BehaviorType {
+        /**
+         * Error behavior type.
+         */
+        ERROR,
+        /**
+         * Truncate behavior type.
+         */
+        TRUNCATE
     }
 
     /**
@@ -152,7 +166,7 @@ public class SqlFunctionAggregateListagg extends SqlNode {
 
         /**
          * Add a distinct.
-         * 
+         *
          * @param distinct distinct
          * @return builder instance for fluent programming
          */
@@ -185,13 +199,6 @@ public class SqlFunctionAggregateListagg extends SqlNode {
     }
 
     /**
-     * Expected behavior types.
-     */
-    public enum BehaviorType {
-        ERROR, TRUNCATE
-    }
-
-    /**
      * This class represent behavior of {@link SqlFunctionAggregateListagg}.
      */
     public static class Behavior {
@@ -200,36 +207,8 @@ public class SqlFunctionAggregateListagg extends SqlNode {
         private SqlLiteralString truncationFiller = null;
 
         /**
-         * Expected truncation types.
-         */
-        public enum TruncationType {
-            WITH_COUNT, WITHOUT_COUNT;
-
-            public static TruncationType parseTruncationType(final String value) {
-                if (value.equalsIgnoreCase("WITH COUNT")) {
-                    return WITH_COUNT;
-                } else if (value.equalsIgnoreCase("WITHOUT COUNT")) {
-                    return WITHOUT_COUNT;
-                } else {
-                    throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-25").message(
-                            "Illegal value {{value}} was set for a 'truncation type' parameter of the LISTAGG function. "
-                                    + "Possible values: {{possibleValues}}.")
-                            .parameter("value", value)
-                            .unquotedParameter("possibleValues", Arrays.stream(TruncationType.values())
-                                    .map(TruncationType::toString).collect(Collectors.joining(", ")))
-                            .toString());
-                }
-            }
-
-            @Override
-            public String toString() {
-                return name().replace("_", " ");
-            }
-        }
-
-        /**
          * Create a new instance of {@link Behavior}.
-         * 
+         *
          * @param behaviorType behavior type
          */
         public Behavior(final BehaviorType behaviorType) {
@@ -238,7 +217,7 @@ public class SqlFunctionAggregateListagg extends SqlNode {
 
         /**
          * Get a truncation type.
-         * 
+         *
          * @return truncation type
          */
         public String getTruncationType() {
@@ -247,7 +226,7 @@ public class SqlFunctionAggregateListagg extends SqlNode {
 
         /**
          * Set a truncation type.
-         * 
+         *
          * @param truncationType truncation type
          */
         public void setTruncationType(final TruncationType truncationType) {
@@ -256,11 +235,20 @@ public class SqlFunctionAggregateListagg extends SqlNode {
 
         /**
          * Get a truncation filler.
-         * 
+         *
          * @return truncation filler
          */
         public SqlLiteralString getTruncationFiller() {
             return this.truncationFiller;
+        }
+
+        /**
+         * Set a truncation filler.
+         *
+         * @param truncationFiller truncation filler
+         */
+        public void setTruncationFiller(final SqlLiteralString truncationFiller) {
+            this.truncationFiller = truncationFiller;
         }
 
         /**
@@ -273,21 +261,53 @@ public class SqlFunctionAggregateListagg extends SqlNode {
         }
 
         /**
-         * Set a truncation filler.
-         * 
-         * @param truncationFiller truncation filler
-         */
-        public void setTruncationFiller(final SqlLiteralString truncationFiller) {
-            this.truncationFiller = truncationFiller;
-        }
-
-        /**
          * Get a behavior type.
-         * 
+         *
          * @return behavior type
          */
         public BehaviorType getBehaviorType() {
             return this.behaviorType;
+        }
+
+        /**
+         * Expected truncation types.
+         */
+        public enum TruncationType {
+            /**
+             * With count truncation type.
+             */
+            WITH_COUNT,
+            /**
+             * Without count truncation type.
+             */
+            WITHOUT_COUNT;
+
+            /**
+             * Parse truncation type.
+             *
+             * @param value truncation type string
+             * @return the truncation type
+             */
+            public static TruncationType parseTruncationType(final String value) {
+                if (value.equalsIgnoreCase("WITH COUNT")) {
+                    return WITH_COUNT;
+                } else if (value.equalsIgnoreCase("WITHOUT COUNT")) {
+                    return WITHOUT_COUNT;
+                } else {
+                    throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-25").message(
+                            "Illegal value {{value}} was set for a 'truncation type' parameter of the LISTAGG function. "
+                                    + "Possible values: {{possibleValues|uq}}.")
+                            .parameter("value", value)
+                            .parameter("possibleValues", Arrays.stream(TruncationType.values())
+                                    .map(TruncationType::toString).collect(Collectors.joining(", ")))
+                            .toString());
+                }
+            }
+
+            @Override
+            public String toString() {
+                return name().replace("_", " ");
+            }
         }
     }
 }
