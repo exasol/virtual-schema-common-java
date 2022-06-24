@@ -1,4 +1,4 @@
-# Common module of Exasol Virtual Schemas Adapters 15.3.2, released 2022-06-23
+# Common module of Exasol Virtual Schemas Adapters 15.3.2, released 2022-06-24
 
 Code name: Dependency Updates
 
