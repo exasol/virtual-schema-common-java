@@ -17,6 +17,9 @@ import com.exasol.errorreporting.ExaError;
 
 import jakarta.json.*;
 
+/**
+ * Parser for the JSON query AST.
+ */
 public final class PushdownSqlParser extends AbstractRequestParser {
     private final List<TableMetadata> involvedTablesMetadata;
 
@@ -24,86 +27,15 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         this.involvedTablesMetadata = involvedTablesMetadata;
     }
 
-    public SqlNode parseExpression(final JsonObject expression) {
-        final String typeName = expression.getString(TYPE, "");
-        final SqlNodeType type = fromTypeName(typeName);
-        switch (type) {
-        case SELECT:
-            return parseSelect(expression);
-        case TABLE:
-            return parseTable(expression);
-        case JOIN:
-            return parseJoin(expression);
-        case COLUMN:
-            return parseColumn(expression);
-        case LITERAL_NULL:
-            return parseLiteralNull();
-        case LITERAL_BOOL:
-            return parseLiteralBool(expression);
-        case LITERAL_DATE:
-            return parseLiteralDate(expression);
-        case LITERAL_TIMESTAMP:
-            return parseLiteralTimestamp(expression);
-        case LITERAL_TIMESTAMPUTC:
-            return parseLiteralTimestamputc(expression);
-        case LITERAL_DOUBLE:
-            return parseLiteralDouble(expression);
-        case LITERAL_EXACTNUMERIC:
-            return parseLiteralExactNumeric(expression);
-        case LITERAL_STRING:
-            return parseLiteralString(expression);
-        case LITERAL_INTERVAL:
-            return parseLiteralInterval(expression);
-        case PREDICATE_AND:
-            return parsePredicateAnd(expression);
-        case PREDICATE_OR:
-            return parsePredicateOr(expression);
-        case PREDICATE_NOT:
-            return parsePredicateNot(expression);
-        case PREDICATE_EQUAL:
-            return parsePredicateEqual(expression);
-        case PREDICATE_NOTEQUAL:
-            return parsePredicateNotEqual(expression);
-        case PREDICATE_LESS:
-            return parsePredicateLess(expression);
-        case PREDICATE_LESSEQUAL:
-            return parsePredicateLessEqual(expression);
-        case PREDICATE_LIKE:
-            return parsePredicateLike(expression);
-        case PREDICATE_LIKE_REGEXP:
-            return parsePredicateLikeRegexp(expression);
-        case PREDICATE_BETWEEN:
-            return parsePredicateBetween(expression);
-        case PREDICATE_IN_CONSTLIST:
-            return parsePredicateInConstlist(expression);
-        case PREDICATE_IS_JSON:
-            return parsePredicateIsJson(expression);
-        case PREDICATE_IS_NOT_JSON:
-            return parsePredicateIsNotJson(expression);
-        case PREDICATE_IS_NULL:
-            return parsePredicateIsNull(expression);
-        case PREDICATE_IS_NOT_NULL:
-            return parsePredicateIsNotNull(expression);
-        case FUNCTION_SCALAR:
-            return parseFunctionScalar(expression);
-        case FUNCTION_SCALAR_EXTRACT:
-            return parseFunctionScalarExtract(expression);
-        case FUNCTION_SCALAR_CASE:
-            return parseFunctionScalarCase(expression);
-        case FUNCTION_SCALAR_CAST:
-            return parseFunctionScalarCast(expression);
-        case FUNCTION_SCALAR_JSON_VALUE:
-            return parseFunctionScalarJsonValue(expression);
-        case FUNCTION_AGGREGATE:
-            return parseFunctionAggregate(expression);
-        case FUNCTION_AGGREGATE_GROUP_CONCAT:
-            return parseFunctionAggregateGroupConcat(expression);
-        case FUNCTION_AGGREGATE_LISTAGG:
-            return parseFunctionAggregateListagg(expression);
-        default:
-            throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-8") //
-                    .message("Unknown node type: {{typeName}}") //
-                    .parameter("typeName", typeName).toString());
+    private static ExaCharset charSetFromString(final String charset) {
+        if (charset.equals("UTF8")) {
+            return ExaCharset.UTF8;
+        } else if (charset.equals("ASCII")) {
+            return ExaCharset.ASCII;
+        } else {
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-12")
+                    .message("Unsupported charset encountered: {{charset}}. Supported charsets are 'UTF8' and 'ASCII'.")
+                    .parameter("charset", charset).toString());
         }
     }
 
@@ -232,52 +164,105 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         }
     }
 
-    @SuppressWarnings("java:S1192") // tableName is duplicated but that's ok since it's a parameter
-    private List<SqlNode> collectAllInvolvedColumns(final SqlNode from) {
-        final List<SqlTable> involvedTables = collectInvolvedTables(from);
-        final Map<String, TableMetadata> tableMetadataMap = getInvolvedTablesMetadataMap();
-        final List<SqlNode> selectListElements = new ArrayList<>();
-        for (final SqlTable table : involvedTables) {
-            final String tableName = table.getName();
-            if (tableMetadataMap.containsKey(tableName)) {
-                final List<ColumnMetadata> columns = tableMetadataMap.get(tableName).getColumns();
-                for (int i = 0, columnsSize = columns.size(); i < columnsSize; ++i) {
-                    selectListElements.add(createColumn(i, table, columns.get(i)));
-                }
-            } else {
-                throw new IllegalStateException(ExaError.messageBuilder("E-VS-COM-JAVA-9").message(
-                        "Unable to find metadata for table \"{{tableName|uq}}\" during collecting involved columns.")
-                        .parameter("tableName", tableName).toString());
-            }
+    private static IntervalType intervalTypeFromString(final String intervalType) {
+        if (intervalType.equals("DAY TO SECONDS")) {
+            return IntervalType.DAY_TO_SECOND;
+        } else if (intervalType.equals("YEAR TO MONTH")) {
+            return IntervalType.YEAR_TO_MONTH;
+        } else {
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-13").message(
+                    "Unsupported interval data type encountered: {{intervalType}}. Supported intervals are 'DAY TO SECONDS' and 'YEAR TO MONTH'.")
+                    .parameter("intervalType", intervalType).toString());
         }
-        return selectListElements;
     }
 
     /**
-     * We collect all tables from the FROM clause in a given order. We need the tables, because the
-     * involvedTablesMetadata field doesn't contain `tableAlias` information.
+     * Parse an expression.
+     * 
+     * @param expression JSON object of the SQL expression
+     * @return parsed expression
      */
-    private List<SqlTable> collectInvolvedTables(final SqlNode from) {
-        final List<SqlTable> involvedTables = new ArrayList<>();
-        final Stack<SqlNode> nodes = new Stack<>();
-        nodes.add(from);
-        while (!nodes.isEmpty()) {
-            final SqlNode node = nodes.pop();
-            switch (node.getType()) {
-            case TABLE:
-                involvedTables.add((SqlTable) node);
-                break;
-            case JOIN:
-                nodes.add(((SqlJoin) node).getRight());
-                nodes.add(((SqlJoin) node).getLeft());
-                break;
-            default:
-                throw new IllegalStateException(ExaError.messageBuilder("E-VS-COM-JAVA-10")
-                        .message("Encountered illegal SqlNodeType during collection involved tables: {{nodeType}}")
-                        .parameter("nodeType", node.getType()).toString());
-            }
+    public SqlNode parseExpression(final JsonObject expression) {
+        final String typeName = expression.getString(TYPE, "");
+        final SqlNodeType type = fromTypeName(typeName);
+        switch (type) {
+        case SELECT:
+            return parseSelect(expression);
+        case TABLE:
+            return parseTable(expression);
+        case JOIN:
+            return parseJoin(expression);
+        case COLUMN:
+            return parseColumn(expression);
+        case LITERAL_NULL:
+            return parseLiteralNull();
+        case LITERAL_BOOL:
+            return parseLiteralBool(expression);
+        case LITERAL_DATE:
+            return parseLiteralDate(expression);
+        case LITERAL_TIMESTAMP:
+            return parseLiteralTimestamp(expression);
+        case LITERAL_TIMESTAMPUTC:
+            return parseLiteralTimestamputc(expression);
+        case LITERAL_DOUBLE:
+            return parseLiteralDouble(expression);
+        case LITERAL_EXACTNUMERIC:
+            return parseLiteralExactNumeric(expression);
+        case LITERAL_STRING:
+            return parseLiteralString(expression);
+        case LITERAL_INTERVAL:
+            return parseLiteralInterval(expression);
+        case PREDICATE_AND:
+            return parsePredicateAnd(expression);
+        case PREDICATE_OR:
+            return parsePredicateOr(expression);
+        case PREDICATE_NOT:
+            return parsePredicateNot(expression);
+        case PREDICATE_EQUAL:
+            return parsePredicateEqual(expression);
+        case PREDICATE_NOTEQUAL:
+            return parsePredicateNotEqual(expression);
+        case PREDICATE_LESS:
+            return parsePredicateLess(expression);
+        case PREDICATE_LESSEQUAL:
+            return parsePredicateLessEqual(expression);
+        case PREDICATE_LIKE:
+            return parsePredicateLike(expression);
+        case PREDICATE_LIKE_REGEXP:
+            return parsePredicateLikeRegexp(expression);
+        case PREDICATE_BETWEEN:
+            return parsePredicateBetween(expression);
+        case PREDICATE_IN_CONSTLIST:
+            return parsePredicateInConstlist(expression);
+        case PREDICATE_IS_JSON:
+            return parsePredicateIsJson(expression);
+        case PREDICATE_IS_NOT_JSON:
+            return parsePredicateIsNotJson(expression);
+        case PREDICATE_IS_NULL:
+            return parsePredicateIsNull(expression);
+        case PREDICATE_IS_NOT_NULL:
+            return parsePredicateIsNotNull(expression);
+        case FUNCTION_SCALAR:
+            return parseFunctionScalar(expression);
+        case FUNCTION_SCALAR_EXTRACT:
+            return parseFunctionScalarExtract(expression);
+        case FUNCTION_SCALAR_CASE:
+            return parseFunctionScalarCase(expression);
+        case FUNCTION_SCALAR_CAST:
+            return parseFunctionScalarCast(expression);
+        case FUNCTION_SCALAR_JSON_VALUE:
+            return parseFunctionScalarJsonValue(expression);
+        case FUNCTION_AGGREGATE:
+            return parseFunctionAggregate(expression);
+        case FUNCTION_AGGREGATE_GROUP_CONCAT:
+            return parseFunctionAggregateGroupConcat(expression);
+        case FUNCTION_AGGREGATE_LISTAGG:
+            return parseFunctionAggregateListagg(expression);
+        default:
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-8") //
+                    .message("Unknown node type: {{typeName}}") //
+                    .parameter("typeName", typeName).toString());
         }
-        return involvedTables;
     }
 
     private Map<String, TableMetadata> getInvolvedTablesMetadataMap() {
@@ -395,34 +380,25 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         return new SqlLiteralInterval(intervalVal, intervalType);
     }
 
-    private DataType getDataType(final JsonObject dataType) {
-        final String typeName = dataType.getString(TYPE).toUpperCase();
-        switch (typeName) {
-        case "DECIMAL":
-            return DataType.createDecimal(dataType.getInt(PRECISION), dataType.getInt(SCALE));
-        case "DOUBLE":
-            return DataType.createDouble();
-        case "VARCHAR":
-            return getVarchar(dataType);
-        case "CHAR":
-            return getChar(dataType);
-        case "BOOLEAN":
-            return DataType.createBool();
-        case "DATE":
-            return DataType.createDate();
-        case "TIMESTAMP":
-            return getTimestamp(dataType);
-        case "INTERVAL":
-            return getInterval(dataType);
-        case "GEOMETRY":
-            return getGeometry(dataType);
-        case "HASHTYPE":
-            return getHashtype(dataType);
-        default:
-            throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-11")
-                    .message("Unsupported data type encountered: {{typeName}}.") //
-                    .parameter("typeName", typeName).toString());
+    @SuppressWarnings("java:S1192") // tableName is duplicated but that's ok since it's a parameter
+    private List<SqlNode> collectAllInvolvedColumns(final SqlNode from) {
+        final List<SqlTable> involvedTables = collectInvolvedTables(from);
+        final Map<String, TableMetadata> tableMetadataMap = getInvolvedTablesMetadataMap();
+        final List<SqlNode> selectListElements = new ArrayList<>();
+        for (final SqlTable table : involvedTables) {
+            final String tableName = table.getName();
+            if (tableMetadataMap.containsKey(tableName)) {
+                final List<ColumnMetadata> columns = tableMetadataMap.get(tableName).getColumns();
+                for (int i = 0, columnsSize = columns.size(); i < columnsSize; ++i) {
+                    selectListElements.add(createColumn(i, table, columns.get(i)));
+                }
+            } else {
+                throw new IllegalStateException(ExaError.messageBuilder("E-VSCOMJAVA-9").message(
+                        "Unable to find metadata for table \"{{tableName|uq}}\" during collecting involved columns.")
+                        .parameter("tableName", tableName).toString());
+            }
         }
+        return selectListElements;
     }
 
     private DataType getHashtype(final JsonObject dataType) {
@@ -461,27 +437,60 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         return DataType.createGeometry(srid);
     }
 
-    private static ExaCharset charSetFromString(final String charset) {
-        if (charset.equals("UTF8")) {
-            return ExaCharset.UTF8;
-        } else if (charset.equals("ASCII")) {
-            return ExaCharset.ASCII;
-        } else {
-            throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-12")
-                    .message("Unsupported charset encountered: {{charset}}. Supported charsets are 'UTF8' and 'ASCII'.")
-                    .parameter("charset", charset).toString());
+    /**
+     * We collect all tables from the FROM clause in a given order. We need the tables, because the
+     * involvedTablesMetadata field doesn't contain `tableAlias` information.
+     */
+    private List<SqlTable> collectInvolvedTables(final SqlNode from) {
+        final List<SqlTable> involvedTables = new ArrayList<>();
+        final Stack<SqlNode> nodes = new Stack<>();
+        nodes.add(from);
+        while (!nodes.isEmpty()) {
+            final SqlNode node = nodes.pop();
+            switch (node.getType()) {
+            case TABLE:
+                involvedTables.add((SqlTable) node);
+                break;
+            case JOIN:
+                nodes.add(((SqlJoin) node).getRight());
+                nodes.add(((SqlJoin) node).getLeft());
+                break;
+            default:
+                throw new IllegalStateException(ExaError.messageBuilder("E-VSCOMJAVA-10")
+                        .message("Encountered illegal SqlNodeType during collection involved tables: {{nodeType}}")
+                        .parameter("nodeType", node.getType()).toString());
+            }
         }
+        return involvedTables;
     }
 
-    private static IntervalType intervalTypeFromString(final String intervalType) {
-        if (intervalType.equals("DAY TO SECONDS")) {
-            return IntervalType.DAY_TO_SECOND;
-        } else if (intervalType.equals("YEAR TO MONTH")) {
-            return IntervalType.YEAR_TO_MONTH;
-        } else {
-            throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-13").message(
-                    "Unsupported interval data type encountered: {{intervalType}}. Supported intervals are 'DAY TO SECONDS' and 'YEAR TO MONTH'.")
-                    .parameter("intervalType", intervalType).toString());
+    private DataType getDataType(final JsonObject dataType) {
+        final String typeName = dataType.getString(TYPE).toUpperCase();
+        switch (typeName) {
+        case "DECIMAL":
+            return DataType.createDecimal(dataType.getInt(PRECISION), dataType.getInt(SCALE));
+        case "DOUBLE":
+            return DataType.createDouble();
+        case "VARCHAR":
+            return getVarchar(dataType);
+        case "CHAR":
+            return getChar(dataType);
+        case "BOOLEAN":
+            return DataType.createBool();
+        case "DATE":
+            return DataType.createDate();
+        case "TIMESTAMP":
+            return getTimestamp(dataType);
+        case "INTERVAL":
+            return getInterval(dataType);
+        case "GEOMETRY":
+            return getGeometry(dataType);
+        case "HASHTYPE":
+            return getHashtype(dataType);
+        default:
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-11")
+                    .message("Unsupported data type encountered: {{typeName}}.") //
+                    .parameter("typeName", typeName).toString());
         }
     }
 
@@ -706,7 +715,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
                 return tableMetadata;
             }
         }
-        throw new IllegalStateException(ExaError.messageBuilder("E-VS-COM-JAVA-14").message(
+        throw new IllegalStateException(ExaError.messageBuilder("E-VSCOMJAVA-14").message(
                 "Could not find table metadata for involved table \"{{tableName|uq}}\". All involved tables: {{involvedTables}}")
                 .parameter("tableName", tableName).parameter("involvedTables", this.involvedTablesMetadata.toString())
                 .toString());
@@ -719,7 +728,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
                 return columnMetadata;
             }
         }
-        throw new IllegalStateException(ExaError.messageBuilder("E-VS-COM-JAVA-15").message(
+        throw new IllegalStateException(ExaError.messageBuilder("E-VSCOMJAVA-15").message(
                 "Could not find column metadata for involved table \"{{tableName|uq}}\" and column \"{{columnName|uq}}\". "
                         + "All involved tables: {{involvedTables}}.")
                 .parameter("tableName", tableName).parameter("columnName", columnName)

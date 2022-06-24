@@ -2,11 +2,21 @@ package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
 
+/**
+ * Between predicate.
+ */
 public class SqlPredicateBetween extends SqlPredicate {
     private final SqlNode expression;
     private final SqlNode betweenLeft;
     private final SqlNode betweenRight;
 
+    /**
+     * Instantiates a new Sql predicate between.
+     *
+     * @param expression   the expression
+     * @param betweenLeft  the between left
+     * @param betweenRight the between right
+     */
     public SqlPredicateBetween(final SqlNode expression, final SqlNode betweenLeft, final SqlNode betweenRight) {
         super(Predicate.BETWEEN);
         this.expression = expression;
@@ -23,16 +33,31 @@ public class SqlPredicateBetween extends SqlPredicate {
         }
     }
 
+    /**
+     * Gets expression.
+     *
+     * @return the expression
+     */
     public SqlNode getExpression() {
-        return expression;
+        return this.expression;
     }
 
+    /**
+     * Gets between left.
+     *
+     * @return the between left
+     */
     public SqlNode getBetweenLeft() {
-        return betweenLeft;
+        return this.betweenLeft;
     }
 
+    /**
+     * Gets between right.
+     *
+     * @return the between right
+     */
     public SqlNode getBetweenRight() {
-        return betweenRight;
+        return this.betweenRight;
     }
 
     @Override

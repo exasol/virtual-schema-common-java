@@ -29,7 +29,7 @@ class RequestParserTest {
         final String rawRequest = "{ \"type\" : \"UNKNOWN\", \"schemaMetadataInfo\" : { \"name\" : \"foo\" } }";
         final RequestParserException exception = assertThrows(RequestParserException.class,
                 () -> this.parser.parse(rawRequest));
-        assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-16"));
+        assertThat(exception.getMessage(), containsString("E-VSCOMJAVA-16"));
     }
 
     @Test
@@ -72,7 +72,7 @@ class RequestParserTest {
                 + "}";
         final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> this.parser.parse(rawRequest));
-        assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-7"));
+        assertThat(exception.getMessage(), containsString("E-VSCOMJAVA-7"));
     }
 
     @Test

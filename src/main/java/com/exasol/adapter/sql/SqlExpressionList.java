@@ -3,9 +3,17 @@ package com.exasol.adapter.sql;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * SQL expression list.
+ */
 public abstract class SqlExpressionList extends SqlNode {
     private final List<SqlNode> expressions;
 
+    /**
+     * Instantiates a new Sql expression list.
+     *
+     * @param expressions the expressions
+     */
     public SqlExpressionList(final List<SqlNode> expressions) {
         this.expressions = expressions;
         if (this.expressions != null) {
@@ -15,11 +23,16 @@ public abstract class SqlExpressionList extends SqlNode {
         }
     }
 
+    /**
+     * Gets expressions.
+     *
+     * @return the expressions
+     */
     public List<SqlNode> getExpressions() {
-        if (expressions == null) {
+        if (this.expressions == null) {
             return Collections.emptyList();
         } else {
-            return Collections.unmodifiableList(expressions);
+            return Collections.unmodifiableList(this.expressions);
         }
     }
 }

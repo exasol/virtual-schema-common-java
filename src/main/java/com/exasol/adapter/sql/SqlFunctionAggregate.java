@@ -1,9 +1,9 @@
 package com.exasol.adapter.sql;
 
-import com.exasol.adapter.AdapterException;
-
 import java.util.Collections;
 import java.util.List;
+
+import com.exasol.adapter.AdapterException;
 
 /**
  * A simple aggregate function with a name and zero or more arguments. Distinct is also allowed.
@@ -17,6 +17,13 @@ public class SqlFunctionAggregate extends SqlNode {
     private final boolean distinct;
     private final List<SqlNode> arguments;
 
+    /**
+     * Instantiates a new Sql function aggregate.
+     *
+     * @param function  the function
+     * @param arguments the arguments
+     * @param distinct  the distinct
+     */
     public SqlFunctionAggregate(final AggregateFunction function, final List<SqlNode> arguments,
             final boolean distinct) {
         this.arguments = arguments;
@@ -29,24 +36,44 @@ public class SqlFunctionAggregate extends SqlNode {
         }
     }
 
+    /**
+     * Gets arguments.
+     *
+     * @return the arguments
+     */
     public List<SqlNode> getArguments() {
-        if (arguments == null) {
+        if (this.arguments == null) {
             return Collections.emptyList();
         } else {
-            return Collections.unmodifiableList(arguments);
+            return Collections.unmodifiableList(this.arguments);
         }
     }
 
+    /**
+     * Gets function.
+     *
+     * @return the function
+     */
     public AggregateFunction getFunction() {
-        return function;
+        return this.function;
     }
 
+    /**
+     * Gets function name.
+     *
+     * @return the function name
+     */
     public String getFunctionName() {
-        return function.toString();
+        return this.function.toString();
     }
 
+    /**
+     * Has distinct boolean.
+     *
+     * @return the boolean
+     */
     public boolean hasDistinct() {
-        return distinct;
+        return this.distinct;
     }
 
     @Override

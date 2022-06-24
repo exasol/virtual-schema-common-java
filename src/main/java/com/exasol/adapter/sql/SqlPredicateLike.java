@@ -2,15 +2,31 @@ package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
 
+/**
+ * {@code LIKE} predicate
+ */
 public class SqlPredicateLike extends SqlPredicate {
     private final SqlNode left;
     private final SqlNode pattern;
     private final SqlNode escapeChar;
 
+    /**
+     * Instantiates a new Sql predicate like.
+     *
+     * @param left    the left
+     * @param pattern the pattern
+     */
     public SqlPredicateLike(final SqlNode left, final SqlNode pattern) {
         this(left, pattern, null);
     }
 
+    /**
+     * Instantiates a new Sql predicate like.
+     *
+     * @param left       the left
+     * @param pattern    the pattern
+     * @param escapeChar the escape char
+     */
     public SqlPredicateLike(final SqlNode left, final SqlNode pattern, final SqlNode escapeChar) {
         super(Predicate.LIKE);
         this.left = left;
@@ -27,14 +43,29 @@ public class SqlPredicateLike extends SqlPredicate {
         }
     }
 
+    /**
+     * Gets left.
+     *
+     * @return the left
+     */
     public SqlNode getLeft() {
         return this.left;
     }
 
+    /**
+     * Gets pattern.
+     *
+     * @return the pattern
+     */
     public SqlNode getPattern() {
         return this.pattern;
     }
 
+    /**
+     * Gets escape char.
+     *
+     * @return the escape char
+     */
     public SqlNode getEscapeChar() {
         return this.escapeChar;
     }

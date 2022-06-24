@@ -4,10 +4,102 @@ package com.exasol.adapter.sql;
  * List of all aggregation functions supported by EXASOL.
  */
 public enum AggregateFunction {
-    COUNT, SUM, MIN, MAX, AVG, MEDIAN, FIRST_VALUE, LAST_VALUE, STDDEV, STDDEV_POP, STDDEV_SAMP, VARIANCE, VAR_POP,
-    VAR_SAMP, GROUP_CONCAT(false, "GROUP_CONCAT"), APPROXIMATE_COUNT_DISTINCT,
-    GEO_INTERSECTION_AGGREGATE(true, "ST_INTERSECTION"), GEO_UNION_AGGREGATE(true, "ST_UNION"), ST_INTERSECTION,
-    ST_UNION, MUL, EVERY, SOME, LISTAGG(false, "LISTAGG");
+    /**
+     * Count aggregate function.
+     */
+    COUNT,
+    /**
+     * Sum aggregate function.
+     */
+    SUM,
+    /**
+     * Min aggregate function.
+     */
+    MIN,
+    /**
+     * Max aggregate function.
+     */
+    MAX,
+    /**
+     * Avg aggregate function.
+     */
+    AVG,
+    /**
+     * Median aggregate function.
+     */
+    MEDIAN,
+    /**
+     * First value aggregate function.
+     */
+    FIRST_VALUE,
+    /**
+     * Last value aggregate function.
+     */
+    LAST_VALUE,
+    /**
+     * Stddev aggregate function.
+     */
+    STDDEV,
+    /**
+     * Stddev pop aggregate function.
+     */
+    STDDEV_POP,
+    /**
+     * Stddev samp aggregate function.
+     */
+    STDDEV_SAMP,
+    /**
+     * Variance aggregate function.
+     */
+    VARIANCE,
+    /**
+     * Var pop aggregate function.
+     */
+    VAR_POP,
+    /**
+     * Var samp aggregate function.
+     */
+    VAR_SAMP,
+    /**
+     * Group concat aggregate function.
+     */
+    GROUP_CONCAT(false, "GROUP_CONCAT"),
+    /**
+     * Approximate count distinct aggregate function.
+     */
+    APPROXIMATE_COUNT_DISTINCT,
+    /**
+     * Geo intersection aggregate aggregate function.
+     */
+    GEO_INTERSECTION_AGGREGATE(true, "ST_INTERSECTION"),
+    /**
+     * Geo union aggregate aggregate function.
+     */
+    GEO_UNION_AGGREGATE(true, "ST_UNION"),
+    /**
+     * St intersection aggregate function.
+     */
+    ST_INTERSECTION,
+    /**
+     * St union aggregate function.
+     */
+    ST_UNION,
+    /**
+     * Mul aggregate function.
+     */
+    MUL,
+    /**
+     * Every aggregate function.
+     */
+    EVERY,
+    /**
+     * Some aggregate function.
+     */
+    SOME,
+    /**
+     * Listagg aggregate function.
+     */
+    LISTAGG(false, "LISTAGG");
 
     private final boolean simple;
     private String realFunctionName;
@@ -33,8 +125,8 @@ public enum AggregateFunction {
 
     @Override
     public String toString() {
-        if (realFunctionName != null && !realFunctionName.isBlank()) {
-            return realFunctionName;
+        if (this.realFunctionName != null && !this.realFunctionName.isBlank()) {
+            return this.realFunctionName;
         } else {
             return name();
         }

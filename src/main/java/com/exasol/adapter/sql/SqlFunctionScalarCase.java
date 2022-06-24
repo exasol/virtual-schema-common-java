@@ -1,15 +1,25 @@
 package com.exasol.adapter.sql;
 
-import com.exasol.adapter.AdapterException;
-
 import java.util.Collections;
 import java.util.List;
 
+import com.exasol.adapter.AdapterException;
+
+/**
+ * {@code CASE} function.
+ */
 public class SqlFunctionScalarCase extends SqlNode {
     private final List<SqlNode> arguments;
     private final List<SqlNode> results;
     private final SqlNode basis;
 
+    /**
+     * Instantiates a new SQL function scalar case.
+     *
+     * @param arguments the arguments
+     * @param results   the results
+     * @param basis     the basis
+     */
     public SqlFunctionScalarCase(final List<SqlNode> arguments, final List<SqlNode> results, final SqlNode basis) {
         this.arguments = arguments;
         this.results = results;
@@ -29,24 +39,39 @@ public class SqlFunctionScalarCase extends SqlNode {
         }
     }
 
+    /**
+     * Gets arguments.
+     *
+     * @return the arguments
+     */
     public List<SqlNode> getArguments() {
-        if (arguments == null) {
+        if (this.arguments == null) {
             return Collections.emptyList();
         } else {
-            return Collections.unmodifiableList(arguments);
+            return Collections.unmodifiableList(this.arguments);
         }
     }
 
+    /**
+     * Gets results.
+     *
+     * @return the results
+     */
     public List<SqlNode> getResults() {
-        if (results == null) {
+        if (this.results == null) {
             return Collections.emptyList();
         } else {
-            return Collections.unmodifiableList(results);
+            return Collections.unmodifiableList(this.results);
         }
     }
 
+    /**
+     * Gets basis.
+     *
+     * @return the basis
+     */
     public SqlNode getBasis() {
-        return basis;
+        return this.basis;
     }
 
     @Override

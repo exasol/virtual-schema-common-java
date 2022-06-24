@@ -1160,7 +1160,7 @@ class PushDownSqlParserTest {
         final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserTableWithoutColumns();
         final IllegalStateException exception = assertThrows(IllegalStateException.class,
                 () -> pushdownSqlParser.parseExpression(jsonObject));
-        assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-28"));
+        assertThat(exception.getMessage(), containsString("E-VSCOMJAVA-28"));
     }
 
     @Test
@@ -1172,7 +1172,7 @@ class PushDownSqlParserTest {
         final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserTableWithoutColumns();
         final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> pushdownSqlParser.parseExpression(jsonObject));
-        assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-8"));
+        assertThat(exception.getMessage(), containsString("E-VSCOMJAVA-8"));
     }
 
     private PushdownSqlParser getCustomPushdownSqlParserTableWithoutColumns() {

@@ -99,6 +99,6 @@ class SqlFunctionAggregateGroupConcatTest {
         final SqlFunctionAggregateGroupConcat.Builder builder = SqlFunctionAggregateGroupConcat.builder(null)
                 .distinct(TEST_DISTINCT).orderBy(this.sqlOrderBy).separator(new SqlLiteralString(TEST_SEPARATOR));
         final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, builder::build);
-        assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-24"));
+        assertThat(exception.getMessage(), containsString("E-VSCOMJAVA-24"));
     }
 }

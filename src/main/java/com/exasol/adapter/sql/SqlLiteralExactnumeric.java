@@ -4,16 +4,25 @@ import java.math.BigDecimal;
 
 import com.exasol.adapter.AdapterException;
 
+/**
+ * Literal for decimal types.
+ */
 public class SqlLiteralExactnumeric extends SqlNode {
     private final BigDecimal value;
 
+    /**
+     * Instantiates a new Sql literal exactnumeric.
+     *
+     * @param value exact numeric value
+     */
     public SqlLiteralExactnumeric(final BigDecimal value) {
         this.value = value;
     }
 
     /**
+     * Get the value.
      * 
-     * @return  underlying exactnumeric value as a BigDecimal
+     * @return underlying exactnumeric value as a BigDecimal
      */
     public BigDecimal getValue() {
         return this.value;

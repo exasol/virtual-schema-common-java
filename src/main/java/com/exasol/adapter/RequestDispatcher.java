@@ -92,6 +92,6 @@ public final class RequestDispatcher {
         final ServiceLoader<AdapterFactory> adapterFactoryLoader = ServiceLoader.load(AdapterFactory.class);
         final Optional<AdapterFactory> adapterFactory = adapterFactoryLoader.findFirst();
         return adapterFactory.orElseThrow(() -> new NoSuchElementException(
-                ExaError.messageBuilder("E-VS-COM-JAVA-29").message("No AdapterFactory was found.").toString()));
+                ExaError.messageBuilder("E-VSCOMJAVA-29").message("No AdapterFactory was found.").toString()));
     }
 }

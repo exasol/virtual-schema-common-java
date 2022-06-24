@@ -2,14 +2,23 @@ package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
 
+/**
+ * Double literal.
+ */
 public class SqlLiteralDouble extends SqlNode {
     private final double value;
 
+    /**
+     * Instantiates a new Sql literal double.
+     *
+     * @param value double value
+     */
     public SqlLiteralDouble(final double value) {
         this.value = value;
     }
 
     /**
+     * Get the value.
      * 
      * @return underlying value as double
      */

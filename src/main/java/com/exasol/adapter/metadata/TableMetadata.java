@@ -11,6 +11,14 @@ public class TableMetadata {
     private final List<ColumnMetadata> columns;
     private final String comment;
 
+    /**
+     * Instantiates a new Table metadata.
+     *
+     * @param name         the name
+     * @param adapterNotes the adapter notes
+     * @param columns      the columns
+     * @param comment      the comment
+     */
     public TableMetadata(final String name, final String adapterNotes, final List<ColumnMetadata> columns,
             final String comment) {
         this.name = name;
@@ -47,26 +55,56 @@ public class TableMetadata {
                 .toString();
     }
 
+    /**
+     * Gets name.
+     *
+     * @return the name
+     */
     public String getName() {
         return this.name;
     }
 
+    /**
+     * Gets adapter notes.
+     *
+     * @return the adapter notes
+     */
     public String getAdapterNotes() {
         return this.adapterNotes;
     }
 
+    /**
+     * Gets columns.
+     *
+     * @return the columns
+     */
     public List<ColumnMetadata> getColumns() {
         return this.columns;
     }
 
+    /**
+     * Gets comment.
+     *
+     * @return the comment
+     */
     public String getComment() {
         return this.comment;
     }
 
+    /**
+     * Has comment boolean.
+     *
+     * @return the boolean
+     */
     public boolean hasComment() {
         return (this.comment != null) && !this.comment.isEmpty();
     }
 
+    /**
+     * Has adapter note boolean.
+     *
+     * @return the boolean
+     */
     public boolean hasAdapterNote() {
         return (this.adapterNotes != null) && !this.adapterNotes.isEmpty();
     }

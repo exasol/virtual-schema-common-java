@@ -75,6 +75,12 @@ public final class LoggingConfiguration {
         }
     }
 
+    /**
+     * Create a logging config from properties.
+     *
+     * @param properties properties map
+     * @return read logging configuration
+     */
     public static LoggingConfiguration parseFromPropertiesWithDebugAddressGiven(final Map<String, String> properties) {
         final String remoteLoggingAddress = properties.get(DEBUG_ADDRESS_PROPERTY);
         if (remoteLoggingAddress.contains(":")) {
@@ -102,6 +108,12 @@ public final class LoggingConfiguration {
         return level;
     }
 
+    /**
+     * Create local logging configuration logging configuration.
+     *
+     * @param properties the properties
+     * @return the logging configuration
+     */
     public static LoggingConfiguration createLocalLoggingConfiguration(final Map<String, String> properties) {
         return new LoggingConfiguration(parseLogLevel(properties), false, null, 0);
     }

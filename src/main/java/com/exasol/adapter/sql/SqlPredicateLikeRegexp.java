@@ -2,10 +2,19 @@ package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
 
+/**
+ * {@code REGEXP_LIKE} predicate.
+ */
 public class SqlPredicateLikeRegexp extends SqlPredicate {
     private final SqlNode left;
     private final SqlNode pattern;
 
+    /**
+     * Instantiates a new Sql predicate like regexp.
+     *
+     * @param left    the left predicate
+     * @param pattern the pattern
+     */
     public SqlPredicateLikeRegexp(final SqlNode left, final SqlNode pattern) {
         super(Predicate.REGEXP_LIKE);
         this.left = left;
@@ -18,12 +27,22 @@ public class SqlPredicateLikeRegexp extends SqlPredicate {
         }
     }
 
+    /**
+     * Gets left.
+     *
+     * @return the left
+     */
     public SqlNode getLeft() {
-        return left;
+        return this.left;
     }
 
+    /**
+     * Gets pattern.
+     *
+     * @return the pattern
+     */
     public SqlNode getPattern() {
-        return pattern;
+        return this.pattern;
     }
 
     @Override

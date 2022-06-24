@@ -144,6 +144,6 @@ class SchemaMetadataJsonConverterTest {
         when(dataType.getExaDataType()).thenReturn(DataType.ExaDataType.UNSUPPORTED);
         final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> CONVERTER.convertType(dataType));
-        assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-1"));
+        assertThat(exception.getMessage(), containsString("E-VSCOMJAVA-1"));
     }
 }

@@ -11,16 +11,49 @@ import java.util.stream.Collectors;
  * type an can therefore not be covered in the common module.
  */
 public class AdapterProperties extends AbstractAdapterProperties {
+    /**
+     * The constant TABLE_FILTER_PROPERTY.
+     */
     public static final String TABLE_FILTER_PROPERTY = "TABLE_FILTER";
+    /**
+     * The constant CATALOG_NAME_PROPERTY.
+     */
     public static final String CATALOG_NAME_PROPERTY = "CATALOG_NAME";
+    /**
+     * The constant SCHEMA_NAME_PROPERTY.
+     */
     public static final String SCHEMA_NAME_PROPERTY = "SCHEMA_NAME";
+    /**
+     * The constant CONNECTION_NAME_PROPERTY.
+     */
     public static final String CONNECTION_NAME_PROPERTY = "CONNECTION_NAME";
+    /**
+     * The constant DEBUG_ADDRESS_PROPERTY.
+     */
     public static final String DEBUG_ADDRESS_PROPERTY = "DEBUG_ADDRESS";
+    /**
+     * The constant LOG_LEVEL_PROPERTY.
+     */
     public static final String LOG_LEVEL_PROPERTY = "LOG_LEVEL";
+    /**
+     * The constant EXCLUDED_CAPABILITIES_PROPERTY.
+     */
     public static final String EXCLUDED_CAPABILITIES_PROPERTY = "EXCLUDED_CAPABILITIES";
+    /**
+     * The constant EXCEPTION_HANDLING_PROPERTY.
+     */
     public static final String EXCEPTION_HANDLING_PROPERTY = "EXCEPTION_HANDLING";
+    /**
+     * The constant IGNORE_ERRORS_PROPERTY.
+     */
     public static final String IGNORE_ERRORS_PROPERTY = "IGNORE_ERRORS";
+    /**
+     * The constant IS_LOCAL_PROPERTY.
+     */
     public static final String IS_LOCAL_PROPERTY = "IS_LOCAL";
+    /**
+     * The constant BINARY_COLUMN_HANDLING_PROPERTY.
+     */
     public static final String BINARY_COLUMN_HANDLING_PROPERTY = "BINARY_COLUMN_HANDLING";
 
     /**

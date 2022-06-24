@@ -1,16 +1,17 @@
 package com.exasol.adapter.response;
 
-import com.exasol.adapter.metadata.SchemaMetadata;
-import com.exasol.adapter.response.converter.ResponseException;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import com.exasol.adapter.metadata.SchemaMetadata;
+import com.exasol.adapter.response.converter.ResponseException;
 
 @ExtendWith(MockitoExtension.class)
 class CreateVirtualSchemaResponseTest {
@@ -27,6 +28,6 @@ class CreateVirtualSchemaResponseTest {
     void testCreateVirtualSchemaResponseThrowsException() {
         final ResponseException exception = assertThrows(ResponseException.class,
                 CreateVirtualSchemaResponse.builder()::build);
-        assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-21"));
+        assertThat(exception.getMessage(), containsString("E-VSCOMJAVA-21"));
     }
 }

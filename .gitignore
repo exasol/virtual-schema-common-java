@@ -20,3 +20,14 @@ dependency-reduced-pom.xml
 Scripts
 .dbeaver*
 pom.xml.versionsBackup
+local
+**/*.log
+.directory
+venv/
+~*
+*.lock
+*.bak
+*.orig
+*.old
+*.md.html
+*.flattened-pom.xml

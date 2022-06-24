@@ -34,7 +34,7 @@ public class RefreshRequest extends AbstractAdapterRequest {
     public RefreshRequest(final SchemaMetadataInfo schemaMetadataInfo, final List<String> tables) {
         super(schemaMetadataInfo, AdapterRequestType.REFRESH);
         if ((tables == null) || tables.isEmpty()) {
-            throw new IllegalArgumentException(ExaError.messageBuilder("E-VS-COM-JAVA-32")
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-32")
                     .message("The RefreshRequest constructor expects a list of requested tables, "
                             + "but the list is currently empty.")
                     .toString());

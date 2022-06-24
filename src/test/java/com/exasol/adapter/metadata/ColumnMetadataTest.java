@@ -35,21 +35,21 @@ class ColumnMetadataTest {
     void testBuildWithoutNameThrowsException() {
         final ColumnMetadata.Builder builder = ColumnMetadata.builder().type(DataType.createBool());
         final IllegalStateException exception = assertThrows(IllegalStateException.class, builder::build);
-        assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-5"));
+        assertThat(exception.getMessage(), containsString("E-VSCOMJAVA-5"));
     }
 
     @Test
     void testBuildWithEmptyNameThrowsException() {
         final ColumnMetadata.Builder builder = ColumnMetadata.builder().name("").type(DataType.createBool());
         final IllegalStateException exception = assertThrows(IllegalStateException.class, builder::build);
-        assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-5"));
+        assertThat(exception.getMessage(), containsString("E-VSCOMJAVA-5"));
     }
 
     @Test
     void testBuildWithoutTypeThrowsException() {
         final ColumnMetadata.Builder builder = ColumnMetadata.builder().name("The_column_name");
         final IllegalStateException exception = assertThrows(IllegalStateException.class, builder::build);
-        assertThat(exception.getMessage(), containsString("E-VS-COM-JAVA-6"));
+        assertThat(exception.getMessage(), containsString("E-VSCOMJAVA-6"));
     }
 
     @Test

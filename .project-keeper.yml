@@ -1,0 +1,7 @@
+sources:
+  - type: maven
+    path: pom.xml
+    modules:
+      - maven_central
+linkReplacements:
+  - "LICENSE-exasol-script-api.txt|https://opensource.org/licenses/MIT"

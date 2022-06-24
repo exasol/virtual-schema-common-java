@@ -10,16 +10,32 @@ public class SchemaMetadata {
     private final String adapterNotes;
     private final List<TableMetadata> tables;
 
+    /**
+     * Instantiates a new Schema metadata.
+     *
+     * @param adapterNotes the adapter notes
+     * @param tables       the tables
+     */
     public SchemaMetadata(final String adapterNotes, final List<TableMetadata> tables) {
         this.adapterNotes = adapterNotes;
         this.tables = tables;
     }
 
+    /**
+     * Gets adapter notes.
+     *
+     * @return the adapter notes
+     */
     public String getAdapterNotes() {
-        return adapterNotes;
+        return this.adapterNotes;
     }
 
+    /**
+     * Gets tables.
+     *
+     * @return the tables
+     */
     public List<TableMetadata> getTables() {
-        return tables;
+        return this.tables;
     }
 }

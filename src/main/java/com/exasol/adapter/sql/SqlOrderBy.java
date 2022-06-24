@@ -1,15 +1,25 @@
 package com.exasol.adapter.sql;
 
-import com.exasol.adapter.AdapterException;
-
 import java.util.Collections;
 import java.util.List;
 
+import com.exasol.adapter.AdapterException;
+
+/**
+ * {@code ORDER BY} clause.
+ */
 public class SqlOrderBy extends SqlNode {
     private final List<SqlNode> expressions;
     private final List<Boolean> isAsc;
     private final List<Boolean> nullsLast;
 
+    /**
+     * Instantiates a new Sql order by.
+     *
+     * @param expressions the expressions
+     * @param isAsc       the is asc
+     * @param nullsFirst  the nulls first
+     */
     public SqlOrderBy(final List<SqlNode> expressions, final List<Boolean> isAsc, final List<Boolean> nullsFirst) {
         this.expressions = expressions;
         this.isAsc = isAsc;
@@ -21,6 +31,11 @@ public class SqlOrderBy extends SqlNode {
         }
     }
 
+    /**
+     * Gets expressions.
+     *
+     * @return the expressions
+     */
     public List<SqlNode> getExpressions() {
         if (this.expressions == null) {
             return Collections.emptyList();
@@ -29,6 +44,11 @@ public class SqlOrderBy extends SqlNode {
         }
     }
 
+    /**
+     * Is ascending list.
+     *
+     * @return the list
+     */
     public List<Boolean> isAscending() {
         if (this.isAsc == null) {
             return Collections.emptyList();
@@ -37,6 +57,11 @@ public class SqlOrderBy extends SqlNode {
         }
     }
 
+    /**
+     * Nulls last list.
+     *
+     * @return the list
+     */
     public List<Boolean> nullsLast() {
         if (this.nullsLast == null) {
             return Collections.emptyList();
