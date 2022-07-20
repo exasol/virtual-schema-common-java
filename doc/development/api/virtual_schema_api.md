@@ -133,23 +133,32 @@ Notes
 
 ### Set Properties
 
-Request to set properties. The Adapter can decide whether it needs to send back new metadata. The Adapter is allowed to throw an Exception if the user provided invalid properties or in case of any other problems (e.g. connectivity).
+Request to set and unset properties. The Adapter can decide whether it needs to send back new metadata. The Adapter is allowed to throw an Exception if the user provided invalid properties or in case of any other problems (e.g. connectivity).
 
 **Request:**
 
 ```json
 {
+    
     "type": "setProperties",
+    "properties": {
+        "JDBC_CONNECTION_STRING": "new-jdbc-connection-string",
+        "NEW_PROPERTY": "value of a not yet existing property",
+        "UNSET_PROPERTY": null
+    },
     "schemaMetadataInfo": {
         ...
         "properties": {
-            "JDBC_CONNECTION_STRING": "new-jdbc-connection-string",
-            "NEW_PROPERTY": "value of a not yet existing property",
-            "DELETED_PROPERTY": null
+            "JDBC_CONNECTION_STRING": "current-jdbc-connection-string",
+            "THIS_REMAINS_UNCHANGED": "not listed in the section above, so the value remains as it is"
         }
-    },
+    }
 }
 ```
+
+The new values appear in a separate object `/properties` directly in the root element. For reference the current property values are still reported under '/schemaMetadataInfo/properties'.
+
+Adapters must apply the properties incrementally, meaning that all parameters not explicitly listed in `/properties`, remain unchanged. 
 
 **Response:**
 
