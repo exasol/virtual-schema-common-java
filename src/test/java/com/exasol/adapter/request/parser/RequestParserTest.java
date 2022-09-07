@@ -1,5 +1,8 @@
 package com.exasol.adapter.request.parser;
 
+import static com.exasol.adapter.request.parser.json.JsonBuilder.array;
+import static com.exasol.adapter.request.parser.json.JsonBuilder.group;
+import static com.exasol.adapter.request.parser.json.KeyValue.entry;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
@@ -14,6 +17,7 @@ import org.junit.jupiter.api.Test;
 
 import com.exasol.adapter.metadata.TableMetadata;
 import com.exasol.adapter.request.*;
+import com.exasol.adapter.request.parser.json.JsonBuilder;
 
 class RequestParserTest {
     private static final String SCHEMA_METADATA_INFO = "\"schemaMetadataInfo\" : { \"name\" : \"foo\" }";
@@ -114,6 +118,51 @@ class RequestParserTest {
         assertAll(() -> assertThat(request.getType(), equalTo(AdapterRequestType.PUSHDOWN)),
                 () -> assertThat(involvedTables, iterableWithSize(1)),
                 () -> assertThat(involvedTables.get(0).getName(), equalTo("FOO")));
+    }
+
+    @Test
+    void parseSelectListDataTypes() {
+        final String rawRequest = JsonBuilder.group( //
+                entry("type", "pushdown"), //
+                entry("pushdownRequest", group( //
+                        entry("type", "select"), //
+                        entry("from", group( //
+                                entry("name", "FOO"), //
+                                entry("type", "table") //
+                        )))), //
+                entry("selectListDataTypes", array( //
+                        group(entry("type", "VARCHAR"), //
+                                entry("size", 2000000), //
+                                entry("characterSet", "ASCII")), //
+                        group(entry("type", "CHAR"), //
+                                entry("size", 100), //
+                                entry("characterSet", "UTF8")), //
+                        group(entry("type", "DECIMAL"), //
+                                entry("precision", 10), //
+                                entry("scale", 10)), //
+                        group(entry("type", "DOUBLE")), //
+                        group(entry("type", "DATE")), //
+                        group(entry("type", "TIMESTAMP"), //
+                                entry("withlocaltimezone", true)), //
+                        group(entry("type", "BOOLEAN")), //
+                        group(entry("type", "GEOMETRY"), //
+                                entry("scale", 10)), //
+                        group(entry("type", "INTERVAL"), //
+                                entry("precision", 10), //
+                                entry("fraction", 2)) //
+                )), //
+                entry("involvedTables", array(group( //
+                        entry("name", "FOO"), //
+                        entry("columns", array(group( //
+                                entry("name", "BAR"), //
+                                entry("dataType", group( //
+                                        entry("precision", 18), //
+                                        entry("scale", 0), //
+                                        entry("type", "DECIMAL") //
+                                )))))))), //
+                entry("schemaMetadataInfo", group(entry("name", "foo")))).render();
+        System.out.println(rawRequest);
+        final AdapterRequest request = this.parser.parse(rawRequest);
     }
 
     @Test
