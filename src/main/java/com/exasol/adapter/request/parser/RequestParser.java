@@ -74,11 +74,13 @@ public class RequestParser extends AbstractRequestParser {
         final SqlStatement statement = parsePushdownStatement(root);
         final List<TableMetadata> involvedTables = parseInvolvedTables(root);
         final List<DataType> dataTypes = parseDataTypes(root);
-        // TODO: add expected return types to PushDownRequest
-        return new PushDownRequest(metadataInfo, statement, involvedTables);
+        return new PushDownRequest(metadataInfo, statement, involvedTables, dataTypes);
     }
 
     private List<DataType> parseDataTypes(final JsonObject root) {
+        if (!root.containsKey(SELECT_LIST_DATATYPES_KEY)) {
+            return Collections.emptyList();
+        }
         return DataTypeParser.create().parse(root.getJsonArray(SELECT_LIST_DATATYPES_KEY));
     }
 

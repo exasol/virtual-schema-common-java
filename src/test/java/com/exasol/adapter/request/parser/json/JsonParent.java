@@ -4,21 +4,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class JsonBuilder implements JsonValue {
-
-    public static Group group(final JsonValue... children) {
-        return new Group(children);
-    }
-
-    public static Array array(final JsonValue... children) {
-        return new Array(children);
-    }
+public abstract class JsonParent implements JsonEntry {
 
     private final String prefix;
     private final String suffix;
-    private final List<JsonValue> children;
+    private final List<JsonEntry> children;
 
-    JsonBuilder(final String prefix, final String suffix, final JsonValue... children) {
+    JsonParent(final String prefix, final String suffix, final JsonEntry... children) {
         this.prefix = prefix;
         this.suffix = suffix;
         this.children = Arrays.asList(children);
@@ -49,14 +41,14 @@ public abstract class JsonBuilder implements JsonValue {
         return builder.toString();
     }
 
-    public static class Group extends JsonBuilder {
-        public Group(final JsonValue... values) {
+    public static class Group extends JsonParent {
+        public Group(final JsonEntry... values) {
             super("{", "}", values);
         }
     }
 
-    static class Array extends JsonBuilder {
-        public Array(final JsonValue... values) {
+    public static class Array extends JsonParent {
+        public Array(final JsonEntry... values) {
             super("[", "]", values);
         }
     }

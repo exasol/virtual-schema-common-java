@@ -1,9 +1,17 @@
 package com.exasol.adapter.request.parser.json;
 
-public interface JsonValue {
-    String render(int indent);
+public class JsonValue implements JsonEntry {
 
-    default String render() {
-        return render(0);
+    private final Object value;
+    private final String quote;
+
+    JsonValue(final Object value, final String quote) {
+        this.value = value;
+        this.quote = quote;
+    }
+
+    @Override
+    public String render(final int indent) {
+        return this.quote + String.valueOf(this.value) + this.quote;
     }
 }

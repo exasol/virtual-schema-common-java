@@ -1,8 +1,7 @@
 package com.exasol.adapter.request.parser;
 
-import static com.exasol.adapter.request.parser.json.JsonBuilder.array;
-import static com.exasol.adapter.request.parser.json.JsonBuilder.group;
-import static com.exasol.adapter.request.parser.json.KeyValue.entry;
+import static com.exasol.adapter.request.parser.json.JsonEntry.*;
+import static com.exasol.adapter.request.parser.json.JsonEntry.array;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
@@ -12,15 +11,19 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.List;
 import java.util.Map;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.exasol.adapter.metadata.DataType;
 import com.exasol.adapter.metadata.TableMetadata;
 import com.exasol.adapter.request.*;
-import com.exasol.adapter.request.parser.json.JsonBuilder;
+import com.exasol.adapter.request.parser.json.JsonEntry;
+import com.exasol.adapter.request.parser.json.JsonKeyValue;
 
 class RequestParserTest {
-    private static final String SCHEMA_METADATA_INFO = "\"schemaMetadataInfo\" : { \"name\" : \"foo\" }";
+    private static final JsonKeyValue SCHEMA_METADATA_INFO = JsonEntry.entry("schemaMetadataInfo",
+            group(entry("name", "foo")));
     private RequestParser parser;
 
     @BeforeEach
@@ -29,28 +32,25 @@ class RequestParserTest {
     }
 
     @Test
-    void testParseThrowsExceptionIfRequestTypeUnknown() {
-        final String rawRequest = "{ \"type\" : \"UNKNOWN\", \"schemaMetadataInfo\" : { \"name\" : \"foo\" } }";
-        final RequestParserException exception = assertThrows(RequestParserException.class,
-                () -> this.parser.parse(rawRequest));
+    void requestTypeUnknown_ThrowsException() {
+        final String rawRequest = JsonEntry.group(//
+                entry("type", "UNKNOWN"), SCHEMA_METADATA_INFO).render();
+        final Exception exception = assertThrows(RequestParserException.class, () -> this.parser.parse(rawRequest));
         assertThat(exception.getMessage(), containsString("E-VSCOMJAVA-16"));
     }
 
     @Test
-    void testParseSetPropertiesRequest() {
-        final String rawRequest = "{" //
-                + "    \"type\" : \"setProperties\"," //
-                + "    \"properties\" :" //
-                + "    {" //
-                + "        \"A\" : \"value A\"," //
-                + "        \"B\" : 42," //
-                + "        \"PI\" : 3.14," //
-                + "        \"YES\" : true," //
-                + "        \"NO\" : false," //
-                + "        \"NULL_value\" : null" //
-                + "    }," //
-                + SCHEMA_METADATA_INFO //
-                + "}";
+    void setPropertiesRequest() {
+        final String rawRequest = JsonEntry.group(//
+                entry("type", "setProperties"), //
+                entry("properties", group( //
+                        entry("A", "value A"), //
+                        entry("B", "42"), //
+                        entry("PI", 3.14), //
+                        entry("YES", true), //
+                        entry("NO", false), //
+                        entry("NULL_value", JsonEntry.nullValue()))),
+                SCHEMA_METADATA_INFO).render();
         final AdapterRequest request = this.parser.parse(rawRequest);
         assertThat("Request class", request, instanceOf(SetPropertiesRequest.class));
         final Map<String, String> properties = ((SetPropertiesRequest) request).getProperties();
@@ -65,137 +65,96 @@ class RequestParserTest {
     }
 
     @Test
-    void testParseRequestWithUnsupportedPropertyType() {
-        final String rawRequest = "{" //
-                + "    \"type\" : \"setProperties\"," //
-                + "    \"properties\" :" //
-                + "    {" //
-                + "        \"A\" : { \"value\" : \"some_value\"}" //
-                + "    }," //
-                + SCHEMA_METADATA_INFO //
-                + "}";
+    void unsupportedPropertyType() {
+        final String rawRequest = JsonEntry.group(//
+                entry("type", "setProperties"), //
+                entry("properties", group( //
+                        entry("A", group(entry("value", "some value"))))),
+                SCHEMA_METADATA_INFO).render();
         final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> this.parser.parse(rawRequest));
         assertThat(exception.getMessage(), containsString("E-VSCOMJAVA-7"));
     }
 
+    private static final JsonEntry PUSHDOWN_REQUEST = entry("pushdownRequest", group( //
+            entry("type", "select"), //
+            entry("from", group( //
+                    entry("name", "FOO"), //
+                    entry("type", "table") //
+            ))));
+
+    private static final JsonEntry INVOLVED_TABLES = entry("involvedTables", array(group( //
+            entry("name", "FOO"), //
+            entry("columns", array(group( //
+                    entry("name", "BAR"), //
+                    entry("dataType", group( //
+                            entry("precision", 18), //
+                            entry("scale", 0), //
+                            entry("type", "DECIMAL") //
+                    ))))))));
+
     @Test
-    void testParsePushDownRequest() {
-        final String rawRequest = "{" //
-                + "    \"type\" : \"pushdown\",\n" //
-                + "    \"pushdownRequest\" :\n" //
-                + "    {\n" //
-                + "        \"type\" : \"select\",\n" //
-                + "        \"from\" :\n" //
-                + "        {\n" //
-                + "            \"name\" : \"FOO\",\n" //
-                + "            \"type\" : \"table\"\n" //
-                + "        }\n" //
-                + "    },\n" //
-                + "    \"involvedTables\" :\n" //
-                + "    [\n" //
-                + "        {\n" //
-                + "            \"name\" : \"FOO\",\n" //
-                + "            \"columns\" :\n" //
-                + "            [\n" //
-                + "                {\n" //
-                + "                    \"name\" : \"BAR\",\n" //
-                + "                    \"dataType\" :\n" //
-                + "                    {\n" //
-                + "                         \"precision\" : 18,\n" //
-                + "                         \"scale\" : 0,\n" //
-                + "                         \"type\" : \"DECIMAL\"\n" //
-                + "                    }\n" //
-                + "                }\n" //
-                + "            ]\n" //
-                + "        }\n" //
-                + "    ],\n" //
-                + SCHEMA_METADATA_INFO //
-                + "}";
+    void pushDownRequest() {
+        final String rawRequest = JsonEntry.group( //
+                entry("type", "pushdown"), //
+                PUSHDOWN_REQUEST, //
+                INVOLVED_TABLES, //
+                SCHEMA_METADATA_INFO).render();
         final AdapterRequest request = this.parser.parse(rawRequest);
         assertThat("Request class", request, instanceOf(PushDownRequest.class));
         final List<TableMetadata> involvedTables = ((PushDownRequest) request).getInvolvedTablesMetadata();
+        final List<DataType> selectListDataTypes = ((PushDownRequest) request).getSelectListDataTypes();
         assertAll(() -> assertThat(request.getType(), equalTo(AdapterRequestType.PUSHDOWN)),
                 () -> assertThat(involvedTables, iterableWithSize(1)),
-                () -> assertThat(involvedTables.get(0).getName(), equalTo("FOO")));
+                () -> assertThat(involvedTables.get(0).getName(), equalTo("FOO")),
+                () -> assertThat(selectListDataTypes, empty()));
     }
 
     @Test
-    void parseSelectListDataTypes() {
-        final String rawRequest = JsonBuilder.group( //
+    void pushDownRequestWithSelectListDataTypes() {
+        final String rawRequest = JsonEntry.group( //
                 entry("type", "pushdown"), //
-                entry("pushdownRequest", group( //
-                        entry("type", "select"), //
-                        entry("from", group( //
-                                entry("name", "FOO"), //
-                                entry("type", "table") //
-                        )))), //
+                PUSHDOWN_REQUEST, //
                 entry("selectListDataTypes", array( //
-                        group(entry("type", "VARCHAR"), //
-                                entry("size", 2000000), //
-                                entry("characterSet", "ASCII")), //
-                        group(entry("type", "CHAR"), //
-                                entry("size", 100), //
-                                entry("characterSet", "UTF8")), //
                         group(entry("type", "DECIMAL"), //
-                                entry("precision", 10), //
+                                entry("precision", 9), //
                                 entry("scale", 10)), //
-                        group(entry("type", "DOUBLE")), //
-                        group(entry("type", "DATE")), //
-                        group(entry("type", "TIMESTAMP"), //
-                                entry("withlocaltimezone", true)), //
-                        group(entry("type", "BOOLEAN")), //
-                        group(entry("type", "GEOMETRY"), //
-                                entry("scale", 10)), //
-                        group(entry("type", "INTERVAL"), //
-                                entry("precision", 10), //
-                                entry("fraction", 2)) //
-                )), //
-                entry("involvedTables", array(group( //
-                        entry("name", "FOO"), //
-                        entry("columns", array(group( //
-                                entry("name", "BAR"), //
-                                entry("dataType", group( //
-                                        entry("precision", 18), //
-                                        entry("scale", 0), //
-                                        entry("type", "DECIMAL") //
-                                )))))))), //
-                entry("schemaMetadataInfo", group(entry("name", "foo")))).render();
-        System.out.println(rawRequest);
+                        group(entry("type", "DOUBLE")))), //
+                INVOLVED_TABLES, //
+                SCHEMA_METADATA_INFO).render();
         final AdapterRequest request = this.parser.parse(rawRequest);
+        final List<DataType> selectListDataTypes = ((PushDownRequest) request).getSelectListDataTypes();
+        assertAll(() -> assertThat(request.getType(), equalTo(AdapterRequestType.PUSHDOWN)),
+                () -> assertThat(selectListDataTypes, iterableWithSize(2)),
+                () -> assertThat(selectListDataTypes.get(0), equalTo(DataType.createDecimal(9, 10))));
     }
 
     @Test
-    void testParseRefreshRequestWithoutTableFilter() {
-        final String rawRequest = "{" //
-                + "    \"type\" : \"refresh\",\n" //
-                + SCHEMA_METADATA_INFO //
-                + "}";
+    void refreshRequestWithoutTableFilter() {
+        final String rawRequest = JsonEntry.group(//
+                entry("type", "refresh"), //
+                SCHEMA_METADATA_INFO) //
+                .render();
         final RefreshRequest request = (RefreshRequest) this.parser.parse(rawRequest);
         assertAll(() -> assertThat(request.refreshesOnlySelectedTables(), equalTo(false)),
-                () -> assertThat(request.getTables(), nullValue()));
+                () -> assertThat(request.getTables(), Matchers.nullValue()));
     }
 
     @Test
-    void testParseRefreshRequestWithTableFilter() {
-        final String rawRequest = "{" //
-                + "    \"type\" : \"refresh\",\n" //
-                + "    \"requestedTables\" :\n" //
-                + "    [" //
-                + "        \"T1\", \"T2\"\n" //
-                + "    ],\n" //
-                + SCHEMA_METADATA_INFO //
-                + "}";
+    void refreshRequestWithTableFilter() {
+        final String rawRequest = JsonEntry.group(//
+                entry("type", "refresh"), //
+                entry("requestedTables", array(value("T1"), value("T2"))), //
+                SCHEMA_METADATA_INFO) //
+                .render();
         final RefreshRequest request = (RefreshRequest) this.parser.parse(rawRequest);
         assertAll(() -> assertThat(request.refreshesOnlySelectedTables(), equalTo(true)),
                 () -> assertThat(request.getTables(), containsInAnyOrder("T1", "T2")));
     }
 
     @Test
-    void testParseRequestWithoutSchemaMetadata() {
-        final String rawRequest = "{" //
-                + "    \"type\" : \"refresh\"\n" //
-                + "}";
+    void requestWithoutSchemaMetadata() {
+        final String rawRequest = JsonEntry.group(entry("type", "refresh")).render();
         final AdapterRequest request = this.parser.parse(rawRequest);
         assertThat(request.getVirtualSchemaName(), equalTo("UNKNOWN"));
     }

@@ -1,26 +1,10 @@
 package com.exasol.adapter.request.parser.json;
 
-public abstract class KeyValue implements JsonValue {
-
-    public static KeyValue entry(final String key, final String value) {
-        return new Simple(key, value, "\"");
-    }
-
-    public static KeyValue entry(final String key, final int value) {
-        return new Simple(key, value);
-    }
-
-    public static KeyValue entry(final String key, final boolean value) {
-        return new Simple(key, value);
-    }
-
-    public static KeyValue entry(final String key, final JsonBuilder value) {
-        return new Complex(key, value);
-    }
+public abstract class JsonKeyValue implements JsonEntry {
 
     private final String key;
 
-    KeyValue(final String key) {
+    JsonKeyValue(final String key) {
         this.key = key;
     }
 
@@ -28,7 +12,7 @@ public abstract class KeyValue implements JsonValue {
         return String.format("\"%s\": %s", this.key, value);
     }
 
-    static class Simple extends KeyValue {
+    static class Simple extends JsonKeyValue {
         protected final Object value;
         final String quote;
 
@@ -48,10 +32,10 @@ public abstract class KeyValue implements JsonValue {
         }
     }
 
-    static class Complex extends KeyValue {
-        private final JsonValue value;
+    static class Complex extends JsonKeyValue {
+        private final JsonEntry value;
 
-        Complex(final String key, final JsonValue value) {
+        Complex(final String key, final JsonEntry value) {
             super(key);
             this.value = value;
         }
