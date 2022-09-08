@@ -19,7 +19,6 @@ class SqlLiteralIntervalTest {
     @BeforeEach
     void setUp() {
         this.dayToSecond = DataType.createIntervalDaySecond(1, 2);
-        final DataType yearToMonth = DataType.createIntervalYearMonth(3);
         this.sqlLiteralIntervalDayToSecond = new SqlLiteralInterval(VALUE, this.dayToSecond);
     }
 
