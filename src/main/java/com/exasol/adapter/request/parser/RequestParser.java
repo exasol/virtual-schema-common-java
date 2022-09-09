@@ -6,8 +6,7 @@ import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import com.exasol.adapter.metadata.SchemaMetadataInfo;
-import com.exasol.adapter.metadata.TableMetadata;
+import com.exasol.adapter.metadata.*;
 import com.exasol.adapter.request.*;
 import com.exasol.adapter.sql.SqlStatement;
 import com.exasol.errorreporting.ExaError;
@@ -74,7 +73,15 @@ public class RequestParser extends AbstractRequestParser {
     private AbstractAdapterRequest parsePushdownRequest(final JsonObject root, final SchemaMetadataInfo metadataInfo) {
         final SqlStatement statement = parsePushdownStatement(root);
         final List<TableMetadata> involvedTables = parseInvolvedTables(root);
-        return new PushDownRequest(metadataInfo, statement, involvedTables);
+        final List<DataType> dataTypes = parseDataTypes(root);
+        return new PushDownRequest(metadataInfo, statement, involvedTables, dataTypes);
+    }
+
+    private List<DataType> parseDataTypes(final JsonObject root) {
+        if (!root.containsKey(SELECT_LIST_DATATYPES_KEY)) {
+            return Collections.emptyList();
+        }
+        return DataTypeParser.create().parse(root.getJsonArray(SELECT_LIST_DATATYPES_KEY));
     }
 
     private List<TableMetadata> parseInvolvedTables(final JsonObject root) {

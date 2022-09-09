@@ -6,7 +6,6 @@ import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.logging.Logger;
 
 import com.exasol.errorreporting.ExaError;
 
@@ -17,7 +16,6 @@ import jakarta.json.JsonValue.ValueType;
  * Abstract base class for parsers reading fragments of the Virtual Schema requests.
  */
 class AbstractRequestParser {
-    private static final Logger LOGGER = Logger.getLogger(AbstractRequestParser.class.getName());
 
     /**
      * Create a JSON reader for raw request data.
@@ -36,7 +34,7 @@ class AbstractRequestParser {
 
     /**
      * Read the properties from the schema metadata.
-     * 
+     *
      * @param jsonSchemaMetadataInfo json schema metadata info
      * @return parsed Properties.
      */
@@ -85,7 +83,6 @@ class AbstractRequestParser {
                             + "Supported types are strings, booleans, numbers and NULL.")
                     .parameter("type", type).toString());
         }
-        LOGGER.finer(() -> "Parsed property: \"" + key + "\" = \"" + stringValue + "\"");
         properties.put(key, stringValue);
     }
 }

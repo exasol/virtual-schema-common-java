@@ -87,7 +87,7 @@ class AdapterCallExecutorTest {
         final PushDownResponse expectedResponse = PushDownResponse.builder().pushDownSql("SELECT * FROM FOOBAR")
                 .build();
         when(this.mockAdapter.pushdown(any(), any())).thenReturn(expectedResponse);
-        final String response = this.adapterCallExecutor.executeAdapterCall(new PushDownRequest(null, null, null),
+        final String response = this.adapterCallExecutor.executeAdapterCall(new PushDownRequest(null, null, null, null),
                 null);
         assertEquals("{\"type\":\"pushdown\",\"sql\":\"SELECT * FROM FOOBAR\"}", response);
         verify(this.mockAdapter).pushdown(any(), any(PushDownRequest.class));
