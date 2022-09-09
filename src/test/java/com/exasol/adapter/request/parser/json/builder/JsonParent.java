@@ -21,7 +21,7 @@ public abstract class JsonParent implements JsonEntry {
                 .collect(Collectors.joining(",\n" + indent(level), indent(level), ""));
     }
 
-    public JsonParent withChild(final JsonEntry child) {
+    public JsonParent addChild(final JsonEntry child) {
         this.children.add(child);
         return this;
     }
