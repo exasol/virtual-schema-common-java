@@ -8,18 +8,18 @@ import jakarta.json.JsonObject;
 
 class DataTypeProperty<T> {
 
-    static StringProperty TYPE = new StringProperty("type");
-    static IntProperty PRECISION = new IntProperty("precision");
-    static IntProperty SCALE = new IntProperty("scale");
-    static IntProperty SIZE = new IntProperty("size");
-    static CharsetProperty CHARSET = new CharsetProperty("characterSet");
+    static final StringProperty TYPE = new StringProperty("type");
+    static final IntProperty PRECISION = new IntProperty("precision");
+    static final IntProperty SCALE = new IntProperty("scale");
+    static final IntProperty SIZE = new IntProperty("size");
+    static final CharsetProperty CHARSET = new CharsetProperty("characterSet");
     // These can only be verified by using exasol-virtual-schema
     // as most other virtual schemas do not support data types using any of these properties
 
-    // TODO: verify with data type TIMESTAMP!
-    static BooleanProperty WITH_LOCAL_TIMEZONE = new BooleanProperty("withLocalTimeZone");
-    static IntProperty FRACTION = new IntProperty("fraction"); // TODO: verify with data type INTERVAL!
-    static IntProperty BYTESIZE = new IntProperty("byteSize"); // TODO: verify with data type HASHTYPE!
+    // to do: verify with data type TIMESTAMP!
+    static final BooleanProperty WITH_LOCAL_TIMEZONE = new BooleanProperty("withLocalTimeZone");
+    static final IntProperty FRACTION = new IntProperty("fraction"); // to do: verify with data type INTERVAL!
+    static final IntProperty BYTESIZE = new IntProperty("byteSize"); // to do: verify with data type HASHTYPE!
 
     protected final String key;
     private final DataTypeProperty.JsonGetter<T> getter;
