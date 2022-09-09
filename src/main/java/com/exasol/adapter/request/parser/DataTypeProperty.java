@@ -37,6 +37,7 @@ class DataTypeProperty<T> {
         if (json.containsKey(this.key)) {
             try {
                 return this.getter.apply(json, this.key);
+                // was ClassCastException
             } catch (final Exception exception) {
                 throw new DataTypeParserException(ExaError.messageBuilder("E-VSCOMJAVA-39") //
                         .message("Datatype {{datatype}}, property {{property}}: Illegal value {{value}}.", //

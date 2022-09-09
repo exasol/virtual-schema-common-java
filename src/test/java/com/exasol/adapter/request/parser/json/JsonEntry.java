@@ -2,17 +2,17 @@ package com.exasol.adapter.request.parser.json;
 
 import com.exasol.adapter.request.parser.json.JsonKeyValue.Complex;
 import com.exasol.adapter.request.parser.json.JsonKeyValue.Simple;
-import com.exasol.adapter.request.parser.json.JsonParent.Array;
-import com.exasol.adapter.request.parser.json.JsonParent.Group;
+import com.exasol.adapter.request.parser.json.JsonParent.JsonArray;
+import com.exasol.adapter.request.parser.json.JsonParent.JsonGroup;
 
 public interface JsonEntry {
 
-    public static Group group(final JsonEntry... children) {
-        return new Group(children);
+    public static JsonGroup group(final JsonEntry... children) {
+        return new JsonGroup(children);
     }
 
-    public static Array array(final JsonEntry... children) {
-        return new Array(children);
+    public static JsonArray array(final JsonEntry... children) {
+        return new JsonArray(children);
     }
 
     public static JsonKeyValue entry(final String key, final String value) {

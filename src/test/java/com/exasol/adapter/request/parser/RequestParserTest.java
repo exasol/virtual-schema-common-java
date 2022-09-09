@@ -18,8 +18,7 @@ import org.junit.jupiter.api.Test;
 import com.exasol.adapter.metadata.DataType;
 import com.exasol.adapter.metadata.TableMetadata;
 import com.exasol.adapter.request.*;
-import com.exasol.adapter.request.parser.json.JsonEntry;
-import com.exasol.adapter.request.parser.json.JsonKeyValue;
+import com.exasol.adapter.request.parser.json.*;
 
 class RequestParserTest {
     private static final JsonKeyValue SCHEMA_METADATA_INFO = JsonEntry.entry("schemaMetadataInfo",
@@ -76,31 +75,9 @@ class RequestParserTest {
         assertThat(exception.getMessage(), containsString("E-VSCOMJAVA-7"));
     }
 
-    private static final JsonEntry PUSHDOWN_REQUEST = entry("pushdownRequest", group( //
-            entry("type", "select"), //
-            entry("from", group( //
-                    entry("name", "FOO"), //
-                    entry("type", "table") //
-            ))));
-
-    private static final JsonEntry INVOLVED_TABLES = entry("involvedTables", array(group( //
-            entry("name", "FOO"), //
-            entry("columns", array(group( //
-                    entry("name", "BAR"), //
-                    entry("dataType", group( //
-                            entry("precision", 18), //
-                            entry("scale", 0), //
-                            entry("type", "DECIMAL") //
-                    ))))))));
-
     @Test
-    void pushDownRequest() {
-        final String rawRequest = JsonEntry.group( //
-                entry("type", "pushdown"), //
-                PUSHDOWN_REQUEST, //
-                INVOLVED_TABLES, //
-                SCHEMA_METADATA_INFO).render();
-        final AdapterRequest request = this.parser.parse(rawRequest);
+    void classicPushDownRequest() {
+        final AdapterRequest request = this.parser.parse(createPushDownRequest().render());
         assertThat("Request class", request, instanceOf(PushDownRequest.class));
         final List<TableMetadata> involvedTables = ((PushDownRequest) request).getInvolvedTablesMetadata();
         final List<DataType> selectListDataTypes = ((PushDownRequest) request).getSelectListDataTypes();
@@ -112,16 +89,13 @@ class RequestParserTest {
 
     @Test
     void pushDownRequestWithSelectListDataTypes() {
-        final String rawRequest = JsonEntry.group( //
-                entry("type", "pushdown"), //
-                PUSHDOWN_REQUEST, //
+        final String rawRequest = createPushDownRequest().withChild( //
                 entry("selectListDataTypes", array( //
                         group(entry("type", "DECIMAL"), //
                                 entry("precision", 9), //
                                 entry("scale", 10)), //
-                        group(entry("type", "DOUBLE")))), //
-                INVOLVED_TABLES, //
-                SCHEMA_METADATA_INFO).render();
+                        group(entry("type", "DOUBLE"))))) //
+                .render();
         final AdapterRequest request = this.parser.parse(rawRequest);
         final List<DataType> selectListDataTypes = ((PushDownRequest) request).getSelectListDataTypes();
         assertAll(() -> assertThat(request.getType(), equalTo(AdapterRequestType.PUSHDOWN)),
@@ -157,5 +131,26 @@ class RequestParserTest {
         final String rawRequest = JsonEntry.group(entry("type", "refresh")).render();
         final AdapterRequest request = this.parser.parse(rawRequest);
         assertThat(request.getVirtualSchemaName(), equalTo("UNKNOWN"));
+    }
+
+    private JsonParent createPushDownRequest() {
+        return JsonEntry.group( //
+                entry("type", "pushdown"), //
+                entry("pushdownRequest", group( //
+                        entry("type", "select"), //
+                        entry("from", group( //
+                                entry("name", "FOO"), //
+                                entry("type", "table") //
+                        )))), //
+                entry("involvedTables", array(group( //
+                        entry("name", "FOO"), //
+                        entry("columns", array(group( //
+                                entry("name", "BAR"), //
+                                entry("dataType", group( //
+                                        entry("precision", 18), //
+                                        entry("scale", 0), //
+                                        entry("type", "DECIMAL") //
+                                )))))))), //
+                SCHEMA_METADATA_INFO);
     }
 }

@@ -6,7 +6,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
+import nl.jqno.equalsverifier.EqualsVerifier;
+
 class DataTypeTest {
+    @Test
+    void testEqualsAndHashContract() {
+        EqualsVerifier.simple().forClass(DataType.class).verify();
+    }
+
     @Test
     void createDecimal() {
         final DataType dataType = DataType.createDecimal(10, 2);
@@ -111,7 +118,7 @@ class DataTypeTest {
     void createHashtype() {
         final DataType dataType = DataType.createHashtype(16);
         assertAll(() -> assertThat(dataType.getByteSize(), equalTo(16)),
-              () -> assertThat(dataType.toString(), equalTo("HASHTYPE(16 byte)")));
+                () -> assertThat(dataType.toString(), equalTo("HASHTYPE(16 byte)")));
     }
 
     @Test

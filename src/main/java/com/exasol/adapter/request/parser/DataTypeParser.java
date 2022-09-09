@@ -69,5 +69,9 @@ public class DataTypeParser {
         public DataTypeParserException(final String message) {
             super(message);
         }
+
+        public DataTypeParserException(final String message, final Exception exception) {
+            super(message, exception);
+        }
     }
 }
