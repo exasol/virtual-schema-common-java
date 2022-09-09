@@ -28,15 +28,15 @@ class DataTypeParserTest {
     @ValueSource(strings = { "UNKNOWN", "abcdef" })
     @NullSource
     void unknownDatatype_ThrowsException(final String name) {
-        final Exception e = assertThrows(DataTypeParserException.class,
-                () -> parse(JsonEntry.array(group(entry("type", name)))));
+        final JsonEntry data = JsonEntry.array(group(entry("type", name)));
+        final Exception e = assertThrows(DataTypeParserException.class, () -> parse(data));
         assertThat(e.getMessage(), startsWith("E-VSCOMJAVA-37: Unsupported datatype '" + name + "'"));
     }
 
     @Test
     void missingType_ThrowsException() {
-        final Exception e = assertThrows(DataTypeParserException.class,
-                () -> parse(JsonEntry.array(group(entry("no_type", "DECIMAL")))));
+        final JsonEntry data = JsonEntry.array(group(entry("no_type", "DECIMAL")));
+        final Exception e = assertThrows(DataTypeParserException.class, () -> parse(data));
         assertThat(e.getMessage(), startsWith("E-VSCOMJAVA-40: Unspecified datatype"));
     }
 
@@ -230,7 +230,8 @@ class DataTypeParserTest {
 
     private void verifyIllegalPropertyValue(final JsonParent builder, final String datatype, final String property,
             final String value) {
-        final Exception e = assertThrows(DataTypeParserException.class, () -> parse(array(builder)));
+        final JsonEntry data = array(builder);
+        final Exception e = assertThrows(DataTypeParserException.class, () -> parse(data));
         assertThat(e.getMessage(), startsWith("E-VSCOMJAVA-39: Datatype '" + datatype + "', property '" + property
                 + "': Illegal value " + value + "."));
     }
@@ -239,7 +240,8 @@ class DataTypeParserTest {
     // test utilities
 
     private void verifyMissingRequiredProperty(final JsonParent builder, final String datatype, final String property) {
-        final Exception e = assertThrows(DataTypeParserException.class, () -> parse(array(builder)));
+        final JsonEntry data = array(builder);
+        final Exception e = assertThrows(DataTypeParserException.class, () -> parse(data));
         assertThat(e.getMessage(),
                 startsWith("E-VSCOMJAVA-36: Datatype '" + datatype + "': Missing property '" + property));
     }
@@ -249,7 +251,7 @@ class DataTypeParserTest {
         assertThat(actual, equalTo(expected));
     }
 
-    private List<DataType> parse(final JsonParent builder) {
+    private List<DataType> parse(final JsonEntry builder) {
         return DataTypeParser.create().parse(readArray(builder.render()));
     }
 
