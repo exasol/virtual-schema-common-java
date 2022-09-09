@@ -37,11 +37,11 @@ class DataTypeProperty<T> {
         if (json.containsKey(this.key)) {
             try {
                 return this.getter.apply(json, this.key);
-            } catch (final Exception e) {
+            } catch (final Exception exception) {
                 throw new DataTypeParserException(ExaError.messageBuilder("E-VSCOMJAVA-39") //
                         .message("Datatype {{datatype}}, property {{property}}: Illegal value {{value}}.", //
                                 TYPE.get(json), this.key, json.get(this.key))
-                        .ticketMitigation().toString());
+                        .ticketMitigation().toString(), exception);
             }
         }
         if (defaultValue != null) {
