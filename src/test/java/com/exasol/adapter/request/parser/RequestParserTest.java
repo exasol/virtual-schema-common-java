@@ -88,7 +88,7 @@ class RequestParserTest {
 
     @Test
     void pushDownRequestWithSelectListDataTypes() {
-        final String rawRequest = createPushDownRequest().withChild( //
+        final String rawRequest = createPushDownRequest().addChild( //
                 entry("selectListDataTypes", array( //
                         object(entry("type", "DECIMAL"), //
                                 entry("precision", 9), //
