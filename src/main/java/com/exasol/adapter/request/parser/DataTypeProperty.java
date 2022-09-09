@@ -17,7 +17,7 @@ class DataTypeProperty<T> {
     // as most other virtual schemas do not support data types using any of these properties
 
     // TODO: verify with data type TIMESTAMP!
-    static BooleanProperty WITH_LOCAL_TIMEZONE = new BooleanProperty("withlocaltimezone");
+    static BooleanProperty WITH_LOCAL_TIMEZONE = new BooleanProperty("withLocalTimeZone");
     static IntProperty FRACTION = new IntProperty("fraction"); // TODO: verify with data type INTERVAL!
     static IntProperty BYTESIZE = new IntProperty("byteSize"); // TODO: verify with data type HASHTYPE!
 
@@ -37,7 +37,6 @@ class DataTypeProperty<T> {
         if (json.containsKey(this.key)) {
             try {
                 return this.getter.apply(json, this.key);
-                // was ClassCastException
             } catch (final Exception exception) {
                 throw new DataTypeParserException(ExaError.messageBuilder("E-VSCOMJAVA-39") //
                         .message("Datatype {{datatype}}, property {{property}}: Illegal value {{value}}.", //

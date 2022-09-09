@@ -78,7 +78,7 @@ class DataTypeParserTest {
     void timestamp() {
         verifySingle(DataType.createTimestamp(true), group( //
                 entry("type", "TIMESTAMP"), //
-                entry("withlocaltimezone", true)));
+                entry("withLocalTimeZone", true)));
     }
 
     @Test
@@ -166,7 +166,7 @@ class DataTypeParserTest {
                 entry("characterSet", "xxx")), //
                 "VARCHAR", "characterSet", "\"xxx\"");
         verifyIllegalPropertyValue("VARCHAR", "size", "abc");
-        verifyIllegalPropertyValue("TIMESTAMP", "withlocaltimezone", 123);
+        verifyIllegalPropertyValue("TIMESTAMP", "withLocalTimeZone", 123);
         verifyIllegalPropertyValue("HASHTYPE", "byteSize", true);
         verifyIllegalPropertyValue("GEOMETRY", "scale", false);
         verifyIllegalPropertyValue("INTERVAL", "precision", "p");
@@ -191,7 +191,7 @@ class DataTypeParserTest {
                 group(entry("type", "DOUBLE")), //
                 group(entry("type", "DATE")), //
                 group(entry("type", "TIMESTAMP"), //
-                        entry("withlocaltimezone", true)), //
+                        entry("withLocalTimeZone", true)), //
                 group(entry("type", "BOOLEAN")), //
                 group(entry("type", "GEOMETRY"), //
                         entry("scale", 42)), //
@@ -231,7 +231,7 @@ class DataTypeParserTest {
     private void verifyIllegalPropertyValue(final JsonParent builder, final String datatype, final String property,
             final String value) {
         final Exception e = assertThrows(DataTypeParserException.class, () -> parse(array(builder)));
-        assertThat(e.getMessage(), startsWith("E-VSCOMJAVA-40: Datatype '" + datatype + "', property '" + property
+        assertThat(e.getMessage(), startsWith("E-VSCOMJAVA-39: Datatype '" + datatype + "', property '" + property
                 + "': Illegal value " + value + "."));
     }
 

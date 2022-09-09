@@ -1,12 +1,20 @@
 # Common module of Exasol Virtual Schemas Adapters 16.0.0, released 2022-??-??
 
-Code name:
+Code name: Evaluate expected resultset datatypes
 
 ## Summary
 
+Starting with major version 8 Exasol database uses the capabilities reported by each virtual schema to provide select list data types for each push down request. Based on this information the JDBC virtual schemas no longer need to infer the data types of the result set by inspecting its values. Instead the JDBC virtual schemas can now use the information provided by the database.
+
+This create a list of benefits
+* Improved performance of queries to virtual schema by avoiding one query for each push down
+* Enhanced accuracy of data type mapping
+* Simplified data type mapping which is easier to extend
+* Support for additional use cases
+
 ## Features
 
-* ISSUE_NUMBER: description
+* #249: Evaluate expected resultset datatypes
 
 ## Dependency Updates
 
