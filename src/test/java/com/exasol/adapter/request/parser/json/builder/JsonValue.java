@@ -1,4 +1,4 @@
-package com.exasol.adapter.request.parser.json;
+package com.exasol.adapter.request.parser.json.builder;
 
 public class JsonValue implements JsonEntry {
 

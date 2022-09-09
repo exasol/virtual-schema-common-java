@@ -1,4 +1,4 @@
-package com.exasol.adapter.request.parser.json;
+package com.exasol.adapter.request.parser.json.builder;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -45,8 +45,8 @@ public abstract class JsonParent implements JsonEntry {
         return builder.toString();
     }
 
-    public static class JsonGroup extends JsonParent {
-        public JsonGroup(final JsonEntry... values) {
+    public static class JsonObject extends JsonParent {
+        public JsonObject(final JsonEntry... values) {
             super("{", "}", values);
         }
     }

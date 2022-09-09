@@ -1,4 +1,4 @@
-package com.exasol.adapter.request.parser.json;
+package com.exasol.adapter.request.parser.json.builder;
 
 public abstract class JsonKeyValue implements JsonEntry {
 

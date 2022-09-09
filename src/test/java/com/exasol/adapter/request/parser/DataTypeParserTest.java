@@ -1,6 +1,6 @@
 package com.exasol.adapter.request.parser;
 
-import static com.exasol.adapter.request.parser.json.JsonEntry.*;
+import static com.exasol.adapter.request.parser.json.builder.JsonEntry.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.startsWith;
@@ -17,8 +17,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import com.exasol.adapter.metadata.DataType;
 import com.exasol.adapter.metadata.DataType.ExaCharset;
 import com.exasol.adapter.request.parser.DataTypeParser.DataTypeParserException;
-import com.exasol.adapter.request.parser.json.JsonEntry;
-import com.exasol.adapter.request.parser.json.JsonParent;
+import com.exasol.adapter.request.parser.json.builder.JsonEntry;
+import com.exasol.adapter.request.parser.json.builder.JsonParent;
 
 import jakarta.json.*;
 
@@ -28,21 +28,21 @@ class DataTypeParserTest {
     @ValueSource(strings = { "UNKNOWN", "abcdef" })
     @NullSource
     void unknownDatatype_ThrowsException(final String name) {
-        final JsonEntry data = JsonEntry.array(group(entry("type", name)));
+        final JsonEntry data = JsonEntry.array(object(entry("type", name)));
         final Exception e = assertThrows(DataTypeParserException.class, () -> parse(data));
         assertThat(e.getMessage(), startsWith("E-VSCOMJAVA-37: Unsupported datatype '" + name + "'"));
     }
 
     @Test
     void missingType_ThrowsException() {
-        final JsonEntry data = JsonEntry.array(group(entry("no_type", "DECIMAL")));
+        final JsonEntry data = JsonEntry.array(object(entry("no_type", "DECIMAL")));
         final Exception e = assertThrows(DataTypeParserException.class, () -> parse(data));
         assertThat(e.getMessage(), startsWith("E-VSCOMJAVA-40: Unspecified datatype"));
     }
 
     @Test
     void varchar() {
-        verifySingle(DataType.createVarChar(21, ExaCharset.ASCII), group( //
+        verifySingle(DataType.createVarChar(21, ExaCharset.ASCII), object( //
                 entry("type", "VARCHAR"), //
                 entry("size", 21), //
                 entry("characterSet", "ASCII")));
@@ -50,7 +50,7 @@ class DataTypeParserTest {
 
     @Test
     void testChar() {
-        verifySingle(DataType.createChar(22, ExaCharset.UTF8), group( //
+        verifySingle(DataType.createChar(22, ExaCharset.UTF8), object( //
                 entry("type", "CHAR"), //
                 entry("size", 22), //
                 entry("characterSet", "UTF8")));
@@ -58,7 +58,7 @@ class DataTypeParserTest {
 
     @Test
     void decimal() {
-        verifySingle(DataType.createDecimal(31, 41), group( //
+        verifySingle(DataType.createDecimal(31, 41), object( //
                 entry("type", "DECIMAL"), //
                 entry("precision", 31), //
                 entry("scale", 41)));
@@ -66,37 +66,37 @@ class DataTypeParserTest {
 
     @Test
     void testDouble() {
-        verifySingle(DataType.createDouble(), group(entry("type", "DOUBLE")));
+        verifySingle(DataType.createDouble(), object(entry("type", "DOUBLE")));
     }
 
     @Test
     void date() {
-        verifySingle(DataType.createDate(), group(entry("type", "DATE")));
+        verifySingle(DataType.createDate(), object(entry("type", "DATE")));
     }
 
     @Test
     void timestamp() {
-        verifySingle(DataType.createTimestamp(true), group( //
+        verifySingle(DataType.createTimestamp(true), object( //
                 entry("type", "TIMESTAMP"), //
                 entry("withLocalTimeZone", true)));
     }
 
     @Test
     void testBoolean() {
-        verifySingle(DataType.createBool(), group( //
+        verifySingle(DataType.createBool(), object( //
                 entry("type", "BOOLEAN")));
     }
 
     @Test
     void geometry() {
-        verifySingle(DataType.createGeometry(42), group( //
+        verifySingle(DataType.createGeometry(42), object( //
                 entry("type", "GEOMETRY"), //
                 entry("scale", 42)));
     }
 
     @Test
     void interval() {
-        verifySingle(DataType.createIntervalDaySecond(32, 51), group( //
+        verifySingle(DataType.createIntervalDaySecond(32, 51), object( //
                 entry("type", "INTERVAL"), //
                 entry("precision", 32), //
                 entry("fraction", 51)));
@@ -104,7 +104,7 @@ class DataTypeParserTest {
 
     @Test
     void hashtype() {
-        verifySingle(DataType.createHashtype(2031), group( //
+        verifySingle(DataType.createHashtype(2031), object( //
                 entry("type", "HASHTYPE"), //
                 entry("byteSize", 2031)));
     }
@@ -114,53 +114,53 @@ class DataTypeParserTest {
 
     @Test
     void defaultCharacterSet_Utf8() {
-        verifySingle(DataType.createVarChar(21, ExaCharset.UTF8), group( //
+        verifySingle(DataType.createVarChar(21, ExaCharset.UTF8), object( //
                 entry("type", "VARCHAR"), //
                 entry("size", 21)));
-        verifySingle(DataType.createChar(22, ExaCharset.UTF8), group( //
+        verifySingle(DataType.createChar(22, ExaCharset.UTF8), object( //
                 entry("type", "CHAR"), //
                 entry("size", 22)));
     }
 
     @Test
     void timestampDefaultLocalTimezone_False() {
-        verifySingle(DataType.createTimestamp(false), group(entry("type", "TIMESTAMP")));
+        verifySingle(DataType.createTimestamp(false), object(entry("type", "TIMESTAMP")));
     }
 
     @Test
     void geometryDefaultSri_0() {
-        verifySingle(DataType.createGeometry(0), group(entry("type", "GEOMETRY")));
+        verifySingle(DataType.createGeometry(0), object(entry("type", "GEOMETRY")));
     }
 
     @Test
     void intervalDefaultPrecision_2() {
-        verifySingle(DataType.createIntervalDaySecond(2, 51), group( //
+        verifySingle(DataType.createIntervalDaySecond(2, 51), object( //
                 entry("type", "INTERVAL"), //
                 entry("fraction", 51)));
     }
 
     @Test
     void intervalDefaultFraction_3() {
-        verifySingle(DataType.createIntervalDaySecond(32, 3), group( //
+        verifySingle(DataType.createIntervalDaySecond(32, 3), object( //
                 entry("type", "INTERVAL"), //
                 entry("precision", 32)));
     }
 
     @Test
     void hashTypeDefaultByteSize_16() {
-        verifySingle(DataType.createHashtype(16), group(entry("type", "HASHTYPE")));
+        verifySingle(DataType.createHashtype(16), object(entry("type", "HASHTYPE")));
     }
 
     @Test
     void missingRequiredProperty_ThrowsException() {
-        verifyMissingRequiredProperty(group(entry("type", "DECIMAL")), "DECIMAL", "");
-        verifyMissingRequiredProperty(group(entry("type", "CHAR")), "CHAR", "size");
-        verifyMissingRequiredProperty(group(entry("type", "VARCHAR")), "VARCHAR", "size");
+        verifyMissingRequiredProperty(object(entry("type", "DECIMAL")), "DECIMAL", "");
+        verifyMissingRequiredProperty(object(entry("type", "CHAR")), "CHAR", "size");
+        verifyMissingRequiredProperty(object(entry("type", "VARCHAR")), "VARCHAR", "size");
     }
 
     @Test
     void illegalPropertyValue_ThrowsException() {
-        verifyIllegalPropertyValue(group( //
+        verifyIllegalPropertyValue(object( //
                 entry("type", "VARCHAR"), //
                 entry("size", 20), //
                 entry("characterSet", "xxx")), //
@@ -170,7 +170,7 @@ class DataTypeParserTest {
         verifyIllegalPropertyValue("HASHTYPE", "byteSize", true);
         verifyIllegalPropertyValue("GEOMETRY", "scale", false);
         verifyIllegalPropertyValue("INTERVAL", "precision", "p");
-        verifyIllegalPropertyValue(group(entry("type", "INTERVAL"), //
+        verifyIllegalPropertyValue(object(entry("type", "INTERVAL"), //
                 entry("precision", 5), //
                 entry("fraction", true)), //
                 "INTERVAL", "fraction", "true");
@@ -179,26 +179,26 @@ class DataTypeParserTest {
     @Test
     void multipleDatatypes() {
         final JsonParent builder = JsonEntry.array( //
-                group(entry("type", "VARCHAR"), //
+                object(entry("type", "VARCHAR"), //
                         entry("size", 21), //
                         entry("characterSet", "ASCII")), //
-                group(entry("type", "CHAR"), //
+                object(entry("type", "CHAR"), //
                         entry("size", 22), //
                         entry("characterSet", "UTF8")), //
-                group(entry("type", "DECIMAL"), //
+                object(entry("type", "DECIMAL"), //
                         entry("precision", 31), //
                         entry("scale", 41)), //
-                group(entry("type", "DOUBLE")), //
-                group(entry("type", "DATE")), //
-                group(entry("type", "TIMESTAMP"), //
+                object(entry("type", "DOUBLE")), //
+                object(entry("type", "DATE")), //
+                object(entry("type", "TIMESTAMP"), //
                         entry("withLocalTimeZone", true)), //
-                group(entry("type", "BOOLEAN")), //
-                group(entry("type", "GEOMETRY"), //
+                object(entry("type", "BOOLEAN")), //
+                object(entry("type", "GEOMETRY"), //
                         entry("scale", 42)), //
-                group(entry("type", "INTERVAL"), //
+                object(entry("type", "INTERVAL"), //
                         entry("precision", 32), //
                         entry("fraction", 51)), //
-                group(entry("type", "HASHTYPE")));
+                object(entry("type", "HASHTYPE")));
         final List<DataType> expected = List.of( //
                 DataType.createVarChar(21, ExaCharset.ASCII), //
                 DataType.createChar(22, ExaCharset.UTF8), //
@@ -214,17 +214,17 @@ class DataTypeParserTest {
     }
 
     private void verifyIllegalPropertyValue(final String datatype, final String property, final String value) {
-        verifyIllegalPropertyValue(group(entry("type", datatype), entry(property, value)), datatype, property,
+        verifyIllegalPropertyValue(object(entry("type", datatype), entry(property, value)), datatype, property,
                 String.valueOf("\"" + value + "\""));
     }
 
     private void verifyIllegalPropertyValue(final String datatype, final String property, final boolean value) {
-        verifyIllegalPropertyValue(group(entry("type", datatype), entry(property, value)), datatype, property,
+        verifyIllegalPropertyValue(object(entry("type", datatype), entry(property, value)), datatype, property,
                 String.valueOf(value));
     }
 
     private void verifyIllegalPropertyValue(final String datatype, final String property, final int value) {
-        verifyIllegalPropertyValue(group(entry("type", datatype), entry(property, value)), datatype, property,
+        verifyIllegalPropertyValue(object(entry("type", datatype), entry(property, value)), datatype, property,
                 String.valueOf(value));
     }
 

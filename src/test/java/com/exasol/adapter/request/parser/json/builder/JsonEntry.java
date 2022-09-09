@@ -1,14 +1,14 @@
-package com.exasol.adapter.request.parser.json;
+package com.exasol.adapter.request.parser.json.builder;
 
-import com.exasol.adapter.request.parser.json.JsonKeyValue.Complex;
-import com.exasol.adapter.request.parser.json.JsonKeyValue.Simple;
-import com.exasol.adapter.request.parser.json.JsonParent.JsonArray;
-import com.exasol.adapter.request.parser.json.JsonParent.JsonGroup;
+import com.exasol.adapter.request.parser.json.builder.JsonKeyValue.Complex;
+import com.exasol.adapter.request.parser.json.builder.JsonKeyValue.Simple;
+import com.exasol.adapter.request.parser.json.builder.JsonParent.JsonArray;
+import com.exasol.adapter.request.parser.json.builder.JsonParent.JsonObject;
 
 public interface JsonEntry {
 
-    public static JsonGroup group(final JsonEntry... children) {
-        return new JsonGroup(children);
+    public static JsonObject object(final JsonEntry... children) {
+        return new JsonObject(children);
     }
 
     public static JsonArray array(final JsonEntry... children) {

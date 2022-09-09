@@ -1,7 +1,6 @@
 package com.exasol.adapter.request.parser;
 
-import static com.exasol.adapter.request.parser.json.JsonEntry.*;
-import static com.exasol.adapter.request.parser.json.JsonEntry.array;
+import static com.exasol.adapter.request.parser.json.builder.JsonEntry.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
@@ -18,11 +17,11 @@ import org.junit.jupiter.api.Test;
 import com.exasol.adapter.metadata.DataType;
 import com.exasol.adapter.metadata.TableMetadata;
 import com.exasol.adapter.request.*;
-import com.exasol.adapter.request.parser.json.*;
+import com.exasol.adapter.request.parser.json.builder.*;
 
 class RequestParserTest {
     private static final JsonKeyValue SCHEMA_METADATA_INFO = JsonEntry.entry("schemaMetadataInfo",
-            group(entry("name", "foo")));
+            object(entry("name", "foo")));
     private RequestParser parser;
 
     @BeforeEach
@@ -32,7 +31,7 @@ class RequestParserTest {
 
     @Test
     void requestTypeUnknown_ThrowsException() {
-        final String rawRequest = JsonEntry.group(//
+        final String rawRequest = JsonEntry.object(//
                 entry("type", "UNKNOWN"), SCHEMA_METADATA_INFO).render();
         final Exception exception = assertThrows(RequestParserException.class, () -> this.parser.parse(rawRequest));
         assertThat(exception.getMessage(), containsString("E-VSCOMJAVA-16"));
@@ -40,9 +39,9 @@ class RequestParserTest {
 
     @Test
     void setPropertiesRequest() {
-        final String rawRequest = JsonEntry.group(//
+        final String rawRequest = JsonEntry.object(//
                 entry("type", "setProperties"), //
-                entry("properties", group( //
+                entry("properties", object( //
                         entry("A", "value A"), //
                         entry("B", "42"), //
                         entry("PI", 3.14), //
@@ -65,10 +64,10 @@ class RequestParserTest {
 
     @Test
     void unsupportedPropertyType() {
-        final String rawRequest = JsonEntry.group(//
+        final String rawRequest = JsonEntry.object(//
                 entry("type", "setProperties"), //
-                entry("properties", group( //
-                        entry("A", group(entry("value", "some value"))))),
+                entry("properties", object( //
+                        entry("A", object(entry("value", "some value"))))),
                 SCHEMA_METADATA_INFO).render();
         final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> this.parser.parse(rawRequest));
@@ -91,10 +90,10 @@ class RequestParserTest {
     void pushDownRequestWithSelectListDataTypes() {
         final String rawRequest = createPushDownRequest().withChild( //
                 entry("selectListDataTypes", array( //
-                        group(entry("type", "DECIMAL"), //
+                        object(entry("type", "DECIMAL"), //
                                 entry("precision", 9), //
                                 entry("scale", 10)), //
-                        group(entry("type", "DOUBLE"))))) //
+                        object(entry("type", "DOUBLE"))))) //
                 .render();
         final AdapterRequest request = this.parser.parse(rawRequest);
         final List<DataType> selectListDataTypes = ((PushDownRequest) request).getSelectListDataTypes();
@@ -105,7 +104,7 @@ class RequestParserTest {
 
     @Test
     void refreshRequestWithoutTableFilter() {
-        final String rawRequest = JsonEntry.group(//
+        final String rawRequest = JsonEntry.object(//
                 entry("type", "refresh"), //
                 SCHEMA_METADATA_INFO) //
                 .render();
@@ -116,7 +115,7 @@ class RequestParserTest {
 
     @Test
     void refreshRequestWithTableFilter() {
-        final String rawRequest = JsonEntry.group(//
+        final String rawRequest = JsonEntry.object(//
                 entry("type", "refresh"), //
                 entry("requestedTables", array(value("T1"), value("T2"))), //
                 SCHEMA_METADATA_INFO) //
@@ -128,25 +127,25 @@ class RequestParserTest {
 
     @Test
     void requestWithoutSchemaMetadata() {
-        final String rawRequest = JsonEntry.group(entry("type", "refresh")).render();
+        final String rawRequest = JsonEntry.object(entry("type", "refresh")).render();
         final AdapterRequest request = this.parser.parse(rawRequest);
         assertThat(request.getVirtualSchemaName(), equalTo("UNKNOWN"));
     }
 
     private JsonParent createPushDownRequest() {
-        return JsonEntry.group( //
+        return JsonEntry.object( //
                 entry("type", "pushdown"), //
-                entry("pushdownRequest", group( //
+                entry("pushdownRequest", object( //
                         entry("type", "select"), //
-                        entry("from", group( //
+                        entry("from", object( //
                                 entry("name", "FOO"), //
                                 entry("type", "table") //
                         )))), //
-                entry("involvedTables", array(group( //
+                entry("involvedTables", array(object( //
                         entry("name", "FOO"), //
-                        entry("columns", array(group( //
+                        entry("columns", array(object( //
                                 entry("name", "BAR"), //
-                                entry("dataType", group( //
+                                entry("dataType", object( //
                                         entry("precision", 18), //
                                         entry("scale", 0), //
                                         entry("type", "DECIMAL") //
