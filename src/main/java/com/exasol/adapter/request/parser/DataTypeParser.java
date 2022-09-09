@@ -12,8 +12,21 @@ import com.exasol.errorreporting.ExaError;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 
+/**
+ * Starting with major version 8 Exasol database uses the capabilities reported by each virtual schema to provide select
+ * list data types for each push down request. Based on this information the JDBC virtual schemas no longer need to
+ * infer the data types of the result set by inspecting its values. Instead the JDBC virtual schemas can now use the
+ * information provided by the database.
+ *
+ * <p>
+ * Class {@link DataTypeParser} parses the data types from json.
+ * </p>
+ */
 public class DataTypeParser {
 
+    /**
+     * @return new instance of {@link DataTypeParser}
+     */
     public static DataTypeParser create() {
         return new DataTypeParser();
     }
@@ -21,6 +34,10 @@ public class DataTypeParser {
     private DataTypeParser() {
     }
 
+    /**
+     * @param jsonArray {@link JsonArray} containing the data types to parse
+     * @return list of parsed data types
+     */
     public List<DataType> parse(final JsonArray jsonArray) {
         return jsonArray.getValuesAs(JsonObject.class).stream() //
                 .map(this::datatype) //
@@ -63,13 +80,27 @@ public class DataTypeParser {
         }
     }
 
+    /**
+     * Signal an error during parsing data types from json.
+     */
     public static class DataTypeParserException extends RuntimeException {
         private static final long serialVersionUID = 1L;
 
+        /**
+         * Create a new instance of {@link DataTypeParserException}
+         *
+         * @param message message of the exception
+         */
         public DataTypeParserException(final String message) {
             super(message);
         }
 
+        /**
+         * Create a new instance of {@link DataTypeParserException}
+         *
+         * @param message   message of the exception
+         * @param exception inner exception being the cause of the current exception
+         */
         public DataTypeParserException(final String message, final Exception exception) {
             super(message, exception);
         }
