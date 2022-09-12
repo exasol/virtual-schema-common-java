@@ -1,6 +1,9 @@
 package com.exasol.adapter.request.parser;
 
+import static com.exasol.adapter.metadata.converter.SchemaMetadataJsonConverter.*;
+
 import com.exasol.adapter.metadata.DataType.ExaCharset;
+import com.exasol.adapter.metadata.DataType.IntervalType;
 import com.exasol.adapter.request.parser.DataTypeParser.DataTypeParserException;
 import com.exasol.errorreporting.ExaError;
 
@@ -8,18 +11,16 @@ import jakarta.json.JsonObject;
 
 class DataTypeProperty<T> {
 
-    static final StringProperty TYPE = new StringProperty("type");
-    static final IntProperty PRECISION = new IntProperty("precision");
-    static final IntProperty SCALE = new IntProperty("scale");
-    static final IntProperty SIZE = new IntProperty("size");
-    static final CharsetProperty CHARSET = new CharsetProperty("characterSet");
-    // These can only be verified by using exasol-virtual-schema
-    // as most other virtual schemas do not support data types using any of these properties
-
-    // to do: verify with data type TIMESTAMP!
-    static final BooleanProperty WITH_LOCAL_TIMEZONE = new BooleanProperty("withLocalTimeZone");
-    static final IntProperty FRACTION = new IntProperty("fraction"); // to do: verify with data type INTERVAL!
-    static final IntProperty BYTESIZE = new IntProperty("byteSize"); // to do: verify with data type HASHTYPE!
+    static final StringProperty TYPE = new StringProperty(TYPE_KEY);
+    static final IntProperty PRECISION = new IntProperty(PRECISION_KEY);
+    static final IntProperty SCALE = new IntProperty(SCALE_KEY);
+    static final IntProperty SIZE = new IntProperty(SIZE_KEY);
+    static final CharsetProperty CHARSET = new CharsetProperty(CHARSET_KEY);
+    static final BooleanProperty WITH_LOCAL_TIMEZONE = new BooleanProperty(WITH_LOCAL_TIMEZONE_KEY);
+    static final IntProperty SPATIAL_REFERENCE_ID = new IntProperty(SPATIAL_REFERENCE_ID_KEY);
+    static final IntProperty FRACTION = new IntProperty(FRACTION_KEY);
+    static final IntProperty BYTESIZE = new IntProperty(BYTESIZE_KEY);
+    static final IntervalTypeProperty FROM_TO = new IntervalTypeProperty(FROM_TO_KEY);
 
     protected final String key;
     private final DataTypeProperty.JsonGetter<T> getter;
@@ -69,6 +70,26 @@ class DataTypeProperty<T> {
         }
     }
 
+    static class IntervalTypeProperty extends DataTypeProperty<IntervalType> {
+        IntervalTypeProperty(final String key) {
+            super(key, IntervalTypeProperty::getValue);
+        }
+
+        private static IntervalType getValue(final JsonObject json, final String key) {
+            switch (json.getString(key)) {
+            case DAY_TO_SECONDS_VALUE:
+                return IntervalType.DAY_TO_SECOND;
+            case YEAR_TO_MONTH_VALUE:
+                return IntervalType.YEAR_TO_MONTH;
+            default:
+                throw new DataTypeParserException(ExaError.messageBuilder("E-VSCOMJAVA-41") //
+                        .message("Datatype {{datatype}}: Unsupported interval type {{interval type}}.", TYPE.get(json),
+                                json.getString(key)) //
+                        .ticketMitigation().toString());
+            }
+        }
+    }
+
     static class CharsetProperty extends DataTypeProperty<ExaCharset> {
         CharsetProperty(final String key) {
             super(key, CharsetProperty::getCharset);
@@ -76,9 +97,9 @@ class DataTypeProperty<T> {
 
         private static ExaCharset getCharset(final JsonObject json, final String key) {
             switch (json.getString(key)) {
-            case "ASCII":
+            case ASCII_VALUE:
                 return ExaCharset.ASCII;
-            case "UTF8":
+            case UTF8_VALUE:
                 return ExaCharset.UTF8;
             default:
                 throw new DataTypeParserException(ExaError.messageBuilder("E-VSCOMJAVA-38") //

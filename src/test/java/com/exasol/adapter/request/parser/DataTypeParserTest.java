@@ -91,22 +91,28 @@ class DataTypeParserTest {
     void geometry() {
         verifySingle(DataType.createGeometry(42), object( //
                 entry("type", "GEOMETRY"), //
-                entry("scale", 42)));
+                entry("srid", 42)));
     }
 
     @Test
     void interval() {
         verifySingle(DataType.createIntervalDaySecond(32, 51), object( //
                 entry("type", "INTERVAL"), //
+                entry("fromTo", "DAY TO SECONDS"), //
                 entry("precision", 32), //
                 entry("fraction", 51)));
+        verifySingle(DataType.createIntervalYearMonth(32), object( //
+                entry("type", "INTERVAL"), //
+                entry("fromTo", "YEAR TO MONTH"), //
+                entry("precision", 32), //
+                entry("fraction", 51))); // note: parser ignores extra properties
     }
 
     @Test
     void hashtype() {
         verifySingle(DataType.createHashtype(2031), object( //
                 entry("type", "HASHTYPE"), //
-                entry("byteSize", 2031)));
+                entry("bytesize", 2031)));
     }
 
     // ----------------------------------------------
@@ -136,6 +142,7 @@ class DataTypeParserTest {
     void intervalDefaultPrecision_2() {
         verifySingle(DataType.createIntervalDaySecond(2, 51), object( //
                 entry("type", "INTERVAL"), //
+                entry("fromTo", "DAY TO SECONDS"), //
                 entry("fraction", 51)));
     }
 
@@ -143,6 +150,7 @@ class DataTypeParserTest {
     void intervalDefaultFraction_3() {
         verifySingle(DataType.createIntervalDaySecond(32, 3), object( //
                 entry("type", "INTERVAL"), //
+                entry("fromTo", "DAY TO SECONDS"), //
                 entry("precision", 32)));
     }
 
@@ -167,13 +175,17 @@ class DataTypeParserTest {
                 "VARCHAR", "characterSet", "\"xxx\"");
         verifyIllegalPropertyValue("VARCHAR", "size", "abc");
         verifyIllegalPropertyValue("TIMESTAMP", "withLocalTimeZone", 123);
-        verifyIllegalPropertyValue("HASHTYPE", "byteSize", true);
-        verifyIllegalPropertyValue("GEOMETRY", "scale", false);
+        verifyIllegalPropertyValue("HASHTYPE", "bytesize", true);
+        verifyIllegalPropertyValue("GEOMETRY", "srid", false);
         verifyIllegalPropertyValue("INTERVAL", "precision", "p");
         verifyIllegalPropertyValue(object(entry("type", "INTERVAL"), //
+                entry("fromTo", "DAY TO SECONDS"), //
                 entry("precision", 5), //
                 entry("fraction", true)), //
                 "INTERVAL", "fraction", "true");
+        verifyIllegalPropertyValue(object(entry("type", "INTERVAL"), //
+                entry("fromTo", "xxx")), //
+                "INTERVAL", "fromTo", "\"xxx\"");
     }
 
     @Test
@@ -194,8 +206,9 @@ class DataTypeParserTest {
                         entry("withLocalTimeZone", true)), //
                 object(entry("type", "BOOLEAN")), //
                 object(entry("type", "GEOMETRY"), //
-                        entry("scale", 42)), //
+                        entry("srid", 42)), //
                 object(entry("type", "INTERVAL"), //
+                        entry("fromTo", "DAY TO SECONDS"), //
                         entry("precision", 32), //
                         entry("fraction", 51)), //
                 object(entry("type", "HASHTYPE")));
