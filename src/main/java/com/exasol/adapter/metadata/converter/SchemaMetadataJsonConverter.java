@@ -13,10 +13,39 @@ import jakarta.json.*;
  * This class converts the schema metadata to its JSON representation.
  */
 public final class SchemaMetadataJsonConverter {
+
+    /** TYPE */
+    public static final String TYPE_KEY = "type";
+    /** PRECISION */
+    public static final String PRECISION_KEY = "precision";
+    /** SCALE */
+    public static final String SCALE_KEY = "scale";
+    /** SIZE */
+    public static final String SIZE_KEY = "size";
+    /** CHARSET */
+    public static final String CHARSET_KEY = "characterSet";
+    /** WITH_LOCAL_TIMEZONE */
+    public static final String WITH_LOCAL_TIMEZONE_KEY = "withLocalTimeZone";
+    /** SPATIAL_REFERENCE_ID */
+    public static final String SPATIAL_REFERENCE_ID_KEY = "srid";
+    /** FRACTION */
+    public static final String FRACTION_KEY = "fraction";
+    /** BYTESIZE */
+    public static final String BYTESIZE_KEY = "bytesize";
+    /** FROM_TO */
+    public static final String FROM_TO_KEY = "fromTo";
+    /** UTF8 */
+    public static final String UTF8_VALUE = "UTF8";
+    /** ASCII */
+    public static final String ASCII_VALUE = "ASCII";
+    /** YEAR_TO_MONTH_VALUE */
+    public static final String YEAR_TO_MONTH_VALUE = "YEAR TO MONTH";
+    /** DAY_TO_SECONDS_VALUE */
+    public static final String DAY_TO_SECONDS_VALUE = "DAY TO SECONDS";
+
     private static final SchemaMetadataJsonConverter instance = new SchemaMetadataJsonConverter();
     private static final String ADAPTER_NOTES_KEY = "adapterNotes";
     private static final String TABLES_KEY = "tables";
-    private static final String TYPE_KEY = "type";
     private static final String TABLE_NAME_KEY = "name";
     private static final String DATA_TYPE_KEY = "dataType";
     private static final String NULLABLE_KEY = "isNullable";
@@ -111,25 +140,25 @@ public final class SchemaMetadataJsonConverter {
                     .message("Unsupported data type found trying to serialize schema metadata. {{report|uq}}")
                     .parameter("report", ErrorMessages.askForBugReport()).toString());
         case DECIMAL:
-            typeAsJson.add("precision", dataType.getPrecision());
-            typeAsJson.add("scale", dataType.getScale());
+            typeAsJson.add(PRECISION_KEY, dataType.getPrecision());
+            typeAsJson.add(SCALE_KEY, dataType.getScale());
             break;
         case VARCHAR: // falling through intentionally
         case CHAR:
-            typeAsJson.add("size", dataType.getSize());
-            typeAsJson.add("characterSet", getCharacterSetName(dataType.getCharset()));
+            typeAsJson.add(SIZE_KEY, dataType.getSize());
+            typeAsJson.add(CHARSET_KEY, getCharacterSetName(dataType.getCharset()));
             break;
         case TIMESTAMP:
-            typeAsJson.add("withLocalTimeZone", dataType.isWithLocalTimezone());
+            typeAsJson.add(WITH_LOCAL_TIMEZONE_KEY, dataType.isWithLocalTimezone());
             break;
         case GEOMETRY:
-            typeAsJson.add("srid", dataType.getGeometrySrid());
+            typeAsJson.add(SPATIAL_REFERENCE_ID_KEY, dataType.getGeometrySrid());
             break;
         case INTERVAL:
             addIntervalToRoot(dataType, typeAsJson);
             break;
         case HASHTYPE:
-            typeAsJson.add("bytesize", dataType.getByteSize());
+            typeAsJson.add(BYTESIZE_KEY, dataType.getByteSize());
             break;
         case DOUBLE: // falling through intentionally
         case DATE:
@@ -144,10 +173,10 @@ public final class SchemaMetadataJsonConverter {
     }
 
     private void addIntervalToRoot(final DataType dataType, final JsonObjectBuilder dataTypeAsJson) {
-        dataTypeAsJson.add("fromTo", intervalTypeAsString(dataType.getIntervalType()));
-        dataTypeAsJson.add("precision", dataType.getPrecision());
+        dataTypeAsJson.add(FROM_TO_KEY, intervalTypeAsString(dataType.getIntervalType()));
+        dataTypeAsJson.add(PRECISION_KEY, dataType.getPrecision());
         if (dataType.getIntervalType() == IntervalType.DAY_TO_SECOND) {
-            dataTypeAsJson.add("fraction", dataType.getIntervalFraction());
+            dataTypeAsJson.add(FRACTION_KEY, dataType.getIntervalFraction());
         }
     }
 
@@ -183,9 +212,9 @@ public final class SchemaMetadataJsonConverter {
     private String getCharacterSetName(final ExaCharset charset) {
         switch (charset) {
         case UTF8:
-            return "UTF8";
+            return UTF8_VALUE;
         case ASCII:
-            return "ASCII";
+            return ASCII_VALUE;
         default:
             throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-3")
                     .message("Unexpected charset {{charset}} encountered while trying to serialize character "
@@ -198,9 +227,9 @@ public final class SchemaMetadataJsonConverter {
     private String intervalTypeAsString(final IntervalType intervalType) {
         switch (intervalType) {
         case DAY_TO_SECOND:
-            return "DAY TO SECONDS";
+            return DAY_TO_SECONDS_VALUE;
         case YEAR_TO_MONTH:
-            return "YEAR TO MONTH";
+            return YEAR_TO_MONTH_VALUE;
         default:
             throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-4").message(
                     "Unexpected interval type {{intervalType}} encountered while trying to serialize an interval. {{report|uq}}")

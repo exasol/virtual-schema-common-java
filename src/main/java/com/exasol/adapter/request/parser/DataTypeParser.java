@@ -52,7 +52,6 @@ public class DataTypeParser {
         }
         switch (TYPE.get(entry)) {
         case "DECIMAL":
-            // should we accept at least if both precision *and* scale missing and use default value -1 for both?
             return DataType.createDecimal(PRECISION.get(entry), SCALE.get(entry));
         case "DOUBLE":
             return DataType.createDouble();
@@ -67,16 +66,29 @@ public class DataTypeParser {
         case "BOOLEAN":
             return DataType.createBool();
         case "GEOMETRY":
-            return DataType.createGeometry(SCALE.get(entry, 0));
+            return DataType.createGeometry(SPATIAL_REFERENCE_ID.get(entry, 0));
         case "HASHTYPE":
             return DataType.createHashtype(BYTESIZE.get(entry, 16));
         case "INTERVAL":
-            return DataType.createIntervalDaySecond(PRECISION.get(entry, 2), FRACTION.get(entry, 3));
-        case "UNSUPPORTED": // fall through
+            return createInterval(entry);
+        case "UNSUPPORTED": // falling through intentionally
         default:
             throw new DataTypeParserException(ExaError.messageBuilder("E-VSCOMJAVA-37") //
                     .message("Unsupported datatype {{datatype}}.", TYPE.get(entry)) //
                     .ticketMitigation().toString());
+        }
+    }
+
+    private DataType createInterval(final JsonObject entry) {
+        final int precision = PRECISION.get(entry, 2);
+        switch (FROM_TO.get(entry)) {
+        case YEAR_TO_MONTH:
+            return DataType.createIntervalYearMonth(precision);
+        case DAY_TO_SECOND:
+            // falling through intentionally
+            // FROM_TO.get() ensures no other values
+        default:
+            return DataType.createIntervalDaySecond(precision, FRACTION.get(entry, 3));
         }
     }
 
@@ -86,22 +98,11 @@ public class DataTypeParser {
     public static class DataTypeParserException extends RuntimeException {
         private static final long serialVersionUID = 1L;
 
-        /**
-         * Create a new instance of {@link DataTypeParserException}
-         *
-         * @param message message of the exception
-         */
-        public DataTypeParserException(final String message) {
+        DataTypeParserException(final String message) {
             super(message);
         }
 
-        /**
-         * Create a new instance of {@link DataTypeParserException}
-         *
-         * @param message   message of the exception
-         * @param exception inner exception being the cause of the current exception
-         */
-        public DataTypeParserException(final String message, final Exception exception) {
+        DataTypeParserException(final String message, final Exception exception) {
             super(message, exception);
         }
     }
