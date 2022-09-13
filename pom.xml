@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>virtual-schema-common-java</artifactId>
-    <version>16.1.0</version>
+    <version>16.1.1</version>
     <name>Common module of Exasol Virtual Schemas Adapters</name>
     <description>This is one of the modules of Virtual Schemas Adapters. The libraries provided by this project are the
         foundation of the adapter development, i.e. adapters must be implemented on top of them.</description>
@@ -102,7 +102,7 @@
     <parent>
         <artifactId>virtual-schema-common-java-generated-parent</artifactId>
         <groupId>com.exasol</groupId>
-        <version>16.1.0</version>
+        <version>16.1.1</version>
         <relativePath>pk_generated_parent.pom</relativePath>
     </parent>
 </project>

@@ -2,6 +2,13 @@
 
 Here you can find a list of available Virtual Schema capabilities.
 
+* [Main Capabilities](#main-capabilities)
+* [Literal Capabilities](#literal-capabilities)
+* [Predicate Capabilities](#predicate-capabilities)
+* [Scalar Function Capabilities](#scalar-function-capabilities)
+* [Aggregate Function Capabilities](#aggregate-function-capabilities)
+
+
 ## [Main Capabilities](../../../src/main/java/com/exasol/adapter/capabilities/MainCapability.java)
 
 - AGGREGATE_GROUP_BY_COLUMN
@@ -253,7 +260,7 @@ Here you can find a list of available Virtual Schema capabilities.
 - FN_AGG_AVG
 - FN_AGG_AVG_DISTINCT
 - FN_AGG_COUNT
-- FN_AGG_COUNT_DISTINCT 
+- FN_AGG_COUNT_DISTINCT
 - FN_AGG_COUNT_STAR
 - FN_AGG_COUNT_TUPLE
 - FN_AGG_EVERY
@@ -273,7 +280,7 @@ Here you can find a list of available Virtual Schema capabilities.
 - FN_AGG_LISTAGG_SEPARATOR
 - FN_AGG_MAX
 - FN_AGG_MEDIAN
-- FN_AGG_MIN 
+- FN_AGG_MIN
 - FN_AGG_MUL
 - FN_AGG_MUL_DISTINCT
 - FN_AGG_SOME

@@ -36,12 +36,12 @@ To get a better understanding let's take a look on how the Exasol database proce
 
 ![virtual schema query processing](../../../src/uml/requestHandling.png)
 
-The diagram shows how Exasol handles Virtual Schema queries: 
+The diagram shows how Exasol handles Virtual Schema queries:
 
-- When the core receives an SQL query on a Virtual Schema table, it first checks the capabilities of the corresponding Virtual Schema adapter. Based on that information it removes all functions and literals that are not supported by the adapter. 
-- Next, the Exasol Core sends a query to the Virtual Schema adapter as a `PushdownRequest`. 
-- The Virtual Schema adapter now rewrites the query into a new SQL statement that typically invokes the Exasol importer `IMPORT INTO ...`. For details see the [`IMPORT` statements documentation](https://docs.exasol.com/sql/import.htm). The importer statement contains a query to the external database as a string. 
-- Next, the Exasol database parses this statement again and invokes the importer. 
+- When the core receives an SQL query on a Virtual Schema table, it first checks the capabilities of the corresponding Virtual Schema adapter. Based on that information it removes all functions and literals that are not supported by the adapter.
+- Next, the Exasol Core sends a query to the Virtual Schema adapter as a `PushdownRequest`.
+- The Virtual Schema adapter now rewrites the query into a new SQL statement that typically invokes the Exasol importer `IMPORT INTO ...`. For details see the [`IMPORT` statements documentation](https://docs.exasol.com/sql/import.htm). The importer statement contains a query to the external database as a string.
+- Next, the Exasol database parses this statement again and invokes the importer.
 - Finally, the Exasol core applies the functions that were not supported by the remote database itself as post processing and returns that result to the SQL client.
 
 Instead of the `IMPORT` statement the adapter can also create other SQL statements.
@@ -139,7 +139,7 @@ Request to set and unset properties. The Adapter can decide whether it needs to 
 
 ```json
 {
-    
+
     "type": "setProperties",
     "properties": {
         "JDBC_CONNECTION_STRING": "new-jdbc-connection-string",
@@ -158,7 +158,7 @@ Request to set and unset properties. The Adapter can decide whether it needs to 
 
 The new values appear in a separate object `/properties` directly in the root element. For reference the current property values are still reported under '/schemaMetadataInfo/properties'.
 
-Adapters must apply the properties incrementally, meaning that all parameters not explicitly listed in `/properties`, remain unchanged. 
+Adapters must apply the properties incrementally, meaning that all parameters not explicitly listed in `/properties`, remain unchanged.
 
 **Response:**
 
@@ -261,24 +261,19 @@ LIMIT  10;
 
 ##### Capability Prefixes
 
-- Main Capabilities: No prefix
-- Literal Capabilities: LITERAL_
-- Predicate Capabilities: FN_PRED_
-- Scalar Function Capabilities: FN_
-- Aggregate Function Capabilities: FN_AGG_
+See also [List of supported Capabilities](capabilities_list.md).
 
-See also [a list of supported Capabilities](capabilities_list.md).
-
-Capabilities can be also found in the sources of the Virtual Schema Common Java:
-* [Main Capabilities](https://github.com/exasol/virtual-schema-common-java/blob/master/src/main/java/com/exasol/adapter/capabilities/MainCapability.java)
-* [Literal Capabilities](https://github.com/exasol/virtual-schema-common-java/blob/master/src/main/java/com/exasol/adapter/capabilities/LiteralCapability.java)
-* [Predicate Capabilities](https://github.com/exasol/virtual-schema-common-java/blob/master/src/main/java/com/exasol/adapter/capabilities/PredicateCapability.java)
-* [Scalar Function Capabilities](https://github.com/exasol/virtual-schema-common-java/blob/master/src/main/java/com/exasol/adapter/capabilities/ScalarFunctionCapability.java)
-* [Aggregate Function Capabilities](https://github.com/exasol/virtual-schema-common-java/blob/master/src/main/java/com/exasol/adapter/capabilities/AggregateFunctionCapability.java)
+| Capability 			  | Prefix     | Java Implementation |
+|---------------------------------|------------|---------------------|
+| [Main Capabilities](capabilities_list.md#main-capabilities)                             | (none)     | [MainCapability.java](https://github.com/exasol/virtual-schema-common-java/blob/master/src/main/java/com/exasol/adapter/capabilities/MainCapability.java)                        |
+| [Literal Capabilities](capabilities_list.md#literal-capabilities)		          | `LITERAL_` | [LiteralCapability.java](https://github.com/exasol/virtual-schema-common-java/blob/master/src/main/java/com/exasol/adapter/capabilities/LiteralCapability.java)         	    |
+| [Predicate Capabilities](capabilities_list.md#predicate-capabilities)		          | `FN_PRED_` | [PredicateCapability.java](https://github.com/exasol/virtual-schema-common-java/blob/master/src/main/java/com/exasol/adapter/capabilities/PredicateCapability.java)		    |
+| [Scalar Function Capabilities](capabilities_list.md#scalar-function-capabilities)       | `FN_`      | [ScalarFunctionCapability.java](https://github.com/exasol/virtual-schema-common-java/blob/master/src/main/java/com/exasol/adapter/capabilities/ScalarFunctionCapability.java)	    |
+| [Aggregate Function Capabilities](capabilities_list.md#aggregate-function-capabilities) | `FN_AGG_`  | [AggregateFunctionCapability.java](https://github.com/exasol/virtual-schema-common-java/blob/master/src/main/java/com/exasol/adapter/capabilities/AggregateFunctionCapability.java)|
 
 ### Pushdown
 
-Contains an abstract specification of what to be pushed down, and requests an pushdown SQL statement from the Adapter which can be used to retrieve the requested data.
+Contains an abstract specification of what to be pushed down, and requests a pushdown SQL statement from the Adapter which can be used to retrieve the requested data.
 
 **Request:**
 
@@ -395,6 +390,19 @@ will produce the following Request, assuming that the Adapter has all required c
             "numElements" : 10
         }
     },
+    "selectListDataTypes" :
+    [
+    	{
+    		"precision" : 18,
+    		"scale" : 0,
+    		"type" : "DECIMAL"
+    	},
+    	{
+    		"precision" : 10,
+    		"scale" : 0,
+    		"type" : "DECIMAL"
+    	}
+    ],
     "involvedTables": [
     {
         "name" : "CLICKS",
@@ -456,6 +464,8 @@ Notes
   * `orderBy`: The requested order-by clause, a list of `order_by_element` elements.
   * `limit` The requested limit of the result set, with an optional offset.
 * `involvedTables`: Metadata of the involved tables, encoded like in schemaMetadata.
+* `selectListDataTypes`: List of data tyes expected in the result set.
+  This information is only provided by Exasol database with major version 8 and higher, see [Exasol Data Types API Documentation](data_types_api.md).
 
 **Response:**
 
@@ -607,14 +617,14 @@ This element currently only occurs in from clause
 {
     "type": "join",
     "join_type": "inner",
-    "left": { 
-        ... 
+    "left": {
+        ...
     },
-    "right" : { 
-        ... 
+    "right" : {
+        ...
     },
-    "condition" : { 
-        ... 
+    "condition" : {
+        ...
     }
 }
 ```

@@ -119,3 +119,7 @@ Notes:
     "bytesize" : 16
 }
 ```
+
+Notes:
+
+* `bytesize`: Optional. The default value is `16`.
