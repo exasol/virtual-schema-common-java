@@ -6,22 +6,22 @@ This page describes how Exasol scalar functions map to the Virtual Schemas push-
 
 ### Functions With a Common API
 
-* [Functions without arguments](#functions-without-arguments);
-* [Functions with a single argument](#functions-with-a-single-argument);
-* [Functions with multiple arguments](#functions-with-multiple-arguments);
-* [Arithmetic operators](#arithmetic-operators).
+* [Functions without arguments](#functions-without-arguments)
+* [Functions with a single argument](#functions-with-a-single-argument)
+* [Functions with multiple arguments](#functions-with-multiple-arguments)
+* [Arithmetic operators](#arithmetic-operators)
 
 ### Functions With a Special API
 
 This section contains functions that have a special API mapping.
-  
+
 | Function Name     | API Mapping Link                            |
 |-------------------|---------------------------------------------|
 | EXTRACT           | [EXTRACT function](#extract-function)       |
 | CASE              | [CASE function](#case-function)             |
 | CAST              | [CAST function](#cast-function)             |
 | JSON_VALUE        | [JSON_VALUE function](#json_value-function) |
-     
+
 ### Functions Not Included in the API
 
 This section contains Exasol functions which are not included in the API.
@@ -287,12 +287,12 @@ Notes:
 * `results`: The different results in the same order as the arguments. If present, the ELSE result is the last entry in the `results` array.
 * `basis`: Optional.
 
-Here is an example of a query containing a CASE function and its JSON representation (only the function part): 
+Here is an example of a query containing a CASE function and its JSON representation (only the function part):
 
 ```sql
 SELECT CASE grade
           WHEN 1 THEN 'GOOD'
-          WHEN 2 THEN 'FAIR' 
+          WHEN 2 THEN 'FAIR'
           WHEN 3 THEN 'POOR'
           ELSE 'INVALID'
           END
@@ -348,7 +348,7 @@ FROM VIRTUAL_SCHEMA_EXASOL.ALL_EXASOL_TYPES;
 
 `JSON_VALUE(arg1, arg2 RETURNING dataType {ERROR | NULL | DEFAULT exp1} ON EMPTY {ERROR | NULL | DEFAULT exp2} ON ERROR)`
  (requires scalar-function capability `JSON_VALUE`)
- 
+
 ```json
 {
     "type": "function_scalar_json_value",
@@ -385,7 +385,7 @@ Notes:
 A scalar function, that does not contain any column references, might be executed before reaching Virtual Schemas.
 That means the JSON request does not contain the scalar function, but a literal value representing its result.
 For example, the query `SELECT ABS(-123), c5 FROM VIRTUAL_SCHEMA_EXASOL.ALL_EXASOL_TYPES` will have the following select list:
-  
+
 ```json
 {
   ...
@@ -402,7 +402,7 @@ For example, the query `SELECT ABS(-123), c5 FROM VIRTUAL_SCHEMA_EXASOL.ALL_EXAS
       "name": "C5"
     }
   ],
-  
+
   ...
 }
 ```
