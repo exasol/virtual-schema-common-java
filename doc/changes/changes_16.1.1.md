@@ -1,4 +1,4 @@
-# Common module of Exasol Virtual Schemas Adapters 16.1.1, released 2022-09-13
+# Common module of Exasol Virtual Schemas Adapters 16.1.1, released 2022-09-15
 
 Code name: Fixed data type properties and Documentation Update
 
