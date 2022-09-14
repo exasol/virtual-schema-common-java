@@ -71,10 +71,17 @@ public class RequestParser extends AbstractRequestParser {
     }
 
     private AbstractAdapterRequest parsePushdownRequest(final JsonObject root, final SchemaMetadataInfo metadataInfo) {
-        final SqlStatement statement = parsePushdownStatement(root);
+        final JsonObject pushdownJson = root.getJsonObject(PUSHDOW_REQUEST_KEY);
         final List<TableMetadata> involvedTables = parseInvolvedTables(root);
-        final List<DataType> dataTypes = parseDataTypes(root);
+        final SqlStatement statement = parsePushdownStatement(pushdownJson, involvedTables);
+        final List<DataType> dataTypes = parseDataTypes(pushdownJson);
         return new PushDownRequest(metadataInfo, statement, involvedTables, dataTypes);
+    }
+
+    private SqlStatement parsePushdownStatement(final JsonObject pushdownJson,
+            final List<TableMetadata> involvedTables) {
+        final PushdownSqlParser pushdownSqlParser = PushdownSqlParser.createWithTablesMetadata(involvedTables);
+        return (SqlStatement) pushdownSqlParser.parseExpression(pushdownJson);
     }
 
     private List<DataType> parseDataTypes(final JsonObject root) {
@@ -100,13 +107,6 @@ public class RequestParser extends AbstractRequestParser {
             LOGGER.severe("Missing metadata information trying to parse adapter request.");
             return new SchemaMetadataInfo("UNKNOWN", "", new HashMap<>());
         }
-    }
-
-    private SqlStatement parsePushdownStatement(final JsonObject root) {
-        final List<TableMetadata> involvedTables = parseInvolvedTables(root);
-        final PushdownSqlParser pushdownSqlParser = PushdownSqlParser.createWithTablesMetadata(involvedTables);
-        final JsonObject jsonPushdownStatement = root.getJsonObject(PUSHDOW_REQUEST_KEY);
-        return (SqlStatement) pushdownSqlParser.parseExpression(jsonPushdownStatement);
     }
 
     /**
