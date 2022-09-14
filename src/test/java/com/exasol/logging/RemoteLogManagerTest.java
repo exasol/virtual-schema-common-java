@@ -1,13 +1,14 @@
 package com.exasol.logging;
 
-import static org.hamcrest.Matchers.matchesPattern;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.matchesPattern;
 
 import java.io.*;
 import java.net.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.hamcrest.Matcher;
 import org.itsallcode.io.Capturable;
 import org.itsallcode.junit.sysextensions.SystemErrGuard;
 import org.junit.jupiter.api.*;
@@ -15,10 +16,29 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(SystemErrGuard.class)
 class RemoteLogManagerTest {
+
     private static final String CLASS_TAG = "\\[c\\.e\\.l\\.RemoteLogManagerTest\\]";
-    private static final String TIMESTAMP_PATTERN = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}.\\d{3}";
+    static final String TIMESTAMP_PATTERN = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}.\\d{3}";
     private static final Logger LOGGER = Logger.getLogger(RemoteLogManagerTest.class.getName());
+    static final String LINEFEED_PATTERN = linefeedPattern();
+
+    static Matcher<String> matchesTimeStamp(final String content) {
+        return matchesPattern(TIMESTAMP_PATTERN + content + LINEFEED_PATTERN);
+    }
+
     private RemoteLogManager logManager;
+
+    static String linefeedPattern() {
+        switch (System.lineSeparator()) {
+        case "\r\n":
+            return "\\r\\n";
+        case "\r":
+            return "\\r";
+        case "\n": // falling through intentionally
+        default:
+            return "\\n";
+        }
+    }
 
     @BeforeEach
     void BeforeEach() {
@@ -35,7 +55,7 @@ class RemoteLogManagerTest {
         this.logManager.setupConsoleLogger(Level.INFO);
         stream.capture();
         LOGGER.info("Hello.");
-        assertThat(stream.getCapturedData(), matchesPattern(TIMESTAMP_PATTERN + " INFO +" + CLASS_TAG + " Hello.\\n"));
+        assertThat(stream.getCapturedData(), matchesTimeStamp(" INFO +" + CLASS_TAG + " Hello."));
     }
 
     @Test
@@ -43,8 +63,7 @@ class RemoteLogManagerTest {
         this.logManager.setupConsoleLogger(Level.ALL);
         stream.capture();
         LOGGER.finest(() -> "Hello.");
-        assertThat(stream.getCapturedData(),
-                matchesPattern(TIMESTAMP_PATTERN + " FINEST +" + CLASS_TAG + " Hello.\\n"));
+        assertThat(stream.getCapturedData(), matchesTimeStamp(" FINEST +" + CLASS_TAG + " Hello."));
     }
 
     @Test
@@ -103,6 +122,6 @@ class RemoteLogManagerTest {
     void testFallBackFromRemoteLoggingToConsoleLogging(final Capturable stream) {
         stream.capture();
         this.logManager.setupRemoteLogger("this.hostname.should.not.exist.exasol.com", 3000, Level.ALL);
-        assertThat(stream.getCapturedData(), matchesPattern(".*Falling back to console log.\n"));
+        assertThat(stream.getCapturedData(), matchesPattern(".*Falling back to console log." + System.lineSeparator()));
     }
 }
