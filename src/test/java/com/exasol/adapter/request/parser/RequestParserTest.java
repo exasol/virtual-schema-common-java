@@ -1,6 +1,7 @@
 package com.exasol.adapter.request.parser;
 
 import static com.exasol.adapter.request.parser.json.builder.JsonEntry.*;
+import static com.exasol.adapter.request.parser.json.builder.JsonEntry.array;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
@@ -18,6 +19,7 @@ import com.exasol.adapter.metadata.DataType;
 import com.exasol.adapter.metadata.TableMetadata;
 import com.exasol.adapter.request.*;
 import com.exasol.adapter.request.parser.json.builder.*;
+import com.exasol.adapter.request.parser.json.builder.JsonParent.JsonObject;
 
 class RequestParserTest {
     private static final JsonKeyValue SCHEMA_METADATA_INFO = JsonEntry.entry("schemaMetadataInfo",
@@ -76,7 +78,7 @@ class RequestParserTest {
 
     @Test
     void classicPushDownRequest() {
-        final AdapterRequest request = this.parser.parse(createPushDownRequest().render());
+        final AdapterRequest request = this.parser.parse(createPushDownRequest(null).render());
         assertThat("Request class", request, instanceOf(PushDownRequest.class));
         final List<TableMetadata> involvedTables = ((PushDownRequest) request).getInvolvedTablesMetadata();
         final List<DataType> selectListDataTypes = ((PushDownRequest) request).getSelectListDataTypes();
@@ -88,13 +90,12 @@ class RequestParserTest {
 
     @Test
     void pushDownRequestWithSelectListDataTypes() {
-        final String rawRequest = createPushDownRequest().addChild( //
-                entry("selectListDataTypes", array( //
-                        object(entry("type", "DECIMAL"), //
-                                entry("precision", 9), //
-                                entry("scale", 10)), //
-                        object(entry("type", "DOUBLE"))))) //
-                .render();
+        final JsonKeyValue ltdt = entry("selectListDataTypes", array( //
+                object(entry("type", "DECIMAL"), //
+                        entry("precision", 9), //
+                        entry("scale", 10)), //
+                object(entry("type", "DOUBLE")))); //
+        final String rawRequest = createPushDownRequest(ltdt).render();
         final AdapterRequest request = this.parser.parse(rawRequest);
         final List<DataType> selectListDataTypes = ((PushDownRequest) request).getSelectListDataTypes();
         assertAll(() -> assertThat(request.getType(), equalTo(AdapterRequestType.PUSHDOWN)),
@@ -132,15 +133,19 @@ class RequestParserTest {
         assertThat(request.getVirtualSchemaName(), equalTo("UNKNOWN"));
     }
 
-    private JsonParent createPushDownRequest() {
+    private JsonParent createPushDownRequest(final JsonEntry selectListDataTypes) {
+        final JsonObject pdr = object( //
+                entry("type", "select"), //
+                entry("from", object( //
+                        entry("name", "FOO"), //
+                        entry("type", "table") //
+                )));
+        if (selectListDataTypes != null) {
+            pdr.addChild(selectListDataTypes);
+        }
         return JsonEntry.object( //
                 entry("type", "pushdown"), //
-                entry("pushdownRequest", object( //
-                        entry("type", "select"), //
-                        entry("from", object( //
-                                entry("name", "FOO"), //
-                                entry("type", "table") //
-                        )))), //
+                entry("pushdownRequest", pdr), //
                 entry("involvedTables", array(object( //
                         entry("name", "FOO"), //
                         entry("columns", array(object( //

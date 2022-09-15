@@ -1,8 +1,9 @@
 package com.exasol.logging;
 
+import static com.exasol.logging.RemoteLogManagerTest.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.text.MatchesPattern.matchesPattern;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.logging.Level;
@@ -14,7 +15,6 @@ import org.junit.jupiter.api.Test;
 class CompactFormatterTest {
     private LogRecord record;
     private final CompactFormatter formatter = new CompactFormatter();
-    private final String TIMESTAMP_PATTERN = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}.\\d{3}";
 
     @BeforeEach
     void beforeEach() {
@@ -24,51 +24,49 @@ class CompactFormatterTest {
     @Test
     void testFormat() {
         final String formattedRecord = this.formatter.format(this.record);
-        assertThat(formattedRecord, matchesPattern(this.TIMESTAMP_PATTERN + " SEVERE +message\\n"));
+        assertThat(formattedRecord, matchesTimeStamp(" SEVERE +message"));
     }
 
     @Test
     void testFormatWithEmptyClass() {
         this.record.setSourceClassName("");
         final String formattedRecord = this.formatter.format(this.record);
-        assertThat(formattedRecord, matchesPattern(this.TIMESTAMP_PATTERN + " SEVERE +message\\n"));
+        assertThat(formattedRecord, matchesTimeStamp(" SEVERE +message"));
     }
 
     @Test
     void testFormatWithSimpleClass() {
         this.record.setSourceClassName("example");
         final String formattedRecord = this.formatter.format(this.record);
-        assertThat(formattedRecord, matchesPattern(this.TIMESTAMP_PATTERN + " SEVERE +\\[example\\] +message\\n"));
+        assertThat(formattedRecord, matchesTimeStamp(" SEVERE +\\[example\\] +message"));
     }
 
     @Test
     void testFormatWithFullClass() {
         this.record.setSourceClassName("com.exasol.example");
         final String formattedRecord = this.formatter.format(this.record);
-        assertThat(formattedRecord,
-                matchesPattern(this.TIMESTAMP_PATTERN + " SEVERE +\\[c\\.e\\.example\\] +message\\n"));
+        assertThat(formattedRecord, matchesTimeStamp(" SEVERE +\\[c\\.e\\.example\\] +message"));
     }
 
     @Test
     void testFormatRobustAgainstDoubleDot() {
         this.record.setSourceClassName("com.exasol..example");
         final String formattedRecord = this.formatter.format(this.record);
-        assertThat(formattedRecord,
-                matchesPattern(this.TIMESTAMP_PATTERN + " SEVERE +\\[c\\.e\\.\\.example\\] +message\\n"));
+        assertThat(formattedRecord, matchesTimeStamp(" SEVERE +\\[c\\.e\\.\\.example\\] +message"));
     }
 
     @Test
     void testFormatRobustAgainstEndDot() {
         this.record.setSourceClassName("com.exasol.");
         final String formattedRecord = this.formatter.format(this.record);
-        assertThat(formattedRecord, matchesPattern(this.TIMESTAMP_PATTERN + " SEVERE +\\[c\\.e\\.\\] +message\\n"));
+        assertThat(formattedRecord, matchesTimeStamp(" SEVERE +\\[c\\.e\\.\\] +message"));
     }
 
     @Test
     void testFormatRobustAgainstOnlyDot() {
         this.record.setSourceClassName(".");
         final String formattedRecord = this.formatter.format(this.record);
-        assertThat(formattedRecord, matchesPattern(this.TIMESTAMP_PATTERN + " SEVERE +\\[\\.\\] +message\\n"));
+        assertThat(formattedRecord, matchesTimeStamp(" SEVERE +\\[\\.\\] +message"));
     }
 
     @Test
@@ -76,7 +74,7 @@ class CompactFormatterTest {
         final LogRecord recordWithPlaceholders = new LogRecord(Level.SEVERE, "message {0} : {1}");
         recordWithPlaceholders.setParameters(new String[] { "foo", "bar" });
         final String formattedRecord = this.formatter.format(recordWithPlaceholders);
-        assertThat(formattedRecord, matchesPattern(this.TIMESTAMP_PATTERN + " SEVERE +message foo : bar\\n"));
+        assertThat(formattedRecord, matchesTimeStamp(" SEVERE +message foo : bar"));
     }
 
     @Test
@@ -88,7 +86,7 @@ class CompactFormatterTest {
         final String formattedRecord = this.formatter.format(this.record);
         assertAll(
                 () -> assertThat(formattedRecord,
-                        matchesPattern(this.TIMESTAMP_PATTERN + " SEVERE  the message(\\n.*)*")),
+                        matchesPattern(TIMESTAMP_PATTERN + " SEVERE  the message\\n(.*" + LINEFEED_PATTERN + ")*")),
                 () -> assertThat(formattedRecord, containsString("the exception")),
                 () -> assertThat(formattedRecord, containsString("the cause")));
     }
