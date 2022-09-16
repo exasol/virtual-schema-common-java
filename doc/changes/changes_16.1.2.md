@@ -4,4 +4,4 @@ Code name: Documentation Update
 
 ## Summary
 
-This release includes updatd documentation for issue #258 which fixed data type properties.
+This release includes updated documentation for issue #258 which fixed data type properties.
