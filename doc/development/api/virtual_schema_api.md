@@ -263,12 +263,12 @@ LIMIT  10;
 
 See also [List of supported Capabilities](capabilities_list.md).
 
-| Capability 			  | Prefix     | Java Implementation |
+| Capability                      | Prefix     | Java Implementation |
 |---------------------------------|------------|---------------------|
 | [Main Capabilities](capabilities_list.md#main-capabilities)                             | (none)     | [MainCapability.java](https://github.com/exasol/virtual-schema-common-java/blob/master/src/main/java/com/exasol/adapter/capabilities/MainCapability.java)                        |
-| [Literal Capabilities](capabilities_list.md#literal-capabilities)		          | `LITERAL_` | [LiteralCapability.java](https://github.com/exasol/virtual-schema-common-java/blob/master/src/main/java/com/exasol/adapter/capabilities/LiteralCapability.java)         	    |
-| [Predicate Capabilities](capabilities_list.md#predicate-capabilities)		          | `FN_PRED_` | [PredicateCapability.java](https://github.com/exasol/virtual-schema-common-java/blob/master/src/main/java/com/exasol/adapter/capabilities/PredicateCapability.java)		    |
-| [Scalar Function Capabilities](capabilities_list.md#scalar-function-capabilities)       | `FN_`      | [ScalarFunctionCapability.java](https://github.com/exasol/virtual-schema-common-java/blob/master/src/main/java/com/exasol/adapter/capabilities/ScalarFunctionCapability.java)	    |
+| [Literal Capabilities](capabilities_list.md#literal-capabilities)                       | `LITERAL_` | [LiteralCapability.java](https://github.com/exasol/virtual-schema-common-java/blob/master/src/main/java/com/exasol/adapter/capabilities/LiteralCapability.java)                    |
+| [Predicate Capabilities](capabilities_list.md#predicate-capabilities)                   | `FN_PRED_` | [PredicateCapability.java](https://github.com/exasol/virtual-schema-common-java/blob/master/src/main/java/com/exasol/adapter/capabilities/PredicateCapability.java)                |
+| [Scalar Function Capabilities](capabilities_list.md#scalar-function-capabilities)       | `FN_`      | [ScalarFunctionCapability.java](https://github.com/exasol/virtual-schema-common-java/blob/master/src/main/java/com/exasol/adapter/capabilities/ScalarFunctionCapability.java)      |
 | [Aggregate Function Capabilities](capabilities_list.md#aggregate-function-capabilities) | `FN_AGG_`  | [AggregateFunctionCapability.java](https://github.com/exasol/virtual-schema-common-java/blob/master/src/main/java/com/exasol/adapter/capabilities/AggregateFunctionCapability.java)|
 
 ### Pushdown
@@ -320,6 +320,19 @@ will produce the following Request, assuming that the Adapter has all required c
                         "tableName" : "CLICKS"
                     }
                 ]
+            }
+        ],
+        "selectListDataTypes" :
+        [
+            {
+                "precision" : 18,
+                "scale" : 0,
+                "type" : "DECIMAL"
+            },
+            {
+                "precision" : 10,
+                "scale" : 0,
+                "type" : "DECIMAL"
             }
         ],
         "filter" :
@@ -390,19 +403,6 @@ will produce the following Request, assuming that the Adapter has all required c
             "numElements" : 10
         }
     },
-    "selectListDataTypes" :
-    [
-    	{
-    		"precision" : 18,
-    		"scale" : 0,
-    		"type" : "DECIMAL"
-    	},
-    	{
-    		"precision" : 10,
-    		"scale" : 0,
-    		"type" : "DECIMAL"
-    	}
-    ],
     "involvedTables": [
     {
         "name" : "CLICKS",
@@ -455,8 +455,8 @@ Notes
   * `from`: The requested from clause. This can be a table or a join.
   * `selectList`: The requested select list. There are three options for this field:
     * `selectList` is not given: This means `SELECT *`. Adapters requiring an explicit select list can use the field `from` to get the names and aliases of the tables (depth-first search on joins) and the field `involvedTables` to get the columns for each table.
-    * `selectList` is an empty array: Select any column/expression. This is used, for example, if a query can not be pushed down completely. The adapter may choose something like `SELECT TRUE` to get the correct number of rows.
-    * Otherwise `selectList` contains the requested select list elements, a list of expressions. The order of the elements matters.
+    * `selectList` is an empty array: Select any column/expression. This is used, for example, if a query can not be pushed down completely. The adapter may choose something like `SELECT TRUE` to get the correct number of rows. Otherwise `selectList` contains the requested select list elements, a list of expressions. The order of the elements matters.
+    * `selectListDataTypes`: List of data tyes expected in the result set. This information is only provided by Exasol database with major version 8 and higher, see [Exasol Data Types API Documentation](data_types_api.md).
   * `filter`: The requested filter (`where` clause), a single expression.
   * `aggregationType`: An optional element, set if an aggregation is requested. Either `group_by` or `single_group`, if a aggregate function is used but no group by.
   * `groupBy`: The requested group by clause, a list of expressions.
@@ -464,8 +464,6 @@ Notes
   * `orderBy`: The requested order-by clause, a list of `order_by_element` elements.
   * `limit` The requested limit of the result set, with an optional offset.
 * `involvedTables`: Metadata of the involved tables, encoded like in schemaMetadata.
-* `selectListDataTypes`: List of data tyes expected in the result set.
-  This information is only provided by Exasol database with major version 8 and higher, see [Exasol Data Types API Documentation](data_types_api.md).
 
 **Response:**
 
