@@ -259,7 +259,7 @@ ORDER  BY user_id
 LIMIT  10;
 ```
 
-##### Capability Prefixes
+#### Capability Prefixes
 
 See also [List of supported Capabilities](capabilities_list.md).
 
@@ -270,6 +270,16 @@ See also [List of supported Capabilities](capabilities_list.md).
 | [Predicate Capabilities](capabilities_list.md#predicate-capabilities)                   | `FN_PRED_` | [PredicateCapability.java](https://github.com/exasol/virtual-schema-common-java/blob/master/src/main/java/com/exasol/adapter/capabilities/PredicateCapability.java)                |
 | [Scalar Function Capabilities](capabilities_list.md#scalar-function-capabilities)       | `FN_`      | [ScalarFunctionCapability.java](https://github.com/exasol/virtual-schema-common-java/blob/master/src/main/java/com/exasol/adapter/capabilities/ScalarFunctionCapability.java)      |
 | [Aggregate Function Capabilities](capabilities_list.md#aggregate-function-capabilities) | `FN_AGG_`  | [AggregateFunctionCapability.java](https://github.com/exasol/virtual-schema-common-java/blob/master/src/main/java/com/exasol/adapter/capabilities/AggregateFunctionCapability.java)|
+
+#### Dependent Capabilities and Capability Groups
+
+There are capabilities that come in groups, sharing the same group prefix. An example is the `FN_AGG_COUNT` group. In this case there is a base capability that needs to be set as a precodition of setting any other capability in that group.
+
+As an example, to allow push-down of `SELECT COUNT(*)` the Virtual Schema adapter needs to report `FN_AGG_COUNT` + `FN_AGG_COUNT_STAR`.
+
+Similarly a left join only works if the VS adapter reports `JOIN` + `JOIN_TYPE_LEFT_OUTER`.
+
+If the group has more members, you can combine all of them, but the base capability is the key of enabling any other capability in that group.
 
 ### Pushdown
 
