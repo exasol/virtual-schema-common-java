@@ -7,9 +7,10 @@ Here you can find a list of available Virtual Schema capabilities.
 * [Predicate Capabilities](#predicate-capabilities)
 * [Scalar Function Capabilities](#scalar-function-capabilities)
 * [Aggregate Function Capabilities](#aggregate-function-capabilities)
+* [Capabilities for dual-use functions](#capabilities-for-dual-use-functions)
+* [Deprecated Capabilities](#deprecated-capabilities)
 
-
-## [Main Capabilities](../../../src/main/java/com/exasol/adapter/capabilities/MainCapability.java)
+## Main Capabilities
 
 - AGGREGATE_GROUP_BY_COLUMN
 - AGGREGATE_GROUP_BY_EXPRESSION
@@ -31,7 +32,9 @@ Here you can find a list of available Virtual Schema capabilities.
 - SELECTLIST_EXPRESSIONS
 - SELECTLIST_PROJECTION
 
-## [Literal Capabilities](../../../src/main/java/com/exasol/adapter/capabilities/LiteralCapability.java)
+[Main Capabilities in the code](../../../src/main/java/com/exasol/adapter/capabilities/MainCapability.java)
+
+## Literal Capabilities
 
 - LITERAL_BOOL
 - LITERAL_DATE
@@ -43,7 +46,9 @@ Here you can find a list of available Virtual Schema capabilities.
 - LITERAL_TIMESTAMP
 - LITERAL_TIMESTAMP_UTC
 
-## [Predicate Capabilities](../../../src/main/java/com/exasol/adapter/capabilities/PredicateCapability.java)
+[Literal Capabilities in the code](../../../src/main/java/com/exasol/adapter/capabilities/LiteralCapability.java)
+
+## Predicate Capabilities
 
 - FN_PRED_AND
 - FN_PRED_BETWEEN
@@ -62,8 +67,9 @@ Here you can find a list of available Virtual Schema capabilities.
 - FN_PRED_REGEXP_LIKE
 - FN_PRED_OR
 
+[Predicate Capabilities in the code](../../../src/main/java/com/exasol/adapter/capabilities/PredicateCapability.java)
 
-## [Scalar Function Capabilities](../../../src/main/java/com/exasol/adapter/capabilities/ScalarFunctionCapability.java)
+## Scalar Function Capabilities
 
 - FN_ABS
 - FN_ACOS
@@ -254,7 +260,9 @@ Here you can find a list of available Virtual Schema capabilities.
 - FN_YEARS_BETWEEN
 - FN_ZEROIFNULL
 
-## [Aggregate Function Capabilities](../../../src/main/java/com/exasol/adapter/capabilities/AggregateFunctionCapability.java)
+[Scalar Function Capabilities in the code](../../../src/main/java/com/exasol/adapter/capabilities/ScalarFunctionCapability.java)
+
+## Aggregate Function Capabilities
 
 - FN_AGG_APPROXIMATE_COUNT_DISTINCT
 - FN_AGG_AVG
@@ -265,8 +273,6 @@ Here you can find a list of available Virtual Schema capabilities.
 - FN_AGG_COUNT_TUPLE
 - FN_AGG_EVERY
 - FN_AGG_FIRST_VALUE
-- FN_AGG_GEO_INTERSECTION_AGGREGATE
-- FN_AGG_GEO_UNION_AGGREGATE
 - FN_AGG_GROUP_CONCAT
 - FN_AGG_GROUP_CONCAT_DISTINCT
 - FN_AGG_GROUP_CONCAT_ORDER_BY
@@ -300,3 +306,26 @@ Here you can find a list of available Virtual Schema capabilities.
 - FN_AGG_VAR_POP_DISTINCT
 - FN_AGG_VAR_SAMP
 - FN_AGG_VAR_SAMP_DISTINCT
+
+[Aggregate Function Capabilities in the code](../../../src/main/java/com/exasol/adapter/capabilities/AggregateFunctionCapability.java)
+
+## Capabilities for Dual-Use Functions
+
+Note that there are capabilities for functions that serve both as a scalar function and an aggregate function. While that sounds counter-intuitive at first, let's look at the examples.
+
+Some geometric functions can work on individual geometric objects or on collections of those objects.
+
+`ST_INTERSECTION` serves as a scalar function when supplied with two geometric objects as parameters and as an aggregation when supplied with a single collection parameter. The same applies to `ST_UNION`.
+
+Virtual Schema support is consequently controlled by the capabilities `FN_AGG_ST_INTERSECTION`, `FN_AGG_ST_UNION`, `FN_ST_INTERSECTION` and `FN_ST_UNION`
+
+See also: ["Geospatial Data" in the Exasol online handbook](https://docs.exasol.com/db/latest/sql_references/geospatialdata/geospatialdata_overview.htm#Examples)
+
+## Deprecated Capabilities
+
+The following capabilities were deprecated:
+
+| Deprecated Capability               | Superseded by                      | Since Database version |
+|-------------------------------------|------------------------------------|------------------------|
+| `FN_AGG_GEO_INTERSECTION_AGGREGATE` | `FN_AGG_ST_INTERSECTION_AGGREGATE` | 7.1.alpha1             |
+| `FN_AGG_GEO_UNION_AGGREGATE`        | `FN_AGG_ST_UNION_AGGREGATE`        | 7.1.alpha1             |
