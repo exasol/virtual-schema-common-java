@@ -7,7 +7,7 @@ Code name: Fixed Geo Aggregation capabilities
 We deprecated the `FN_AGG_GEO_*` capabilities that were renamed in 7.1.alpha1. Please only use their new `FN_AGG_ST_*`
 counterparts.
 
-Additionally, we added an explanation of [dual-use functions and their capabilities](../development/api/capabilities_list.md#capabilities-for-dual-use-functions) to the developer guide.
+Additionally, we added an explanation of [dual-use functions and their capabilities](https://github.com/exasol/virtual-schema-common-java/blob/main/doc/development/api/capabilities_list.md#capabilities-for-dual-use-functions) to the developer guide.
 
 We also updated dependencies.
 
