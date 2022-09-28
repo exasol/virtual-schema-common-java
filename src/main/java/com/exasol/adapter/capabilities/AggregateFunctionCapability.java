@@ -124,14 +124,19 @@ public enum AggregateFunctionCapability {
     GROUP_CONCAT_ORDER_BY(AggregateFunction.GROUP_CONCAT),
     /**
      * Geo intersection aggregate aggregate function capability.
+     * @deprecated The {@code FN_AGG_GEO_INTERSECTION} capability was renamed to {@code FN_AGG_ST_INTERSECTION} in
+     * Exasol 7.1.alpha1.
      */
+    @Deprecated(since = "Exasol 7.1.alpha1")
     GEO_INTERSECTION_AGGREGATE,
     /**
      * Geo union aggregate aggregate function capability.
+     * @deprecated The {@code FN_AGG_GEO_UNION} capability was renamed to {@code FN_AGG_ST_UNION} in Exasol 7.1.alpha1.
      */
+    @Deprecated(since = "Exasol 7.1.alpha1")
     GEO_UNION_AGGREGATE,
     /**
-     * St intersection aggregate function capability.
+     * Geometric intersection aggregate function capability.
      */
     ST_INTERSECTION,
     /**
