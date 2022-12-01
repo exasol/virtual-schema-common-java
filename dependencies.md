@@ -3,11 +3,11 @@
 
 ## Compile Dependencies
 
-| Dependency                             | License                                                                                                      |
-| -------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| [Jakarta JSON Processing API][0]       | [Eclipse Public License 2.0][1]; [GNU General Public License, version 2 with the GNU Classpath Exception][2] |
-| [Java Interface for EXASOL Scripts][3] | [MIT License][4]                                                                                             |
-| [error-reporting-java][5]              | [MIT License][6]                                                                                             |
+| Dependency                       | License                                                                                                      |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| [Jakarta JSON Processing API][0] | [Eclipse Public License 2.0][1]; [GNU General Public License, version 2 with the GNU Classpath Exception][2] |
+| [Exasol UDF API for Java][3]     | [MIT License][4]                                                                                             |
+| [error-reporting-java][5]        | [MIT License][6]                                                                                             |
 
 ## Test Dependencies
 
@@ -33,7 +33,7 @@
 | [SonarQube Scanner for Maven][19]                       | [GNU LGPL 3][20]                               |
 | [Apache Maven Compiler Plugin][21]                      | [Apache License, Version 2.0][18]              |
 | [Apache Maven Enforcer Plugin][22]                      | [Apache License, Version 2.0][18]              |
-| [Maven Flatten Plugin][23]                              | [Apache Software Licenese][10]                 |
+| [Maven Flatten Plugin][23]                              | [Apache Software Licenese][18]                 |
 | [org.sonatype.ossindex.maven:ossindex-maven-plugin][24] | [ASL2][10]                                     |
 | [Maven Surefire Plugin][25]                             | [Apache License, Version 2.0][18]              |
 | [Versions Maven Plugin][26]                             | [Apache License, Version 2.0][18]              |
@@ -55,8 +55,8 @@
 [0]: https://github.com/eclipse-ee4j/jsonp
 [1]: https://projects.eclipse.org/license/epl-2.0
 [2]: https://projects.eclipse.org/license/secondary-gpl-2.0-cp
-[3]: http://www.exasol.com
-[4]: https://opensource.org/licenses/MIT
+[3]: https://github.com/exasol/udf-api-java/
+[4]: https://github.com/exasol/udf-api-java/blob/main/LICENSE
 [5]: https://github.com/exasol/error-reporting-java/
 [6]: https://github.com/exasol/error-reporting-java/blob/main/LICENSE
 [7]: http://hamcrest.org/JavaHamcrest/
@@ -78,7 +78,7 @@
 [23]: https://www.mojohaus.org/flatten-maven-plugin/
 [24]: https://sonatype.github.io/ossindex-maven/maven-plugin/
 [25]: https://maven.apache.org/surefire/maven-surefire-plugin/
-[26]: http://www.mojohaus.org/versions-maven-plugin/
+[26]: https://www.mojohaus.org/versions-maven-plugin/
 [27]: https://maven.apache.org/plugins/maven-deploy-plugin/
 [28]: https://maven.apache.org/plugins/maven-gpg-plugin/
 [29]: https://maven.apache.org/plugins/maven-source-plugin/
