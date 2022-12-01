@@ -33,7 +33,7 @@
 | [SonarQube Scanner for Maven][19]                       | [GNU LGPL 3][20]                               |
 | [Apache Maven Compiler Plugin][21]                      | [Apache License, Version 2.0][18]              |
 | [Apache Maven Enforcer Plugin][22]                      | [Apache License, Version 2.0][18]              |
-| [Maven Flatten Plugin][23]                              | [Apache Software Licenese][10]                 |
+| [Maven Flatten Plugin][23]                              | [Apache Software Licenese][18]                 |
 | [org.sonatype.ossindex.maven:ossindex-maven-plugin][24] | [ASL2][10]                                     |
 | [Maven Surefire Plugin][25]                             | [Apache License, Version 2.0][18]              |
 | [Versions Maven Plugin][26]                             | [Apache License, Version 2.0][18]              |
@@ -78,7 +78,7 @@
 [23]: https://www.mojohaus.org/flatten-maven-plugin/
 [24]: https://sonatype.github.io/ossindex-maven/maven-plugin/
 [25]: https://maven.apache.org/surefire/maven-surefire-plugin/
-[26]: http://www.mojohaus.org/versions-maven-plugin/
+[26]: https://www.mojohaus.org/versions-maven-plugin/
 [27]: https://maven.apache.org/plugins/maven-deploy-plugin/
 [28]: https://maven.apache.org/plugins/maven-gpg-plugin/
 [29]: https://maven.apache.org/plugins/maven-source-plugin/
