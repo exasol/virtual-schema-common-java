@@ -7,22 +7,6 @@
     <description>This is one of the modules of Virtual Schemas Adapters. The libraries provided by this project are the
         foundation of the adapter development, i.e. adapters must be implemented on top of them.</description>
     <url>https://github.com/exasol/virtual-schema-common-java/</url>
-    <repositories>
-        <repository>
-            <id>maven.exasol.com</id>
-            <url>https://maven.exasol.com/artifactory/exasol-releases</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>maven.exasol.com-snapshots</id>
-            <url>https://maven.exasol.com/artifactory/exasol-snapshots</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
     <dependencies>
         <dependency>
             <groupId>jakarta.json</groupId>
