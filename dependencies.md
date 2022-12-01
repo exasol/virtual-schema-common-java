@@ -3,11 +3,11 @@
 
 ## Compile Dependencies
 
-| Dependency                             | License                                                                                                      |
-| -------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| [Jakarta JSON Processing API][0]       | [Eclipse Public License 2.0][1]; [GNU General Public License, version 2 with the GNU Classpath Exception][2] |
-| [Java Interface for EXASOL Scripts][3] | [MIT License][4]                                                                                             |
-| [error-reporting-java][5]              | [MIT License][6]                                                                                             |
+| Dependency                       | License                                                                                                      |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| [Jakarta JSON Processing API][0] | [Eclipse Public License 2.0][1]; [GNU General Public License, version 2 with the GNU Classpath Exception][2] |
+| [Exasol UDF API for Java][3]     | [MIT License][4]                                                                                             |
+| [error-reporting-java][5]        | [MIT License][6]                                                                                             |
 
 ## Test Dependencies
 
@@ -55,8 +55,8 @@
 [0]: https://github.com/eclipse-ee4j/jsonp
 [1]: https://projects.eclipse.org/license/epl-2.0
 [2]: https://projects.eclipse.org/license/secondary-gpl-2.0-cp
-[3]: http://www.exasol.com
-[4]: https://opensource.org/licenses/MIT
+[3]: https://github.com/exasol/udf-api-java/
+[4]: https://github.com/exasol/udf-api-java/blob/main/LICENSE
 [5]: https://github.com/exasol/error-reporting-java/
 [6]: https://github.com/exasol/error-reporting-java/blob/main/LICENSE
 [7]: http://hamcrest.org/JavaHamcrest/

@@ -22,8 +22,8 @@
         </dependency>
         <dependency>
             <groupId>com.exasol</groupId>
-            <artifactId>exasol-script-api</artifactId>
-            <version>6.1.7</version>
+            <artifactId>udf-api-java</artifactId>
+            <version>1.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>

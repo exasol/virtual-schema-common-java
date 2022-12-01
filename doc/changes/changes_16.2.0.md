@@ -15,6 +15,8 @@ Discontinuation of Exasol's artifactory maven.exasol.com caused some problems. I
 ### Compile Dependency Updates
 
 * Updated `com.exasol:error-reporting-java:0.4.1` to `1.0.0`
+* Removed `com.exasol:exasol-script-api:6.1.7`
+* Added `com.exasol:udf-api-java:1.0.1`
 * Updated `jakarta.json:jakarta.json-api:2.1.0` to `2.1.1`
 
 ### Test Dependency Updates
