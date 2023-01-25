@@ -211,6 +211,7 @@ Notes:
 
 Notes:
 
+* `arguments`: While this is an array, it always has **exactly one single** element. That is also the reason why Exasol can tell the second optional parameter in the parentesis must be the separator.
 * `distinct`: Optional. Requires set-function capability `LISTAGG_DISTINCT`.
 * `separator`: Optional. Requires set-function capability `LISTAGG_SEPARATOR`.
 * `overflowBehavior`: `type` is `"ERROR"` (requires set-function capability `LISTAGG_ON_OVERFLOW_ERROR`) or `"TRUNCATE"` (requires set-function capability `LISTAGG_ON_OVERFLOW_TRUNCATE`). Only for `"TRUNCATE"` the members `truncationType` and optionally `truncationFiller` exist. `truncationType` is `"WITH COUNT"` or `"WITHOUT COUNT"`.
