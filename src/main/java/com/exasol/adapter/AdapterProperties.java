@@ -51,10 +51,6 @@ public class AdapterProperties extends AbstractAdapterProperties {
      * The constant IS_LOCAL_PROPERTY.
      */
     public static final String IS_LOCAL_PROPERTY = "IS_LOCAL";
-    /**
-     * The constant BINARY_COLUMN_HANDLING_PROPERTY.
-     */
-    public static final String BINARY_COLUMN_HANDLING_PROPERTY = "BINARY_COLUMN_HANDLING";
 
     /**
      * Create a new instance of {@link AdapterProperties}
@@ -166,8 +162,7 @@ public class AdapterProperties extends AbstractAdapterProperties {
         return changedProperties.containsKey(CONNECTION_NAME_PROPERTY) //
                 || changedProperties.containsKey(SCHEMA_NAME_PROPERTY) //
                 || changedProperties.containsKey(CATALOG_NAME_PROPERTY) //
-                || changedProperties.containsKey(TABLE_FILTER_PROPERTY)
-                || changedProperties.containsKey(BINARY_COLUMN_HANDLING_PROPERTY);
+                || changedProperties.containsKey(TABLE_FILTER_PROPERTY);
     }
 
     /**
@@ -178,19 +173,6 @@ public class AdapterProperties extends AbstractAdapterProperties {
      */
     public boolean isLocalSource() {
         return isEnabled(IS_LOCAL_PROPERTY);
-    }
-
-    /**
-     * Get binary column handling
-     *
-     * @return binary column handling
-     */
-    public BinaryColumnHandling getBinaryColumnHandling() {
-        if (hasBinaryColumnHandling()) {
-            return BinaryColumnHandling.valueOf(get(BINARY_COLUMN_HANDLING_PROPERTY));
-        } else {
-            return BinaryColumnHandling.IGNORE;
-        }
     }
 
     /**
@@ -281,15 +263,6 @@ public class AdapterProperties extends AbstractAdapterProperties {
      */
     public boolean hasIsLocal() {
         return containsKey(IS_LOCAL_PROPERTY);
-    }
-
-    /**
-     * Check if the binary column handling property is set
-     *
-     * @return <code>true</code> if binary column handling property is set
-     */
-    public boolean hasBinaryColumnHandling() {
-        return containsKey(BINARY_COLUMN_HANDLING_PROPERTY);
     }
 
     /**

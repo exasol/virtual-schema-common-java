@@ -3,7 +3,6 @@ package com.exasol.adapter;
 import static com.exasol.adapter.AdapterProperties.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.lang.reflect.*;
 import java.util.*;
@@ -12,7 +11,8 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.*;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import com.exasol.utils.StringUtils;
 
@@ -55,7 +55,7 @@ class AdapterPropertiesTest {
     }
 
     @ValueSource(strings = { CONNECTION_NAME_PROPERTY, SCHEMA_NAME_PROPERTY, CATALOG_NAME_PROPERTY,
-            TABLE_FILTER_PROPERTY, BINARY_COLUMN_HANDLING_PROPERTY })
+            TABLE_FILTER_PROPERTY })
     @ParameterizedTest
     void testIsRefreshingVirtualSchemaRequiredTrue(final String propertyName) {
         this.rawProperties.put(propertyName, "");
@@ -88,25 +88,6 @@ class AdapterPropertiesTest {
     void testIsLocalSourceTrue() {
         this.rawProperties.put(IS_LOCAL_PROPERTY, "true");
         assertThat(new AdapterProperties(this.rawProperties).isLocalSource(), equalTo(true));
-    }
-
-    @CsvSource({ "IGNORE, IGNORE", "ENCODE_BASE64, ENCODE_BASE64" })
-    @ParameterizedTest
-    void testGetBinaryColumnHandling(final String value, final BinaryColumnHandling binaryColumnHandling) {
-        this.rawProperties.put(BINARY_COLUMN_HANDLING_PROPERTY, value);
-        assertThat(new AdapterProperties(this.rawProperties).getBinaryColumnHandling(), equalTo(binaryColumnHandling));
-    }
-
-    @Test
-    void testGetBinaryColumnHandlingIsIgnoreByDefault() {
-        assertThat(AdapterProperties.emptyProperties().getBinaryColumnHandling(), equalTo(BinaryColumnHandling.IGNORE));
-    }
-
-    @Test
-    void testGetUnknownBinaryColumnHandlingThrowsException() {
-        this.rawProperties.put(BINARY_COLUMN_HANDLING_PROPERTY, "THIS_VALUE_DOES_NOT_EXIST");
-        assertThrows(IllegalArgumentException.class,
-                () -> new AdapterProperties(this.rawProperties).getBinaryColumnHandling());
     }
 
     @MethodSource("getAdapterPropertyNames")
