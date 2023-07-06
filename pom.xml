@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>virtual-schema-common-java</artifactId>
-    <version>16.2.0</version>
+    <version>17.0.0</version>
     <name>Common module of Exasol Virtual Schemas Adapters</name>
     <description>This is one of the modules of Virtual Schemas Adapters. The libraries provided by this project are the
         foundation of the adapter development, i.e. adapters must be implemented on top of them.</description>
@@ -11,7 +11,7 @@
         <dependency>
             <groupId>jakarta.json</groupId>
             <artifactId>jakarta.json-api</artifactId>
-            <version>2.1.1</version>
+            <version>2.1.2</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish</groupId>
@@ -23,7 +23,7 @@
         <dependency>
             <groupId>com.exasol</groupId>
             <artifactId>udf-api-java</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
@@ -40,13 +40,13 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.9.1</version>
+            <version>5.9.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>4.9.0</version>
+            <version>5.4.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -58,13 +58,13 @@
         <dependency>
             <groupId>nl.jqno.equalsverifier</groupId>
             <artifactId>equalsverifier</artifactId>
-            <version>3.12</version>
+            <version>3.14.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.exasol</groupId>
             <artifactId>error-reporting-java</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </dependency>
     </dependencies>
     <build>
@@ -72,7 +72,7 @@
             <plugin>
                 <groupId>com.exasol</groupId>
                 <artifactId>project-keeper-maven-plugin</artifactId>
-                <version>2.9.1</version>
+                <version>2.9.7</version>
                 <executions>
                     <execution>
                         <goals>
@@ -86,7 +86,7 @@
     <parent>
         <artifactId>virtual-schema-common-java-generated-parent</artifactId>
         <groupId>com.exasol</groupId>
-        <version>16.2.0</version>
+        <version>17.0.0</version>
         <relativePath>pk_generated_parent.pom</relativePath>
     </parent>
 </project>

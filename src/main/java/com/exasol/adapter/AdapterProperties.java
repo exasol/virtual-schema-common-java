@@ -47,14 +47,6 @@ public class AdapterProperties extends AbstractAdapterProperties {
      * The constant IGNORE_ERRORS_PROPERTY.
      */
     public static final String IGNORE_ERRORS_PROPERTY = "IGNORE_ERRORS";
-    /**
-     * The constant IS_LOCAL_PROPERTY.
-     */
-    public static final String IS_LOCAL_PROPERTY = "IS_LOCAL";
-    /**
-     * The constant BINARY_COLUMN_HANDLING_PROPERTY.
-     */
-    public static final String BINARY_COLUMN_HANDLING_PROPERTY = "BINARY_COLUMN_HANDLING";
 
     /**
      * Create a new instance of {@link AdapterProperties}
@@ -166,31 +158,7 @@ public class AdapterProperties extends AbstractAdapterProperties {
         return changedProperties.containsKey(CONNECTION_NAME_PROPERTY) //
                 || changedProperties.containsKey(SCHEMA_NAME_PROPERTY) //
                 || changedProperties.containsKey(CATALOG_NAME_PROPERTY) //
-                || changedProperties.containsKey(TABLE_FILTER_PROPERTY)
-                || changedProperties.containsKey(BINARY_COLUMN_HANDLING_PROPERTY);
-    }
-
-    /**
-     * Check if the data source is the local Exasol instance
-     *
-     * @return <code>true</code> if the data source and the database containing the Virtual Schema are hosted on the
-     *         same Exasol cluster
-     */
-    public boolean isLocalSource() {
-        return isEnabled(IS_LOCAL_PROPERTY);
-    }
-
-    /**
-     * Get binary column handling
-     *
-     * @return binary column handling
-     */
-    public BinaryColumnHandling getBinaryColumnHandling() {
-        if (hasBinaryColumnHandling()) {
-            return BinaryColumnHandling.valueOf(get(BINARY_COLUMN_HANDLING_PROPERTY));
-        } else {
-            return BinaryColumnHandling.IGNORE;
-        }
+                || changedProperties.containsKey(TABLE_FILTER_PROPERTY);
     }
 
     /**
@@ -272,24 +240,6 @@ public class AdapterProperties extends AbstractAdapterProperties {
      */
     public boolean hasIgnoreErrors() {
         return containsKey(IGNORE_ERRORS_PROPERTY);
-    }
-
-    /**
-     * Check if the "is local" property is set
-     *
-     * @return <code>true</code> if "is local" property is set
-     */
-    public boolean hasIsLocal() {
-        return containsKey(IS_LOCAL_PROPERTY);
-    }
-
-    /**
-     * Check if the binary column handling property is set
-     *
-     * @return <code>true</code> if binary column handling property is set
-     */
-    public boolean hasBinaryColumnHandling() {
-        return containsKey(BINARY_COLUMN_HANDLING_PROPERTY);
     }
 
     /**
