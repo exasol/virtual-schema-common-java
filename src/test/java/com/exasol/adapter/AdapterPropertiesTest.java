@@ -79,17 +79,6 @@ class AdapterPropertiesTest {
         assertThat(AdapterProperties.emptyProperties().getIgnoredErrors(), emptyIterableOf(String.class));
     }
 
-    @Test
-    void testIsLocalSourceFalse() {
-        assertThat(AdapterProperties.emptyProperties().isLocalSource(), equalTo(false));
-    }
-
-    @Test
-    void testIsLocalSourceTrue() {
-        this.rawProperties.put(IS_LOCAL_PROPERTY, "true");
-        assertThat(new AdapterProperties(this.rawProperties).isLocalSource(), equalTo(true));
-    }
-
     @MethodSource("getAdapterPropertyNames")
     @ParameterizedTest
     void testHasNamedPropertyFalseByDefault(final String propertyName) throws NoSuchMethodException, SecurityException,

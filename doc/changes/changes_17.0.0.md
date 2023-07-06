@@ -1,12 +1,44 @@
 # Common Module of Exasol Virtual Schemas Adapters 17.0.0, released 2023-07-06
 
-Code name: Removed Adapter Property BINARY_COLUMN_HANDLING
+Code name: Removed Adapter Properties
 
 ## Summary
 
-This release updates dependencies and removes adapter property `BINARY_COLUMN_HANDLING` since it was never implemented by Exasol database up to now. As the property also was never used by any virtual schema in GitHub org `exasol` the removal is expected to go without any consequences.
+This release updates dependencies and removes some adapter properties for different reasons.
 
-Still this release updates the major version of VSCOMJAVA to signal potentially breaking changes in its public API.
+As removing the adapter properties is considered a breaking change in the public API of VSCOMJAVA this release comes with an updated major version.
+
+### Removed adapter properties
+
+* `BINARY_COLUMN_HANDLING`
+* `IS_LOCAL`
+
+#### `BINARY_COLUMN_HANDLING`
+
+Removed constants and access methods in class `AdapterProperties`:
+* `String BINARY_COLUMN_HANDLING`
+* `BinaryColumnHandling hasBinaryColumnHandling()`
+* `BinaryColumnHandling getBinaryColumnHandling()`
+* `class com.exasol.adapter.BinaryColumnHandling`
+
+Rationale:
+* This property was never implemented by any virtual schema up to now.
+* As the property also was never used by any virtual schema in GitHub org `exasol` the removal is expected to go without any consequences.
+
+#### `IS_LOCAL`
+
+Removed constants and access methods in class `AdapterProperties`:
+* `String IS_LOCAL_PROPERTY`
+* `boolean hasIsLocal()`
+* `boolean isLocalSource()`
+
+Rationale:
+* This property is specific only for Exasol virtual schema.
+* Hence its implementation has been moved with ticket [VSEXA #85](https://github.com/exasol/exasol-virtual-schema/issues/85).
+
+Rationale:
+* Potentially remove
+* See also ticket #269.
 
 ## Features
 

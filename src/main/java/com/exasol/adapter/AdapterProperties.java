@@ -47,10 +47,6 @@ public class AdapterProperties extends AbstractAdapterProperties {
      * The constant IGNORE_ERRORS_PROPERTY.
      */
     public static final String IGNORE_ERRORS_PROPERTY = "IGNORE_ERRORS";
-    /**
-     * The constant IS_LOCAL_PROPERTY.
-     */
-    public static final String IS_LOCAL_PROPERTY = "IS_LOCAL";
 
     /**
      * Create a new instance of {@link AdapterProperties}
@@ -166,16 +162,6 @@ public class AdapterProperties extends AbstractAdapterProperties {
     }
 
     /**
-     * Check if the data source is the local Exasol instance
-     *
-     * @return <code>true</code> if the data source and the database containing the Virtual Schema are hosted on the
-     *         same Exasol cluster
-     */
-    public boolean isLocalSource() {
-        return isEnabled(IS_LOCAL_PROPERTY);
-    }
-
-    /**
      * Check if the table filter property is set
      *
      * @return <code>true</code> if table filter property is set
@@ -254,15 +240,6 @@ public class AdapterProperties extends AbstractAdapterProperties {
      */
     public boolean hasIgnoreErrors() {
         return containsKey(IGNORE_ERRORS_PROPERTY);
-    }
-
-    /**
-     * Check if the "is local" property is set
-     *
-     * @return <code>true</code> if "is local" property is set
-     */
-    public boolean hasIsLocal() {
-        return containsKey(IS_LOCAL_PROPERTY);
     }
 
     /**
