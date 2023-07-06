@@ -42,7 +42,7 @@ Rationale:
 
 ## Features
 
-* #268: Removed adapter property `BINARY_COLUMN_HANDLING`
+* #268: Removed adapter properties `BINARY_COLUMN_HANDLING` and `IS_LOCAL`
 
 ## Dependency Updates
 
