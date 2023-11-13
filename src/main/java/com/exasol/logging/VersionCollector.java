@@ -7,7 +7,7 @@ import java.util.Properties;
 import com.exasol.errorreporting.ExaError;
 
 /**
- * This class fetches the version of the jar from the metadate in the jar file.
+ * This class fetches the version of the jar from the metadata in the jar file.
  */
 public class VersionCollector {
     private static final String DEFAULT_PATH = "META-INF/maven/com.exasol/virtual-schema-common-java/pom.properties";

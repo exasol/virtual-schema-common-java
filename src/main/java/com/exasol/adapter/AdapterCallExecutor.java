@@ -1,7 +1,5 @@
 package com.exasol.adapter;
 
-import java.util.logging.Logger;
-
 import com.exasol.ExaMetadata;
 import com.exasol.adapter.request.*;
 import com.exasol.adapter.response.*;
@@ -11,7 +9,6 @@ import com.exasol.adapter.response.converter.ResponseJsonConverter;
  * Executor for adapter calls issued by the Exasol database.
  */
 public class AdapterCallExecutor {
-    private static final Logger LOG = Logger.getLogger(AdapterCallExecutor.class.getName());
     private final VirtualSchemaAdapter adapter;
 
     /**
@@ -48,9 +45,7 @@ public class AdapterCallExecutor {
     public String executeCreateVirtualSchemaRequest(final CreateVirtualSchemaRequest request,
             final ExaMetadata metadata) throws AdapterException {
         final CreateVirtualSchemaResponse response = this.adapter.createVirtualSchema(metadata, request);
-        final String jsonResponse = ResponseJsonConverter.getInstance().convertCreateVirtualSchemaResponse(response);
-        LOG.fine(() -> "Create virtual schema response: " + jsonResponse);
-        return jsonResponse;
+        return ResponseJsonConverter.getInstance().convertCreateVirtualSchemaResponse(response);
     }
 
     /**
@@ -64,9 +59,7 @@ public class AdapterCallExecutor {
     public String executeDropVirtualSchemaRequest(final DropVirtualSchemaRequest request, final ExaMetadata metadata)
             throws AdapterException {
         final DropVirtualSchemaResponse response = this.adapter.dropVirtualSchema(metadata, request);
-        final String jsonResponse = ResponseJsonConverter.getInstance().convertDropVirtualSchemaResponse(response);
-        LOG.fine(() -> "Drop virtual schema response: " + jsonResponse);
-        return jsonResponse;
+        return ResponseJsonConverter.getInstance().convertDropVirtualSchemaResponse(response);
     }
 
     /**
@@ -80,9 +73,7 @@ public class AdapterCallExecutor {
     public String executeRefreshRequest(final RefreshRequest request, final ExaMetadata metadata)
             throws AdapterException {
         final RefreshResponse response = this.adapter.refresh(metadata, request);
-        final String jsonResponse = ResponseJsonConverter.getInstance().convertRefreshResponse(response);
-        LOG.fine(() -> "Refresh virtual schema response: " + jsonResponse);
-        return jsonResponse;
+        return ResponseJsonConverter.getInstance().convertRefreshResponse(response);
     }
 
     /**
@@ -96,9 +87,7 @@ public class AdapterCallExecutor {
     public String executeSetPropertiesRequest(final SetPropertiesRequest request, final ExaMetadata metadata)
             throws AdapterException {
         final SetPropertiesResponse response = this.adapter.setProperties(metadata, request);
-        final String jsonResponse = ResponseJsonConverter.getInstance().convertSetPropertiesResponse(response);
-        LOG.fine(() -> "Set virtual schema properties response: " + jsonResponse);
-        return jsonResponse;
+        return ResponseJsonConverter.getInstance().convertSetPropertiesResponse(response);
     }
 
     /**
@@ -112,9 +101,7 @@ public class AdapterCallExecutor {
     public String executeGetCapabilitiesRequest(final GetCapabilitiesRequest request, final ExaMetadata metadata)
             throws AdapterException {
         final GetCapabilitiesResponse response = this.adapter.getCapabilities(metadata, request);
-        final String jsonResponse = ResponseJsonConverter.getInstance().convertGetCapabilitiesResponse(response);
-        LOG.fine(() -> "Get virtual schema capabilities response: " + jsonResponse);
-        return jsonResponse;
+        return ResponseJsonConverter.getInstance().convertGetCapabilitiesResponse(response);
     }
 
     /**
@@ -128,8 +115,6 @@ public class AdapterCallExecutor {
     public String executePushDownRequest(final PushDownRequest request, final ExaMetadata metadata)
             throws AdapterException {
         final PushDownResponse response = this.adapter.pushdown(metadata, request);
-        final String jsonResponse = ResponseJsonConverter.getInstance().convertPushDownResponse(response);
-        LOG.fine(() -> "Pushdown virtual schema response: " + jsonResponse);
-        return jsonResponse;
+        return ResponseJsonConverter.getInstance().convertPushDownResponse(response);
     }
 }

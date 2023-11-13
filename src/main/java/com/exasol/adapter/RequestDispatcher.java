@@ -52,7 +52,9 @@ public final class RequestDispatcher {
         logVersionInformation();
         logRawRequest(rawRequest);
         final AdapterCallExecutor adapterCallExecutor = getAdapterCallExecutor();
-        return adapterCallExecutor.executeAdapterCall(adapterRequest, metadata);
+        final String response = adapterCallExecutor.executeAdapterCall(adapterRequest, metadata);
+        logRawResponse(response);
+        return response;
     }
 
     private static void logVersionInformation() {
@@ -62,6 +64,10 @@ public final class RequestDispatcher {
 
     private static void logRawRequest(final String rawRequest) {
         LOGGER.finer(() -> "Raw JSON request:\n" + rawRequest);
+    }
+
+    private static void logRawResponse(final String response) {
+        LOGGER.finer(() -> "Raw JSON response: '" + response + "'");
     }
 
     private static AdapterRequest parseRequest(final String rawRequest) {
