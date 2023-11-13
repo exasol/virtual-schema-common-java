@@ -16,7 +16,7 @@
 | [Hamcrest][7]                             | [BSD License 3][8]                             |
 | [JSONassert][9]                           | [The Apache Software License, Version 2.0][10] |
 | [JUnit Jupiter (Aggregator)][11]          | [Eclipse Public License v2.0][12]              |
-| [mockito-junit-jupiter][13]               | [The MIT License][14]                          |
+| [mockito-junit-jupiter][13]               | [MIT][14]                                      |
 | [JUnit5 System Extensions][15]            | [Eclipse Public License v2.0][16]              |
 | [EqualsVerifier | release normal jar][17] | [Apache License, Version 2.0][18]              |
 
@@ -67,7 +67,7 @@
 [11]: https://junit.org/junit5/
 [12]: https://www.eclipse.org/legal/epl-v20.html
 [13]: https://github.com/mockito/mockito
-[14]: https://github.com/mockito/mockito/blob/main/LICENSE
+[14]: https://opensource.org/licenses/MIT
 [15]: https://github.com/itsallcode/junit5-system-extensions
 [16]: http://www.eclipse.org/legal/epl-v20.html
 [17]: https://www.jqno.nl/equalsverifier
