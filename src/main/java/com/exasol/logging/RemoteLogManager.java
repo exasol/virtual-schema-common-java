@@ -58,7 +58,8 @@ public class RemoteLogManager {
                 this.socketHandler = new SocketHandler(host, port);
             }
             setupRootLogger(this.socketHandler, logLevel);
-            LOGGER.info(() -> "Attached to output service with log level " + logLevel + ".");
+            LOGGER.info(
+                    () -> "Attached to output service at " + host + ":" + port + " with log level " + logLevel + ".");
         } catch (final IOException exception) {
             setupRootLoggerForLocalLogging(logLevel);
             LOGGER.warning(() -> "Unable to attach to remote log listener on " + host + ":" + port
