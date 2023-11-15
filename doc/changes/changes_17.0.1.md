@@ -4,6 +4,8 @@ Code name:
 
 ## Summary
 
+This release logs responses for adapter calls at level `FINEST` to simplify debugging.
+
 ## Features
 
 * ISSUE_NUMBER: description
