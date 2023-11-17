@@ -14,9 +14,13 @@ public final class LoggingConfiguration implements Serializable {
     private static final long serialVersionUID = 1930189191497837644L;
     private static final int DEFAULT_REMOTE_LOGGING_PORT = 3000;
     private static final Level DEFAULT_LOG_LEVEL = Level.INFO;
+    /** {@code true} if the adapter should send its log messages to a remote log receiver */
     private final boolean logRemotely;
+    /** Name host name where the log receiver listens */
     private final String host;
+    /** Remote logging port */
     private final int port;
+    /** Log level */
     private final Level level;
 
     private LoggingConfiguration(final Level level, final boolean logRemotely, final String host, final int port) {
@@ -29,7 +33,7 @@ public final class LoggingConfiguration implements Serializable {
     /**
      * Check if the adapter should send its log messages to a remote receiver
      *
-     * @return <code>true</code> if the adapter should send its log messages to a remote log receiver
+     * @return {@code true} if the adapter should send its log messages to a remote log receiver
      */
     public boolean isRemoteLoggingConfigured() {
         return this.logRemotely;
