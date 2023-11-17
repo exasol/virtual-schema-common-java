@@ -8,10 +8,12 @@ import java.io.*;
 
 public class SerializationTestUtil {
 
-    public static <T> void assertSerializable(final T object) throws IOException, ClassNotFoundException {
+    public static <T> T serializeDeserialize(final T object, final Class<T> clazz)
+            throws IOException, ClassNotFoundException {
         final byte[] serialized = serialize(object);
-        final Object deserialized = deserialize(serialized, object.getClass());
+        final T deserialized = deserialize(serialized, clazz);
         assertThat(deserialized, not(nullValue()));
+        return deserialized;
     }
 
     private static <T> byte[] serialize(final T object) throws IOException {
