@@ -3,13 +3,15 @@ package com.exasol.adapter.request;
 import static com.exasol.adapter.AdapterProperties.DEBUG_ADDRESS_PROPERTY;
 import static com.exasol.adapter.AdapterProperties.LOG_LEVEL_PROPERTY;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.logging.Level;
 
 /**
  * This class represents the logging configuration set in the request properties
  */
-public final class LoggingConfiguration {
+public final class LoggingConfiguration implements Serializable {
+    private static final long serialVersionUID = 1930189191497837644L;
     private static final int DEFAULT_REMOTE_LOGGING_PORT = 3000;
     private static final Level DEFAULT_LOG_LEVEL = Level.INFO;
     private final boolean logRemotely;

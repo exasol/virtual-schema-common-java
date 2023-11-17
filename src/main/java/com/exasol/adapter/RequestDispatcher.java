@@ -75,7 +75,7 @@ public final class RequestDispatcher {
     }
 
     private static AdapterRequest parseRequest(final String rawRequest) {
-        return new RequestParser().parse(rawRequest);
+        return RequestParser.create().parse(rawRequest);
     }
 
     private static void configureAdapterLoggingAccordingToRequestSettings(final AdapterRequest request) {
