@@ -19,6 +19,10 @@ import com.exasol.logging.VersionCollector;
 public final class RequestDispatcher {
     private static final Logger LOGGER = Logger.getLogger(RequestDispatcher.class.getName());
 
+    private RequestDispatcher() {
+        // Not instantiable
+    }
+
     /**
      * Main entry point for all Virtual Schema Adapter requests issued by the Exasol database.
      *
