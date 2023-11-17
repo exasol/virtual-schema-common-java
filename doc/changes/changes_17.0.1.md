@@ -6,6 +6,8 @@ Code name: Improve logging
 
 This release logs responses for adapter calls at level `FINER` to simplify debugging and makes `LoggingConfiguration` serializable to allow configuring other components that require serializing.
 
+The release also marks exception handling properties as deprecated in preparation of #269.
+
 ## Features
 
 * #276: Improved logging
