@@ -19,6 +19,19 @@ import jakarta.json.*;
 public class RequestParser extends AbstractRequestParser {
     private static final Logger LOGGER = Logger.getLogger(RequestParser.class.getName());
 
+    private RequestParser() {
+        // Use static create() method
+    }
+
+    /**
+     * Create a {@link RequestParser}
+     *
+     * @return request parser instance
+     */
+    public static RequestParser create() {
+        return new RequestParser();
+    }
+
     /**
      * Parse a JSON string containing a Virtual Schema Adapter request into the abstract representation of that request
      *
@@ -107,14 +120,5 @@ public class RequestParser extends AbstractRequestParser {
             LOGGER.severe("Missing metadata information trying to parse adapter request.");
             return new SchemaMetadataInfo("UNKNOWN", "", new HashMap<>());
         }
-    }
-
-    /**
-     * Create a {@link RequestParser}
-     *
-     * @return request parser instance
-     */
-    public static RequestParser create() {
-        return new RequestParser();
     }
 }

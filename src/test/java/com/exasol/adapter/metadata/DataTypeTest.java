@@ -127,7 +127,7 @@ class DataTypeTest {
     }
 
     @Test
-    void testIsSupportedForUnsupporteTypeFalse() {
+    void testIsSupportedForUnsupportedTypeFalse() {
         assertThat(DataType.createUnsupported().isSupported(), equalTo(false));
     }
 }

@@ -2,15 +2,19 @@ package com.exasol.adapter.request;
 
 import static com.exasol.adapter.AdapterProperties.DEBUG_ADDRESS_PROPERTY;
 import static com.exasol.adapter.AdapterProperties.LOG_LEVEL_PROPERTY;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
 import org.junit.jupiter.api.Test;
+import org.opentest4j.MultipleFailuresError;
+
+import com.exasol.adapter.SerializationTestUtil;
 
 class LoggingConfigurationTest {
     final Map<String, String> properties = new HashMap<>();
@@ -63,5 +67,27 @@ class LoggingConfigurationTest {
         this.properties.put(DEBUG_ADDRESS_PROPERTY, "www.example.org:illegal_non_numeric_port");
         final LoggingConfiguration configuration = createLoggingConfiguration(this.properties);
         assertThat(configuration.isRemoteLoggingConfigured(), equalTo(false));
+    }
+
+    @Test
+    void testSerializableDefaultConfig() throws ClassNotFoundException, IOException {
+        assertSerializable(createLoggingConfiguration(this.properties));
+    }
+
+    @Test
+    void testSerializableRemoveConfig() throws ClassNotFoundException, IOException {
+        this.properties.put(LOG_LEVEL_PROPERTY, "FINEST");
+        this.properties.put(DEBUG_ADDRESS_PROPERTY, "www.example.org:4000");
+        assertSerializable(createLoggingConfiguration(this.properties));
+    }
+
+    private void assertSerializable(final LoggingConfiguration config)
+            throws IOException, ClassNotFoundException, MultipleFailuresError {
+        final LoggingConfiguration deserialized = SerializationTestUtil.serializeDeserialize(config,
+                LoggingConfiguration.class);
+        assertAll(() -> assertThat(deserialized.getLogLevel(), equalTo(config.getLogLevel())),
+                () -> assertThat(deserialized.isRemoteLoggingConfigured(), equalTo(config.isRemoteLoggingConfigured())),
+                () -> assertThat(deserialized.getRemoteLoggingHost(), equalTo(config.getRemoteLoggingHost())),
+                () -> assertThat(deserialized.getRemoteLoggingPort(), equalTo(config.getRemoteLoggingPort())));
     }
 }

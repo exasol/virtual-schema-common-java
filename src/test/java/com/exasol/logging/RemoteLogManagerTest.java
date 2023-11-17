@@ -80,8 +80,8 @@ class RemoteLogManagerTest {
                 received = readLogMessageFromSocket(client);
             }
         }
-        assertThat(received,
-                matchesPattern(TIMESTAMP_PATTERN + " INFO +\\[.*?\\] Attached to output service with log level ALL."));
+        assertThat(received, matchesPattern(TIMESTAMP_PATTERN
+                + " INFO +\\[.*?\\] Attached to output service at localhost:\\d+ with log level ALL."));
     }
 
     private Thread attachToLogServiceInParallelThread(final String loopBackAddress, final int port) {
