@@ -1,14 +1,14 @@
-# Common Module of Exasol Virtual Schemas Adapters 17.0.1, released 2023-??-??
+# Common Module of Exasol Virtual Schemas Adapters 17.0.1, released 2023-11-17
 
-Code name:
+Code name: Improve logging
 
 ## Summary
 
-This release logs responses for adapter calls at level `FINEST` to simplify debugging.
+This release logs responses for adapter calls at level `FINEST` to simplify debugging and makes `LoggingConfiguration` serializable to allow configuring other components that require serializing.
 
 ## Features
 
-* ISSUE_NUMBER: description
+* #276: Improved logging
 
 ## Dependency Updates
 
