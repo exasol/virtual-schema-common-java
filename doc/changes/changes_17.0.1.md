@@ -4,7 +4,7 @@ Code name: Improve logging
 
 ## Summary
 
-This release logs responses for adapter calls at level `FINEST` to simplify debugging and makes `LoggingConfiguration` serializable to allow configuring other components that require serializing.
+This release logs responses for adapter calls at level `FINER` to simplify debugging and makes `LoggingConfiguration` serializable to allow configuring other components that require serializing.
 
 ## Features
 
