@@ -466,7 +466,7 @@ Notes
   * `selectList`: The requested select list. There are three options for this field:
     * `selectList` is not given: This means `SELECT *`. Adapters requiring an explicit select list can use the field `from` to get the names and aliases of the tables (depth-first search on joins) and the field `involvedTables` to get the columns for each table.
     * `selectList` is an empty array: Select any column/expression. This is used, for example, if a query can not be pushed down completely. The adapter may choose something like `SELECT TRUE` to get the correct number of rows. Otherwise `selectList` contains the requested select list elements, a list of expressions. The order of the elements matters.
-    * `selectListDataTypes`: List of data tyes expected in the result set. This information is only provided by Exasol database with version 8.6.0 and higher or major version 7 and version &ge; 7.1.14, see [Exasol Data Types API Documentation](data_types_api.md).
+    * `selectListDataTypes`: List of data types expected in the result set. This information is only provided by Exasol databases with version 8.6.0 and higher or major version 7 and version &ge; 7.1.14, see [Exasol Data Types API Documentation](data_types_api.md). The data types are retrieved and sent by the database's compiler from the virtual schema's virtual table definitions. These definitions are stored when creating or refreshing the virtual schema.
   * `filter`: The requested filter (`where` clause), a single expression.
   * `aggregationType`: An optional element, set if an aggregation is requested. Either `group_by` or `single_group`, if a aggregate function is used but no group by.
   * `groupBy`: The requested group by clause, a list of expressions.
