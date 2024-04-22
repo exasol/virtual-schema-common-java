@@ -24,6 +24,9 @@ import jakarta.json.JsonObject;
  */
 public class DataTypeParser {
 
+    /**
+     * Default precision of the seconds part of a timestamp.
+     */
     public static final int DEFAULT_TIMESTAMP_PRECISION = 3;
 
     /**
