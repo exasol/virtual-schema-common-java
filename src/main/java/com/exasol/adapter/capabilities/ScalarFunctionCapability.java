@@ -144,6 +144,10 @@ public enum ScalarFunctionCapability {
      * Trunc scalar function capability.
      */
     TRUNC,
+    /**
+     * WIDTH_BUCKET scalar function capability.
+     */
+    WIDTH_BUCKET,
 
     /**
      * Ascii scalar function capability.

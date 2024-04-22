@@ -73,6 +73,7 @@ See [Early Function Evaluation](#early-function-evaluation) for an explanation w
 | SUBSTRING           | The API uses the SUBSTR function.               |
 | SYS_CONNECT_BY_PATH | Not included in the API (hierarchical queries). |
 | TRUNCATE            | The API uses the TRUNC function.                |
+| WIDTH_BUCKET        | The API uses the WIDTH_BUCKET function.         |
 | UCASE               | The API uses the UPPER function.                |
 | USER                | The API uses the CURRENT_USER function.         |
 | VALUE2PROC          | Not included in the API.                        |
