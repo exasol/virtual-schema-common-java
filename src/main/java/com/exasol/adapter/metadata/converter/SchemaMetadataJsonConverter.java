@@ -26,6 +26,8 @@ public final class SchemaMetadataJsonConverter {
     public static final String CHARSET_KEY = "characterSet";
     /** WITH_LOCAL_TIMEZONE */
     public static final String WITH_LOCAL_TIMEZONE_KEY = "withLocalTimeZone";
+    /** Timestamp seconds precision */
+    public static final String TIMESTAMP_PRECISION_KEY = "fractionalSecondsPrecision";
     /** SPATIAL_REFERENCE_ID */
     public static final String SPATIAL_REFERENCE_ID_KEY = "srid";
     /** FRACTION */
@@ -149,7 +151,8 @@ public final class SchemaMetadataJsonConverter {
             typeAsJson.add(CHARSET_KEY, getCharacterSetName(dataType.getCharset()));
             break;
         case TIMESTAMP:
-            typeAsJson.add(WITH_LOCAL_TIMEZONE_KEY, dataType.isWithLocalTimezone());
+            typeAsJson.add(WITH_LOCAL_TIMEZONE_KEY, dataType.isWithLocalTimezone()).add(TIMESTAMP_PRECISION_KEY,
+                    dataType.getPrecision());
             break;
         case GEOMETRY:
             typeAsJson.add(SPATIAL_REFERENCE_ID_KEY, dataType.getGeometrySrid());

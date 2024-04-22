@@ -28,7 +28,7 @@ class TablesMetadataParserTest {
         tableColumns.add(ColumnMetadata.builder().name("URL").adapterNotes("").type(DataType.createVarChar(1000, UTF8))
                 .nullable(true).identity(true).defaultValue("").comment("").build());
         tableColumns.add(
-                ColumnMetadata.builder().name("REQUEST_TIME").adapterNotes("").type(DataType.createTimestamp(false))
+                ColumnMetadata.builder().name("REQUEST_TIME").adapterNotes("").type(DataType.createTimestamp(false, 3))
                         .nullable(true).identity(true).defaultValue("").comment("").build());
         final List<TableMetadata> expectedInvolvedTablesMetadata = new ArrayList<>();
         expectedInvolvedTablesMetadata.add(new TableMetadata("CLICKS", "", tableColumns, ""));
@@ -39,11 +39,9 @@ class TablesMetadataParserTest {
 
     private JsonArray readInvolvedTablesFromJsonFile(final String file) throws IOException {
         final String rawRequest = readFile(new File(file), Charset.defaultCharset());
-        final JsonArray tablesAsJson;
         try (final JsonReader reader = Json.createReader(new StringReader(rawRequest))) {
-            tablesAsJson = reader.readObject().getJsonArray(RequestParserConstants.INVOLVED_TABLES_KEY);
+            return reader.readObject().getJsonArray(RequestParserConstants.INVOLVED_TABLES_KEY);
         }
-        return tablesAsJson;
     }
 
     private String readFile(final File file, final Charset charset) throws IOException {
@@ -84,13 +82,16 @@ class TablesMetadataParserTest {
         tableColumns.add(ColumnMetadata.builder().name("C_DATE").adapterNotes("").type(DataType.createDate())
                 .nullable(true).identity(true).defaultValue("").comment("").build());
         tableColumns.add(
-                ColumnMetadata.builder().name("C_TIMESTAMP_1").adapterNotes("").type(DataType.createTimestamp(false))
+                ColumnMetadata.builder().name("C_TIMESTAMP_1").adapterNotes("").type(DataType.createTimestamp(false, 3))
                         .nullable(true).identity(true).defaultValue("").comment("").build());
         tableColumns.add(
-                ColumnMetadata.builder().name("C_TIMESTAMP_2").adapterNotes("").type(DataType.createTimestamp(false))
+                ColumnMetadata.builder().name("C_TIMESTAMP_2").adapterNotes("").type(DataType.createTimestamp(false, 3))
                         .nullable(true).identity(true).defaultValue("").comment("").build());
         tableColumns.add(
-                ColumnMetadata.builder().name("C_TIMESTAMP_3").adapterNotes("").type(DataType.createTimestamp(true))
+                ColumnMetadata.builder().name("C_TIMESTAMP_3").adapterNotes("").type(DataType.createTimestamp(true, 3))
+                        .nullable(true).identity(true).defaultValue("").comment("").build());
+        tableColumns.add(
+                ColumnMetadata.builder().name("C_TIMESTAMP_4").adapterNotes("").type(DataType.createTimestamp(false, 7))
                         .nullable(true).identity(true).defaultValue("").comment("").build());
         tableColumns.add(ColumnMetadata.builder().name("C_BOOLEAN").adapterNotes("").type(DataType.createBool())
                 .nullable(true).identity(true).defaultValue("").comment("").build());

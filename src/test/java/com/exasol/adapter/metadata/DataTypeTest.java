@@ -46,16 +46,30 @@ class DataTypeTest {
 
     @Test
     void createTimestampWithLocalTimezone() {
-        final DataType dataType = DataType.createTimestamp(true);
+        final DataType dataType = DataType.createTimestamp(true, 3);
         assertAll(() -> assertTrue(dataType.isWithLocalTimezone()),
-                () -> assertThat(dataType.toString(), equalTo("TIMESTAMP WITH LOCAL TIME ZONE")));
+                () -> assertThat(dataType.toString(), equalTo("TIMESTAMP(3) WITH LOCAL TIME ZONE")));
+    }
+
+    @Test
+    void createTimestampWithLocalTimezoneAndCustomPrecision() {
+        final DataType dataType = DataType.createTimestamp(true, 9);
+        assertAll(() -> assertTrue(dataType.isWithLocalTimezone()),
+                () -> assertThat(dataType.toString(), equalTo("TIMESTAMP(9) WITH LOCAL TIME ZONE")));
     }
 
     @Test
     void createTimestampWithoutLocalTimezone() {
-        final DataType dataType = DataType.createTimestamp(false);
+        final DataType dataType = DataType.createTimestamp(false, 3);
         assertAll(() -> assertFalse(dataType.isWithLocalTimezone()),
-                () -> assertThat(dataType.toString(), equalTo("TIMESTAMP")));
+                () -> assertThat(dataType.toString(), equalTo("TIMESTAMP(3)")));
+    }
+
+    @Test
+    void createTimestampWithoutLocalTimezoneWithCustomPrecision() {
+        final DataType dataType = DataType.createTimestamp(false, 9);
+        assertAll(() -> assertFalse(dataType.isWithLocalTimezone()),
+                () -> assertThat(dataType.toString(), equalTo("TIMESTAMP(9)")));
     }
 
     @Test

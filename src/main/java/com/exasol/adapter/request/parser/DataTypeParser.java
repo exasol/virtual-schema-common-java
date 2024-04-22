@@ -24,6 +24,8 @@ import jakarta.json.JsonObject;
  */
 public class DataTypeParser {
 
+    public static final int DEFAULT_TIMESTAMP_PRECISION = 3;
+
     /**
      * @return new instance of {@link DataTypeParser}
      */
@@ -62,7 +64,8 @@ public class DataTypeParser {
         case "DATE":
             return DataType.createDate();
         case "TIMESTAMP":
-            return DataType.createTimestamp(WITH_LOCAL_TIMEZONE.get(entry, false));
+            return DataType.createTimestamp(WITH_LOCAL_TIMEZONE.get(entry, false),
+                    TIMESTAMP_PRECISION.get(entry, DEFAULT_TIMESTAMP_PRECISION));
         case "BOOLEAN":
             return DataType.createBool();
         case "GEOMETRY":

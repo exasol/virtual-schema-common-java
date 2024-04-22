@@ -1,8 +1,6 @@
 package com.exasol.adapter.request.parser;
 
 import static com.exasol.adapter.request.RequestJsonKeys.*;
-import static com.exasol.adapter.sql.SqlPredicateIsJson.KeyUniquenessConstraint;
-import static com.exasol.adapter.sql.SqlPredicateIsJson.TypeConstraints;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -10,9 +8,12 @@ import java.util.*;
 import com.exasol.adapter.metadata.*;
 import com.exasol.adapter.metadata.DataType.ExaCharset;
 import com.exasol.adapter.metadata.DataType.IntervalType;
+import com.exasol.adapter.metadata.converter.SchemaMetadataJsonConverter;
 import com.exasol.adapter.sql.*;
-import com.exasol.adapter.sql.SqlFunctionAggregateListagg.Behavior.TruncationType;
+import com.exasol.adapter.sql.AbstractSqlPredicateJson.KeyUniquenessConstraint;
+import com.exasol.adapter.sql.AbstractSqlPredicateJson.TypeConstraints;
 import com.exasol.adapter.sql.SqlFunctionAggregateListagg.*;
+import com.exasol.adapter.sql.SqlFunctionAggregateListagg.Behavior.TruncationType;
 import com.exasol.errorreporting.ExaError;
 
 import jakarta.json.*;
@@ -418,7 +419,9 @@ public final class PushdownSqlParser extends AbstractRequestParser {
 
     private DataType getTimestamp(final JsonObject dataType) {
         final boolean withLocalTimezone = dataType.getBoolean(WITH_LOCAL_TIME_ZONE, false);
-        return DataType.createTimestamp(withLocalTimezone);
+        final int precision = dataType.getInt(SchemaMetadataJsonConverter.TIMESTAMP_PRECISION_KEY,
+                DataTypeParser.DEFAULT_TIMESTAMP_PRECISION);
+        return DataType.createTimestamp(withLocalTimezone, precision);
     }
 
     private DataType getInterval(final JsonObject dataType) {

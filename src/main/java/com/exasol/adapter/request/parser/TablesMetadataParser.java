@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.exasol.adapter.metadata.*;
+import com.exasol.adapter.metadata.converter.SchemaMetadataJsonConverter;
 import com.exasol.errorreporting.ExaError;
 
 import jakarta.json.*;
@@ -122,7 +123,9 @@ public class TablesMetadataParser {
 
     private DataType getTimestampDataType(final JsonObject dataType) {
         final boolean withLocalTimezone = dataType.getBoolean("withLocalTimeZone", false);
-        return DataType.createTimestamp(withLocalTimezone);
+        final int precision = dataType.getInt(SchemaMetadataJsonConverter.TIMESTAMP_PRECISION_KEY,
+                DataTypeParser.DEFAULT_TIMESTAMP_PRECISION);
+        return DataType.createTimestamp(withLocalTimezone, precision);
     }
 
     private DataType getDateDataType() {
