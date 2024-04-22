@@ -30,10 +30,8 @@ class AdapterPropertiesTest {
         assertThat(AdapterProperties.emptyProperties(), equalTo(new AdapterProperties(Collections.emptyMap())));
     }
 
-    @SuppressWarnings("removal") // EXCEPTION_HANDLING_PROPERTY will be removed in
-                                 // https://github.com/exasol/virtual-schema-common-java/issues/269
     @ValueSource(strings = { CATALOG_NAME_PROPERTY, SCHEMA_NAME_PROPERTY, CONNECTION_NAME_PROPERTY,
-            DEBUG_ADDRESS_PROPERTY, LOG_LEVEL_PROPERTY, EXCLUDED_CAPABILITIES_PROPERTY, EXCEPTION_HANDLING_PROPERTY })
+            DEBUG_ADDRESS_PROPERTY, LOG_LEVEL_PROPERTY, EXCLUDED_CAPABILITIES_PROPERTY })
     @ParameterizedTest
     void testGetStringProperty(final String property) throws IllegalAccessException, IllegalArgumentException,
             InvocationTargetException, NoSuchMethodException, SecurityException {
