@@ -8,6 +8,13 @@ This release adds support for scalar function [`WIDTH_BUCKET`](https://docs.exas
 * `ScalarFunctionCapability.WIDTH_BUCKET`
 * `ScalarFunction.WIDTH_BUCKET`
 
+## Breaking Changes
+
+This release removes the following deprecated fields/methods from class `com.exasol.adapter.AdapterProperties`:
+* Constant `EXCEPTION_HANDLING_PROPERTY`
+* Method `getExceptionHandling()`
+* Method `hasExceptionHandling()`
+
 ## Features
 
 * #278: Added support for scalar function `WIDTH_BUCKET`

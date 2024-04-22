@@ -40,13 +40,6 @@ public class AdapterProperties extends AbstractAdapterProperties {
      */
     public static final String EXCLUDED_CAPABILITIES_PROPERTY = "EXCLUDED_CAPABILITIES";
     /**
-     * The constant EXCEPTION_HANDLING_PROPERTY.
-     * 
-     * @deprecated this will be removed in the next release
-     */
-    @Deprecated(forRemoval = true)
-    public static final String EXCEPTION_HANDLING_PROPERTY = "EXCEPTION_HANDLING";
-    /**
      * The constant IGNORE_ERRORS_PROPERTY.
      */
     public static final String IGNORE_ERRORS_PROPERTY = "IGNORE_ERRORS";
@@ -112,17 +105,6 @@ public class AdapterProperties extends AbstractAdapterProperties {
      */
     public String getExcludedCapabilities() {
         return get(EXCLUDED_CAPABILITIES_PROPERTY);
-    }
-
-    /**
-     * Get the exception handling
-     *
-     * @return exception handling
-     * @deprecated this will be removed in the next release
-     */
-    @Deprecated(forRemoval = true)
-    public String getExceptionHandling() {
-        return get(EXCEPTION_HANDLING_PROPERTY);
     }
 
     /**
@@ -227,17 +209,6 @@ public class AdapterProperties extends AbstractAdapterProperties {
      */
     public boolean hasExcludedCapabilities() {
         return containsKey(EXCLUDED_CAPABILITIES_PROPERTY);
-    }
-
-    /**
-     * Check if the exception handling property is set
-     *
-     * @return <code>true</code> if exception handling property is set
-     * @deprecated this will be removed in the next release
-     */
-    @Deprecated(forRemoval = true)
-    public boolean hasExceptionHandling() {
-        return containsKey(EXCEPTION_HANDLING_PROPERTY);
     }
 
     /**
