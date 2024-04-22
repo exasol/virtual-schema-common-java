@@ -140,7 +140,11 @@ public enum ScalarFunction {
     /**
      * Trunc scalar function.
      */
-    TRUNC, //
+    TRUNC,
+    /**
+     * WIDTH_BUCKET scalar function.
+     */
+    WIDTH_BUCKET,
 
     /**
      * Ascii scalar function.
