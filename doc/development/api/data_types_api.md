@@ -61,13 +61,15 @@ Notes:
 ```json
 {
     "type": "TIMESTAMP",
-    "withLocalTimeZone": true
+    "withLocalTimeZone": true,
+    "fractionalSecondsPrecision": 9
 }
 ```
 
 Notes:
 
 * `withLocalTimeZone`: Optional. The value is `true` or `false`. The default value is `false`.
+* `fractionalSecondsPrecision`: Optional. The default value is `3`.
 
 ## Boolean
 
