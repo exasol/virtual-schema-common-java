@@ -15,68 +15,68 @@ This page describes how Exasol scalar functions map to the Virtual Schemas push-
 
 This section contains functions that have a special API mapping.
 
-| Function Name     | API Mapping Link                            |
-|-------------------|---------------------------------------------|
-| EXTRACT           | [EXTRACT function](#extract-function)       |
-| CASE              | [CASE function](#case-function)             |
-| CAST              | [CAST function](#cast-function)             |
-| JSON_VALUE        | [JSON_VALUE function](#json_value-function) |
+| Function Name     | API Mapping Link                              |
+|-------------------|-----------------------------------------------|
+| `EXTRACT`         | [`EXTRACT` function](#extract-function)       |
+| `CASE`            | [`CASE` function](#case-function)             |
+| `CAST`            | [`CAST` function](#cast-function)             |
+| `JSON_VALUE`      | [`JSON_VALUE` function](#json_value-function) |
 
 ### Functions Not Included in the API
 
 This section contains Exasol functions which are not included in the API.
 See [Early Function Evaluation](#early-function-evaluation) for an explanation why some function calls do not appear in pushdown requests.
 
-| Function Name       | Comment                                         |
-|---------------------|-------------------------------------------------|
-| CEILING             | The API uses the CEIL function.                 |
-| CHAR                | The API uses the CHR function.                  |
-| CHARACTER_LENGTH    | The API uses the LENGTH function.               |
-| COALESCE            | The API uses the CASE function.                 |
-| CONNECT_BY_ISCYCLE  | Not included in the API (hierarchical queries). |
-| CONNECT_BY_ISLEAF   | Not included in the API (hierarchical queries). |
-| CONVERT             | The API uses the CAST function.                 |
-| CUME_DIST           | Not included in the API (analytic functions).   |
-| CURDATE             | The API uses the CURRENT_DATE function.         |
-| DECODE              | The API uses the CASE function.                 |
-| DENSE_RANK          | Not included in the API (analytic functions).   |
-| HASH_SHA            | The API uses the HASH_SHA1 function.            |
-| HASHTYPE_SHA        | The API uses the HASHTYPE_SHA1 function.        |
-| IF                  | The API uses the CASE function.                 |
-| IPROC               | Not included in the API.                        |
-| JSON_EXTRACT        | Not included in the API.                        |
-| LAG                 | Not included in the API (analytic functions).   |
-| LCASE               | The API uses the LOWER function.                |
-| LEAD                | Not included in the API (analytic functions).   |
-| LEFT                | The API uses the SUBSTR function.               |
-| LEVEL               | Not included in the API (hierarchical queries). |
-| LOG2                | The API uses the LOG function.                  |
-| LOG10               | The API uses the LOG function.                  |
-| MID                 | The API uses the SUBSTR function.               |
-| NOW                 | The API uses the CURRENT_TIMESTAMP function.    |
-| NPROC               | Not included in the API.                        |
-| NTH_VALUE           | Not included in the API (analytic functions).   |
-| NTILE               | Not included in the API (analytic functions).   |
-| NULLIF              | The API uses the CASE function.                 |
-| NVL                 | The API uses the CASE function.                 |
-| NVL2                | The API uses the CASE function.                 |
-| PERCENT_RANK        | Not included in the API (analytic functions).   |
-| PI                  | The API uses a `literal_double`.                |
-| POSITION            | The API uses the INSTR function.                |
-| RANDOM              | The API uses the RAND function.                 |
-| RANK                | Not included in the API (analytic functions).   |
-| RATIO_TO_REPORT     | Not included in the API (analytic functions).   |
-| ROWID               | Not included in the API.                        |
-| ROW_NUMBER          | Not included in the API (analytic functions).   |
-| ROWNUM              | Not included in the API.                        |
-| SCOPE_USER          | The API uses a `literal_string`.                |
-| SUBSTRING           | The API uses the SUBSTR function.               |
-| SYS_CONNECT_BY_PATH | Not included in the API (hierarchical queries). |
-| TRUNCATE            | The API uses the TRUNC function.                |
-| WIDTH_BUCKET        | The API uses the WIDTH_BUCKET function.         |
-| UCASE               | The API uses the UPPER function.                |
-| USER                | The API uses the CURRENT_USER function.         |
-| VALUE2PROC          | Not included in the API.                        |
+| Function Name         | Comment                                           |
+|-----------------------|---------------------------------------------------|
+| `CEILING`             | The API uses the `CEIL` function.                 |
+| `CHAR`                | The API uses the `CHR` function.                  |
+| `CHARACTER_LENGTH`    | The API uses the `LENGTH` function.               |
+| `COALESCE`            | The API uses the `CASE` function.                 |
+| `CONNECT_BY_ISCYCLE`  | Not included in the API (hierarchical queries).   |
+| `CONNECT_BY_ISLEAF`   | Not included in the API (hierarchical queries).   |
+| `CONVERT`             | The API uses the `CAST` function.                 |
+| `CUME_DIST`           | Not included in the API (analytic functions).     |
+| `CURDATE`             | The API uses the `CURRENT_DATE` function.         |
+| `DECODE`              | The API uses the `CASE` function.                 |
+| `DENSE_RANK`          | Not included in the API (analytic functions).     |
+| `HASH_SHA`            | The API uses the `HASH_SHA1` function.            |
+| `HASHTYPE_SHA`        | The API uses the `HASHTYPE_SHA1` function.        |
+| `IF`                  | The API uses the `CASE` function.                 |
+| `IPROC`               | Not included in the API.                          |
+| `JSON_EXTRACT`        | Not included in the API.                          |
+| `LAG`                 | Not included in the API (analytic functions).     |
+| `LCASE`               | The API uses the `LOWER` function.                |
+| `LEAD`                | Not included in the API (analytic functions).     |
+| `LEFT`                | The API uses the `SUBSTR` function.               |
+| `LEVEL`               | Not included in the API (hierarchical queries).   |
+| `LOG2`                | The API uses the `LOG` function.                  |
+| `LOG10`               | The API uses the `LOG` function.                  |
+| `MID`                 | The API uses the `SUBSTR` function.               |
+| `NOW`                 | The API uses the `CURRENT_TIMESTAMP` function.    |
+| `NPROC`               | Not included in the API.                          |
+| `NTH_VALUE`           | Not included in the API (analytic functions).     |
+| `NTILE`               | Not included in the API (analytic functions).     |
+| `NULLIF`              | The API uses the `CASE` function.                 |
+| `NVL`                 | The API uses the `CASE` function.                 |
+| `NVL2`                | The API uses the `CASE` function.                 |
+| `PERCENT_RANK`        | Not included in the API (analytic functions).     |
+| `PI`                  | The API uses a `literal_double`.                  |
+| `POSITION`            | The API uses the `INSTR` function.                |
+| `RANDOM`              | The API uses the `RAND` function.                 |
+| `RANK`                | Not included in the API (analytic functions).     |
+| `RATIO_TO_REPORT`     | Not included in the API (analytic functions).     |
+| `ROWID`               | Not included in the API.                          |
+| `ROW_NUMBER`          | Not included in the API (analytic functions).     |
+| `ROWNUM`              | Not included in the API.                          |
+| `SCOPE_USER`          | The API uses a `literal_string`.                  |
+| `SUBSTRING`           | The API uses the `SUBSTR` function.               |
+| `SYS_CONNECT_BY_PATH` | Not included in the API (hierarchical queries).   |
+| `TRUNCATE`            | The API uses the `TRUNC` function.                |
+| `WIDTH_BUCKET`        | The API uses the `WIDTH_BUCKET` function.         |
+| `UCASE`               | The API uses the `UPPER` function.                |
+| `USER`                | The API uses the `CURRENT_USER` function.         |
+| `VALUE2PROC`          | Not included in the API.                          |
 
 ## Scalar Functions API
 
@@ -175,28 +175,28 @@ Arithmetic operators use the common scalar function API, but have special names:
 
 | Function Name | Operation     |
 |---------------|---------------|
-| NEG           | `-exp1`       |
-| ADD           | `exp1 + exp2` |
-| SUB           | `exp1 - exp2` |
-| MULT          | `exp1 * exp2` |
-| FLOAT_DIV     | `exp1 / exp2` |
+| `NEG`         | `-exp1`       |
+| `ADD`         | `exp1 + exp2` |
+| `SUB`         | `exp1 - exp2` |
+| `MULT`        | `exp1 * exp2` |
+| `FLOAT_DIV`   | `exp1 / exp2` |
 
 ```json
 {
     "type": "function_scalar",
     "name": "ADD",
     "arguments": [
-    {
-        ...
-    },
-    {
-        ...
-    }
+        {
+            ...
+        },
+        {
+            ...
+        }
     ]
 }
 ```
 
-### EXTRACT Function
+### `EXTRACT` Function
 
 `EXTRACT(toExtract FROM exp1)` (requires scalar-function capability `EXTRACT`).
 
@@ -215,7 +215,7 @@ The EXTRACT function takes one argument and has a special field `toExtract`.
 }
 ```
 
-### CAST function
+### `CAST` function
 
 `CAST(exp1 AS dataType)` (requires scalar-function capability `CAST`).
 
@@ -256,7 +256,7 @@ For example, for the query `SELECT CAST(c5 AS VARCHAR(10)) FROM VIRTUAL_SCHEMA_E
 }
 ```
 
- ### CASE function
+ ### `CASE` function
 
 `CASE` (requires scalar-function capability `CASE`)
 
@@ -345,7 +345,7 @@ FROM VIRTUAL_SCHEMA_EXASOL.ALL_EXASOL_TYPES;
 }
 ```
 
-### JSON_VALUE Function
+### `JSON_VALUE` Function
 
 `JSON_VALUE(arg1, arg2 RETURNING dataType {ERROR | NULL | DEFAULT exp1} ON EMPTY {ERROR | NULL | DEFAULT exp2} ON ERROR)`
  (requires scalar-function capability `JSON_VALUE`)
