@@ -2,6 +2,8 @@ package com.exasol.adapter.metadata;
 
 import java.util.Objects;
 
+import com.exasol.adapter.request.parser.DataTypeParser;
+
 /**
  * Represents an EXASOL data type.
  */
@@ -476,9 +478,12 @@ public class DataType {
     }
 
     private void appendTimestamp(final StringBuilder builder) {
-        builder.append("TIMESTAMP(");
-        builder.append(this.precision);
-        builder.append(")");
+        builder.append("TIMESTAMP");
+        if (this.precision != DataTypeParser.DEFAULT_TIMESTAMP_PRECISION) {
+            builder.append("(");
+            builder.append(this.precision);
+            builder.append(")");
+        }
         if (this.withLocalTimezone) {
             builder.append(" WITH LOCAL TIME ZONE");
         }
