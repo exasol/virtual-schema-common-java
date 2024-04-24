@@ -1,4 +1,4 @@
-# Common Module of Exasol Virtual Schemas Adapters 17.1.0, released 2024-04-23
+# Common Module of Exasol Virtual Schemas Adapters 17.1.0, released 2024-04-24
 
 Code name: Add `WIDTH_BUCKET`
 
