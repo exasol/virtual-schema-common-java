@@ -2,6 +2,8 @@ package com.exasol.adapter.metadata;
 
 import java.util.Objects;
 
+import com.exasol.adapter.request.parser.DataTypeParser;
+
 /**
  * Represents an EXASOL data type.
  */
@@ -164,12 +166,14 @@ public class DataType {
      *
      * @param withLocalTimezone defines whether the timestamp is local time (<code>true</code>) or
      *                          UTC(<code>false</code>)
+     * @param precision         number of fractional digits for the seconds
      * @return <code>TIMESTAMP</code> data type
      */
-    public static DataType createTimestamp(final boolean withLocalTimezone) {
+    public static DataType createTimestamp(final boolean withLocalTimezone, final int precision) {
         final DataType type = new DataType();
         type.exaDataType = ExaDataType.TIMESTAMP;
         type.withLocalTimezone = withLocalTimezone;
+        type.precision = precision;
         return type;
     }
 
@@ -475,6 +479,11 @@ public class DataType {
 
     private void appendTimestamp(final StringBuilder builder) {
         builder.append("TIMESTAMP");
+        if (this.precision != DataTypeParser.DEFAULT_TIMESTAMP_PRECISION) {
+            builder.append("(");
+            builder.append(this.precision);
+            builder.append(")");
+        }
         if (this.withLocalTimezone) {
             builder.append(" WITH LOCAL TIME ZONE");
         }

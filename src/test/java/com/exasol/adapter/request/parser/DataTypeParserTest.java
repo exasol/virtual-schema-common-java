@@ -76,9 +76,30 @@ class DataTypeParserTest {
 
     @Test
     void timestamp() {
-        verifySingle(DataType.createTimestamp(true), object( //
+        verifySingle(DataType.createTimestamp(true, 3), object( //
                 entry("type", "TIMESTAMP"), //
                 entry("withLocalTimeZone", true)));
+    }
+
+    @Test
+    void timestampWithoutLocalTimeZone() {
+        verifySingle(DataType.createTimestamp(true, 3), object( //
+                entry("type", "TIMESTAMP"), //
+                entry("withLocalTimeZone", true)));
+    }
+
+    @Test
+    void timestampMissingLocalTimeZoneProperty() {
+        verifySingle(DataType.createTimestamp(false, 3), object( //
+                entry("type", "TIMESTAMP")));
+    }
+
+    @Test
+    void timestampWithCustomPrecision() {
+        verifySingle(DataType.createTimestamp(true, 6), object( //
+                entry("type", "TIMESTAMP"), //
+                entry("withLocalTimeZone", true), //
+                entry("fractionalSecondsPrecision", 6)));
     }
 
     @Test
@@ -130,7 +151,12 @@ class DataTypeParserTest {
 
     @Test
     void timestampDefaultLocalTimezone_False() {
-        verifySingle(DataType.createTimestamp(false), object(entry("type", "TIMESTAMP")));
+        verifySingle(DataType.createTimestamp(false, 3), object(entry("type", "TIMESTAMP")));
+    }
+
+    @Test
+    void timestampDefaultPrecision_3() {
+        verifySingle(DataType.createTimestamp(false, 3), object(entry("type", "TIMESTAMP")));
     }
 
     @Test
@@ -203,7 +229,7 @@ class DataTypeParserTest {
                 object(entry("type", "DOUBLE")), //
                 object(entry("type", "DATE")), //
                 object(entry("type", "TIMESTAMP"), //
-                        entry("withLocalTimeZone", true)), //
+                        entry("withLocalTimeZone", true), entry("fractionalSecondsPrecision", 4)), //
                 object(entry("type", "BOOLEAN")), //
                 object(entry("type", "GEOMETRY"), //
                         entry("srid", 42)), //
@@ -218,7 +244,7 @@ class DataTypeParserTest {
                 DataType.createDecimal(31, 41), //
                 DataType.createDouble(), //
                 DataType.createDate(), //
-                DataType.createTimestamp(true), //
+                DataType.createTimestamp(true, 4), //
                 DataType.createBool(), //
                 DataType.createGeometry(42), //
                 DataType.createIntervalDaySecond(32, 51), //

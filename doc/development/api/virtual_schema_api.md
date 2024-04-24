@@ -2,28 +2,40 @@
 
 ## Table of Contents
 
-- [Introduction](#introduction)
-- [Virtual Schema Query Process](#virtual-schema-query-process)
-- [Requests and Responses](#requests-and-responses)
-  - [Create Virtual Schema](#create-virtual-schema)
-  - [Refresh](#refresh)
-  - [Set Properties](#set-properties)
-  - [Drop Virtual Schema](#drop-virtual-schema)
-  - [Get Capabilities](#get-capabilities)
-  - [Pushdown](#pushdown)
-- [Embedded Commonly Used JSON Elements](#embedded-commonly-used-json-elements)
-  - [Schema Metadata Info](#schema-metadata-info)
-  - [Schema Metadata](#schema-metadata)
-- [Expressions](#expressions)
-  - [Table](#table)
-  - [Join](#join)
-  - [Column Lookup](#column-lookup)
-  - [Order By Element](#order-by-element)
-  - [Data Types](#data-types)
-  - [Literal](#literal)
-  - [Predicates](#predicates)
-  - [Scalar Functions](#scalar-functions)
-  - [Aggregate Functions](#aggregate-functions)
+- [Virtual Schema API Documentation](#virtual-schema-api-documentation)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Virtual Schema Query Process](#virtual-schema-query-process)
+  - [Requests and Responses](#requests-and-responses)
+    - [Create Virtual Schema](#create-virtual-schema)
+    - [Refresh](#refresh)
+    - [Set Properties](#set-properties)
+    - [Drop Virtual Schema](#drop-virtual-schema)
+    - [Get Capabilities](#get-capabilities)
+      - [Capability Prefixes](#capability-prefixes)
+      - [Dependent Capabilities and Capability Groups](#dependent-capabilities-and-capability-groups)
+    - [Pushdown](#pushdown)
+  - [Embedded Commonly Used JSON Elements](#embedded-commonly-used-json-elements)
+    - [Schema Metadata Info](#schema-metadata-info)
+    - [Schema Metadata](#schema-metadata)
+  - [Expressions](#expressions)
+    - [Table](#table)
+    - [Join](#join)
+    - [Column Lookup](#column-lookup)
+    - [Order By Element](#order-by-element)
+    - [Data Types](#data-types)
+    - [Literal](#literal)
+    - [Predicates](#predicates)
+        - [`AND` / `OR`](#and--or)
+        - [`NOT` / `IS NULL` / `IS NOT NULL`](#not--is-null--is-not-null)
+        - [Comparison operators](#comparison-operators)
+        - [`LIKE`](#like)
+        - [`REGEXP_LIKE`](#regexp_like)
+        - [`BETWEEN`](#between)
+        - [`IN`](#in)
+        - [`IS JSON` / `IS NOT JSON`](#is-json--is-not-json)
+    - [Scalar Functions](#scalar-functions)
+    - [Aggregate Functions](#aggregate-functions)
 
 ## Introduction
 
@@ -95,7 +107,6 @@ The Adapter is allowed to throw an Exception if the user missed to provide manda
 Notes
 * `schemaMetadata` is mandatory. However, it is allowed to contain no tables.
 
-
 ### Refresh
 
 Request to refresh the metadata for the whole Virtual Schema, or for specified tables.
@@ -139,7 +150,6 @@ Request to set and unset properties. The Adapter can decide whether it needs to 
 
 ```json
 {
-
     "type": "setProperties",
     "properties": {
         "JDBC_CONNECTION_STRING": "new-jdbc-connection-string",
@@ -198,7 +208,6 @@ Inform the Adapter that a Virtual Schema is about to be dropped. The Adapter can
     "type": "dropVirtualSchema"
 }
 ```
-
 
 ### Get Capabilities
 
@@ -273,7 +282,7 @@ See also [List of supported Capabilities](capabilities_list.md).
 
 #### Dependent Capabilities and Capability Groups
 
-There are capabilities that come in groups, sharing the same group prefix. An example is the `FN_AGG_COUNT` group. In this case there is a base capability that needs to be set as a precodition of setting any other capability in that group.
+There are capabilities that come in groups, sharing the same group prefix. An example is the `FN_AGG_COUNT` group. In this case there is a base capability that needs to be set as a precondition of setting any other capability in that group.
 
 As an example, to allow push-down of `SELECT COUNT(*)` the Virtual Schema adapter needs to report `FN_AGG_COUNT` + `FN_AGG_COUNT_STAR`.
 
@@ -497,15 +506,17 @@ The following Json objects can be embedded in a request or response. They have a
 This document contains the most important metadata of the virtual schema and is sent to the adapter just "for information" with each request. It is the value of an element called `schemaMetadataInfo`.
 
 ```json
-{"schemaMetadataInfo":{
-    "name": "MY_HIVE_VSCHEMA",
-    "adapterNotes": "<serialized adapter state>",
-    "properties": {
-        "HIVE_SERVER": "my-hive-server",
-        "HIVE_DB": "my-hive-db",
-        "HIVE_USER": "my-hive-user"
+{
+    "schemaMetadataInfo": {
+        "name": "MY_HIVE_VSCHEMA",
+        "adapterNotes": "<serialized adapter state>",
+        "properties": {
+            "HIVE_SERVER": "my-hive-server",
+            "HIVE_DB": "my-hive-db",
+            "HIVE_USER": "my-hive-user"
+        }
     }
-}}
+}
 ```
 
 ### Schema Metadata
@@ -666,8 +677,7 @@ Notes
 ```json
 {
     "type": "order_by_element",
-    "expression":
-    {
+    "expression": {
         ...
     },
     "isAscending": true,
@@ -768,7 +778,7 @@ Refer to the [Exasol Data Types API Documentation](data_types_api.md)
 
 Whenever there is `...` this is a shortcut for an arbitrary expression.
 
-##### AND / OR
+##### `AND` / `OR`
 
 ```json
 {
@@ -781,7 +791,7 @@ Whenever there is `...` this is a shortcut for an arbitrary expression.
 
 The same can be used for `predicate_or`.
 
-##### NOT / IS NULL / IS NOT NULL
+##### `NOT` / `IS NULL` / `IS NOT NULL`
 
 ```json
 {
@@ -810,7 +820,7 @@ The same can be used for `predicate_is_null`, `predicate_is_not_null`.
 
 The same can be used for `predicate_notequal`, `predicate_less` and `predicate_lessequal`.
 
-##### LIKE
+##### `LIKE`
 
 ```json
 {
@@ -830,7 +840,7 @@ The same can be used for `predicate_notequal`, `predicate_less` and `predicate_l
 Notes:
 * `escapeChar` is optional.
 
-##### REGEXP_LIKE
+##### `REGEXP_LIKE`
 
 ```json
 {
@@ -844,7 +854,7 @@ Notes:
 }
 ```
 
-##### BETWEEN
+##### `BETWEEN`
 
 ```json
 {
@@ -861,7 +871,7 @@ Notes:
 }
 ```
 
-##### IN
+##### `IN`
 
 `<exp> IN (<const1>, <const2>)`
 
@@ -877,7 +887,7 @@ Notes:
 }
 ```
 
-##### IS JSON / IS NOT JSON
+##### `IS JSON` / `IS NOT JSON`
 
 `exp1 IS JSON {VALUE | ARRAY | OBJECT | SCALAR} {WITH | WITHOUT} UNIQUE KEYS`
  (requires predicate capability `IS_JSON`)

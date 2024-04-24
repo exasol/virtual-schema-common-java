@@ -13,20 +13,20 @@ This page describes how Exasol aggregate functions map to the Virtual Schemas pu
 
 The aggregate functions from the table below support an optional [`distinct` field](#functions-with-distinct-field). For this field they require an additional capability `*_DISTINCT`.
 
-| Function Name | Required Set-Function Capabilities         |
-|---------------|--------------------------------------------|
-| AVG           | `AVG` and `AVG_DISTINCT`                   |
-| COUNT         | `COUNT` and `COUNT_DISTINCT`               |
-| GROUP_CONCAT  | `GROUP_CONCAT` and `GROUP_CONCAT_DISTINCT` |
-| LISTAGG       | `LISTAGG` and `LISTAGG_DISTINCT`           |
-| MUL           | `MUL` and `MUL_DISTINCT`                   |
-| STDDEV        | `STDDEV` and `STDDEV_DISTINCT`             |
-| STDDEV_POP    | `STDDEV_POP` and `STDDEV_POP_DISTINCT`     |
-| STDDEV_SAMP   | `STDDEV_SAMP` and `STDDEV_SAMP_DISTINCT`   |
-| SUM           | `SUM` and `SUM_DISTINCT`                   |
-| VARIANCE      | `VARIANCE` and `VARIANCE_DISTINCT`         |
-| VAR_POP       | `VAR_POP` and `VAR_POP_DISTINCT`           |
-| VAR_SAMP      | `VAR_SAMP` and `VAR_SAMP_DISTINCT`         |
+| Function Name   | Required Set-Function Capabilities         |
+|-----------------|--------------------------------------------|
+| `AVG`           | `AVG` and `AVG_DISTINCT`                   |
+| `COUNT`         | `COUNT` and `COUNT_DISTINCT`               |
+| `GROUP_CONCAT`  | `GROUP_CONCAT` and `GROUP_CONCAT_DISTINCT` |
+| `LISTAGG`       | `LISTAGG` and `LISTAGG_DISTINCT`           |
+| `MUL`           | `MUL` and `MUL_DISTINCT`                   |
+| `STDDEV`        | `STDDEV` and `STDDEV_DISTINCT`             |
+| `STDDEV_POP`    | `STDDEV_POP` and `STDDEV_POP_DISTINCT`     |
+| `STDDEV_SAMP`   | `STDDEV_SAMP` and `STDDEV_SAMP_DISTINCT`   |
+| `SUM`           | `SUM` and `SUM_DISTINCT`                   |
+| `VARIANCE`      | `VARIANCE` and `VARIANCE_DISTINCT`         |
+| `VAR_POP`       | `VAR_POP` and `VAR_POP_DISTINCT`           |
+| `VAR_SAMP`      | `VAR_SAMP` and `VAR_SAMP_DISTINCT`         |
 
 ### Special Cases of Aggregate Functions
 
@@ -34,22 +34,22 @@ This section contains functions that have a special API mapping.
 
 | Function Name       | API Mapping Link                                   |
 |---------------------|----------------------------------------------------|
-| COUNT               | [COUNT function](#count)                           |
-| GROUP_CONCAT        | [GROUP_CONCAT function](#group_concat)             |
-| LISTAGG             | [LISTAGG function](#listagg)                       |
+| `COUNT`             | [`COUNT` function](#count)                         |
+| `GROUP_CONCAT`      | [`GROUP_CONCAT` function](#group_concat)           |
+| `LISTAGG`           | [`LISTAGG` function](#listagg)                     |
 
 ### Aggregate Functions Not Included in the API
 
 | Function Name       | Comment                                 |
 |---------------------|-----------------------------------------|
-| ANY                 | The API uses the SOME function.         |
-| CORR                | Not included in the API.                |
-| COVAR_POP           | Not included in the API.                |
-| COVAR_SAMP          | Not included in the API.                |
-| GROUPING            | Not included in the API.                |
-| PERCENTILE_CONT     | Not included in the API.                |
-| PERCENTILE_DISC     | Not included in the API.                |
-| REGR_*              | Not included in the API.                |
+| `ANY`               | The API uses the SOME function.         |
+| `CORR`              | Not included in the API.                |
+| `COVAR_POP`         | Not included in the API.                |
+| `COVAR_SAMP`        | Not included in the API.                |
+| `GROUPING`          | Not included in the API.                |
+| `PERCENTILE_CONT`   | Not included in the API.                |
+| `PERCENTILE_DISC`   | Not included in the API.                |
+| `REGR_*`            | Not included in the API.                |
 
 ## Aggregate Functions API
 
@@ -62,9 +62,9 @@ An aggregate function with a single argument (consistent with multiple argument 
     "type": "function_aggregate",
     "name": "<function name>",
     "arguments": [
-    {
-        ...
-    }
+        {
+            ...
+        }
     ]
 }
 ```
@@ -78,12 +78,12 @@ An aggregate function with multiple arguments:
     "type": "function_aggregate",
     "name": "<function name>",
     "arguments": [
-    {
-        ...
-    },
-    {
-        ...
-    }
+        {
+            ...
+        },
+        {
+            ...
+        }
     ]
 }
 ```
@@ -105,7 +105,7 @@ An aggregate function with multiple arguments:
 }
 ```
 
-### COUNT
+### `COUNT`
 
 `COUNT(*)`
  (Requires set-function capability `COUNT_STAR`. Please notice, that the set-function capability `COUNT` is not required in this case.)
@@ -129,12 +129,12 @@ An aggregate function with multiple arguments:
     "name": "COUNT",
     "distinct": true,
     "arguments": [
-    {
-        ...
-    },
-    {
-        ...
-    }
+        {
+            ...
+        },
+        {
+            ...
+        }
     ]
 }
 ```
@@ -142,7 +142,7 @@ An aggregate function with multiple arguments:
 Notes:
 * `distinct`: Optional. Requires set-function capability `COUNT_DISTINCT.`
 
-### GROUP_CONCAT
+### `GROUP_CONCAT`
 
 `GROUP_CONCAT([DISTINCT] arg [orderBy] [SEPARATOR 'separator'])`
  (requires set-function capability `GROUP_CONCAT`)
@@ -153,9 +153,9 @@ Notes:
     "name": "GROUP_CONCAT",
     "distinct": true,
     "arguments": [
-    {
-        ...
-    }
+        {
+            ...
+        }
     ],
     "orderBy" : [
         ...
@@ -173,7 +173,7 @@ Notes:
 * `orderBy`: Optional. The requested order-by clause, a list of `order_by_element` elements. Requires the set-function capability `GROUP_CONCAT_ORDER_BY`.
 * `separator`: Optional. Requires set-function capability `GROUP_CONCAT_SEPARATOR`.
 
-### LISTAGG
+### `LISTAGG`
 
 `LISTAGG([DISTINCT] arg[, 'separator'] ON OVERFLOW {ERROR | TRUNCATE ['truncationFiller'] {WITH | WITHOUT} COUNT}) [WITHIN GROUP (orderBy)]`
  (requires set-function capability `LISTAGG`)
@@ -184,9 +184,9 @@ Notes:
     "name": "LISTAGG",
     "distinct": true,
     "arguments": [
-    {
-        ...
-    }
+        {
+            ...
+        }
     ],
     "separator":
     {

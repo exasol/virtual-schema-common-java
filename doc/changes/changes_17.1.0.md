@@ -1,4 +1,4 @@
-# Common Module of Exasol Virtual Schemas Adapters 17.1.0, released 2024-??-??
+# Common Module of Exasol Virtual Schemas Adapters 17.1.0, released 2024-04-24
 
 Code name: Add `WIDTH_BUCKET`
 
@@ -7,6 +7,8 @@ Code name: Add `WIDTH_BUCKET`
 This release adds support for scalar function [`WIDTH_BUCKET`](https://docs.exasol.com/db/latest/sql_references/functions/alphabeticallistfunctions/width_bucket.htm) and capability `FN_WIDTH_BUCKET` by adding the following enum values:
 * `ScalarFunctionCapability.WIDTH_BUCKET`
 * `ScalarFunction.WIDTH_BUCKET`
+
+The release also adds support for `TIMESTAMP` precision.
 
 **Breaking Changes:** This release removes the following deprecated fields/methods from class `com.exasol.adapter.AdapterProperties`:
 * Constant `EXCEPTION_HANDLING_PROPERTY`
@@ -19,6 +21,7 @@ This release adds support for scalar function [`WIDTH_BUCKET`](https://docs.exas
 
 ## Features
 
+* #279: Added support for `TIMESTAMP` precision field `fractionalSecondsPrecision` with default 3.
 * #278: Added support for scalar function `WIDTH_BUCKET`
 
 ## Dependency Updates

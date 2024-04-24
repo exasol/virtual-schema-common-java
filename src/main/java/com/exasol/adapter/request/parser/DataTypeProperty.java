@@ -13,6 +13,7 @@ class DataTypeProperty<T> {
 
     static final StringProperty TYPE = new StringProperty(TYPE_KEY);
     static final IntProperty PRECISION = new IntProperty(PRECISION_KEY);
+    static final IntProperty TIMESTAMP_PRECISION = new IntProperty(TIMESTAMP_PRECISION_KEY);
     static final IntProperty SCALE = new IntProperty(SCALE_KEY);
     static final IntProperty SIZE = new IntProperty(SIZE_KEY);
     static final CharsetProperty CHARSET = new CharsetProperty(CHARSET_KEY);

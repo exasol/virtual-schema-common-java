@@ -567,6 +567,52 @@ class PushDownSqlParserTest {
     }
 
     @Test
+    void testParseFunctionScalarCastToVarchar() {
+        final String sqlAsJson = "{" //
+                + "   \"type\" : \"function_scalar_cast\", " //
+                + "   \"name\" : \"CAST\", " //
+                + "   \"dataType\" : { " //
+                + "        \"type\" : \"VARCHAR\", " //
+                + "        \"size\" : 10000 " //
+                + "   }, " //
+                + "   \"arguments\" : [ " //
+                + "   { " //
+                + "        \"type\" : \"literal_double\", " //
+                + "        \"value\" : \"1.234\" " //
+                + "   } " //
+                + "   ] " //
+                + "}";
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlFunctionScalarCast sqlFunctionScalarCast = (SqlFunctionScalarCast) this.defaultParser
+                .parseExpression(jsonObject);
+        final SqlLiteralDouble sqlLiteralDouble = (SqlLiteralDouble) sqlFunctionScalarCast.getArgument();
+        assertAll(() -> assertThat(sqlFunctionScalarCast.getType(), equalTo(FUNCTION_SCALAR_CAST)),
+                () -> assertThat(sqlLiteralDouble.getValue(), equalTo(1.234)));
+    }
+
+    @Test
+    void testParseFunctionScalarCastToTimestamp() {
+        final String sqlAsJson = "{" //
+                + "   \"type\" : \"function_scalar_cast\", " //
+                + "   \"name\" : \"CAST\", " //
+                + "   \"dataType\" : { " //
+                + "        \"type\" : \"TIMESTAMP\", " //
+                + "        \"fractionalSecondsPrecision\" : 5 " //
+                + "   }, " //
+                + "   \"arguments\" : [ " //
+                + "   { " //
+                + "        \"type\" : \"literal_string\", " //
+                + "        \"value\" : \"1.1.1970 0:0:0\" " //
+                + "   } " //
+                + "   ] " //
+                + "}";
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlFunctionScalarCast sqlFunctionScalarCast = (SqlFunctionScalarCast) this.defaultParser
+                .parseExpression(jsonObject);
+        assertThat(sqlFunctionScalarCast.getDataType().toString(), equalTo("TIMESTAMP(5)"));
+    }
+
+    @Test
     void testParseFunctionScalarCast() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"function_scalar_cast\", " //
