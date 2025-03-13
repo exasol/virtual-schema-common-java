@@ -1,6 +1,10 @@
-# Features
+# System Requirement Specification (SRS) Virtual Schema Common Java (VSCJ) 
 
-## Property Validation
+This document contains the system requirements for the Java bottom-layer base library for all Exasol Virtual Schema adapters.
+
+## Features
+
+### Property Validation
 `feat~property-validation~1`
 
 The VSCJ library provides the infrastructure for validating the input coming from virtual schema properties.
@@ -11,9 +15,28 @@ The validation on the one hand provides users with better information about prop
 
 Needs: req
 
-# High-level Requirements
+## High-level Requirements
 
-### Validating the Existence of Mandatory Properties
+### Property Validation
+
+Users provide properties with virtual schema definitions that serve as configuration.
+
+Here is a non-exhaustive list of typical properties that should give an idea of what they are used for:
+
+1. Name under which the virtual schema can be found in the Exasol database
+2. ID of the connection object that stores the access data to the data source
+3. Log level
+4. Target host for logs
+5. Connection type selector
+6. Feature switch
+
+Please refer to [Appendix A — Known Virtual Schema Property Types](#appendix-a--known-virtual-schema-property-types) for a more complete list.
+
+Note that some of these properties have relationships that require to validate them together. In the Exasol Virtual Schema for instance, the selected connection type decides which other connection properties are required.
+
+Also, some of the validations are so dialect-specific, that covering them in the VSCJ base library is not reasonable.
+
+#### Validating the Existence of Mandatory Properties
 `req~validating-the-existence-of-mandatory-properties~1`
 
 VSCJ allows validating that a mandatory virtual schema property is set.
@@ -24,7 +47,7 @@ Covers:
 
 Needs: req
 
-### Validating That an Optional Property Is Allowed
+#### Validating That an Optional Property Is Allowed
 `req~validating-that-an-optional-property-is-allowed~1`
 
 VSCJ allows validating that a property the user provides is a valid optional property.
@@ -39,7 +62,7 @@ Covers:
 
 Needs: req
 
-### Validating Boolean Properties
+#### Validating Boolean Properties
 `req~validating-boolean-properties~1`
 
 VSCJ checks whether the value of a boolean property is `true` or `false`.
@@ -54,7 +77,7 @@ Covers:
 
 Needs: req
 
-### Validating Integer Properties
+#### Validating Integer Properties
 `req~validating-integer-properties~1`
 
 VSCJ checks whether a property is
@@ -72,10 +95,10 @@ Covers:
 
 Needs: req
 
-### Validating Properties Containing Database Object IDS
+#### Validating Properties Containing Database Object IDS
 `req~validating-properties-containing-database-objects-ids~1`
 
-VSCJ validates that a property referencing a database object contains a valid Exasol database object ID.
+VSCJ validates that a property referencing a database object contains a valid [Exasol database object ID](https://docs.exasol.com/saas/sql_references/basiclanguageelements.htm#SQLidentifier).
 
 Covers:
 
@@ -83,3 +106,131 @@ Covers:
 
 Needs: req
 
+#### Validating String Property Values
+`req~validating-string-property-values~1`
+
+VSCJ validates a string property against a given pattern.
+
+Covers:
+
+* [`feat~property-validation~1`](#property-validation)
+
+Needs: req
+
+#### Validating Properties Referencing a Host
+`req~validating-properties-referencing-a-host~1`
+
+VSCJ validates that a property contains a valid IP address or host name.
+
+Rationale:
+
+Almost all virtual schemas will point to a network service on a remote host, for example databases, cloud storage or general web services.
+
+Covers:
+
+* [`feat~property-validation~1`](#property-validation)
+
+Needs: req
+
+#### Validating Properties with Enumerations
+`req~validating-properties-with-enumerations~1`
+
+VSCJ validates that a property contains a value from a predefined set of valid enumeration values.
+
+Rationale:
+
+Certain properties must only accept specific predefined values to avoid configuration errors and ensure consistent behavior across schemas. For instance, a property representing a datatype mapping option.
+
+Covers:
+
+* [`feat~property-validation~1`](#property-validation)
+
+Needs: req
+
+#### Validating Properties with Multi-Select Enumerations
+`req~validating-properties-with-multi-select-enumerations~1`
+
+VSCJ validates that a property contains a comma-separated list of values, each belonging to the predefined set of valid enumeration values.
+
+Rationale:
+
+Some properties may allow multiple selections from a set of predefined options. For example, `EXCLUDED_CAPABILITIES` might specify features to disable, such as `ABS`, `REPEAT`, or `UNICODE`. Validating that all values in the list are part of the allowed enumeration prevents misconfiguration and ensures proper behavior.
+
+Covers:
+
+* [`feat~property-validation~1`](#property-validation)
+
+Needs: req
+
+#### Validating Properties With Unix Paths
+`req~validating-properties-with-unix-paths~1`
+
+VSCJ validates that a property contains a valid Unix path.
+
+Rationale:
+
+Document-based virtual schemas need a mapping file that is located in BucketFS.
+
+Covers:
+
+* [`feat~property-validation~1`](#property-validation)
+
+Needs: req
+
+#### Validation Dependencies
+`req~validation-dependencies~1`
+
+VSCJ allows an adapter for an SQL dialect to enforce dependent validations.
+
+Rationale:
+
+Not all properties exist in isolation. In the Exasol virtual schema for example, which connection properties are required depends on which connection options are selected.
+Note that the relationships can be complicated and highly dialect-specific, so any attempt to cover everything in VSCJ is bound to fail. Instead, we must only make sure in VSCJ that dialects can combine validations in a flexible way. Details and constraints are up to the [software design](design.md).
+
+Covers:
+
+* [`feat~property-validation~1`](#property-validation)
+
+
+Needs: req
+
+
+
+### Known Limitations
+
+* For now, we limit the property validation to the value syntax and ranges.
+* We don't validate that database objects that are referenced, actually exist during value validation.  
+
+## Appendix A — Known Virtual Schema Property Types
+
+To make sure we don't forget requirements, here is a list of all known Virtual Schema properties as of 2025-03-13 and their types.
+
+Please note that the list will be outdated at some point. Its main purpose is to get a good sample of all property variants.
+
+| Property Name                                           | Virtual Schema Dialect       | Type                                  | O/M |
+|---------------------------------------------------------|------------------------------|---------------------------------------|-----|
+| CATALOG_NAME                                            | Multiple dialects            | Database object ID (dialect-specific) | O   |
+| CONNECTION_NAME                                         | All                          | Exasol database object ID             | M   |
+| DEBUG_ADDRESS                                           | All                          | &lt;host&gt;:&lt;port&gt;             | O   |
+| DEBUG_LEVEL                                             | All                          | Enumeration                           | O   |
+| EXA_CONNECTION_NAME                                     | Exasol                       | Exasol database object ID             | O   |
+| EXCLUDED_CAPABILITIES                                   | All                          | Multi-select enum, comma-separated    | O   |
+| GENERATE_JDBC_DATATYPE_MAPPING_FOR_EXA                  | Exasol                       | Boolean                               | O   |
+| GENERATE_JDBC_DATATYPE_MAPPING_FOR_OCI                  | Oracle                       | Boolean                               | O   |
+| IGNORE_ERRORS                                           | All (for debugging purposes) | Boolean                               | O   |
+| IMPORT_FROM_EXA                                         | Exasol                       | Boolean                               | O   |
+| IMPORT_FROM_ORA                                         | Oracle                       | Boolean                               | O   |
+| IS_LOCAL                                                | Exasol                       | Boolean                               | O   |
+| MAPPING                                                 | Azure Blob Storage           | Unix file path                        | M   |
+| MAX_PARALLEL_UDFS                                       | Azure Blob Storage           | Integer                               | O   |
+| ORA_CONNECTION_NAME                                     | Oracle                       | Exasol database object ID             | O   |
+| ORACLE_CAST_NUMBER_TO_DECIMAL_WITH_PRECISION_AND_SCALE  | Oracle                       | &lt;Integer&gt;,&lt;Integer&gt;       | O   |
+| POSTGRESQL_IDENTIFIER_MAPPING                           | PostgreSQL                   | Enum                                  | O   |
+| TABLE_FILTER                                            | All (optional filtering)     | Comma-separated list of object IDs    | O   |
+| SCHEMA_NAME                                             | Multiple dialects            | Database object ID (dialect-specific) | M   |
+
+You can see from the list that some property types are universal and others are highly dialect specific. And Exasol database object ID is only superficially similar to one of MySQL or PostgreSQL.
+
+Outdated properties, i.e. properties that don't play any role anymore or are already removed:
+
+* `DIALECT_NAME`
