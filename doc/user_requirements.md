@@ -4,7 +4,7 @@ This document contains the system requirements for the Java bottom-layer base li
 
 ## Terms and Abbreviations
 
-###### Database object ID
+###### Database Object ID
 
 A unique identifier used to reference specific objects in a database.
 
