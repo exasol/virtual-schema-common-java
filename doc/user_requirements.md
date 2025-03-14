@@ -2,12 +2,38 @@
 
 This document contains the system requirements for the Java bottom-layer base library for all Exasol Virtual Schema adapters.
 
+## Terms and Abbreviations
+
+###### Database object ID
+
+A unique identifier used to reference specific objects in a database.
+
+###### Dialect
+
+A specific implementation or variation of features, behaviors, or rules for interacting with a given data source or database type in the context of Virtual Schemas.
+
+###### Virtual Schema
+
+A database schema that only exists as a projection of an external data source. The data in the virtual schema is not permanently stored on the Exasol database.
+
+###### Virtual Schema Property
+
+A configuration option that controls the structure or behavior of a [virtual schema](#virtual-schema).
+
+###### VS
+
+See [Virtual Schema](#virtual-schema)
+
+###### VSCJ
+
+The abbreviation for "Virtual Schema Common Java", the base library designed for all Java Exasol Virtual Schema adapters.
+
 ## Features
 
 ### Property Validation
 `feat~property-validation~1`
 
-The VSCJ library provides the infrastructure for validating the input coming from virtual schema properties.
+The VSCJ library provides the infrastructure for validating the input coming from [virtual schema properties](#virtual-schema-property).
 
 Rationale:
 
@@ -34,12 +60,12 @@ Please refer to [Appendix A — Known Virtual Schema Property Types](#appendix-a
 
 Note that some of these properties have relationships that require to validate them together. In the Exasol Virtual Schema for instance, the selected connection type decides which other connection properties are required.
 
-Also, some of the validations are so dialect-specific, that covering them in the VSCJ base library is not reasonable.
+Also, some of the validations are so [dialect-specific](#dialect), that covering them in the VSCJ base library is not reasonable.
 
 #### Validating the Existence of Mandatory Properties
 `req~validating-the-existence-of-mandatory-properties~1`
 
-VSCJ allows validating that a mandatory virtual schema property is set.
+If a virtual schema property is mandatory, the VSCJ allows validating that it is set.
 
 Covers:
 
@@ -50,11 +76,11 @@ Needs: req
 #### Validating That an Optional Property Is Allowed
 `req~validating-that-an-optional-property-is-allowed~1`
 
-VSCJ allows validating that a property the user provides is a valid optional property.
+If a virtual schema property is optional, VSCJ checks that the given property is known.
 
 Rationale:
 
-It is a subtle source of errors if users provide a property that is not wanted by the virtual schema. Ignoring it is not a good options, since that has the potential to confuse the users. Imaging a situation where they misspell the property name. An error message would immediately tell them that this is not the property name they intended to provide.
+It is a subtle source of errors if users provide a property that is not wanted by the virtual schema. Ignoring it is not a good option, since that has the potential to confuse the users. Imagine a situation where they misspell the property name. An error message would immediately tell them that this is not the property name they intended to provide.
 
 Covers:
 
@@ -180,11 +206,11 @@ Needs: req
 #### Validation Dependencies
 `req~validation-dependencies~1`
 
-VSCJ allows an adapter for an SQL dialect to enforce dependent validations.
+VSCJ allows an adapter for an SQL [dialect](#dialect) to enforce dependent validations.
 
 Rationale:
 
-Not all properties exist in isolation. In the Exasol virtual schema for example, which connection properties are required depends on which connection options are selected.
+Not all properties exist in isolation. In the Exasol virtual schema for example, the required connection properties depend on the selected connection options.
 Note that the relationships can be complicated and highly dialect-specific, so any attempt to cover everything in VSCJ is bound to fail. Instead, we must only make sure in VSCJ that dialects can combine validations in a flexible way. Details and constraints are up to the [software design](design.md).
 
 Covers:
@@ -199,7 +225,7 @@ Needs: req
 ### Known Limitations
 
 * For now, we limit the property validation to the value syntax and ranges.
-* We don't validate that database objects that are referenced, actually exist during value validation.  
+* During value validation, we do not check if the referenced database objects actually exist.
 
 ## Appendix A — Known Virtual Schema Property Types
 
@@ -233,4 +259,4 @@ You can see from the list that some property types are universal and others are 
 
 Outdated properties, i.e. properties that don't play any role anymore or are already removed:
 
-* `DIALECT_NAME`
+* `DIALECT_NAME` — obsolete since now each dialect has its own JAR package
