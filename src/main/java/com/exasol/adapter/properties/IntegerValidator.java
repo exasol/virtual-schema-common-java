@@ -6,7 +6,7 @@ import com.exasol.errorreporting.ExaError;
  * Validates a property value as an integer number with optional boundaries.
  * <p>
  * Ensures the value is a valid integer and optionally checks if it's within specified upper and lower boundaries.
- * <p/>
+ * </p>
  */
 public class IntegerValidator extends AbstractPropertyValidator {
     private final long lowerBound;

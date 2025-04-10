@@ -9,7 +9,7 @@ import java.util.List;
  * <p>
  * The validator checks if the current property value is a valid enum constant within the given enumeration type.
  * If the value is invalid, it produces an appropriate error message.
- * <p/>
+ * </p>
  *
  * @param <T> Type of the enumeration to validate against
  */
@@ -24,7 +24,6 @@ public class EnumerationValidator<T extends  Enum<T>> extends AbstractPropertyVa
      * @param propertyName name of the property being validated
      * @param errorCode    error code to report in case of validation failure
      * @param enumClass    enumeration class containing the valid values for the property
-     * @param <T>          type of the enumeration to validate against
      */
     EnumerationValidator(final ValidationContext context, final String propertyName,
                          final String errorCode, final Class<T> enumClass) {

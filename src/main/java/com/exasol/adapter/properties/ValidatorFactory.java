@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
  *
  * <p>
  * Provides methods to create validators for various types of properties and validation rules.
+ * </p>
  */
 // [impl -> dsn~validator-composition~1]
 public class ValidatorFactory {
@@ -140,10 +141,12 @@ public class ValidatorFactory {
      * <p>
      * This method acts as a shorthand for combining a {@link RequiredValidator} and the given validator using a
      * short-circuiting {@link AndValidator}. The composite validator ensures that:
+     * </p>
      * <ul>
      * <li>The property is present and not empty (enforced by the {@link RequiredValidator}).</li>
      * <li>The property satisfies the additional conditions defined by the given validator.</li>
      * </ul>
+     * <p>
      * The validation short-circuits and stops as soon as the {@link RequiredValidator} fails, ensuring efficiency.
      * </p>
      *
