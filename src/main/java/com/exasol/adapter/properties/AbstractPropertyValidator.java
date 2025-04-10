@@ -29,15 +29,14 @@ public abstract class AbstractPropertyValidator implements PropertyValidator {
      * @param propertyName name of the property to validate
      * @param errorCode    error code to associate with validation failures
      */
-    AbstractPropertyValidator(final ValidationContext context, final String propertyName,
-                              final String errorCode) {
+    AbstractPropertyValidator(final ValidationContext context, final String propertyName, final String errorCode) {
         this.context = context;
         this.propertyName = propertyName;
         this.errorCode = errorCode;
     }
 
     /**
-     * Creates a new instance of {@code AbstractPropertyValidator} without a property name.
+     * Create a new instance of {@code AbstractPropertyValidator} without a property name.
      *
      * @param context   validation context containing properties and validation logs
      * @param errorCode error code to associate with validation failures
@@ -46,8 +45,18 @@ public abstract class AbstractPropertyValidator implements PropertyValidator {
         this(context, null, errorCode);
     }
 
+    @Override
+    public String getPropertyName() {
+        return this.propertyName;
+    }
+
+    @Override
+    public String getErrorCode() {
+        return this.errorCode;
+    }
+
     /**
-     * Retrieves the value of the property associated with the current validator.
+     * Retrieve the value of the property associated with the current validator.
      *
      * @return value of the property or {@code null} if the property is not set
      */
@@ -56,7 +65,7 @@ public abstract class AbstractPropertyValidator implements PropertyValidator {
     }
 
     /**
-     * Validates the associated property and returns the validation result.
+     * Validate the associated property and returns the validation result.
      *
      * <p>
      * Records the property name in the validation log before performing the specific validation defined by subclasses.
@@ -66,12 +75,11 @@ public abstract class AbstractPropertyValidator implements PropertyValidator {
      *         validation fails.
      */
     public final ValidationResult validate() {
-        this.context.getValidationLog().addValidation(this.propertyName);
         return performSpecificValidation();
     }
 
     /**
-     * Validates the specific property according to custom logic implemented by subclasses.
+     * Validate the specific property according to custom logic implemented by subclasses.
      *
      * <p>
      * Performed as part of the overall property validation process. This method defines how the property value is
@@ -83,7 +91,7 @@ public abstract class AbstractPropertyValidator implements PropertyValidator {
     abstract protected ValidationResult performSpecificValidation();
 
     /**
-     * Creates a new error message builder initialized with the error code of this validator.
+     * Create a new error message builder initialized with the error code of this validator.
      *
      * <p>
      * The returned builder should be used to construct detailed error messages associated with property validation

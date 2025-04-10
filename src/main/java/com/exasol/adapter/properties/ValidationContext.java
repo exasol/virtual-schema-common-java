@@ -13,21 +13,15 @@ import java.util.*;
  */
 public class ValidationContext {
     private final AdapterProperties properties;
-    private final ValidationLog validationLog;
     private final Set<String> knownProperties = new HashSet<>();
 
     /**
      * Create a new instance of {@link ValidationContext}.
      *
-     * @param properties    adapter properties for validation
-     * @param validationLog log to track validated properties
-     * @param knownProperties properties the adapter knows.
+     * @param properties adapter properties for validation
      */
-    public ValidationContext(final AdapterProperties properties, final ValidationLog validationLog,
-            final Set<String> knownProperties) {
+    public ValidationContext(final AdapterProperties properties) {
         this.properties = properties;
-        this.validationLog = validationLog;
-        this.knownProperties.addAll(knownProperties);
     }
 
     /**
@@ -40,15 +34,6 @@ public class ValidationContext {
     }
 
     /**
-     * Retrieve the validation log that tracks validated properties.
-     *
-     * @return validation log
-     */
-    public ValidationLog getValidationLog() {
-        return this.validationLog;
-    }
-
-    /**
      * Retrieve the set of property names that the virtual schema adapter knows.
      *
      * @return set of known property names
@@ -58,19 +43,26 @@ public class ValidationContext {
     }
 
     /**
-     * Add multiple known property names to the list of known properties in the validation context.
+     * Add a single property name to the known properties list.
      *
      * <p>
-     * This method enables expanding the list of property names recognized in the validation process, which is for
-     * example required if a virtual schema dialect introduces extra properties on top of the ones every dialect
-     * supports.
+     * Expands the list of property names recognized in the validation context. Use for adding a single property.
      * </p>
      *
-     * @param knownProperties array of property names to add to the known properties list
+     * @param knownProperties name of the property to be added
      */
-    public void addKnownProperties(final String... knownProperties) {
-        for (final String knownProperty : knownProperties) {
-            this.knownProperties.add(knownProperty);
-        }
+    public void addKnownProperty(final String knownProperties) {
+        this.knownProperties.add(knownProperties);
+    }
+
+    /**
+     * Check if a property name exists in the list of known properties.
+     *
+     * @param propertyName name of the property to check
+     *
+     * @return true if the property name is in the known properties list, false otherwise
+     */
+    public boolean isKnownProperty(final String propertyName) {
+        return this.knownProperties.contains(propertyName);
     }
 }

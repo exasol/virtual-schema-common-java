@@ -29,7 +29,7 @@ class RequiredValidatorTest extends AbstractPropertyValidatorTest{
     @ParameterizedTest
     @MethodSource("variationsWithMissingProperty")
     void testWhenMandatoryPropertyIsMissingThenValidationFails(Map<String, String> properties) {
-        final ValidatorFactory factory = createValidatorFactoryWithEmptyProperties();
+        final ValidatorFactory factory = createValidatorFactoryWithProperties(properties);
         final PropertyValidator validator = factory.required("MANDATORY_PROPERTY", "E-VSCOMJAVA-43");
         final ValidationResult result = validator.validate();
         assertAll( //

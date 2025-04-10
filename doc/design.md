@@ -9,25 +9,24 @@ hide empty members
 
 interface PropertyValidator {
    * validate() : PropertyValidationResult
+   * getPropertyName() : String
+   * getErrorCode() : String
 }
 
 class AbstractPropertyValidator <<abstract>> {
-    # propertyName : String
-    # errorCode : String
-    ---
     ~ AbstractPropertyValidator(context PropertyValidationContext context, propertyName : String, errorCode: String)
     # createError() : void
     * validate() : PropertyValidationResult
-    # preformSpecificValidation : PropertyValidationResult <<abstract>>
+    # performSpecificValidation : PropertyValidationResult <<abstract>>
 }
 
 AbstractPropertyValidator -u-|> PropertyValidator
-PropertyValidatorFactory -d-> PropertyValidationContext
-PropertyValidatorFactory -u-> BooleanValidator
-PropertyValidatorFactory -u-> IntegerValidator
-PropertyValidatorFactory -u-> StringValidator
-PropertyValidationContext --> AdapterProperties
-PropertyValidationContext --> PropertyValidationLog
+ValidatorFactory -d-> ValidationContext
+ValidatorFactory -u-> BooleanValidator
+ValidatorFactory -u-> IntegerValidator
+ValidatorFactory -u-> StringValidator
+ValidationContext --> AdapterProperties
+ValidationContext --> PropertyValidationLog
 BooleanValidator -u-|> AbstractPropertyValidator
 IntegerValidator -u-|> AbstractPropertyValidator
 StringValidator -u-|> AbstractPropertyValidator
@@ -116,7 +115,7 @@ Needs: impl, utest
 #### Validating the Existence of Mandatory Properties
 `dsn~validating-the-existence-of-mandatory-properties~1`
 
-The `PropertySetValidator` validates that a mandatory property is
+The `RequiredValidator` validates that a mandatory property is
 
 1. Exists
 2. Is not null
@@ -127,18 +126,6 @@ Covers:
 * `req~validating-the-existence-of-mandatory-properties~1`
 
 Needs: impl, utest
-
-
-### Validating the Absence of Unwanted Properties
-`dsn~validating-the-absence-of-unwanted-properties~1`
-
-The `PropertySetValidator` allows validating that an unwanted property is not set.
-
-Covers:
-
-* `req~validating-the-absence-of-unwanted-properties~1`
-
-Needs: dsn
 
 #### Validating a String Against a Regular Expression
 `dsn~validating-a-string-against-a-regular-expression~1`
@@ -191,13 +178,24 @@ Needs: impl, utest
 #### Validation Completeness Check
 `dsn~validation-completeness-check~1`
 
-The `PropertyValidationCompleteValidator` ensures that all configurable properties, whether mandatory or optional, are properly validated.
+The `CoverageValidator` ensures that all configurable properties, whether mandatory or optional, are properly validated.
 
 Covers:
 
 *`req~property-validation-completeness~1`
 *`req~validating-the-existence-of-mandatory-properties~1`
 *`req~validating-that-an-optional-property-is-allowed~1`
+
+Needs: impl, utest
+
+### Validating the Absence of Unwanted Properties
+`dsn~validating-the-absence-of-unwanted-properties~1`
+
+The `CoverageValidator` ensures that no unwanted property is set.
+
+Covers:
+
+* `req~validating-the-absence-of-unwanted-properties~1`
 
 Needs: impl, utest
 

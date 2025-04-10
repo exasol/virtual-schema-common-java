@@ -38,8 +38,7 @@ public class BooleanValidator extends AbstractPropertyValidator {
     @Override
     public ValidationResult performSpecificValidation() {
         final String value = this.getValue();
-        boolean valid = BOOLEAN_REGEX.matcher(value).matches();
-        if (valid)
+        if ((value != null) && BOOLEAN_REGEX.matcher(value).matches())
             return ValidationResult.success();
         else {
             return new ValidationResult(false,
