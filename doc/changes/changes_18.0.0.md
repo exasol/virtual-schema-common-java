@@ -6,6 +6,8 @@ Code name: Property Validation Rework
 
 In this release we reworked the Virtual Schema property validation infrastructure. Many parts were in VS Common JDBC, although they are relevant for virtual schemas.
 
+* Moved all virtual schema property related classes to new package `com.exasol.adpater.properties` to make locating them easier.
+
 ## Features
 
 * #284: New property validation framework

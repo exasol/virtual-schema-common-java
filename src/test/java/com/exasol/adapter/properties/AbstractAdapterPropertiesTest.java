@@ -1,4 +1,4 @@
-package com.exasol.adapter;
+package com.exasol.adapter.properties;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;

@@ -10,7 +10,7 @@ This release adds support for scalar function [`WIDTH_BUCKET`](https://docs.exas
 
 The release also adds support for `TIMESTAMP` precision.
 
-**Breaking Changes:** This release removes the following deprecated fields/methods from class `com.exasol.adapter.AdapterProperties`:
+**Breaking Changes:** This release removes the following deprecated fields/methods from class `com.exasol.adapter.properties.AdapterProperties`:
 * Constant `EXCEPTION_HANDLING_PROPERTY`
 * Method `getExceptionHandling()`
 * Method `hasExceptionHandling()`
