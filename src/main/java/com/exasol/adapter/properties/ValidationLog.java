@@ -13,6 +13,7 @@ public class ValidationLog {
      * Create a new instance of {@link ValidationLog}.
      */
     public ValidationLog() {
+        // Empty constructor to add JavaDoc.
     }
 
     /**

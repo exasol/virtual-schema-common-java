@@ -88,7 +88,7 @@ public abstract class AbstractPropertyValidator implements PropertyValidator {
      *
      * @return result of the validation, indicating validity and an associated message if invalid.
      */
-    abstract protected ValidationResult performSpecificValidation();
+    protected abstract ValidationResult performSpecificValidation();
 
     /**
      * Create a new error message builder initialized with the error code of this validator.

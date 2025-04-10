@@ -11,17 +11,6 @@ import java.util.regex.Pattern;
 // [impl -> dsn~validator-composition~1]
 public class ValidatorFactory {
     private final ValidationContext context;
-//
-//    /**
-//     * Create a new instance of {@link ValidatorFactory}.
-//     *
-//     * @param context validation context containing adapter properties and validation log
-//     *
-//     * @return instance of {@link ValidatorFactory}
-//     */
-//    public static ValidatorFactory create(final ValidationContext context) {
-//        return new ValidatorFactory(context);
-//    }
 
     /**
      * Create a new instance of {@link ValidatorFactory}.

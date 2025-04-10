@@ -16,7 +16,7 @@ public abstract class AbstractAdapterProperties {
      *
      * @param properties map of property keys and values
      */
-    public AbstractAdapterProperties(final Map<String, String> properties) {
+    protected AbstractAdapterProperties(final Map<String, String> properties) {
         this.properties = properties;
     }
 
