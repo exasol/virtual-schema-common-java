@@ -37,52 +37,47 @@ public class ValidatorFactory {
      * Create a validator for a boolean value.
      *
      * @param propertyName name of the property to validate
-     * @param errorCode    error code to report if validation fails
      * @return validator for verifying a boolean property
      */
-    public PropertyValidator bool(final String propertyName, final String errorCode) {
+    public PropertyValidator bool(final String propertyName) {
         this.context.addKnownProperty(propertyName);
-        return new BooleanValidator(this.context, propertyName, errorCode);
+        return new BooleanValidator(this.context, propertyName);
     }
 
     /**
      * Create a validator to validate that a property's value is a valid integer.
      *
      * @param propertyName name of the property to validate
-     * @param errorCode    error code to report if validation fails
      * @return validator for validating an integer property
      */
-    public PropertyValidator integer(final String propertyName, final String errorCode) {
+    public PropertyValidator integer(final String propertyName) {
         this.context.addKnownProperty(propertyName);
-        return new IntegerValidator(this.context, propertyName, errorCode);
+        return new IntegerValidator(this.context, propertyName);
     }
 
     /**
      * Create a validator to validate that a property's value is a valid integer and optionally within a range.
      *
      * @param propertyName name of the property to validate
-     * @param errorCode    error code to report if validation fails
      * @param min          minimum allowable value (inclusive)
      * @param max          maximum allowable value (inclusive)
      * @return validator for validating an integer property with range constraints
      */
-    public PropertyValidator integer(final String propertyName, final String errorCode, final long min,
-            final long max) {
+    public PropertyValidator integer(final String propertyName, final long min, final long max) {
         this.context.addKnownProperty(propertyName);
-        return new IntegerValidator(this.context, propertyName, errorCode, min, max);
+        return new IntegerValidator(this.context, propertyName, min, max);
     }
 
     /**
      * Creates a validator that checks whether the property matches a pattern
      *
      * @param propertyName name of the property to validate
-     * @param errorCode    error code to report if validation fails
      * @param pattern      regular expression pattern to match the property value against
      * @return validator that checks that a property
      */
-    public StringValidator matches(final String propertyName, final String errorCode, final Pattern pattern) {
+    public StringValidator matches(final String propertyName, final Pattern pattern) {
         this.context.addKnownProperty(propertyName);
-        return new StringValidator(this.context, propertyName, errorCode, pattern);
+        return new StringValidator(this.context, propertyName, pattern);
     }
 
     /**
@@ -93,15 +88,14 @@ public class ValidatorFactory {
      * </p>
      *
      * @param propertyName name of the property to validate
-     * @param errorCode    error code to report if validation fails
      * @param enumClass    enum to check against
      * @return validator for checking that the given value is contained in the enum
      * @param <T> enum type
      */
-    public <T extends Enum<T>> PropertyValidator enumeration(final String propertyName, final String errorCode,
+    public <T extends Enum<T>> PropertyValidator enumeration(final String propertyName,
             final Class<T> enumClass) {
         this.context.addKnownProperty(propertyName);
-        return new EnumerationValidator<>(this.context, propertyName, errorCode, enumClass);
+        return new EnumerationValidator<>(this.context, propertyName, enumClass);
     }
 
     /**
@@ -112,12 +106,11 @@ public class ValidatorFactory {
      * </p>
      *
      * @param propertyName name of the property to validate
-     * @param errorCode    error code to report if validation fails
      * @return validator for verifying an Exasol object identifier
      */
-    public PropertyValidator exasolObjectId(final String propertyName, final String errorCode) {
+    public PropertyValidator exasolObjectId(final String propertyName) {
         this.context.addKnownProperty(propertyName);
-        return new ExasolObjectIdValidator(this.context, propertyName, errorCode);
+        return new ExasolObjectIdValidator(this.context, propertyName);
     }
 
     /**
@@ -127,12 +120,11 @@ public class ValidatorFactory {
      * </p>
      *
      * @param propertyName name of the property to validate
-     * @param errorCode    error code to report if validation fails
      * @return validator for verifying the mandatory property
      */
-    public PropertyValidator required(final String propertyName, final String errorCode) {
+    public PropertyValidator required(final String propertyName) {
         this.context.addKnownProperty(propertyName);
-        return new RequiredValidator(this.context, propertyName, errorCode);
+        return new RequiredValidator(this.context, propertyName);
     }
 
     /**
@@ -156,7 +148,7 @@ public class ValidatorFactory {
      */
     public PropertyValidator required(final PropertyValidator validator) {
         this.context.addKnownProperty(validator.getPropertyName());
-        return and(new RequiredValidator(this.context, validator.getPropertyName(), validator.getErrorCode()),
+        return and(new RequiredValidator(this.context, validator.getPropertyName()),
                 validator);
     }
 
@@ -164,27 +156,25 @@ public class ValidatorFactory {
      * Create a validator that makes sure an unwanted property is not set.
      *
      * @param propertyName name of the property to validate
-     * @param errorCode    error code to report if validation fails
      * @return validator for verifying the unwanted property is not set
      */
-    public PropertyValidator unwanted(final String propertyName, final String errorCode) {
+    public PropertyValidator unwanted(final String propertyName) {
         this.context.addKnownProperty(propertyName);
-        return new RequiredValidator(this.context, propertyName, errorCode, false);
+        return new RequiredValidator(this.context, propertyName, false);
     }
 
     /**
      * Create a validator to check if a property's value matches a regular expression pattern.
      *
      * @param propertyName      name of the property to validate
-     * @param errorCode         error code to report if validation fails
      * @param pattern           regular expression the property value must match
      * @param formatDescription description of the expected format
      * @return validator for validating a property against a regular expression
      */
-    public StringValidator matches(final String propertyName, final String errorCode, final Pattern pattern,
+    public StringValidator matches(final String propertyName, final Pattern pattern,
             final String formatDescription) {
         this.context.addKnownProperty(propertyName);
-        return new StringValidator(this.context, propertyName, errorCode, pattern, formatDescription);
+        return new StringValidator(this.context, propertyName, pattern, formatDescription);
     }
 
     /**

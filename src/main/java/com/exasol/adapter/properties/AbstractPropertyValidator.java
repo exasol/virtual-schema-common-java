@@ -1,8 +1,5 @@
 package com.exasol.adapter.properties;
 
-import com.exasol.errorreporting.ErrorMessageBuilder;
-import com.exasol.errorreporting.ExaError;
-
 /**
  * Base class for implementing property validators.
  *
@@ -16,7 +13,6 @@ import com.exasol.errorreporting.ExaError;
 public abstract class AbstractPropertyValidator implements PropertyValidator {
     protected final ValidationContext context;
     protected final String propertyName;
-    private final String errorCode;
 
     /**
      * Creates a new instance of {@code AbstractPropertyValidator}.
@@ -24,35 +20,31 @@ public abstract class AbstractPropertyValidator implements PropertyValidator {
      * <p>
      * Initializes the validator with the validation context, the property name to validate, and the error code to use
      * for reporting validation failures.
+     * </p>
      *
      * @param context      validation context containing properties and validation logs
      * @param propertyName name of the property to validate
-     * @param errorCode    error code to associate with validation failures
      */
-    AbstractPropertyValidator(final ValidationContext context, final String propertyName, final String errorCode) {
+    AbstractPropertyValidator(final ValidationContext context, final String propertyName) {
         this.context = context;
         this.propertyName = propertyName;
-        this.errorCode = errorCode;
     }
 
     /**
      * Create a new instance of {@code AbstractPropertyValidator} without a property name.
+     * <p>
+     * This is useful for composite validators which are responsible for validation beyond a single property.
+     * </p>
      *
      * @param context   validation context containing properties and validation logs
-     * @param errorCode error code to associate with validation failures
      */
-    AbstractPropertyValidator(final ValidationContext context, final String errorCode) {
-        this(context, null, errorCode);
+    AbstractPropertyValidator(final ValidationContext context) {
+        this(context, null);
     }
 
     @Override
     public String getPropertyName() {
         return this.propertyName;
-    }
-
-    @Override
-    public String getErrorCode() {
-        return this.errorCode;
     }
 
     /**
@@ -90,17 +82,4 @@ public abstract class AbstractPropertyValidator implements PropertyValidator {
      */
     protected abstract ValidationResult performSpecificValidation();
 
-    /**
-     * Create a new error message builder initialized with the error code of this validator.
-     *
-     * <p>
-     * The returned builder should be used to construct detailed error messages associated with property validation
-     * failures.
-     * </p>
-     *
-     * @return ErrorMessageBuilder initialized with the validator's error code.
-     */
-    protected ErrorMessageBuilder createError() {
-        return ExaError.messageBuilder(this.errorCode);
-    }
 }

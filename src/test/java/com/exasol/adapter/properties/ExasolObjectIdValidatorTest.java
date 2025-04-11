@@ -17,7 +17,7 @@ public class ExasolObjectIdValidatorTest extends AbstractPropertyValidatorTest {
     // [utest -> dsn~validating-exasol-object-id-properties~1]
     void testWhenValidExasolObjectIdIsGivenThenValidationSucceeds(final String id) {
         final ValidatorFactory factory = createValidatorFactoryWithProperties("EXA_OBJECT_ID", id);
-        final PropertyValidator validator = factory.exasolObjectId("EXA_OBJECT_ID", "E-VSCOMJAVA-50");
+        final PropertyValidator validator = factory.exasolObjectId("EXA_OBJECT_ID");
         final ValidationResult result = validator.validate();
         assertThat(result.isValid(), equalTo(true));
     }
@@ -33,7 +33,7 @@ public class ExasolObjectIdValidatorTest extends AbstractPropertyValidatorTest {
     // [utest -> dsn~validating-exasol-object-id-properties~1]
     void testWhenInvalidExasolObjectIdIsGivenThenValidationFails(final String id) {
         final ValidatorFactory factory = createValidatorFactoryWithProperties("EXA_OBJECT_ID", id);
-        final PropertyValidator validator = factory.exasolObjectId("EXA_OBJECT_ID", "E-VSCOMJAVA-50");
+        final PropertyValidator validator = factory.exasolObjectId("EXA_OBJECT_ID");
         final ValidationResult result = validator.validate();
         assertThat(result.isValid(), equalTo(false));
     }

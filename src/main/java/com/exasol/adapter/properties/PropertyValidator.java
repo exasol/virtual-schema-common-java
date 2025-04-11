@@ -30,11 +30,4 @@ public interface PropertyValidator {
      * @return name of the property as a string
      */
     public String getPropertyName();
-
-    /**
-     * Retrieve the error code associated with the property validation.
-     *
-     * @return string representing the error code
-     */
-    public String getErrorCode();
 }

@@ -1,5 +1,7 @@
 package com.exasol.adapter.properties;
 
+import com.exasol.errorreporting.ExaError;
+
 import java.util.regex.Pattern;
 
 /**
@@ -19,11 +21,9 @@ public class BooleanValidator extends AbstractPropertyValidator {
      *
      * @param context      validation context containing properties and validation logs
      * @param propertyName name of the property to validate
-     * @param errorCode    error code to associate with validation failures
      */
-    BooleanValidator(final ValidationContext context, final String propertyName,
-                     final String errorCode) {
-        super(context, propertyName, errorCode);
+    BooleanValidator(final ValidationContext context, final String propertyName) {
+        super(context, propertyName);
     }
 
     /**
@@ -42,7 +42,7 @@ public class BooleanValidator extends AbstractPropertyValidator {
             return ValidationResult.success();
         else {
             return new ValidationResult(false,
-                    createError()
+                    ExaError.messageBuilder("E-VSCOMJAVA-43")
                             .message("The value {{value}} for property {{property}} must be either 'true' or 'false'.",
                                     value, this.propertyName)
                             .toString());

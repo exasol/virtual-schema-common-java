@@ -17,7 +17,7 @@ public class AndValidator extends AbstractPropertyValidator {
      * @param validators array of {@code PropertyValidator} instances to combine using logical AND
      */
     AndValidator(final ValidationContext context, final PropertyValidator... validators) {
-        super(context, "E-VSCOMJAVA-45");
+        super(context);
         this.validators = validators;
     }
 

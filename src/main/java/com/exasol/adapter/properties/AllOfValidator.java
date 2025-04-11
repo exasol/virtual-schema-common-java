@@ -27,7 +27,7 @@ public class AllOfValidator extends AbstractPropertyValidator {
      * @param validators array of {@link PropertyValidator} instances to apply sequentially
      */
     AllOfValidator(final ValidationContext context, final PropertyValidator... validators) {
-        super(context, "E-VSCOMJAVA-47");
+        super(context);
         this.validators = validators;
     }
 

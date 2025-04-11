@@ -17,7 +17,7 @@ class IntegerValidatorTest extends AbstractPropertyValidatorTest {
     // [utest -> dsn~validating-integer-properties~1]
     void testWhenValidIntegerIsGivenWithOutBoundariesThenValidationSucceeds(final String value) {
         final ValidatorFactory factory = createValidatorFactoryWithProperties("THE_INTEGER", value);
-        final PropertyValidator validator = factory.integer("THE_INTEGER", "E-VSCOMJAVA-48");
+        final PropertyValidator validator = factory.integer("THE_INTEGER");
         final ValidationResult result = validator.validate();
         assertThat(result.isValid(), equalTo(true));
     }
@@ -27,11 +27,11 @@ class IntegerValidatorTest extends AbstractPropertyValidatorTest {
     // [utest -> dsn~validating-integer-properties~1]
     void testWhenInvalidIntegerIsGivenThenValidationFails(final String value) {
         final ValidatorFactory factory = createValidatorFactoryWithProperties("THE_INTEGER", value);
-        final PropertyValidator validator = factory.integer("THE_INTEGER", "E-VSCOMJAVA-48");
+        final PropertyValidator validator = factory.integer("THE_INTEGER");
         final ValidationResult result = validator.validate();
         assertAll( //
                 () -> assertThat(result.isValid(), equalTo(false)), //
-                () -> assertThat(result.getMessage(), equalTo("E-VSCOMJAVA-48: The value '" + value
+                () -> assertThat(result.getMessage(), equalTo("E-VSCOMJAVA-47: The value '" + value
                         + "' for property 'THE_INTEGER' is not a valid integer number.")));
     }
 
@@ -45,7 +45,7 @@ class IntegerValidatorTest extends AbstractPropertyValidatorTest {
     void testWhenBoundariesAreProvidedAndValueIsBetweenBoundariesThenValidationSucceeds(final long min,
             final String value, final long max) {
         final ValidatorFactory factory = createValidatorFactoryWithProperties("THE_INTEGER", value);
-        final PropertyValidator validator = factory.integer("THE_INTEGER", "E-VSCOMJAVA-48", min, max);
+        final PropertyValidator validator = factory.integer("THE_INTEGER", min, max);
         final ValidationResult result = validator.validate();
         assertThat(result.isValid(), equalTo(true));
     }
@@ -60,12 +60,12 @@ class IntegerValidatorTest extends AbstractPropertyValidatorTest {
     void testWhenBoundariesAreProvidedAndValueIsOutsideBoundariesThenValidationFails(final long min, final String value,
             final long max) {
         final ValidatorFactory factory = createValidatorFactoryWithProperties("THE_INTEGER", value);
-        final PropertyValidator validator = factory.integer("THE_INTEGER", "E-VSCOMJAVA-48", min, max);
+        final PropertyValidator validator = factory.integer("THE_INTEGER", min, max);
         final ValidationResult result = validator.validate();
         assertAll( //
                 () -> assertThat(result.isValid(), equalTo(false)), //
                 () -> assertThat(result.getMessage(),
-                        equalTo("E-VSCOMJAVA-48: The value for property 'THE_INTEGER' must be between " + min + " and "
+                        equalTo("E-VSCOMJAVA-46: The value for property 'THE_INTEGER' must be between " + min + " and "
                                 + max + ", but was " + value + ".")));
     }
 
@@ -74,9 +74,9 @@ class IntegerValidatorTest extends AbstractPropertyValidatorTest {
     void testWhenSettingUpperBoundaryBelowLowerBoundaryThenExceptionIsThrown() {
         final ValidatorFactory factory = createValidatorFactoryWithEmptyProperties();
         final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> factory.integer("THE_INTEGER", "", 1, -1));
+                () -> factory.integer("THE_INTEGER", 1, -1));
         assertThat(exception.getMessage(), startsWith(
-                "E-VSCOMJAVA-49: The upper bound (-1) must be greater than or equal the lower bound (1) for property 'THE_INTEGER'."));
+                "E-VSCOMJAVA-54: The upper bound (-1) must be greater than or equal the lower bound (1) for property 'THE_INTEGER'."));
 
     }
 }

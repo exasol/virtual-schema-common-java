@@ -15,8 +15,7 @@ class EnumerationValidatorTest extends AbstractPropertyValidatorTest {
     @Test
     void testWhenValueIsInEnumerationThenValidationSucceeds() {
         final ValidatorFactory factory = createValidatorFactoryWithProperties("THE_ENUM", "A");
-        final PropertyValidator validator = factory.enumeration("THE_ENUM",
-                "E-VSCOMJAVA-50", the_enum.class);
+        final PropertyValidator validator = factory.enumeration("THE_ENUM", the_enum.class);
         final ValidationResult result = validator.validate();
         assertThat(result.isValid(), equalTo(true));
     }
@@ -25,11 +24,11 @@ class EnumerationValidatorTest extends AbstractPropertyValidatorTest {
     @Test
     void testWhenValueIsNotInEnumerationThenValidationFails() {
         final ValidatorFactory factory = createValidatorFactoryWithProperties("THE_ENUM", "D");
-        final PropertyValidator validator = factory.enumeration("THE_ENUM",
-                "E-VSCOMJAVA-50", the_enum.class);
+        final PropertyValidator validator = factory.enumeration("THE_ENUM", the_enum.class);
         final ValidationResult result = validator.validate();
         assertAll(() -> assertThat(result.isValid(), equalTo(false)),
-                () -> assertThat(result.getMessage(), equalTo("E-VSCOMJAVA-50: The property 'THE_ENUM' has an invalid value 'D'."
-                        + " Please pick one of the following values: 'A', 'B', 'C'")));
+                () -> assertThat(result.getMessage(),
+                        equalTo("E-VSCOMJAVA-44: The property 'THE_ENUM' has an invalid value 'D'."
+                                + " Please pick one of the following values: 'A', 'B', 'C'")));
     }
 }

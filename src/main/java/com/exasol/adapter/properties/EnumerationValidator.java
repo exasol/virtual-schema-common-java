@@ -1,5 +1,7 @@
 package com.exasol.adapter.properties;
 
+import com.exasol.errorreporting.ExaError;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,12 +24,11 @@ public class EnumerationValidator<T extends  Enum<T>> extends AbstractPropertyVa
      *
      * @param context      validation context containing properties and validation logs
      * @param propertyName name of the property being validated
-     * @param errorCode    error code to report in case of validation failure
      * @param enumClass    enumeration class containing the valid values for the property
      */
     EnumerationValidator(final ValidationContext context, final String propertyName,
-                         final String errorCode, final Class<T> enumClass) {
-        super(context, propertyName, errorCode);
+                         final Class<T> enumClass) {
+        super(context, propertyName);
         this.enumClass = enumClass;
         this.enumValueCache = getEnumValues();
     }
@@ -50,7 +51,7 @@ public class EnumerationValidator<T extends  Enum<T>> extends AbstractPropertyVa
     protected ValidationResult performSpecificValidation() {
         final String value = this.getValue();
         if (value == null || !this.enumValueCache.contains(value)) {
-            return new ValidationResult(false, createError()
+            return new ValidationResult(false, ExaError.messageBuilder("E-VSCOMJAVA-44")
                     .message("The property {{property}} has an invalid value {{value}}.", this.propertyName, value)
                     .mitigation("Please pick one of the following values: {{values}}", String.join("', '", this.enumValueCache))
                     .toString());

@@ -11,8 +11,8 @@ class CoverageValidatorTest extends AbstractPropertyValidatorTest {
     @Test
     void testWhenAllPropertiesWereValidatedThenIndicateSuccess() {
         final ValidatorFactory factory = createValidatorFactoryWithProperties("P1", "true", "P2", "false");
-        factory.bool("P1", "E-IGNORE-1");
-        factory.bool("P2", "E-IGNORE-2");
+        factory.bool("P1");
+        factory.bool("P2");
         final PropertyValidator validator = factory.allCovered();
         final ValidationResult result = validator.validate();
         assertThat(result.isValid(), equalTo(true));
@@ -22,7 +22,7 @@ class CoverageValidatorTest extends AbstractPropertyValidatorTest {
     @Test
     void testWhenNotAllPropertiesAreKnownThenIndicateFailure() {
         final ValidatorFactory factory = createValidatorFactoryWithProperties("P1", "true", "P2", "V2", "P3", "V3");
-        factory.bool("P1", "E-FOO-1").validate(); // Call to mark P1 as known
+        factory.bool("P1").validate(); // Call to mark P1 as known
         final PropertyValidator validator = factory.allCovered();
         final ValidationResult result = validator.validate();
         assertAll(() -> assertThat(result.isValid(), equalTo(false)), () -> assertThat(result.getMessage(),

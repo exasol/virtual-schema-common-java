@@ -46,8 +46,8 @@ class ValidatorFactoryTest {
         final ValidatorFactory v = ValidatorFactory.create(new AdapterProperties(properties));
         final PropertyValidator validator = //
                 v.and( //
-                        v.required("BOOLEAN_PROPERTY", "E-FOO-2"), //
-                        v.bool("BOOLEAN_PROPERTY", "E-FOO-1"), //
+                        v.required("BOOLEAN_PROPERTY"), //
+                        v.bool("BOOLEAN_PROPERTY"), //
                         v.allCovered() //
                 );
         final ValidationResult result = validator.validate();
@@ -75,19 +75,19 @@ class ValidatorFactoryTest {
                 v.allOf( //
                         v.allOf( //
                                 v.and( //
-                                        v.required("REQ_BASE_BOOL", ""), //
-                                        v.bool("REQ_BASE_BOOL", "") //
+                                        v.required("REQ_BASE_BOOL"), //
+                                        v.bool("REQ_BASE_BOOL") //
                                 ), //
                                 v.and( //
-                                        v.required("REQ_BASE_STRING", ""), //
-                                        v.matches("REQ_BASE_STRING", "", Pattern.compile("\\w\\d")) //
+                                        v.required("REQ_BASE_STRING"), //
+                                        v.matches("REQ_BASE_STRING", Pattern.compile("\\w\\d")) //
                                 ) //
                         ), //
                         v.and( //
-                                v.required("REQ_DIALECT_INT", ""), //
-                                v.integer("REQ_DIALECT_INT", "") //
+                                v.required("REQ_DIALECT_INT"), //
+                                v.integer("REQ_DIALECT_INT") //
                         ), //
-                        v.bool("OPT_DIALECT_BOOL", ""), //
+                        v.bool("OPT_DIALECT_BOOL"), //
                         v.allCovered()); //
         final ValidationResult result = validator.validate();
         assertThat(result.isValid(), equalTo(expectedResult));
@@ -97,24 +97,24 @@ class ValidatorFactoryTest {
     void testRequiredShortHandForm() {
         final ValidatorFactory v = ValidatorFactory.create(AdapterProperties.emptyProperties());
         final PropertyValidator validator = v.required( //
-                v.bool("P1", "E-FOO-42") //
+                v.bool("P1") //
         );
         final ValidationResult result = validator.validate();
         assertAll(() -> assertThat(result.isValid(), equalTo(false)), //
-                () -> assertThat(result.getMessage(), equalTo("E-FOO-42: The mandatory property 'P1' is missing.")));
+                () -> assertThat(result.getMessage(), equalTo("E-VSCOMJAVA-48: The mandatory property 'P1' is missing.")));
     }
 
     @Test
     void testWhenRequiredIsCombinedWithUnwantedAndAllCoveredThenUnwantedIsHandledCorrectly() {
         final ValidatorFactory v = ValidatorFactory.create(new AdapterProperties(Map.of("P1", "A", "P2", "B")));
         final PropertyValidator validator = v.allOf( //
-                v.required("P1", "E-FOO-43"), //
-                v.unwanted("P2", "E-FOO-44"), //
+                v.required("P1"), //
+                v.unwanted("P2"), //
                 v.allCovered());
         final ValidationResult result = validator.validate();
         assertAll(() -> assertThat(result.isValid(), equalTo(false)), //
                 () -> assertThat(result.getMessage(),
-                        equalTo("E-FOO-44: The unwanted property 'P2' is set. Please remove the property."))
+                        equalTo("E-VSCOMJAVA-50: The unwanted property 'P2' is set. Please remove the property."))
 
         );
     }

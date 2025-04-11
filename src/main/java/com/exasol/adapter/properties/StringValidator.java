@@ -1,5 +1,7 @@
 package com.exasol.adapter.properties;
 
+import com.exasol.errorreporting.ExaError;
+
 import java.util.regex.Pattern;
 
 /**
@@ -14,13 +16,12 @@ public class StringValidator extends AbstractPropertyValidator {
      *
      * @param context           validation context containing properties and validation logs
      * @param propertyName      name of the property to validate
-     * @param errorCode         error code for invalid values
      * @param pattern           regular expression the property value must match
      * @param formatDescription description of the expected format to include in error messages
      */
-    StringValidator(final ValidationContext context, final String propertyName, final String errorCode,
-                    final Pattern pattern, final String formatDescription) {
-        super(context, propertyName, errorCode);
+    StringValidator(final ValidationContext context, final String propertyName,
+            final Pattern pattern, final String formatDescription) {
+        super(context, propertyName);
         this.pattern = pattern;
         this.formatDescription = formatDescription;
     }
@@ -30,12 +31,10 @@ public class StringValidator extends AbstractPropertyValidator {
      *
      * @param context      validation context containing properties and validation logs
      * @param propertyName name of the property to validate
-     * @param errorCode    error code for invalid values
      * @param pattern      regular expression the property value must match
      */
-    StringValidator(final ValidationContext context, final String propertyName, final String errorCode,
-                    final Pattern pattern) {
-        this(context, propertyName, errorCode, pattern, null);
+    StringValidator(final ValidationContext context, final String propertyName, final Pattern pattern) {
+        this(context, propertyName, pattern, null);
     }
 
     /**
@@ -59,12 +58,21 @@ public class StringValidator extends AbstractPropertyValidator {
         if (this.pattern.matcher(this.getValue()).matches()) {
             return ValidationResult.success();
         } else {
-            final String mitigation = (this.formatDescription != null) //
-                    ? "Please use the format '" + this.formatDescription + "'."//
-                    : "Please use a value matching the regular expression '" + this.pattern + "'.";
-            return new ValidationResult(false,
-                    createError().message("The property {{property}} has an invalid value {{value}}.",
-                            this.propertyName, this.getValue()).mitigation(mitigation).toString());
+            if (this.formatDescription == null) {
+                return new ValidationResult(false,
+                        ExaError.messageBuilder("E-VSCOMJAVA-51")
+                                .message("The property {{property}} has an invalid value {{value}}.",
+                                        this.propertyName, this.getValue())
+                                .mitigation("Please use a value matching the regular expression '{{pattern}}'.",
+                                        this.pattern)
+                                .toString());
+            } else {
+                return new ValidationResult(false,
+                        ExaError.messageBuilder("E-VSCOMJAVA-55")
+                                .message("The property {{property}} has an invalid value {{value}}.",
+                                        this.propertyName, this.getValue())
+                                .mitigation("Please use the format {{format}}.", this.formatDescription).toString());
+            }
         }
     }
 }

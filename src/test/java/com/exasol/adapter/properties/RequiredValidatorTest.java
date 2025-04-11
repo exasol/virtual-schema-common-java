@@ -20,7 +20,7 @@ class RequiredValidatorTest extends AbstractPropertyValidatorTest{
     @Test
     void testWhenMandatoryPropertyIsPresentThenValidationSucceeds() {
         final ValidatorFactory factory = createValidatorFactoryWithProperties("MANDATORY_PROPERTY", "present");
-        final PropertyValidator validator = factory.required("MANDATORY_PROPERTY", "");
+        final PropertyValidator validator = factory.required("MANDATORY_PROPERTY");
         final ValidationResult result = validator.validate();
         assertThat(result.isValid(), equalTo(true));
     }
@@ -30,12 +30,12 @@ class RequiredValidatorTest extends AbstractPropertyValidatorTest{
     @MethodSource("variationsWithMissingProperty")
     void testWhenMandatoryPropertyIsMissingThenValidationFails(Map<String, String> properties) {
         final ValidatorFactory factory = createValidatorFactoryWithProperties(properties);
-        final PropertyValidator validator = factory.required("MANDATORY_PROPERTY", "E-VSCOMJAVA-43");
+        final PropertyValidator validator = factory.required("MANDATORY_PROPERTY");
         final ValidationResult result = validator.validate();
         assertAll( //
                 () -> assertThat(result.isValid(), equalTo(false)), //
                 () -> assertThat(result.getMessage(),
-                        equalTo("E-VSCOMJAVA-43: The mandatory property 'MANDATORY_PROPERTY' is missing.")));
+                        equalTo("E-VSCOMJAVA-48: The mandatory property 'MANDATORY_PROPERTY' is missing.")));
     }
 
     private static Stream<Arguments> variationsWithMissingProperty() {
@@ -48,23 +48,23 @@ class RequiredValidatorTest extends AbstractPropertyValidatorTest{
     @Test
     void testWhenMandatoryPropertyIsEmptyThenValidationFails() {
         final ValidatorFactory factory = createValidatorFactoryWithProperties("EMPTY_PROPERTY", "");
-        final PropertyValidator validator = factory.required("EMPTY_PROPERTY", "E-VSCOMJAVA-43");
+        final PropertyValidator validator = factory.required("EMPTY_PROPERTY");
         final ValidationResult result = validator.validate();
         assertAll( //
                 () -> assertThat(result.isValid(), equalTo(false)), //
                 () -> assertThat(result.getMessage(),
-                        equalTo("E-VSCOMJAVA-43: The mandatory property 'EMPTY_PROPERTY' is empty.")));
+                        equalTo("E-VSCOMJAVA-49: The mandatory property 'EMPTY_PROPERTY' is empty.")));
     }
 
     // [utest -> dsn~validating-the-absence-of-unwanted-properties~1]
     @Test
     void testWhenAnUnwantedPropertyIsSetThenValidationFails() {
         final ValidatorFactory factory = createValidatorFactoryWithProperties("UNWANTED_PROPERTY", "present");
-        final PropertyValidator validator = factory.unwanted("UNWANTED_PROPERTY", "E-VSCOMJAVA-52");
+        final PropertyValidator validator = factory.unwanted("UNWANTED_PROPERTY");
         final ValidationResult result = validator.validate();
         assertAll( //
                 () -> assertThat(result.isValid(), equalTo(false)), //
                 () -> assertThat(result.getMessage(), equalTo(
-                        "E-VSCOMJAVA-52: The unwanted property 'UNWANTED_PROPERTY' is set. Please remove the property.")));
+                        "E-VSCOMJAVA-50: The unwanted property 'UNWANTED_PROPERTY' is set. Please remove the property.")));
     }
 }

@@ -22,7 +22,7 @@ public class CoverageValidator extends AbstractPropertyValidator {
      * @param context validation context containing properties and validation logs
      */
     CoverageValidator(final ValidationContext context) {
-        super(context, "E-VSCOMJAVA-46");
+        super(context);
     }
 
     /**

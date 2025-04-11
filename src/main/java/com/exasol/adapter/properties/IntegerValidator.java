@@ -18,11 +18,9 @@ public class IntegerValidator extends AbstractPropertyValidator {
      *
      * @param context      validation context containing properties and validation logs
      * @param propertyName name of the property to validate
-     * @param errorCode    error code to associate with validation failures
      */
-    public IntegerValidator(final ValidationContext context, final String propertyName,
-                            final String errorCode) {
-        super(context, propertyName, errorCode);
+    public IntegerValidator(final ValidationContext context, final String propertyName) {
+        super(context, propertyName);
         this.lowerBound = Long.MIN_VALUE;
         this.upperBound = Long.MAX_VALUE;
         this.bounded = false;
@@ -37,19 +35,18 @@ public class IntegerValidator extends AbstractPropertyValidator {
      *
      * @param context      validation context containing properties and validation logs
      * @param propertyName name of the property to validate
-     * @param errorCode    error code to associate with validation failures
      * @param lowerBound   minimum allowed value (inclusive)
      * @param upperBound   maximum allowed value (inclusive)
      */
-    IntegerValidator(final ValidationContext context, final String propertyName, final String errorCode,
-                     final long lowerBound, final long upperBound) {
-        super(context, propertyName, errorCode);
+    IntegerValidator(final ValidationContext context, final String propertyName, final long lowerBound,
+            final long upperBound) {
+        super(context, propertyName);
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
         this.bounded = true;
         if (upperBound < lowerBound) {
             throw new IllegalArgumentException(ExaError //
-                    .messageBuilder("E-VSCOMJAVA-49")
+                    .messageBuilder("E-VSCOMJAVA-54")
                     .message(
                             "The upper bound ({{upper_bound}}) must be greater than or equal the lower bound ({{lower_bound}}) for property {{property}}.", //
                             upperBound, lowerBound, propertyName) //
@@ -70,14 +67,14 @@ public class IntegerValidator extends AbstractPropertyValidator {
         try {
             final long numericValue = Long.parseLong(this.getValue());
             if (this.bounded && (numericValue < this.lowerBound || numericValue > this.upperBound)) {
-                return new ValidationResult(false, createError().message(
+                return new ValidationResult(false, ExaError.messageBuilder("E-VSCOMJAVA-46").message(
                         "The value for property {{property}} must be between {{lower_bound}} and {{upper_bound}, but was {{value}}.",
                         this.propertyName, this.lowerBound, this.upperBound, numericValue).toString());
             }
             return ValidationResult.success();
         } catch (final NumberFormatException exception) {
             return new ValidationResult(false,
-                    createError()
+                    ExaError.messageBuilder("E-VSCOMJAVA-47")
                             .message("The value {{value}} for property {{property}} is not a valid integer number.",
                                     this.getValue(), this.propertyName)
                             .toString());

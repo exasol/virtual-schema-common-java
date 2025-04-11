@@ -1,22 +1,22 @@
 package com.exasol.adapter.properties;
 
+import com.exasol.errorreporting.ExaError;
+
 /**
  * Validator for ensuring that a required property is set and not empty.
  */
 public class RequiredValidator extends AbstractPropertyValidator {
-    private boolean required;
+    private final boolean required;
 
     /**
      * Create a new instance of a {@link RequiredValidator}
      *
      * @param context      validation context with properties and validation log
      * @param propertyName name of the property to be validated
-     * @param errorCode    error code to use in case of failed validation
      * @param required  {@code true} the property need to be set, {@code false} otherwise
      */
-    public RequiredValidator(final ValidationContext context, final String propertyName,
-                             final String errorCode, final boolean required) {
-        super(context, propertyName, errorCode);
+    public RequiredValidator(final ValidationContext context, final String propertyName, final boolean required) {
+        super(context, propertyName);
         this.required = required;
     }
 
@@ -25,11 +25,9 @@ public class RequiredValidator extends AbstractPropertyValidator {
      *
      * @param context      validation context with properties and validation log
      * @param propertyName name of the property to be validated
-     * @param errorCode    error code to use in case of failed validation
      */
-    RequiredValidator(final ValidationContext context, final String propertyName,
-                      final String errorCode) {
-        this(context, propertyName, errorCode, true);
+    RequiredValidator(final ValidationContext context, final String propertyName) {
+        this(context, propertyName, true);
     }
 
     /**
@@ -53,10 +51,10 @@ public class RequiredValidator extends AbstractPropertyValidator {
     // [impl -> dsn~validating-the-existence-of-mandatory-properties~1]
     private ValidationResult validatePropertyIsSet() {
         if (this.getValue() == null) {
-            return new ValidationResult(false, createError()
+            return new ValidationResult(false, ExaError.messageBuilder("E-VSCOMJAVA-48")
                     .message("The mandatory property {{property}} is missing.", this.propertyName).toString());
         } else if (this.getValue().isEmpty()) {
-            return new ValidationResult(false, createError()
+            return new ValidationResult(false, ExaError.messageBuilder("E-VSCOMJAVA-49")
                     .message("The mandatory property {{property}} is empty.", this.propertyName).toString());
         } else {
             return ValidationResult.success();
@@ -69,7 +67,8 @@ public class RequiredValidator extends AbstractPropertyValidator {
             return ValidationResult.success();
         } else {
             return new ValidationResult(false,
-                    createError().message("The unwanted property {{property}} is set.", this.propertyName)
+                    ExaError.messageBuilder("E-VSCOMJAVA-50")
+                            .message("The unwanted property {{property}} is set.", this.propertyName)
                             .mitigation("Please remove the property.").toString());
         }
     }

@@ -1,6 +1,7 @@
 package com.exasol.adapter.properties;
 
 import com.exasol.db.ExasolIdentifier;
+import com.exasol.errorreporting.ExaError;
 
 /**
  * Validates that a property value adheres to the format of an Exasol database object identifier.
@@ -20,11 +21,9 @@ public class ExasolObjectIdValidator extends AbstractPropertyValidator {
      *
      * @param context      validation context containing properties and validation logs
      * @param propertyName name of the property to validate
-     * @param errorCode    error code to associate with validation failures
      */
-    ExasolObjectIdValidator(final ValidationContext context, final String propertyName,
-                            final String errorCode) {
-        super(context, propertyName, errorCode);
+    ExasolObjectIdValidator(final ValidationContext context, final String propertyName) {
+        super(context, propertyName);
     }
 
     /**
@@ -38,8 +37,9 @@ public class ExasolObjectIdValidator extends AbstractPropertyValidator {
         if (ExasolIdentifier.validate(this.getValue())) {
             return ValidationResult.success();
         } else {
-            return new ValidationResult(false, createError() //
-                    .message("Property {{property}} is not a valid Exasol database object identifier.") //
+            return new ValidationResult(false, ExaError.messageBuilder("E-VSCOMJAVA-45") //
+                    .message("Property {{property}} is not a valid Exasol database object identifier.",
+                            this.propertyName) //
                     .mitigation("Please refer to " + ID_DOC_URL + " for the correct format guidelines.") //
                     .toString());
         }
