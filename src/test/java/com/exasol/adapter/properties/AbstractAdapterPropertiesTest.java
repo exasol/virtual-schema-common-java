@@ -5,9 +5,13 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class AbstractAdapterPropertiesTest {
     private Map<String, String> rawProperties;
@@ -36,30 +40,25 @@ class AbstractAdapterPropertiesTest {
     }
 
     @Test
-    void testIsEnabledTrue() {
-        this.rawProperties.put("switch", "TRUE");
-        final DummyAdapterProperties properties = new DummyAdapterProperties(this.rawProperties);
-        assertThat(properties.isEnabled("switch"), equalTo(true));
-    }
-
-    @Test
     void testIsEnabledFalseIfPropertyDoesNotExist() {
         final DummyAdapterProperties properties = new DummyAdapterProperties(this.rawProperties);
         assertThat(properties.isEnabled("switch"), equalTo(false));
     }
 
-    @Test
-    void testIsEnabledFalseIfPropertyIsNull() {
-        this.rawProperties.put("switch", null);
-        final DummyAdapterProperties properties = new DummyAdapterProperties(this.rawProperties);
-        assertThat(properties.isEnabled("switch"), equalTo(false));
+    private static Stream<Arguments> provideIsEnabledTestCases() {
+        return Stream.of(
+                Arguments.of("TRUE", true),
+                Arguments.of(null, false),
+                Arguments.of("false", false)
+        );
     }
 
-    @Test
-    void testIsEnabledFalseIfPropertyIsNotTrue() {
-        this.rawProperties.put("switch", "false");
+    @ParameterizedTest
+    @MethodSource("provideIsEnabledTestCases")
+    void testIsEnabled(final String propertyValue, final boolean expectedResult) {
+        this.rawProperties.put("switch", propertyValue);
         final DummyAdapterProperties properties = new DummyAdapterProperties(this.rawProperties);
-        assertThat(properties.isEnabled("switch"), equalTo(false));
+        assertThat(properties.isEnabled("switch"), equalTo(expectedResult));
     }
 
     @Test

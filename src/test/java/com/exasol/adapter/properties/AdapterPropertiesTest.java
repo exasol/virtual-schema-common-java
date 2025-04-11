@@ -88,7 +88,7 @@ class AdapterPropertiesTest {
         assertThat(hasNamedProperty, equalTo(false));
     }
 
-    static public Stream<String> getAdapterPropertyNames() {
+    public static Stream<String> getAdapterPropertyNames() {
         return Arrays.stream(AdapterProperties.class.getDeclaredFields()) //
                 .map(Field::getName) //
                 .filter(name -> name.endsWith(PROPERTY_SUFFIX)) //
