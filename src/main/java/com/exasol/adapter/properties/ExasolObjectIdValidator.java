@@ -10,7 +10,7 @@ import com.exasol.errorreporting.ExaError;
  * Checks the property value against the rules for valid Exasol identifiers and returns a validation result.
  * </p>
  */
-class ExasolObjectIdValidator extends AbstractPropertyValidator {
+public class ExasolObjectIdValidator extends AbstractPropertyValidator {
     private static final String ID_DOC_URL = "https://docs.exasol.com/db/latest/sql_references/basiclanguageelements.htm#SQLidentifier";
 
     /**

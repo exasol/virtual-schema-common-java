@@ -3,7 +3,7 @@ package com.exasol.adapter.properties;
 import java.util.Collections;
 import java.util.Map;
 
-public class AbstractPropertyValidatorTest {
+public abstract class AbstractPropertyValidatorTest {
     protected ValidationContext createContext(final Map<String, String> properties) {
         return new ValidationContext(new AdapterProperties(properties));
     }

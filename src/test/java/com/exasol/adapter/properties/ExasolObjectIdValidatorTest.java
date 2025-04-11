@@ -6,7 +6,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-public class ExasolObjectIdValidatorTest extends AbstractPropertyValidatorTest {
+class ExasolObjectIdValidatorTest extends AbstractPropertyValidatorTest {
     @ValueSource(strings = { //
             "A_valid_object_id", //
             "anotherValidID1", //
