@@ -1,4 +1,4 @@
-package com.exasol.adapter;
+package com.exasol.adapter.properties;
 
 import java.util.*;
 import java.util.stream.Collectors;
