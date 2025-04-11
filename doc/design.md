@@ -32,7 +32,7 @@ IntegerValidator -u-|> AbstractPropertyValidator
 StringValidator -u-|> AbstractPropertyValidator
 ```
 
-Please note that the Validator constructors are all **package-private**. User can intentionally only create validators through the `PropertyValidatorFactor`.
+Please note that the Validator constructors are all **package-private**. User can intentionally only create validators through the `PropertyValidatorFactory`.
 
 ## Runtime View
 
@@ -42,7 +42,7 @@ We want to avoid that users are plagued with subtle error caused by typos in vir
 
 Dedicated validators check everything from the correctness of the name spelling to only using allowed values.
 
-This also servers as a first line of defense against injecting malicious parameters through user input.
+This also serves as a first line of defense against injecting malicious parameters through user input.
 
 There are a couple of rules about how virtual schemas handle properties:
 
@@ -115,7 +115,7 @@ Needs: impl, utest
 #### Validating the Existence of Mandatory Properties
 `dsn~validating-the-existence-of-mandatory-properties~1`
 
-The `RequiredValidator` validates that a mandatory property is
+The `RequiredValidator` validates that a mandatory property
 
 1. Exists
 2. Is not null

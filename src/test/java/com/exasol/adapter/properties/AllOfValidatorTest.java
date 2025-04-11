@@ -19,7 +19,7 @@ class AllOfValidatorTest extends AbstractPropertyValidatorTest {
 
     // [utest -> dsn~all-of-validation~1]
     @Test
-    void testWhenFirstValidationFailsTheCombinationFailsButProcessesAllValidators() {
+    void testWhenFirstValidationFailsThenCombinationFailsButProcessesAllValidators() {
         final ValidatorFactory factory = createValidatorFactoryWithEmptyProperties();
         final PropertyValidator mockValidator1 = mock(PropertyValidator.class);
         final PropertyValidator mockValidator2 = mock(PropertyValidator.class);
@@ -33,7 +33,7 @@ class AllOfValidatorTest extends AbstractPropertyValidatorTest {
 
     // [utest -> dsn~all-of-validation~1]
     @Test
-    void testWhenMultipleValidationsFailTheCombinationCollectsAllErrors() {
+    void testWhenMultipleValidationsFailThenCombinationCollectsAllErrors() {
         final ValidatorFactory factory = createValidatorFactoryWithEmptyProperties();
         final PropertyValidator mockValidator1 = mock(PropertyValidator.class);
         final PropertyValidator mockValidator2 = mock(PropertyValidator.class);
