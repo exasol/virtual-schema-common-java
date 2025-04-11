@@ -11,7 +11,9 @@ package com.exasol.adapter.properties;
  * Subclasses must implement {@link #performSpecificValidation()} to define property-specific validation logic.
  */
 public abstract class AbstractPropertyValidator implements PropertyValidator {
+    /** The context for the validation with the adapter properties and a log of covered properties */
     protected final ValidationContext context;
+    /** The name of the property to be validated. */
     protected final String propertyName;
 
     /**

@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
  * </p>
  */
 public class CoverageValidator extends AbstractPropertyValidator {
-    public static final String CHECK_DOCUMENTATION_MITIGATION = "Please check the documentation of the adapter for valid properties and the spelling.";
 
     /**
      * Create a new instance of {@link CoverageValidator}.
@@ -56,7 +55,9 @@ public class CoverageValidator extends AbstractPropertyValidator {
                     ExaError.messageBuilder("E-VSCOMJAVA-53")
                             .message("The following properties are unknown: {{properties}.",
                                     String.join("', '", unknownProperties))
-                            .mitigation(CHECK_DOCUMENTATION_MITIGATION).toString());
+                            .mitigation(
+                                    "Please check the documentation of the adapter for valid properties and the spelling.")
+                            .toString());
         }
     }
 }
