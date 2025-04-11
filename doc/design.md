@@ -26,7 +26,7 @@ ValidatorFactory -u-> BooleanValidator
 ValidatorFactory -u-> IntegerValidator
 ValidatorFactory -u-> StringValidator
 ValidationContext --> AdapterProperties
-ValidationContext --> PropertyValidationLog
+ValidationContext --> ValidationLog
 BooleanValidator -u-|> AbstractPropertyValidator
 IntegerValidator -u-|> AbstractPropertyValidator
 StringValidator -u-|> AbstractPropertyValidator
