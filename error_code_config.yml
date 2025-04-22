@@ -2,4 +2,4 @@ error-tags:
   VSCOMJAVA:
     packages:
       - com.exasol
-    highest-index: 55
+    highest-index: 57

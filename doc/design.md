@@ -112,6 +112,17 @@ Covers:
 
 Needs: impl, utest
 
+#### Validating Multi-Select Properties
+`dsn~validating-multi-select-properties~1`
+
+The `MultiSelectValidator` checks that a given comma-separated list contains only values from a given enumeration.
+
+Covers:
+
+* `req~validating-multi-select-properties~1`
+
+Needs: impl, utest
+
 #### Validating the Existence of Mandatory Properties
 `dsn~validating-the-existence-of-mandatory-properties~1`
 
@@ -150,6 +161,21 @@ For the end user it is much easier to understand what the validator expects when
 Covers:
 
 * `req~validating-a-string-against-a-regular-expression~1`
+
+Needs: impl, utest
+
+#### Validating Unix Paths
+`dsn~validating-unix-paths~1`
+
+The `PathValiator` validates that a property contains a valid Unix path.
+
+Comment:
+
+In adapter properties only paths make sense that access BucketFS, because that is the change root that the adapter (which is a UDF) sees.
+
+Covers:
+
+* `req~validating-unix-paths~1`
 
 Needs: impl, utest
 

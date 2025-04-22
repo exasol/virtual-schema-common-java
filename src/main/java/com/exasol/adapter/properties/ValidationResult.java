@@ -1,10 +1,12 @@
 package com.exasol.adapter.properties;
 
+import com.exasol.errorreporting.ErrorMessageBuilder;
+
 /**
  * Represents the result of a property validation.
  * <p>
- * This class is used to encapsulate the outcome of a property validation process, which includes
- * whether the validation was successful and an associated message describing the result.
+ * This class is used to encapsulate the outcome of a property validation process, which includes whether the validation
+ * was successful and an associated message describing the result.
  * </p>
  */
 public class ValidationResult {
@@ -23,12 +25,23 @@ public class ValidationResult {
     }
 
     /**
-     * Convenience constructor for a result representing a successful validation.
+     * Convenience factory method for a result representing a successful validation.
      *
      * @return successful validation result
      */
     public static ValidationResult success() {
         return new ValidationResult(true, "");
+    }
+
+    /**
+     * Convenience factory method for a result indicating a failed validation.
+     * 
+     * @param errorMessageBuilder instance of {@code ErrorMessageBuilder} used to generate the error message
+     * 
+     * @return failed validation result
+     */
+    public static ValidationResult failure(final ErrorMessageBuilder errorMessageBuilder) {
+        return new ValidationResult(false, errorMessageBuilder.toString());
     }
 
     /**

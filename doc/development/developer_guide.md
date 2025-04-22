@@ -35,18 +35,21 @@ The `ValidatorFactory` is responsible for creating all validators. It also keeps
 
 Each validator implements the interface `PropertyValidator`, where the most important method is `validate`. This method returns a validation result consisting of an indicator whether the validation succeeded and an error message if it did not.
 
-| Validator Class           | Factory Method                                    | Purpose                                                                        |
-|---------------------------|---------------------------------------------------|--------------------------------------------------------------------------------|
-| `AndValidator`            | `and(validator1, validator2, ...)`                | Short-circuits validation on first failure                                     |
-| `BooleanValidator`        | `bool(propertyName)`                   | Validates that a property value is a boolean                                   |
-| `AllOfValidator`          | `allOf(validator1, validator2, ...)`              | Runs all validators without short-circuiting                                   |
-| `CoverageValidator`       | `allCovered()`                                    | Validates that all properties have been checked by validators                  |
-| `EnumerationValidator`    | `enumeration(propertyName, enumClass)` | Validates that a property value is one of the values defined in an enumeration |
-| `ExasolObjectIdValidator` | `exasolObjectId(propertyName)`         | Validates that a property value follows Exasol's object ID format rules        |
-| `IntegerValidator`        | `integer(propertyName)`                | Validates that a property value is a valid integer                             |
-| `IntegerValidator`        | `integer(propertyName, min, max)`      | Validates that a property value is an integer within specified boundaries      |
-| `RequiredValidator`       | `required(propertyName)`               | Validates that a property exists                                               |
-| `StringValidator`         | `matches(propertyName, pattern)`       | Validates property against regex pattern                                       |
+| Validator Class           | Factory Method                                       | Purpose                                                                        |
+|---------------------------|------------------------------------------------------|--------------------------------------------------------------------------------|
+| `AndValidator`            | `and(validator1, validator2, ...)`                   | Short-circuits validation on first failure                                     |
+| `BooleanValidator`        | `bool(propertyName)`                                 | Validates that a property value is a boolean                                   |
+| `AllOfValidator`          | `allOf(validator1, validator2, ...)`                 | Runs all validators without short-circuiting                                   |
+| `CoverageValidator`       | `allCovered()`                                       | Validates that all properties have been checked by validators                  |
+| `EnumerationValidator`    | `enumeration(propertyName, enumClass)`               | Validates that a property value is one of the values defined in an enumeration |
+| `ExasolObjectIdValidator` | `exasolObjectId(propertyName)`                       | Validates that a property value follows Exasol's object ID format rules        |
+| `IntegerValidator`        | `integer(propertyName)`                              | Validates that a property value is a valid integer                             |
+| `IntegerValidator`        | `integer(propertyName, min, max)`                    | Validates that a property value is an integer within specified boundaries      |
+| `MultiSelectValidator`    | `multiSelect(propertyName, enumClass)`               | Validates a given value is a comma separated list of enum values; non-empty    |
+| `MultiSelectValidator`    | `multiSelect(propertyName, enumClass, emptyAllowed)` | Validates a given value is a comma separated list of enum values               |
+| `RequiredValidator`       | `required(propertyName)`                             | Validates that a property exists                                               |
+| `StringValidator`         | `matches(propertyName, pattern)`                     | Validates property against regex pattern                                       |
+| `UnixPathValidator`       | `path(propertyName)`                                 | Validates a given value is a valid path without dangerous contents             |
 
 ### Validator Composition
 

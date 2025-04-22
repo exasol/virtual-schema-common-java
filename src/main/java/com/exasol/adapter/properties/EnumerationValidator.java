@@ -16,8 +16,8 @@ import java.util.List;
  * @param <T> Type of the enumeration to validate against
  */
 public class EnumerationValidator<T extends  Enum<T>> extends AbstractPropertyValidator {
-    private final Class<T> enumClass;
-    private final List<String> enumValueCache;
+    protected final Class<T> enumClass;
+    protected final List<String> enumValueCache;
 
     /**
      * Create a new instance of {@link EnumerationValidator}.
