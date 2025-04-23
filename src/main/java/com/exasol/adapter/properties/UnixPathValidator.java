@@ -54,9 +54,12 @@ public class UnixPathValidator extends AbstractPropertyValidator {
         }
     }
 
+    // [impl -> dsn~only-absolute-paths-are-valid-in-properties~1]
     private boolean hasForbiddenPathContent(final String value) {
         return value.isBlank() //
-                || value.contains("..") //
+                || !value.startsWith("/") // We restrict all paths to absolute
+                || value.contains("/../") //
+                || value.contains("/..") //
                 || value.contains("//") //
                 || value.contains("/./") //
                 || value.contains("%") //
@@ -74,6 +77,10 @@ public class UnixPathValidator extends AbstractPropertyValidator {
                 ExaError.messageBuilder("E-VSCOMJAVA-59")
                         .message("The property {{property}} contains an invalid path: {{path}}.",
                                 this.propertyName, this.getValue())
-                        .mitigation("Please remove any kind of path traversal characters ('.', '..', '//')."));
+                        .mitigation("Make sure you provide an absolute path.")
+                        .mitigation("Don't use a protocol specifier (like 'http:').")
+                        .mitigation("Avoid blank paths, tabs, newlines and carriage returns.")
+                        .mitigation("Please remove any kind of path traversal characters ('.', '..', '//').")
+        );
     }
 }

@@ -167,7 +167,7 @@ Needs: impl, utest
 #### Validating Unix Paths
 `dsn~validating-unix-paths~1`
 
-The `PathValiator` validates that a property contains a valid Unix path.
+The `UnixPathValiator` validates that a property contains a valid Unix path.
 
 Comment:
 
@@ -176,6 +176,17 @@ In adapter properties only paths make sense that access BucketFS, because that i
 Covers:
 
 * `req~validating-unix-paths~1`
+
+Needs: impl, utest
+
+#### Only Absolute Paths are Valid in Properties
+`dsn~only-absolute-paths-are-valid-in-properties~1`
+
+The `UnixPathValidator` allows only absolute paths.
+
+Covers:
+
+* `req~validator-allows-only-absolute-paths~1`
 
 Needs: impl, utest
 

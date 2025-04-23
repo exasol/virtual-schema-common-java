@@ -117,7 +117,7 @@ public class ValidatorFactory {
     }
 
     /**
-     * Creates a validator for validating a multi-select property.
+     * Creates a validator for validating a multi-select property, allowing an empty value.
      * <p>
      * Please note that due to type erasure in Java generics, we have logical duplication here between the type
      * parameter and the class of the enum. This is unfortunately unavoidable.
@@ -125,14 +125,12 @@ public class ValidatorFactory {
      *
      * @param propertyName name of the property to validate
      * @param enumClass    enum defining the allowed values
-     * @param emptyAllowed {@code true} if empty values are allowed; {@code false} otherwise
      * @param <T>          type of the enum defining the allowed values for the property
      *
      * @return an instance of {@code MultiSelectValidator} for validating the property
      */
-    public <T extends Enum<T>> PropertyValidator multiSelect(final String propertyName, final Class<T> enumClass,
-            final boolean emptyAllowed) {
-        return new MultiSelectValidator<>(this.context, propertyName, enumClass, emptyAllowed);
+    public <T extends Enum<T>> PropertyValidator multiSelectEmptyAllowed(final String propertyName, final Class<T> enumClass) {
+        return new MultiSelectValidator<>(this.context, propertyName, enumClass, true);
     }
 
     /**
@@ -219,7 +217,7 @@ public class ValidatorFactory {
      * @param propertyName name of the property to validate
      * @return validator checking that a property is a valid Unix path
      */
-    public UnixPathValidator path(final String propertyName) {
+    public UnixPathValidator absolutePath(final String propertyName) {
         return new UnixPathValidator(this.context, propertyName);
     }
 

@@ -200,6 +200,21 @@ Covers:
 
 Needs: dsn
 
+### Validator Allows Only Absolute Paths
+`req~validator-allows-only-absolute-paths~1`
+
+The Property validator only allows absolute paths.
+
+Rationale:
+
+At the time this requirement was written (2025-04-23), there is only one known use case for a UnixPath in a property and that is pointing a mapping file for document-based virtual schemas. If necessary, this restriction can be loosened at a later point. 
+
+Covers:
+
+* [`feat~property-validation~1`](#property-validation)
+
+Needs: dsn
+
 ### Validating Combinations of Properties
 `req~validating-combinations-of-properties~1`
 

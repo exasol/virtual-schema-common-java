@@ -19,17 +19,20 @@ class MultiSelectValidatorTest extends AbstractPropertyValidatorTest {
         ONE, TWO, THREE, FOUR
     }
 
+    public static Stream<Arguments> validEnumValuesProvider() {
+        return Stream.of(Arguments.of("ONE"),
+                Arguments.of(" ONE "),
+                Arguments.of("TWO"),
+                Arguments.of("ONE,TWO"),
+                Arguments.of("ONE, TWO"),
+                Arguments.of("ONE, TWO"),
+                Arguments.of("ONE\t,\tTWO"),
+                Arguments.of("ONE, TWO, THREE")
+        );
+    }
+
     // [utest -> dsn~validating-multi-select-properties~1]
-    @ValueSource(strings = { //
-            "ONE", //
-            "TWO", //
-            "ONE,TWO", //
-            "ONE ,TWO", //
-            "ONE, TWO", //
-            "ONE , TWO", //
-            "ONE\t,\tTWO", //
-            "ONE, TWO, THREE" //
-    })
+    @MethodSource("validEnumValuesProvider")
     @ParameterizedTest
     void testWhenKnownEnumValueIsGivenThenValidationSucceeds(final String propertyValue) {
         final ValidatorFactory factory = createValidatorFactoryWithProperties("THE_MS_PROPERTY", propertyValue);
@@ -43,8 +46,7 @@ class MultiSelectValidatorTest extends AbstractPropertyValidatorTest {
                 Arguments.of("FIVE", "'FIVE'"),
                 Arguments.of("one", "'one'"),
                 Arguments.of("ONETWO", "'ONETWO'"),
-                Arguments.of("ONE,TWO,SIX,SEVEN", "'SIX', 'SEVEN'")
-        );
+                Arguments.of("ONE,TWO,SIX,SEVEN", "'SIX', 'SEVEN'"));
     }
 
     // [utest -> dsn~validating-multi-select-properties~1]
@@ -57,26 +59,18 @@ class MultiSelectValidatorTest extends AbstractPropertyValidatorTest {
         assertAll(
                 () -> assertThat(result.isValid(), equalTo(false)),
                 () -> assertThat(result.getMessage(), equalTo(
-                        "E-VSCOMJAVA-57: The following values given for the property 'THE_MS_PROPERTY' are unknown: " + reportedWrong
+                        "E-VSCOMJAVA-57: The following values given for the property 'THE_MS_PROPERTY' are unknown: "
+                                + reportedWrong
                                 + " Please use one or more of the following values: 'ONE', 'TWO', 'THREE', 'FOUR'."
                                 + " Separate the individual values with a comma.")));
     }
 
     // [utest -> dsn~validating-multi-select-properties~1]
-    @ValueSource(strings = { //
-            "", //
-            " ", //
-            "  ", //
-            "\t", //
-            "\n\t", //
-            "\n", //
-            " , ", //
-            ",," //
-    })
+    @MethodSource("validEnumValuesProvider")
     @ParameterizedTest
     void testWhenValueIsEmptyAndEmptyValueIsAllowedThenValidationSucceeds(final String value) {
         final ValidatorFactory factory = createValidatorFactoryWithProperties("EMPTY_ALLOWED", value);
-        final PropertyValidator validator = factory.multiSelect("EMPTY_ALLOWED", MULTI_SELECT_ENUM.class, true);
+        final PropertyValidator validator = factory.multiSelectEmptyAllowed("EMPTY_ALLOWED", MULTI_SELECT_ENUM.class);
         final ValidationResult result = validator.validate();
         assertThat(result.isValid(), equalTo(true));
     }
@@ -111,7 +105,7 @@ class MultiSelectValidatorTest extends AbstractPropertyValidatorTest {
         final Map<String, String> mapWithNull = new HashMap<>(1);
         mapWithNull.put("NULL_ALLOWED", null);
         final ValidatorFactory factory = ValidatorFactory.create(new AdapterProperties(mapWithNull));
-        final PropertyValidator validator = factory.multiSelect("NULL_ALLOWED", MULTI_SELECT_ENUM.class, true);
+        final PropertyValidator validator = factory.multiSelectEmptyAllowed("NULL_ALLOWED", MULTI_SELECT_ENUM.class);
         final ValidationResult result = validator.validate();
         assertThat(result.isValid(), equalTo(true));
     }

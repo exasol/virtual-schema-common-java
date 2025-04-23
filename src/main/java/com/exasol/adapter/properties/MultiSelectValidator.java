@@ -11,7 +11,7 @@ import java.util.List;
  * @param <T> enumeration that the values are checked against
  */
 public class MultiSelectValidator<T extends Enum<T>> extends EnumerationValidator<T> {
-    private boolean emptyAllowed;
+    private final boolean emptyAllowed;
 
     /**
      * Constructs a new instance of {@code MultiSelectValidator}.
@@ -19,6 +19,7 @@ public class MultiSelectValidator<T extends Enum<T>> extends EnumerationValidato
      * This validator is used for validating properties whose values can be selected from an enumeration of predefined
      * choices.
      * </p>
+     * 
      * @param context      validation context containing properties and validation logs
      * @param propertyName name of the property to validate
      * @param enumClass    {@code Class} object corresponding to the enumeration type from which valid values can be
@@ -33,10 +34,10 @@ public class MultiSelectValidator<T extends Enum<T>> extends EnumerationValidato
 
     /**
      * Constructs a new instance of {@code MultiSelectValidator}.
-     *
+     * <p>
      * This validator is used for validating properties whose values can be selected from an enumeration of predefined
      * choices. Empty values are not allowed.
-     *
+     * </p>
      * @param context      validation context containing properties and validation logs
      * @param propertyName name of the property to validate
      * @param enumClass    {@code Class} object corresponding to the enumeration type from which valid values can be
@@ -59,10 +60,10 @@ public class MultiSelectValidator<T extends Enum<T>> extends EnumerationValidato
     private ValidationResult validateNull() {
         return this.emptyAllowed
                 ? ValidationResult.success()
-                : createFailureResult();
+                : createEmptyValueFailureResult();
     }
 
-    private ValidationResult createFailureResult() {
+    private ValidationResult createEmptyValueFailureResult() {
         return ValidationResult.failure(ExaError.messageBuilder("E-VSCOMJAVA-56")
                 .message("The property {{property}} must have at least one value set.", this.propertyName)
                 .mitigation("Please select at least one of the following values: {{values}}."
@@ -72,11 +73,11 @@ public class MultiSelectValidator<T extends Enum<T>> extends EnumerationValidato
 
     private ValidationResult validateNotNull() {
         if (this.getValue().isEmpty() || this.getValue().isBlank()) {
-            return this.emptyAllowed ? ValidationResult.success() : createFailureResult();
+            return this.emptyAllowed ? ValidationResult.success() : createEmptyValueFailureResult();
         } else {
-            final String[] givenValues = this.getValue().split("\\s*,\\s*");
+            final String[] givenValues = this.getValue().trim().split("\\s*,\\s*");
             if (givenValues.length == 0) {
-                return this.emptyAllowed ? ValidationResult.success() : createFailureResult();
+                return this.emptyAllowed ? ValidationResult.success() : createEmptyValueFailureResult();
             } else {
                 final List<String> unknownValues = new ArrayList<>();
                 for (final String givenValue : givenValues) {
