@@ -11,6 +11,8 @@ import java.util.List;
  * @param <T> enumeration that the values are checked against
  */
 public class MultiSelectValidator<T extends Enum<T>> extends EnumerationValidator<T> {
+    // The following regular expression intentionally limits the number of allowed spaces to avoid RegEx DOS.
+    private static final String COMMA_SPLIT_REGEX = "\\s{0,10},\\s{0,10}";
     private final boolean emptyAllowed;
 
     /**
@@ -77,27 +79,31 @@ public class MultiSelectValidator<T extends Enum<T>> extends EnumerationValidato
         if (this.getValue().isEmpty() || this.getValue().isBlank()) {
             return this.emptyAllowed ? ValidationResult.success() : createEmptyValueFailureResult();
         } else {
-            final String[] givenValues = this.getValue().trim().split("\\s*,\\s*");
+            final String[] givenValues = this.getValue().trim().split(COMMA_SPLIT_REGEX);
             if (givenValues.length == 0) {
                 return this.emptyAllowed ? ValidationResult.success() : createEmptyValueFailureResult();
             } else {
-                final List<String> unknownValues = new ArrayList<>();
-                for (final String givenValue : givenValues) {
-                    if (!this.enumValueCache.contains(givenValue)) {
-                        unknownValues.add(givenValue);
-                    }
-                }
-                return unknownValues.isEmpty()
-                        ? ValidationResult.success()
-                        : ValidationResult.failure(ExaError.messageBuilder("E-VSCOMJAVA-57")
-                                .message(
-                                        "The following values given for the property {{property}} are unknown: {{unknown}}",
-                                        this.propertyName, String.join("', '", unknownValues))
-                                .mitigation("Please use one or more of the following values: {{values}}."
-                                        + " Separate the individual values with a comma.",
-                                        String.join("', '", this.enumValueCache))
-                                .toString());
+                return validateNonEmptyValueList(givenValues);
             }
         }
+    }
+
+    private ValidationResult validateNonEmptyValueList(final String[] givenValues) {
+        final List<String> unknownValues = new ArrayList<>();
+        for (final String givenValue : givenValues) {
+            if (!this.enumValueCache.contains(givenValue)) {
+                unknownValues.add(givenValue);
+            }
+        }
+        return unknownValues.isEmpty()
+                ? ValidationResult.success()
+                : ValidationResult.failure(ExaError.messageBuilder("E-VSCOMJAVA-57")
+                .message(
+                        "The following values given for the property {{property}} are unknown: {{unknown}}",
+                        this.propertyName, String.join("', '", unknownValues))
+                .mitigation("Please use one or more of the following values: {{values}}."
+                                + " Separate the individual values with a comma.",
+                        String.join("', '", this.enumValueCache))
+                .toString());
     }
 }
