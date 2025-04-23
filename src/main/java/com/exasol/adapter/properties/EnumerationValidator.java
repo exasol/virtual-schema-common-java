@@ -9,14 +9,16 @@ import java.util.List;
  * Validates if a property has a value that matches one of the values in a specified enumeration.
  *
  * <p>
- * The validator checks if the current property value is a valid enum constant within the given enumeration type.
- * If the value is invalid, it produces an appropriate error message.
+ * The validator checks if the current property value is a valid enum constant within the given enumeration type. If the
+ * value is invalid, it produces an appropriate error message.
  * </p>
  *
  * @param <T> Type of the enumeration to validate against
  */
-public class EnumerationValidator<T extends  Enum<T>> extends AbstractPropertyValidator {
+public class EnumerationValidator<T extends Enum<T>> extends AbstractPropertyValidator {
+    /** Class of the enumeration type being validated */
     protected final Class<T> enumClass;
+    /** Cache containing the string representations of all enumeration values */
     protected final List<String> enumValueCache;
 
     /**
@@ -27,7 +29,7 @@ public class EnumerationValidator<T extends  Enum<T>> extends AbstractPropertyVa
      * @param enumClass    enumeration class containing the valid values for the property
      */
     EnumerationValidator(final ValidationContext context, final String propertyName,
-                         final Class<T> enumClass) {
+            final Class<T> enumClass) {
         super(context, propertyName);
         this.enumClass = enumClass;
         this.enumValueCache = getEnumValues();
@@ -53,7 +55,8 @@ public class EnumerationValidator<T extends  Enum<T>> extends AbstractPropertyVa
         if (value == null || !this.enumValueCache.contains(value)) {
             return new ValidationResult(false, ExaError.messageBuilder("E-VSCOMJAVA-44")
                     .message("The property {{property}} has an invalid value {{value}}.", this.propertyName, value)
-                    .mitigation("Please pick one of the following values: {{values}}", String.join("', '", this.enumValueCache))
+                    .mitigation("Please pick one of the following values: {{values}}",
+                            String.join("', '", this.enumValueCache))
                     .toString());
         } else {
             return ValidationResult.success();
