@@ -38,6 +38,7 @@ public class MultiSelectValidator<T extends Enum<T>> extends EnumerationValidato
      * This validator is used for validating properties whose values can be selected from an enumeration of predefined
      * choices. Empty values are not allowed.
      * </p>
+     * 
      * @param context      validation context containing properties and validation logs
      * @param propertyName name of the property to validate
      * @param enumClass    {@code Class} object corresponding to the enumeration type from which valid values can be
@@ -68,7 +69,8 @@ public class MultiSelectValidator<T extends Enum<T>> extends EnumerationValidato
                 .message("The property {{property}} must have at least one value set.", this.propertyName)
                 .mitigation("Please select at least one of the following values: {{values}}."
                         + " Separate the individual values with a comma.",
-                        String.join("', '", this.enumValueCache)));
+                        String.join("', '", this.enumValueCache))
+                .toString());
     }
 
     private ValidationResult validateNotNull() {
@@ -93,7 +95,8 @@ public class MultiSelectValidator<T extends Enum<T>> extends EnumerationValidato
                                         this.propertyName, String.join("', '", unknownValues))
                                 .mitigation("Please use one or more of the following values: {{values}}."
                                         + " Separate the individual values with a comma.",
-                                        String.join("', '", this.enumValueCache)));
+                                        String.join("', '", this.enumValueCache))
+                                .toString());
             }
         }
     }

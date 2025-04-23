@@ -1,7 +1,5 @@
 package com.exasol.adapter.properties;
 
-import com.exasol.errorreporting.ErrorMessageBuilder;
-
 /**
  * Represents the result of a property validation.
  * <p>
@@ -36,12 +34,12 @@ public class ValidationResult {
     /**
      * Convenience factory method for a result indicating a failed validation.
      * 
-     * @param errorMessageBuilder instance of {@code ErrorMessageBuilder} used to generate the error message
+     * @param errorMessage error message that explains the validation failure
      * 
      * @return failed validation result
      */
-    public static ValidationResult failure(final ErrorMessageBuilder errorMessageBuilder) {
-        return new ValidationResult(false, errorMessageBuilder.toString());
+    public static ValidationResult failure(final String errorMessage) {
+        return new ValidationResult(false, errorMessage);
     }
 
     /**

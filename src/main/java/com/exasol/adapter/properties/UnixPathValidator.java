@@ -81,6 +81,7 @@ public class UnixPathValidator extends AbstractPropertyValidator {
                         .mitigation("Don't use a protocol specifier (like 'http:').")
                         .mitigation("Avoid blank paths, tabs, newlines and carriage returns.")
                         .mitigation("Please remove any kind of path traversal characters ('.', '..', '//').")
+                        .toString()
         );
     }
 }
