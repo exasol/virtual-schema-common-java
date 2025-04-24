@@ -53,10 +53,11 @@ class UnixPathValidatorTest extends AbstractPropertyValidatorTest {
             "/\u0000.\u0000./bar", //
             "/foo/\u002E./bar", //
             "/foo/\u002E\u002E/bar", //
+            "/end/with/dot/.", //
+            "/:", //
             "http://foo/bar", //
             "ftp://foo/bar", //
-            "file://foo/bar", //
-            "/end/with/dot/." //
+            "file://foo/bar" //
     })
     @ParameterizedTest
     void testWhenGivenInvalidUnixPathThenValidationFails(final String path) {
