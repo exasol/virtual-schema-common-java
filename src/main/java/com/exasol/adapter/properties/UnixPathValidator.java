@@ -58,17 +58,16 @@ public class UnixPathValidator extends AbstractPropertyValidator {
     private boolean hasForbiddenPathContent(final String value) {
         return value.isBlank() //
                 || !value.startsWith("/") // We restrict all paths to absolute
-                || value.contains("/../") //
-                || value.contains("/..") //
                 || value.contains("//") //
                 || value.contains("/./") //
+                || value.contains("/../") //
                 || value.contains("%") //
                 || value.contains("\t") //
                 || value.contains("\n") //
                 || value.contains("\r") //
                 || value.contains("\\") //
-                || value.startsWith("./") //
                 || value.endsWith("/.") //
+                || value.endsWith("/..") //
                 || value.contains(":");
     }
 

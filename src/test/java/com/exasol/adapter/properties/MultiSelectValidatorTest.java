@@ -84,7 +84,8 @@ class MultiSelectValidatorTest extends AbstractPropertyValidatorTest {
             "\n\t", //
             "\n", //
             " , ", //
-            ",," //
+            ",,", //
+            " , , " //
     })
     @ParameterizedTest
     void testWhenValueIsEmptyAndEmptyValueIsNotAllowedThenValidationFails(final String value) {
@@ -98,6 +99,8 @@ class MultiSelectValidatorTest extends AbstractPropertyValidatorTest {
                                 + " Please select at least one of the following values: 'ONE', 'TWO', 'THREE', 'FOUR'."
                                 + " Separate the individual values with a comma.")));
     }
+    
+    
 
     // [utest -> dsn~validating-multi-select-properties~1]
     @Test

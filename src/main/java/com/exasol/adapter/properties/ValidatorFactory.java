@@ -129,7 +129,8 @@ public class ValidatorFactory {
      *
      * @return an instance of {@code MultiSelectValidator} for validating the property
      */
-    public <T extends Enum<T>> PropertyValidator multiSelectEmptyAllowed(final String propertyName, final Class<T> enumClass) {
+    public <T extends Enum<T>> PropertyValidator multiSelectEmptyAllowed(final String propertyName,
+            final Class<T> enumClass) {
         return new MultiSelectValidator<>(this.context, propertyName, enumClass, true);
     }
 

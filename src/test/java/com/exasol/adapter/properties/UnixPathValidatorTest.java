@@ -33,6 +33,8 @@ class UnixPathValidatorTest extends AbstractPropertyValidatorTest {
             "    ", //
             "./invalid.path", //
             "../invalid.path", //
+            "/invalid.path/.", //
+            "/invalid.path/..", //
             "/sorry/../no/", //
             "/does/./not/work", //
             "/this//also/does/not", //
