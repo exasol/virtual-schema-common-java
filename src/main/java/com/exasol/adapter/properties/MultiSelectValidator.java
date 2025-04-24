@@ -61,6 +61,10 @@ public class MultiSelectValidator<T extends Enum<T>> extends EnumerationValidato
     }
 
     private ValidationResult validateNull() {
+        return validateEmptyInput();
+    }
+
+    private ValidationResult validateEmptyInput() {
         return this.emptyAllowed
                 ? ValidationResult.success()
                 : createEmptyValueFailureResult();
@@ -76,16 +80,12 @@ public class MultiSelectValidator<T extends Enum<T>> extends EnumerationValidato
     }
 
     private ValidationResult validateNotNull() {
-        if (this.getValue().isEmpty() || this.getValue().isBlank()) {
-            return this.emptyAllowed
-                    ? ValidationResult.success()
-                    : createEmptyValueFailureResult();
+        if (this.getValue().isBlank()) {
+            return validateEmptyInput();
         } else {
             final String[] givenValues = this.getValue().trim().split(COMMA_SPLIT_REGEX);
             if (givenValues.length == 0) {
-                return this.emptyAllowed
-                        ? ValidationResult.success()
-                        : createEmptyValueFailureResult();
+                return validateEmptyInput();
             } else {
                 return validateNonEmptyValueList(givenValues);
             }

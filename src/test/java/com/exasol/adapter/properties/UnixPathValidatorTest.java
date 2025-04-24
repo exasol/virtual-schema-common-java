@@ -1,5 +1,7 @@
 package com.exasol.adapter.properties;
 
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -7,6 +9,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+// Since the production code only runs on a Unix-like OS, we run the unit test
+// only on OSes that use Unix filesystem conventions.
+@EnabledOnOs({ OS.LINUX, OS.FREEBSD, OS.OPENBSD, OS.MAC, OS.SOLARIS, OS.AIX })
 class UnixPathValidatorTest extends AbstractPropertyValidatorTest {
     // [utest -> dsn~validating-unix-paths~1]
     @ValueSource(strings = {

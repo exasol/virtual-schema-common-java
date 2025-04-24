@@ -46,6 +46,8 @@ public class UnixPathValidator extends AbstractPropertyValidator {
         } else {
             try {
                 // Path.of catches typical illegal contents like null characters.
+                // Note that Path.of() behaves differently on different OSes.
+                // But since UDFs run on Exasol worker nodes, Linux paths are validated.
                 Path.of(value);
             } catch (final InvalidPathException exception) {
                 return createFailureMessage();

@@ -19,20 +19,18 @@ class MultiSelectValidatorTest extends AbstractPropertyValidatorTest {
         ONE, TWO, THREE, FOUR
     }
 
-    public static Stream<Arguments> validEnumValuesProvider() {
-        return Stream.of(Arguments.of("ONE"),
-                Arguments.of(" ONE "),
-                Arguments.of("TWO"),
-                Arguments.of("ONE,TWO"),
-                Arguments.of("ONE, TWO"),
-                Arguments.of("ONE, TWO"),
-                Arguments.of("ONE\t,\tTWO"),
-                Arguments.of("ONE, TWO, THREE")
-        );
-    }
-
     // [utest -> dsn~validating-multi-select-properties~1]
-    @MethodSource("validEnumValuesProvider")
+    @ValueSource(strings = {
+            "ONE",
+            " ONE ",
+            "TWO",
+            "ONE,TWO",
+            "ONE, TWO",
+            "ONE, TWO",
+            "ONE\t,\tTWO",
+            "ONE, TWO, THREE"
+            // no empty comma separated parts
+    })
     @ParameterizedTest
     void testWhenKnownEnumValueIsGivenThenValidationSucceeds(final String propertyValue) {
         final ValidatorFactory factory = createValidatorFactoryWithProperties("THE_MS_PROPERTY", propertyValue);
@@ -66,7 +64,18 @@ class MultiSelectValidatorTest extends AbstractPropertyValidatorTest {
     }
 
     // [utest -> dsn~validating-multi-select-properties~1]
-    @MethodSource("validEnumValuesProvider")
+    @ValueSource(strings = {
+            "ONE",
+            " ONE ",
+            "TWO",
+            "ONE,TWO",
+            "ONE, TWO",
+            "ONE, TWO",
+            "ONE\t,\tTWO",
+            "ONE, TWO, THREE",
+            ",", // validate that empty comma-separated values are accepted too
+            " , , "
+    })
     @ParameterizedTest
     void testWhenValueIsEmptyAndEmptyValueIsAllowedThenValidationSucceeds(final String value) {
         final ValidatorFactory factory = createValidatorFactoryWithProperties("EMPTY_ALLOWED", value);
@@ -76,17 +85,7 @@ class MultiSelectValidatorTest extends AbstractPropertyValidatorTest {
     }
 
     // [utest -> dsn~validating-multi-select-properties~1]
-    @ValueSource(strings = { //
-            "", //
-            " ", //
-            "  ", //
-            "\t", //
-            "\n\t", //
-            "\n", //
-            " , ", //
-            ",,", //
-            " , , " //
-    })
+    @ValueSource(strings = { "", " ", "  ", "\t", "\n\t", "\n", " , ", ",,", " , , " })
     @ParameterizedTest
     void testWhenValueIsEmptyAndEmptyValueIsNotAllowedThenValidationFails(final String value) {
         final ValidatorFactory factory = createValidatorFactoryWithProperties("EMPTY_NOT_ALLOWED", value);
@@ -99,8 +98,6 @@ class MultiSelectValidatorTest extends AbstractPropertyValidatorTest {
                                 + " Please select at least one of the following values: 'ONE', 'TWO', 'THREE', 'FOUR'."
                                 + " Separate the individual values with a comma.")));
     }
-    
-    
 
     // [utest -> dsn~validating-multi-select-properties~1]
     @Test
@@ -127,5 +124,14 @@ class MultiSelectValidatorTest extends AbstractPropertyValidatorTest {
                         "E-VSCOMJAVA-56: The property 'NULL_FORBIDDEN' must have at least one value set."
                                 + " Please select at least one of the following values: 'ONE', 'TWO', 'THREE', 'FOUR'."
                                 + " Separate the individual values with a comma.")));
+    }
+
+    @ValueSource(strings = { "", " ", "  ", "\t", "\n\t", "\n", "", "", "" })
+    @ParameterizedTest
+    void testWhenValueIsEmptyOrBlankAndEmptyValueIsAllowedThenValidationSucceeds(final String value) {
+        final ValidatorFactory factory = createValidatorFactoryWithProperties("EMPTY_ALLOWED", value);
+        final PropertyValidator validator = factory.multiSelectEmptyAllowed("EMPTY_ALLOWED", MULTI_SELECT_ENUM.class);
+        final ValidationResult result = validator.validate();
+        assertThat(result.isValid(), equalTo(true));
     }
 }

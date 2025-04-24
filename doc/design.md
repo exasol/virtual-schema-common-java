@@ -1,3 +1,30 @@
+## Concepts
+
+### BucketFS
+
+
+To understand virtual schema adapters, it is essential to first become familiar with the concept of BucketFS.
+
+**BucketFS** is a Unix-based file system that automatically distributes files across the worker nodes of an Exasol cluster. Users can interact with BucketFS via an HTTP interface, which supports uploading, downloading, listing, and deleting files.
+
+In essence, virtual schemas are User-Defined Functions (UDFs). The only part of the node filesystem a UDF can access is a BucketFS bucket. To improve performance, UDFs interact directly with the local filesystem that backs the buckets, avoiding the overhead of HTTP communication.
+
+Buckets operate within a _chroot_ environment, which is a security measure that prevents UDFs from accessing unauthorized files. This ensures that UDFs remain confined to their designated paths.
+
+All paths in BucketFS begin with:
+`/buckets/<bucket-fs-service-name>/<bucket-name>`
+
+In the context of virtual schemas, buckets are typically used to:
+
+1. Store the libraries that implement virtual schema adapters.
+2. Hold drivers required for accessing data sources.
+3. Host configuration files, TLS certificates, and key files.
+
+While there are other potential use cases for buckets, the examples above are the most common.
+
+For more detailed information, refer to the dedicated ["BucketFS"](https://docs.exasol.com/db/latest/database_concepts/bucketfs/bucketfs.htm?Highlight=bucketfs) section in the Exasol handbook.
+
+
 ## Building Block View
 
 ### Property Validator Building Blocks
@@ -171,7 +198,7 @@ The `UnixPathValiator` validates that a property contains a valid Unix path.
 
 Comment:
 
-In adapter properties only paths make sense that access BucketFS, because that is the change root that the adapter (which is a UDF) sees.
+See section ["BucketFS"](#bucketfs) for reasons why we need a Unix path validator.
 
 Covers:
 
