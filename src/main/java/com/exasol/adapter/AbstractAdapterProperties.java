@@ -1,4 +1,4 @@
-package com.exasol.adapter.properties;
+package com.exasol.adapter;
 
 import java.util.*;
 
@@ -16,7 +16,8 @@ public abstract class AbstractAdapterProperties {
      *
      * @param properties map of property keys and values
      */
-    protected AbstractAdapterProperties(final Map<String, String> properties) {
+    @java.lang.SuppressWarnings("java:S5993")
+    public AbstractAdapterProperties(final Map<String, String> properties) {
         this.properties = properties;
     }
 
