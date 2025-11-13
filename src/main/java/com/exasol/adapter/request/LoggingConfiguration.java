@@ -1,7 +1,7 @@
 package com.exasol.adapter.request;
 
-import static com.exasol.adapter.AdapterProperties.DEBUG_ADDRESS_PROPERTY;
-import static com.exasol.adapter.AdapterProperties.LOG_LEVEL_PROPERTY;
+import static com.exasol.adapter.properties.AdapterProperties.DEBUG_ADDRESS_PROPERTY;
+import static com.exasol.adapter.properties.AdapterProperties.LOG_LEVEL_PROPERTY;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -14,13 +14,13 @@ public final class LoggingConfiguration implements Serializable {
     private static final long serialVersionUID = 1930189191497837644L;
     private static final int DEFAULT_REMOTE_LOGGING_PORT = 3000;
     private static final Level DEFAULT_LOG_LEVEL = Level.INFO;
-    /** {@code true} if the adapter should send its log messages to a remote log receiver */
+    /** @serial {@code true} if the adapter should send its log messages to a remote log receiver */
     private final boolean logRemotely;
-    /** Name host name where the log receiver listens */
+    /** @serial Name host name where the log receiver listens */
     private final String host;
-    /** Remote logging port */
+    /** @serial Remote logging port */
     private final int port;
-    /** Log level */
+    /** @serial Log level */
     private final Level level;
 
     private LoggingConfiguration(final Level level, final boolean logRemotely, final String host, final int port) {
