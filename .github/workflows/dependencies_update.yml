@@ -8,6 +8,15 @@ on:
         required: true,
         type: string
       }
+    secrets:
+      INTEGRATION_TEAM_SLACK_NOTIFICATION_WEBHOOK: {
+        description: Slack webhook URL for notifications about failed builds.,
+        required: true
+      }
+      INTEGRATION_TEAM_SECURITY_UPDATES_WEBHOOK: {
+        description: Slack webhook URL for notifications about new Pull Requests.,
+        required: true
+      }
   workflow_dispatch: null
 jobs:
   update_dependencies:
@@ -25,17 +34,17 @@ jobs:
       cancel-in-progress: false
     }
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         id: checkout
         with: {
           fetch-depth: 0
         }
       - name: Set up JDKs
         id: setup-jdks
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: |
+          java-version: |-
             11
             17
           cache: maven
@@ -49,7 +58,7 @@ jobs:
       - name: Fail if not running on a branch
         id: check-branch
         if: ${{ !startsWith(github.ref, 'refs/heads/') }}
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             core.setFailed('Not running on a branch, github.ref is ${{ github.ref }}. Please start this workflow only on main or a branch')
@@ -61,14 +70,6 @@ jobs:
         env: {
           CREATED_ISSUES: '${{ inputs.vulnerability_issues }}'
         }
-      - name: Project Keeper Fix
-        id: project-keeper-fix
-        run: |
-          mvn --batch-mode com.exasol:project-keeper-maven-plugin:fix --projects .
-      - name: Project Keeper Fix for updated Project Keeper version
-        id: project-keeper-fix-2
-        run: |
-          mvn --batch-mode com.exasol:project-keeper-maven-plugin:fix --projects .
       - name: Generate Pull Request comment
         id: pr-comment
         run: |
@@ -81,7 +82,11 @@ jobs:
             echo 'It updates dependencies.' >> "$GITHUB_OUTPUT"
           fi
           echo >> "$GITHUB_OUTPUT"
-          echo '# ⚠️ This PR does not trigger CI workflows by default ⚠️' >> "$GITHUB_OUTPUT"
+          echo '# ⚠️ Notes ⚠️' >> "$GITHUB_OUTPUT"
+          echo '## Run PK fix manually' >> "$GITHUB_OUTPUT"
+          echo 'Due to restrictions workflow `dependencies_update.yml` cannot update other workflows, see https://github.com/exasol/project-keeper/issues/578 for details.' >> "$GITHUB_OUTPUT"
+          echo 'Please checkout this PR locally and run `mvn com.exasol:project-keeper-maven-plugin:fix --projects .`' >> "$GITHUB_OUTPUT"
+          echo '## This PR does not trigger CI workflows' >> "$GITHUB_OUTPUT"
           echo 'Please click the **Close pull request** button and then **Reopen pull request** to trigger running checks.' >> "$GITHUB_OUTPUT"
           echo 'See https://github.com/exasol/project-keeper/issues/534 for details.' >> "$GITHUB_OUTPUT"
           echo 'EOF' >> "$GITHUB_OUTPUT"
@@ -176,5 +181,5 @@ jobs:
           message_format: '{workflow} created Pull Request ${{ steps.create-pr.outputs.pr_url }}'
         }
         env: {
-          SLACK_WEBHOOK_URL: '${{ secrets.INTEGRATION_TEAM_SLACK_NOTIFICATION_WEBHOOK }}'
+          SLACK_WEBHOOK_URL: '${{ secrets.INTEGRATION_TEAM_SECURITY_UPDATES_WEBHOOK }}'
         }
