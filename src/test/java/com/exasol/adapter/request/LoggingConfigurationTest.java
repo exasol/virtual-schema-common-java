@@ -1,7 +1,7 @@
 package com.exasol.adapter.request;
 
-import static com.exasol.adapter.properties.AdapterProperties.DEBUG_ADDRESS_PROPERTY;
-import static com.exasol.adapter.properties.AdapterProperties.LOG_LEVEL_PROPERTY;
+import static com.exasol.adapter.AdapterProperties.DEBUG_ADDRESS_PROPERTY;
+import static com.exasol.adapter.AdapterProperties.LOG_LEVEL_PROPERTY;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertAll;
