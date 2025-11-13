@@ -1,4 +1,4 @@
-# Common Module of Exasol Virtual Schemas Adapters 17.1.1, released 2025-??-??
+# Common Module of Exasol Virtual Schemas Adapters 17.1.1, released 2025-11-13
 
 Code name: Fixing the main branch, updating PK
 
