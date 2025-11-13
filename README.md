@@ -25,13 +25,11 @@ A Virtual Schema adapter is basically a [UDF](https://docs.exasol.com/database_c
 
 * [List of Virtual Schema dialects](https://github.com/exasol/virtual-schemas/blob/main/doc/user-guide/dialects.md)
 * [Changelog](doc/changes/changelog.md)
-* [User Requirements](doc/user_requirements.md)
 * [Dependencies](dependencies.md)
 
 ## Information for Developers
 
 * [Virtual Schema API](doc/development/api/virtual_schema_api.md)
-* [Software Design](doc/design.md)
 * [Capabilities list](doc/development/api/capabilities_list.md)
 
 ## Open Source Project Support
