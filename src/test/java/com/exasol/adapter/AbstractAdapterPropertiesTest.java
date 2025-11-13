@@ -36,6 +36,7 @@ class AbstractAdapterPropertiesTest {
     }
 
     @Test
+    @java.lang.SuppressWarnings("java:S5976")
     void testIsEnabledTrue() {
         this.rawProperties.put("switch", "TRUE");
         final DummyAdapterProperties properties = new DummyAdapterProperties(this.rawProperties);

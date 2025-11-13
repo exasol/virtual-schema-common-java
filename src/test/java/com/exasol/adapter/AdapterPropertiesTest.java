@@ -88,6 +88,7 @@ class AdapterPropertiesTest {
         assertThat(hasNamedProperty, equalTo(false));
     }
 
+    @java.lang.SuppressWarnings("java:S1124")
     static public Stream<String> getAdapterPropertyNames() {
         return Arrays.stream(AdapterProperties.class.getDeclaredFields()) //
                 .map(Field::getName) //
