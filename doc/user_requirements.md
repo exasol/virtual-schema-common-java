@@ -1,4 +1,4 @@
-# System Requirement Specification (SRS) Virtual Schema Common Java (VSCJ)
+# System Requirement Specification (SRS) Virtual Schema Common Java (VSCJ) 
 
 This document contains the system requirements for the Java bottom-layer base library for all Exasol Virtual Schema adapters.
 
@@ -33,7 +33,7 @@ The abbreviation for "Virtual Schema Common Java", the base library designed for
 ### Property Validation
 `feat~property-validation~1`
 
-The VSCJ library provides the infrastructure for validating the input coming from virtual schema properties.
+The VSCJ library provides the infrastructure for validating the input coming from [virtual schema properties](#virtual-schema-property).
 
 Rationale:
 
@@ -65,33 +65,18 @@ Also, some of the validations are so [dialect-specific](#dialect), that covering
 #### Validating the Existence of Mandatory Properties
 `req~validating-the-existence-of-mandatory-properties~1`
 
-VSCJ allows validating that a mandatory virtual schema property is set.
+If a virtual schema property is mandatory, the VSCJ allows validating that it is set.
 
 Covers:
 
 * [`feat~property-validation~1`](#property-validation)
 
-Needs: dsn
-
-#### Validating the Absence of Unwanted Properties
-`req~validating-the-absence-of-unwanted-properties~1`
-
-VSCJ allows validating that an unwanted property is not set.
-
-Rationale:
-
-This is for cases where the same dialect can do different things depending on the configuration. In such a scenario we want to make sure that users only provide the parameter that are actually evaluated. This prevents confusion on the user's part. 
-
-Covers:
-
-* [`feat~property-validation~1`](#property-validation)
-
-Needs: dsn
+Needs: req
 
 #### Validating That an Optional Property Is Allowed
 `req~validating-that-an-optional-property-is-allowed~1`
 
-VSCJ allows validating that a property the user provides is a valid optional property.
+If a virtual schema property is optional, VSCJ checks that the given property is known.
 
 Rationale:
 
@@ -101,7 +86,7 @@ Covers:
 
 * [`feat~property-validation~1`](#property-validation)
 
-Needs: dsn
+Needs: req
 
 #### Validating Boolean Properties
 `req~validating-boolean-properties~1`
@@ -116,7 +101,7 @@ Covers:
 
 * [`feat~property-validation~1`](#property-validation)  
 
-Needs: dsn
+Needs: req
 
 #### Validating Integer Properties
 `req~validating-integer-properties~1`
@@ -124,7 +109,7 @@ Needs: dsn
 VSCJ checks whether a property is
 
 - a proper integer value
-- within the allowed interval
+- withing the allowed interval
 
 Rationale:
 
@@ -134,70 +119,108 @@ Covers:
 
 * [`feat~property-validation~1`](#property-validation)
 
-Needs: dsn
+Needs: req
 
-### Validating Properties Containing Database Object IDS
+#### Validating Properties Containing Database Object IDS
 `req~validating-properties-containing-database-objects-ids~1`
 
-VSCJ validates that a property referencing a database object contains a valid Exasol database object ID.
+VSCJ validates that a property referencing a database object contains a valid [Exasol database object ID](https://docs.exasol.com/saas/sql_references/basiclanguageelements.htm#SQLidentifier).
 
 Covers:
 
 * [`feat~property-validation~1`](#property-validation)
 
-Needs: dsn
+Needs: req
 
-### Validating Enumeration Properties
-`req~validating-enumeration-properties~1`
+#### Validating String Property Values
+`req~validating-string-property-values~1`
 
-VSCJ validates that the value given by the user is one of the values in an enumeration.
-
-Covers:
-
-* [`feat~property-validation~1`](#property-validation)
-
-Needs: dsn
-
-### Validating a String Against a Regular Expression
-`req~validating-a-string-against-a-regular-expression~1`
-
-VSCJ validates string values against a regular expression.
+VSCJ validates a string property against a given pattern.
 
 Covers:
 
 * [`feat~property-validation~1`](#property-validation)
 
-Needs: dsn
+Needs: req
 
-### Validating Combinations of Properties
-`req~validating-combinations-of-properties~1`
+#### Validating Properties Referencing a Host
+`req~validating-properties-referencing-a-host~1`
 
-VSCJ allows validating combinations of properties where property values can depend on others.
+VSCJ validates that a property contains a valid IP address or host name.
 
 Rationale:
 
-Consider a virtual schema dialect for a source like MariaDB. You have shared properties like log settings on the base layer, JDBC settings in the JDBC layer and finally dialect specifics like handling of the identifier case. The dialect will only function properly if all properties are set correctly.
+Almost all virtual schemas will point to a network service on a remote host, for example databases, cloud storage or general web services.
 
 Covers:
 
 * [`feat~property-validation~1`](#property-validation)
 
-Needs: dsn
+Needs: req
 
-### Property Validation Completeness
-`req~property-validation-completeness~1`
+#### Validating Properties with Enumerations
+`req~validating-properties-with-enumerations~1`
 
-VSCJ checks that all properties given by the virtual schema user are validated.
+VSCJ validates that a property contains a value from a predefined set of valid enumeration values.
 
 Rationale:
 
-This helps to prevent typos, using outdated properties and properties from the wrong dialect. 
+Certain properties must only accept specific predefined values to avoid configuration errors and ensure consistent behavior across schemas. For instance, a property representing a datatype mapping option.
 
 Covers:
 
 * [`feat~property-validation~1`](#property-validation)
 
-Needs: dsn
+Needs: req
+
+#### Validating Properties with Multi-Select Enumerations
+`req~validating-properties-with-multi-select-enumerations~1`
+
+VSCJ validates that a property contains a comma-separated list of values, each belonging to the predefined set of valid enumeration values.
+
+Rationale:
+
+Some properties may allow multiple selections from a set of predefined options. For example, `EXCLUDED_CAPABILITIES` might specify features to disable, such as `ABS`, `REPEAT`, or `UNICODE`. Validating that all values in the list are part of the allowed enumeration prevents misconfiguration and ensures proper behavior.
+
+Covers:
+
+* [`feat~property-validation~1`](#property-validation)
+
+Needs: req
+
+#### Validating Properties With Unix Paths
+`req~validating-properties-with-unix-paths~1`
+
+VSCJ validates that a property contains a valid Unix path.
+
+Rationale:
+
+Document-based virtual schemas need a mapping file that is located in BucketFS.
+
+Covers:
+
+* [`feat~property-validation~1`](#property-validation)
+
+Needs: req
+
+#### Validation Dependencies
+`req~validation-dependencies~1`
+
+VSCJ allows an adapter for an SQL [dialect](#dialect) to enforce dependent validations.
+
+Rationale:
+
+Not all properties exist in isolation. In the Exasol virtual schema for example, the required connection properties depend on the selected connection options.
+Note that the relationships can be complicated and highly dialect-specific, so any attempt to cover everything in VSCJ is bound to fail. Instead, we must only make sure in VSCJ that dialects can combine validations in a flexible way. Details and constraints are up to the [software design](design.md).
+
+Covers:
+
+* [`feat~property-validation~1`](#property-validation)
+
+
+Needs: req
+
+
 
 ### Known Limitations
 
