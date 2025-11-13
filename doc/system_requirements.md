@@ -28,14 +28,6 @@ See [Virtual Schema](#virtual-schema)
 
 The abbreviation for "Virtual Schema Common Java", the base library designed for all Java Exasol Virtual Schema adapters.
 
-###### UDF
-
-See [User-Defined Function](#user-defined-function-udf)
-
-###### User-Defined Function (UDF)
-
-A function written by the user, typically in a programming language such as Java or Python, that can be executed within the Exasol database. UDFs allow for custom computational logic to be integrated directly into database operations, providing an extension point for tailored data processing and manipulation.
-
 ## Features
 
 ### Property Validation
@@ -166,48 +158,10 @@ Covers:
 
 Needs: dsn
 
-### Validating Multi-Select Properties
-
-`req~validating-multi-select-properties~1`
-
-VSCJ validates that the values provided are a valid subset of a predefined multi-select enumeration.
-
-Covers:
-
-* [`feat~property-validation~1`](#property-validation)
-
-Needs: dsn
-
 ### Validating a String Against a Regular Expression
 `req~validating-a-string-against-a-regular-expression~1`
 
 VSCJ validates string values against a regular expression.
-
-Covers:
-
-* [`feat~property-validation~1`](#property-validation)
-
-Needs: dsn
-
-### Validating Unix Paths
-`req~validating-unix-paths~1`
-
-VSCJ validates that the value provided is a valid Unix part.
-
-Covers:
-
-* [`feat~property-validation~1`](#property-validation)
-
-Needs: dsn
-
-### Validator Allows Only Absolute Paths
-`req~validator-allows-only-absolute-paths~1`
-
-The Property validator only allows absolute paths.
-
-Rationale:
-
-At the time this requirement was written (2025-04-23), there is only one known use case for a UnixPath in a property and that is pointing a mapping file for document-based virtual schemas. If necessary, this restriction can be loosened at a later point. 
 
 Covers:
 
