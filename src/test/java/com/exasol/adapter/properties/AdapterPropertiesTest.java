@@ -1,6 +1,6 @@
-package com.exasol.adapter;
+package com.exasol.adapter.properties;
 
-import static com.exasol.adapter.AdapterProperties.*;
+import static com.exasol.adapter.properties.AdapterProperties.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -88,8 +88,7 @@ class AdapterPropertiesTest {
         assertThat(hasNamedProperty, equalTo(false));
     }
 
-    @java.lang.SuppressWarnings("java:S1124")
-    static public Stream<String> getAdapterPropertyNames() {
+    public static Stream<String> getAdapterPropertyNames() {
         return Arrays.stream(AdapterProperties.class.getDeclaredFields()) //
                 .map(Field::getName) //
                 .filter(name -> name.endsWith(PROPERTY_SUFFIX)) //
