@@ -42,3 +42,4 @@ A Virtual Schema adapter is basically a [UDF](https://docs.exasol.com/database_c
 Please note that this is an open source project which is officially supported by Exasol.
 
 Unless you are writing your own adapter based on this common module here, please check for problem solutions in the main project first.
+
