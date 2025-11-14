@@ -2,6 +2,9 @@ package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Node in a graph representing a SQL query.
  */
@@ -51,4 +54,11 @@ public abstract class SqlNode {
      * @throws AdapterException can be thrown
      */
     public abstract <R> R accept(SqlNodeVisitor<R> visitor) throws AdapterException;
+
+    /**
+     * Get list of node's children (possibly, empty).
+     *
+     * @return list of children nodes
+     */
+    public List<SqlNode> getChildren() { return Collections.emptyList(); }
 }
