@@ -3,6 +3,8 @@ package com.exasol.adapter.sql;
 import com.exasol.adapter.AdapterException;
 import com.exasol.errorreporting.ExaError;
 
+import java.util.List;
+
 /**
  * Represents a GROUP_CONCAT aggregate function.
  */
@@ -174,4 +176,7 @@ public class SqlFunctionAggregateGroupConcat extends SqlNode {
             return this;
         }
     }
+
+    @Override
+    public List<SqlNode> getChildren() { return List.of(this.argument); }
 }

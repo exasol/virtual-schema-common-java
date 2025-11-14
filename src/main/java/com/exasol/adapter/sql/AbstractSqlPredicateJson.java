@@ -1,5 +1,7 @@
 package com.exasol.adapter.sql;
 
+import java.util.List;
+
 /**
  * This class contains a common behavior for the {@link SqlNodeType#PREDICATE_IS_JSON} and
  * {@link SqlNodeType#PREDICATE_IS_NOT_JSON} predicates.
@@ -119,4 +121,7 @@ public abstract class AbstractSqlPredicateJson extends SqlPredicate {
             return SqlPredicateIsJson.KeyUniquenessConstraint.valueOf(formattedValue);
         }
     }
+
+    @Override
+    public List<SqlNode> getChildren() { return List.of(this.expression); }
 }
