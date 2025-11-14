@@ -1,5 +1,6 @@
 package com.exasol.adapter.sql;
 
+import java.util.Collections;
 import java.util.List;
 
 /**

@@ -140,9 +140,11 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         ArrayDeque<SqlNode> expressions = new ArrayDeque<>(selectList.getExpressions());
         while (!expressions.isEmpty()) {
             final SqlNode expression = expressions.poll();
-            expressions.addAll(expression.getChildren());
-            if (expression.getType().equals(SqlNodeType.FUNCTION_AGGREGATE)) {
-                return true;
+            if (expression != null) {
+                expressions.addAll(expression.getChildren());
+                if (expression.getType().equals(SqlNodeType.FUNCTION_AGGREGATE)) {
+                    return true;
+                }
             }
         }
         return false;

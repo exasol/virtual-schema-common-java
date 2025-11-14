@@ -58,7 +58,7 @@ public abstract class SqlNode {
     /**
      * Get list of node's children (possibly, empty).
      *
-     * @return list of children nodes
+     * @return list of children nodes (which could be null)
      */
     public List<SqlNode> getChildren() { return Collections.emptyList(); }
 }
