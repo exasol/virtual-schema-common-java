@@ -1,5 +1,6 @@
 package com.exasol.adapter.sql;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -82,5 +83,12 @@ public class SqlFunctionScalarCase extends SqlNode {
     @Override
     public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
+    }
+
+    @Override
+    public List<SqlNode> getChildren() {
+        ArrayList<SqlNode> children = new ArrayList<>(getArguments());
+        children.addAll(getResults());
+        return children;
     }
 }

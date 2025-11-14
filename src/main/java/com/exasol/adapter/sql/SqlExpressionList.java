@@ -35,4 +35,7 @@ public abstract class SqlExpressionList extends SqlNode {
             return Collections.unmodifiableList(this.expressions);
         }
     }
+
+    @Override
+    public List<SqlNode> getChildren() { return getExpressions(); }
 }

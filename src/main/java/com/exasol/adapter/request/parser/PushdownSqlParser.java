@@ -137,10 +137,14 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private boolean hasAggregateFunction(final SqlSelectList selectList) {
-        final List<SqlNode> expressions = selectList.getExpressions();
-        for (final SqlNode expression : expressions) {
-            if (expression.getType().equals(SqlNodeType.FUNCTION_AGGREGATE)) {
-                return true;
+        ArrayDeque<SqlNode> expressions = new ArrayDeque<>(selectList.getExpressions());
+        while (!expressions.isEmpty()) {
+            final SqlNode expression = expressions.poll();
+            if (expression != null) {
+                expressions.addAll(expression.getChildren());
+                if (expression.getType().equals(SqlNodeType.FUNCTION_AGGREGATE)) {
+                    return true;
+                }
             }
         }
         return false;
