@@ -101,4 +101,9 @@ class SqlFunctionAggregateGroupConcatTest {
         final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, builder::build);
         assertThat(exception.getMessage(), containsString("E-VSCOMJAVA-24"));
     }
+
+    @Test
+    void testGetChildren() {
+        assertThat(this.sqlFunctionAggregateGroupConcat.getChildren(), equalTo(List.of(this.argument)));
+    }
 }
