@@ -66,4 +66,9 @@ class SqlFunctionScalarCaseTest {
         when(visitor.visit(this.sqlFunctionScalarCase)).thenReturn(this.sqlFunctionScalarCase);
         assertThat(this.sqlFunctionScalarCase.accept(visitor), equalTo(this.sqlFunctionScalarCase));
     }
+
+    @Test
+    void testGetChildren() {
+        assertThat(this.sqlFunctionScalarCase.getChildren().toArray().length, equalTo(2));
+    }
 }

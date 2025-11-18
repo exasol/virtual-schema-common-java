@@ -11,6 +11,8 @@ import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.DataType;
 import com.exasol.mocking.MockUtils;
 
+import java.util.List;
+
 class SqlFunctionScalarCastTest {
     private SqlFunctionScalarCast sqlFunctionScalarCast;
     private SqlNode argument;
@@ -43,5 +45,10 @@ class SqlFunctionScalarCastTest {
         final SqlNodeVisitor<SqlFunctionScalarCast> visitor = MockUtils.mockSqlNodeVisitor();
         when(visitor.visit(this.sqlFunctionScalarCast)).thenReturn(this.sqlFunctionScalarCast);
         assertThat(this.sqlFunctionScalarCast.accept(visitor), equalTo(this.sqlFunctionScalarCast));
+    }
+
+    @Test
+    void testGetChildren() {
+        assertThat(this.sqlFunctionScalarCast.getChildren(), equalTo(List.of(this.argument)));
     }
 }
