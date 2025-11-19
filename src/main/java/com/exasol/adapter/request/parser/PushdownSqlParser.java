@@ -45,7 +45,6 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         final SqlNode from = parseExpression(select.getJsonObject("from"));
         // SELECT list
         final SqlSelectList selectList = createSelectList(select, from);
-        final SqlExpressionList groupByClause = parseGroupBy(select, selectList);
         // WHERE clause
         SqlNode whereClause = null;
         if (select.containsKey("filter")) {
@@ -63,6 +62,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         if (select.containsKey("limit")) {
             limit = parseLimit(select.getJsonObject("limit"));
         }
+        final SqlExpressionList groupByClause = parseGroupBy(select, selectList, having);
         return SqlStatementSelect.builder().selectList(selectList).fromClause(from).whereClause(whereClause)
                 .groupBy(groupByClause).having(having).orderBy(orderBy).limit(limit).build();
     }
@@ -125,8 +125,13 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         return sqlNodes;
     }
 
-    private SqlGroupBy parseGroupBy(final JsonObject select, final SqlSelectList selectList) {
-        if (hasSingleGroupAggregation(select) && !hasAggregateFunction(selectList)) {
+    private SqlGroupBy parseGroupBy(
+            final JsonObject select,
+            final SqlSelectList selectList,
+            final SqlNode having) {
+        if (hasSingleGroupAggregation(select) &&
+                !hasAggregateFunction(selectList.getExpressions()) &&
+                !hasAggregateFunction(List.of(having))) {
             // If the aggregationType is single_group and there is no an aggregate function,
             // we limit the result to a single row.
             return new SqlGroupBy(List.of(new SqlLiteralString("a")), true);
@@ -136,8 +141,8 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         }
     }
 
-    private boolean hasAggregateFunction(final SqlSelectList selectList) {
-        ArrayDeque<SqlNode> expressions = new ArrayDeque<>(selectList.getExpressions());
+    private boolean hasAggregateFunction(final List<SqlNode> nodesList) {
+        ArrayDeque<SqlNode> expressions = new ArrayDeque<>(nodesList);
         while (!expressions.isEmpty()) {
             final SqlNode expression = expressions.poll();
             if (expression != null) {
