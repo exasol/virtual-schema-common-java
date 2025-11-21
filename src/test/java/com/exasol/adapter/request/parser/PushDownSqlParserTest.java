@@ -1093,6 +1093,12 @@ class PushDownSqlParserTest {
                 "        \"type\":\"literal_exactnumeric\"," +
                 "        \"value\":\"1\"" +
                 "    }]," +
+                "    \"orderBy\":[{" +
+                "        \"expression\":{\"type\":\"literal_exactnumeric\",\"value\":\"1\"}," +
+                "        \"isAscending\":true," +
+                "        \"nullsLast\":true," +
+                "        \"type\":\"order_by_element\"" +
+                "    }],    " +
                 "    \"selectListDataTypes\":[{" +
                 "        \"precision\":1," +
                 "        \"scale\":0," +
@@ -1103,10 +1109,11 @@ class PushDownSqlParserTest {
         final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithTwoTables();
         final SqlStatementSelect sqlStatementSelect = (SqlStatementSelect) pushdownSqlParser
                 .parseExpression(jsonObject);
-        assertThat(sqlStatementSelect.getChildren().size(), equalTo(5));
+        assertThat(sqlStatementSelect.getChildren().size(), equalTo(6));
         assertTrue(sqlStatementSelect.hasHaving());
         assertTrue(sqlStatementSelect.hasLimit());
         assertTrue(sqlStatementSelect.hasFilter());
+        assertTrue(sqlStatementSelect.hasOrderBy());
     }
 
 
