@@ -1071,6 +1071,7 @@ class PushDownSqlParserTest {
                 () -> assertThat(sqlStatementSelect.getSelectList().hasExplicitColumnsList(), equalTo(true)), //
                 () -> assertThat(sqlStatementSelect.getSelectList().getExpressions().size(), equalTo(2)), //
                 () -> assertThat(first.getName(), equalTo("ID")), //
+                () -> assertThat(sqlStatementSelect.hasFilter(), equalTo(false)),
                 () -> assertThat(first.getTableName(), equalTo("CUSTOMERS")), //
                 () -> assertThat(second.getName(), equalTo("NAME")), //
                 () -> assertThat(second.getTableName(), equalTo("CUSTOMERS")) //
@@ -1274,6 +1275,8 @@ class PushDownSqlParserTest {
                 () -> assertThat(sqlStatementSelect.getGroupBy().getExpressions().size(), equalTo(1)),
                 () -> assertThat(sqlStatementSelect.getGroupBy().getExpressions().get(0).getType(),
                         equalTo(LITERAL_STRING)),
+                () -> assertThat(sqlStatementSelect.hasGroupBy(), equalTo(true)),
+                () -> assertThat(sqlStatementSelect.hasHaving(), equalTo(false)),
                 () -> assertThat(
                         ((SqlLiteralString) (sqlStatementSelect.getGroupBy().getExpressions().get(0))).getValue(),
                         equalTo("a")) //
