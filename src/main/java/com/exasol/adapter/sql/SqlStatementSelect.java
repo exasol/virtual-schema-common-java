@@ -285,20 +285,27 @@ public class SqlStatementSelect extends SqlStatement {
         // This method is not super efficient, but it is not used at the moment and needed
         // only for consistency with SqlNode interface.
         ArrayList<SqlNode> children = new ArrayList<>();
-        if (this.fromClause != null)
+        if (this.fromClause != null) {
             children.add(this.fromClause);
-        if (this.selectList != null)
+        }
+        if (this.selectList != null) {
             children.addAll(this.selectList.getChildren());
-        if (this.whereClause != null)
+        }
+        if (this.whereClause != null) {
             children.add(this.whereClause);
-        if (this.groupBy != null)
+        }
+        if (this.groupBy != null) {
             children.addAll(groupBy.getChildren());
-        if (this.having != null)
+        }
+        if (this.having != null) {
             children.add(this.having);
-        if (this.orderBy != null)
+        }
+        if (this.orderBy != null) {
             children.addAll(orderBy.getChildren());
-        if (this.limit != null)
+        }
+        if (this.limit != null) {
             children.add(this.limit);
+        }
         return children;
     }
 }
