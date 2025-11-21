@@ -1186,6 +1186,7 @@ class PushDownSqlParserTest {
         final SqlColumn column = (SqlColumn) select.getSelectList().getExpressions().get(columnNumber);
         assertAll(() -> assertThat(select.getSelectList().hasExplicitColumnsList(), equalTo(true)),
                 () -> assertThat(select.getSelectList().getExpressions().size(), equalTo(6)),
+                () -> assertThat(column.getChildren().size(), equalTo(0)),
                 () -> assertThat(column.getId(), equalTo(columnId)),
                 () -> assertThat(column.getName(), equalTo(columnName)),
                 () -> assertThat(column.getType(), equalTo(COLUMN)),
@@ -1211,6 +1212,7 @@ class PushDownSqlParserTest {
         final SqlColumn column = (SqlColumn) select.getSelectList().getExpressions().get(columnNumber);
         assertAll(() -> assertThat(select.getSelectList().hasExplicitColumnsList(), equalTo(true)),
                 () -> assertThat(select.getSelectList().getExpressions().size(), equalTo(6)),
+                () -> assertThat(select.getChildren().size(), equalTo(7)),
                 () -> assertThat(column.getId(), equalTo(columnId)),
                 () -> assertThat(column.getName(), equalTo(columnName)),
                 () -> assertThat(column.getType(), equalTo(COLUMN)),
