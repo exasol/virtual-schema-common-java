@@ -994,9 +994,9 @@ class PushDownSqlParserTest {
         final SqlColumn sqlColumn = (SqlColumn) listagg.getArgument();
         assertAll(() -> assertThat(listagg.getType(), equalTo(FUNCTION_AGGREGATE_LISTAGG)),
                 () -> assertThat(listagg.getFunctionName(), equalTo("LISTAGG")), //
-                () -> assertThat(listagg.hasDistinct(), equalTo(true)), //
-                () -> assertThat(listagg.hasOrderBy(), equalTo(true)), //
-                () -> assertThat(listagg.hasSeparator(), equalTo(true)), //
+                () -> assertTrue(listagg.hasDistinct()), //
+                () -> assertTrue(listagg.hasOrderBy()), //
+                () -> assertTrue(listagg.hasSeparator()), //
                 () -> assertThat(listagg.getSeparator(), equalTo(new SqlLiteralString(", "))), //
                 () -> assertThat(listagg.getOrderBy().getType(), equalTo(ORDER_BY)), //
                 () -> assertThat(listagg.getOverflowBehavior().getBehaviorType(), equalTo(TRUNCATE)), //
@@ -1004,6 +1004,7 @@ class PushDownSqlParserTest {
                 () -> assertThat(listagg.getOverflowBehavior().getTruncationFiller(),
                         equalTo(new SqlLiteralString("filler"))), //
                 () -> assertThat(sqlColumn.getId(), equalTo(1)));
+        assertThat(listagg.getChildren().size(), equalTo(1));
     }
 
     @ParameterizedTest
