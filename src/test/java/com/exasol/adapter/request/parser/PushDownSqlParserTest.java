@@ -670,6 +670,26 @@ class PushDownSqlParserTest {
     }
 
     @Test
+    void testParsePredicateInConstlistNoArguments() {
+        final String sqlAsJson = "{" //
+                + "   \"type\" : \"predicate_in_constlist\", " //
+                + "   \"expression\" : { " //
+                + "        \"type\" : \"literal_double\", " //
+                + "        \"value\" : \"2.0\" " //
+                + "   } " //
+                + "}";
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlPredicateInConstList sqlPredicateInConstList = (SqlPredicateInConstList) this.defaultParser
+                .parseExpression(jsonObject);
+        final List<SqlNode> arguments = sqlPredicateInConstList.getInArguments();
+        final SqlLiteralDouble expression = (SqlLiteralDouble) sqlPredicateInConstList.getExpression();
+        assertAll(() -> assertThat(sqlPredicateInConstList.getType(), equalTo(PREDICATE_IN_CONSTLIST)),
+                () -> assertThat(expression.getValue(), equalTo(2.0)),
+                () -> assertThat(arguments.size(), equalTo(0)),
+                () -> assertThat(sqlPredicateInConstList.getChildren().size(), equalTo(1)));
+    }
+
+    @Test
     void testParsePredicateIsJson() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"predicate_is_json\", " //
