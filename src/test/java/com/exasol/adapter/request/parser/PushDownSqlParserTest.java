@@ -1275,8 +1275,9 @@ class PushDownSqlParserTest {
                 () -> assertThat(sqlStatementSelect.getGroupBy().getExpressions().size(), equalTo(1)),
                 () -> assertThat(sqlStatementSelect.getGroupBy().getExpressions().get(0).getType(),
                         equalTo(LITERAL_STRING)),
-                () -> assertThat(sqlStatementSelect.hasGroupBy(), equalTo(true)),
-                () -> assertThat(sqlStatementSelect.hasHaving(), equalTo(false)),
+                () -> assertTrue(sqlStatementSelect.hasGroupBy()),
+                () -> assertFalse(sqlStatementSelect.hasHaving()),
+                () -> assertThat(sqlStatementSelect.getChildren().size(), equalTo(3)),
                 () -> assertThat(
                         ((SqlLiteralString) (sqlStatementSelect.getGroupBy().getExpressions().get(0))).getValue(),
                         equalTo("a")) //
@@ -1310,5 +1311,6 @@ class PushDownSqlParserTest {
         final SqlStatementSelect sqlStatementSelect = (SqlStatementSelect) this.defaultParser
                 .parseExpression(jsonObject);
         assertFalse(sqlStatementSelect.hasGroupBy());
+        assertThat(sqlStatementSelect.getChildren().size(), equalTo(2));
     }
 }
