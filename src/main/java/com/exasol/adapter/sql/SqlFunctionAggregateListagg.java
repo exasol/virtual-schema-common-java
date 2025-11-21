@@ -1,6 +1,7 @@
 package com.exasol.adapter.sql;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import com.exasol.adapter.AdapterException;
@@ -310,4 +311,7 @@ public class SqlFunctionAggregateListagg extends SqlNode {
             }
         }
     }
+
+    @Override
+    public List<SqlNode> getChildren() { return Arrays.asList(this.argument); }
 }

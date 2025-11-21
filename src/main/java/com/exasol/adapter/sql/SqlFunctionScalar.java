@@ -72,4 +72,8 @@ public class SqlFunctionScalar extends SqlNode {
     public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
+
+    @Override
+    public List<SqlNode> getChildren() { return getArguments(); }
+
 }

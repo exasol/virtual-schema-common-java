@@ -1,5 +1,8 @@
 package com.exasol.adapter.sql;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Abstract base for comparison operators with two operands.
  */
@@ -43,4 +46,7 @@ public abstract class AbstractSqlBinaryEquality extends SqlPredicate {
     public SqlNode getRight() {
         return this.right;
     }
+
+    @Override
+    public List<SqlNode> getChildren() { return Arrays.asList(this.left, this.right); }
 }

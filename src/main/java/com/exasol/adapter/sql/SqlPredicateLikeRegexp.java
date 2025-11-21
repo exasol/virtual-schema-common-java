@@ -2,6 +2,9 @@ package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * {@code REGEXP_LIKE} predicate.
  */
@@ -54,4 +57,8 @@ public class SqlPredicateLikeRegexp extends SqlPredicate {
     public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
+
+    @Override
+    public List<SqlNode> getChildren() { return Arrays.asList(this.left, this.pattern); }
+
 }

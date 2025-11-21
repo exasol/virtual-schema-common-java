@@ -665,7 +665,28 @@ class PushDownSqlParserTest {
         assertAll(() -> assertThat(sqlPredicateInConstList.getType(), equalTo(PREDICATE_IN_CONSTLIST)),
                 () -> assertThat(sqlLiteralDouble1.getValue(), equalTo(1.0)),
                 () -> assertThat(sqlLiteralDouble2.getValue(), equalTo(2.0)),
-                () -> assertThat(expression.getValue(), equalTo(2.0)));
+                () -> assertThat(expression.getValue(), equalTo(2.0)),
+                () -> assertThat(sqlPredicateInConstList.getChildren().size(), equalTo(3)));
+    }
+
+    @Test
+    void testParsePredicateInConstlistNoArguments() {
+        final String sqlAsJson = "{" //
+                + "   \"type\" : \"predicate_in_constlist\", " //
+                + "   \"expression\" : { " //
+                + "        \"type\" : \"literal_double\", " //
+                + "        \"value\" : \"2.0\" " //
+                + "   } " //
+                + "}";
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlPredicateInConstList sqlPredicateInConstList = (SqlPredicateInConstList) this.defaultParser
+                .parseExpression(jsonObject);
+        final List<SqlNode> arguments = sqlPredicateInConstList.getInArguments();
+        final SqlLiteralDouble expression = (SqlLiteralDouble) sqlPredicateInConstList.getExpression();
+        assertAll(() -> assertThat(sqlPredicateInConstList.getType(), equalTo(PREDICATE_IN_CONSTLIST)),
+                () -> assertThat(expression.getValue(), equalTo(2.0)),
+                () -> assertThat(arguments.size(), equalTo(0)),
+                () -> assertThat(sqlPredicateInConstList.getChildren().size(), equalTo(1)));
     }
 
     @Test
@@ -973,9 +994,9 @@ class PushDownSqlParserTest {
         final SqlColumn sqlColumn = (SqlColumn) listagg.getArgument();
         assertAll(() -> assertThat(listagg.getType(), equalTo(FUNCTION_AGGREGATE_LISTAGG)),
                 () -> assertThat(listagg.getFunctionName(), equalTo("LISTAGG")), //
-                () -> assertThat(listagg.hasDistinct(), equalTo(true)), //
-                () -> assertThat(listagg.hasOrderBy(), equalTo(true)), //
-                () -> assertThat(listagg.hasSeparator(), equalTo(true)), //
+                () -> assertTrue(listagg.hasDistinct()), //
+                () -> assertTrue(listagg.hasOrderBy()), //
+                () -> assertTrue(listagg.hasSeparator()), //
                 () -> assertThat(listagg.getSeparator(), equalTo(new SqlLiteralString(", "))), //
                 () -> assertThat(listagg.getOrderBy().getType(), equalTo(ORDER_BY)), //
                 () -> assertThat(listagg.getOverflowBehavior().getBehaviorType(), equalTo(TRUNCATE)), //
@@ -983,6 +1004,7 @@ class PushDownSqlParserTest {
                 () -> assertThat(listagg.getOverflowBehavior().getTruncationFiller(),
                         equalTo(new SqlLiteralString("filler"))), //
                 () -> assertThat(sqlColumn.getId(), equalTo(1)));
+        assertThat(listagg.getChildren().size(), equalTo(1));
     }
 
     @ParameterizedTest
@@ -1006,6 +1028,10 @@ class PushDownSqlParserTest {
                 () -> assertThat(SqlNodeType.TABLE, sameInstance(from.getLeft().getType())),
                 () -> assertThat(SqlNodeType.TABLE, sameInstance(from.getRight().getType())),
                 () -> assertThat(select.getSelectList().hasExplicitColumnsList(), equalTo(true)),
+                () -> assertThat(select.hasGroupBy(), equalTo(false)),
+                () -> assertThat(select.hasProjection(), equalTo(true)),
+                () -> assertThat(select.hasHaving(), equalTo(false)),
+                () -> assertThat(select.hasFilter(), equalTo(false)),
                 () -> assertThat(select.getSelectList().getExpressions().size(), equalTo(4)),
                 () -> assertThat(column.getId(), equalTo(columnId)),
                 () -> assertThat(column.getName(), equalTo(columnName)),
@@ -1027,6 +1053,71 @@ class PushDownSqlParserTest {
     }
 
     @Test
+    void testParseSelectWithHaving() {
+
+        final String sqlAsJson =
+                "{" +
+                "    \"aggregationType\":\"single_group\"," +
+                "    \"from\":{" +
+                "        \"name\":\"CUSTOMERS\"," +
+                "        \"type\":\"table\"" +
+                "    }," +
+                "    \"filter\":{" +
+                "        \"left\":{" +
+                "            \"columnNr\":0," +
+                "            \"name\":\"ID\"," +
+                "            \"tableName\":\"CUSTOMERS\"," +
+                "            \"type\":\"column\"" +
+                "        }," +
+                "        \"right\":{" +
+                "            \"type\":\"literal_exactnumeric\"," +
+                "            \"value\":\"1\"" +
+                "        }," +
+                "        \"type\":\"predicate_equal\"" +
+                "    }," +
+                "    \"having\":{" +
+                "        \"expression\":{" +
+                "            \"arguments\":[{" +
+                "                \"columnNr\":0," +
+                "                \"name\":\"ID\"," +
+                "                \"tableName\":\"CUSTOMERS\"," +
+                "                \"type\":\"column\"" +
+                "            }]," +
+                "            \"name\":\"max\"," +
+                "            \"type\":\"function_aggregate\"" +
+                "        }," +
+                "        \"type\":\"predicate_is_null\"" +
+                "    }," +
+                "    \"limit\":{\"numElements\":501}," +
+                "    \"selectList\":[{" +
+                "        \"type\":\"literal_exactnumeric\"," +
+                "        \"value\":\"1\"" +
+                "    }]," +
+                "    \"orderBy\":[{" +
+                "        \"expression\":{\"type\":\"literal_exactnumeric\",\"value\":\"1\"}," +
+                "        \"isAscending\":true," +
+                "        \"nullsLast\":true," +
+                "        \"type\":\"order_by_element\"" +
+                "    }],    " +
+                "    \"selectListDataTypes\":[{" +
+                "        \"precision\":1," +
+                "        \"scale\":0," +
+                "        \"type\":\"DECIMAL\"" +
+                "    }],\"type\":\"select\"" +
+                "}";
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithTwoTables();
+        final SqlStatementSelect sqlStatementSelect = (SqlStatementSelect) pushdownSqlParser
+                .parseExpression(jsonObject);
+        assertThat(sqlStatementSelect.getChildren().size(), equalTo(6));
+        assertTrue(sqlStatementSelect.hasHaving());
+        assertTrue(sqlStatementSelect.hasLimit());
+        assertTrue(sqlStatementSelect.hasFilter());
+        assertTrue(sqlStatementSelect.hasOrderBy());
+    }
+
+
+    @Test
     void testParseSelectWithoutSelectList() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"select\", " //
@@ -1046,6 +1137,7 @@ class PushDownSqlParserTest {
                 () -> assertThat(sqlStatementSelect.getSelectList().hasExplicitColumnsList(), equalTo(true)), //
                 () -> assertThat(sqlStatementSelect.getSelectList().getExpressions().size(), equalTo(2)), //
                 () -> assertThat(first.getName(), equalTo("ID")), //
+                () -> assertThat(sqlStatementSelect.hasFilter(), equalTo(false)),
                 () -> assertThat(first.getTableName(), equalTo("CUSTOMERS")), //
                 () -> assertThat(second.getName(), equalTo("NAME")), //
                 () -> assertThat(second.getTableName(), equalTo("CUSTOMERS")) //
@@ -1070,6 +1162,7 @@ class PushDownSqlParserTest {
                 () -> assertThat(sqlStatementSelect.getSelectList().hasExplicitColumnsList(), equalTo(false)), //
                 () -> assertThat(sqlStatementSelect.getSelectList().getExpressions().isEmpty(), equalTo(true)) //
         );
+        assertThat(sqlStatementSelect.getChildren().size(), equalTo(1));
     }
 
     @ParameterizedTest
@@ -1160,6 +1253,7 @@ class PushDownSqlParserTest {
         final SqlColumn column = (SqlColumn) select.getSelectList().getExpressions().get(columnNumber);
         assertAll(() -> assertThat(select.getSelectList().hasExplicitColumnsList(), equalTo(true)),
                 () -> assertThat(select.getSelectList().getExpressions().size(), equalTo(6)),
+                () -> assertThat(column.getChildren().size(), equalTo(0)),
                 () -> assertThat(column.getId(), equalTo(columnId)),
                 () -> assertThat(column.getName(), equalTo(columnName)),
                 () -> assertThat(column.getType(), equalTo(COLUMN)),
@@ -1185,6 +1279,7 @@ class PushDownSqlParserTest {
         final SqlColumn column = (SqlColumn) select.getSelectList().getExpressions().get(columnNumber);
         assertAll(() -> assertThat(select.getSelectList().hasExplicitColumnsList(), equalTo(true)),
                 () -> assertThat(select.getSelectList().getExpressions().size(), equalTo(6)),
+                () -> assertThat(select.getChildren().size(), equalTo(7)),
                 () -> assertThat(column.getId(), equalTo(columnId)),
                 () -> assertThat(column.getName(), equalTo(columnName)),
                 () -> assertThat(column.getType(), equalTo(COLUMN)),
@@ -1249,6 +1344,9 @@ class PushDownSqlParserTest {
                 () -> assertThat(sqlStatementSelect.getGroupBy().getExpressions().size(), equalTo(1)),
                 () -> assertThat(sqlStatementSelect.getGroupBy().getExpressions().get(0).getType(),
                         equalTo(LITERAL_STRING)),
+                () -> assertTrue(sqlStatementSelect.hasGroupBy()),
+                () -> assertFalse(sqlStatementSelect.hasHaving()),
+                () -> assertThat(sqlStatementSelect.getChildren().size(), equalTo(3)),
                 () -> assertThat(
                         ((SqlLiteralString) (sqlStatementSelect.getGroupBy().getExpressions().get(0))).getValue(),
                         equalTo("a")) //
@@ -1282,5 +1380,6 @@ class PushDownSqlParserTest {
         final SqlStatementSelect sqlStatementSelect = (SqlStatementSelect) this.defaultParser
                 .parseExpression(jsonObject);
         assertFalse(sqlStatementSelect.hasGroupBy());
+        assertThat(sqlStatementSelect.getChildren().size(), equalTo(2));
     }
 }

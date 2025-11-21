@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import com.exasol.adapter.AdapterException;
 import com.exasol.mocking.MockUtils;
 
+import java.util.List;
+
 class SqlPredicateEqualTest {
     private SqlPredicateEqual sqlPredicateEqual;
     private SqlLiteralDouble sqlLiteralDoubleLeft;
@@ -42,5 +44,11 @@ class SqlPredicateEqualTest {
     @Test
     void testGetRight() {
         assertThat(this.sqlPredicateEqual.getRight(), equalTo(this.sqlLiteralDoubleRight));
+    }
+
+    @Test
+    void testGetChildren() {
+        final List<SqlNode> children = this.sqlPredicateEqual.getChildren();
+        assertThat(children.toArray().length, equalTo(2));
     }
 }

@@ -2,6 +2,9 @@ package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * The type Sql function scalar extract.
  */
@@ -48,6 +51,9 @@ public class SqlFunctionScalarExtract extends SqlNode {
     public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
+
+    @Override
+    public List<SqlNode> getChildren() { return Arrays.asList(this.argument); }
 
     /**
      * List of available parameters for the EXTRACT function.

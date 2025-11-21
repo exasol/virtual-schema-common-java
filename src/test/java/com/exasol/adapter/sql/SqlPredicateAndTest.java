@@ -47,4 +47,9 @@ class SqlPredicateAndTest {
         when(visitor.visit(this.sqlPredicateAnd)).thenReturn(this.sqlPredicateAnd);
         assertThat(this.sqlPredicateAnd.accept(visitor), equalTo(this.sqlPredicateAnd));
     }
+
+    @Test
+    void testGetChildren() {
+        assertThat(this.sqlPredicateAnd.getChildren(), equalTo(this.andedPredicates));
+    }
 }
