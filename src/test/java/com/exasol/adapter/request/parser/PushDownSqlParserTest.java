@@ -1096,6 +1096,7 @@ class PushDownSqlParserTest {
                 () -> assertThat(sqlStatementSelect.getSelectList().hasExplicitColumnsList(), equalTo(false)), //
                 () -> assertThat(sqlStatementSelect.getSelectList().getExpressions().isEmpty(), equalTo(true)) //
         );
+        assertThat(sqlStatementSelect.getChildren().size(), equalTo(1));
     }
 
     @ParameterizedTest
