@@ -131,7 +131,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
             final SqlNode having) {
         if (hasSingleGroupAggregation(select) &&
                 !hasAggregateFunction(selectList.getExpressions()) &&
-                !hasAggregateFunction(List.of(having))) {
+                !hasAggregateFunction(Arrays.asList(having))) {
             // If the aggregationType is single_group and there is no an aggregate function,
             // we limit the result to a single row.
             return new SqlGroupBy(List.of(new SqlLiteralString("a")), true);
@@ -142,9 +142,11 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private boolean hasAggregateFunction(final List<SqlNode> nodesList) {
-        ArrayDeque<SqlNode> expressions = new ArrayDeque<>(nodesList);
+        // Stack is less efficient than ArrayDeque, but ArrayDeque doesn't support null elements.
+        Stack<SqlNode> expressions = new Stack<>();
+        expressions.addAll(nodesList);
         while (!expressions.isEmpty()) {
-            final SqlNode expression = expressions.poll();
+            final SqlNode expression = expressions.pop();
             if (expression != null) {
                 expressions.addAll(expression.getChildren());
                 if (expression.getType().equals(SqlNodeType.FUNCTION_AGGREGATE)) {

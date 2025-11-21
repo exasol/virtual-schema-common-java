@@ -2,6 +2,7 @@ package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -84,5 +85,5 @@ public class SqlJoin extends SqlNode {
     }
 
     @Override
-    public List<SqlNode> getChildren() { return List.of(this.left, this.right, this.condition); }
+    public List<SqlNode> getChildren() { return Arrays.asList(this.left, this.right, this.condition); }
 }

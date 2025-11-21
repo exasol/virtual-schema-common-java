@@ -313,5 +313,5 @@ public class SqlFunctionAggregateListagg extends SqlNode {
     }
 
     @Override
-    public List<SqlNode> getChildren() { return List.of(this.argument); }
+    public List<SqlNode> getChildren() { return Arrays.asList(this.argument); }
 }

@@ -2,6 +2,7 @@ package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -58,6 +59,6 @@ public class SqlPredicateLikeRegexp extends SqlPredicate {
     }
 
     @Override
-    public List<SqlNode> getChildren() { return List.of(this.left, this.pattern); }
+    public List<SqlNode> getChildren() { return Arrays.asList(this.left, this.pattern); }
 
 }

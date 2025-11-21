@@ -2,6 +2,7 @@ package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -43,5 +44,5 @@ public class SqlPredicateIsNull extends SqlPredicate {
     }
 
     @Override
-    public List<SqlNode> getChildren() { return List.of(this.expression); }
+    public List<SqlNode> getChildren() { return Arrays.asList(this.expression); }
 }

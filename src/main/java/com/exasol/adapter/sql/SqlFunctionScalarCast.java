@@ -3,6 +3,7 @@ package com.exasol.adapter.sql;
 import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.DataType;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -53,5 +54,5 @@ public class SqlFunctionScalarCast extends SqlNode {
     }
 
     @Override
-    public List<SqlNode> getChildren() { return List.of(this.argument); }
+    public List<SqlNode> getChildren() { return Arrays.asList(this.argument); }
 }

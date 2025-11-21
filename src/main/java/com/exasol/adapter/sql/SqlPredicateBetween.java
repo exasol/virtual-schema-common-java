@@ -2,6 +2,7 @@ package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -73,5 +74,5 @@ public class SqlPredicateBetween extends SqlPredicate {
     }
 
     @Override
-    public List<SqlNode> getChildren() { return List.of(this.expression, this.betweenLeft, this.betweenRight); }
+    public List<SqlNode> getChildren() { return Arrays.asList(this.expression, this.betweenLeft, this.betweenRight); }
 }

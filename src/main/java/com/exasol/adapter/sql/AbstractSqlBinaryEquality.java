@@ -1,5 +1,6 @@
 package com.exasol.adapter.sql;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -47,5 +48,5 @@ public abstract class AbstractSqlBinaryEquality extends SqlPredicate {
     }
 
     @Override
-    public List<SqlNode> getChildren() { return List.of(this.left, this.right); }
+    public List<SqlNode> getChildren() { return Arrays.asList(this.left, this.right); }
 }

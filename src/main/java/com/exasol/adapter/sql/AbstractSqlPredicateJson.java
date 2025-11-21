@@ -1,5 +1,6 @@
 package com.exasol.adapter.sql;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -123,5 +124,5 @@ public abstract class AbstractSqlPredicateJson extends SqlPredicate {
     }
 
     @Override
-    public List<SqlNode> getChildren() { return List.of(this.expression); }
+    public List<SqlNode> getChildren() { return Arrays.asList(this.expression); }
 }
