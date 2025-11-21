@@ -143,6 +143,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
 
     private boolean hasAggregateFunction(final List<SqlNode> nodesList) {
         // Stack is less efficient than ArrayDeque, but ArrayDeque doesn't support null elements.
+        @java.lang.SuppressWarnings("java:S1149")
         Stack<SqlNode> expressions = new Stack<>();
         expressions.addAll(nodesList);
         while (!expressions.isEmpty()) {
