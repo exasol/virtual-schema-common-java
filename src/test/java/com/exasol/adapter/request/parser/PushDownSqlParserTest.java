@@ -1062,6 +1062,19 @@ class PushDownSqlParserTest {
                 "        \"name\":\"CUSTOMERS\"," +
                 "        \"type\":\"table\"" +
                 "    }," +
+                "    \"filter\":{" +
+                "        \"left\":{" +
+                "            \"columnNr\":0," +
+                "            \"name\":\"ID\"," +
+                "            \"tableName\":\"CUSTOMERS\"," +
+                "            \"type\":\"column\"" +
+                "        }," +
+                "        \"right\":{" +
+                "            \"type\":\"literal_exactnumeric\"," +
+                "            \"value\":\"1\"" +
+                "        }," +
+                "        \"type\":\"predicate_equal\"" +
+                "    }," +
                 "    \"having\":{" +
                 "        \"expression\":{" +
                 "            \"arguments\":[{" +
@@ -1090,8 +1103,10 @@ class PushDownSqlParserTest {
         final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithTwoTables();
         final SqlStatementSelect sqlStatementSelect = (SqlStatementSelect) pushdownSqlParser
                 .parseExpression(jsonObject);
-        assertThat(sqlStatementSelect.getChildren().size(), equalTo(4));
+        assertThat(sqlStatementSelect.getChildren().size(), equalTo(5));
         assertTrue(sqlStatementSelect.hasHaving());
+        assertTrue(sqlStatementSelect.hasLimit());
+        assertTrue(sqlStatementSelect.hasFilter());
     }
 
 
