@@ -67,7 +67,7 @@ public class SqlPredicateInConstList extends SqlPredicate {
 
     @Override
     public List<SqlNode> getChildren() {
-        ArrayList<SqlNode> children = new ArrayList<>();
+        List<SqlNode> children = new ArrayList<>();
         if (this.inArguments != null) {
             children.addAll(this.inArguments);
         }
