@@ -665,7 +665,8 @@ class PushDownSqlParserTest {
         assertAll(() -> assertThat(sqlPredicateInConstList.getType(), equalTo(PREDICATE_IN_CONSTLIST)),
                 () -> assertThat(sqlLiteralDouble1.getValue(), equalTo(1.0)),
                 () -> assertThat(sqlLiteralDouble2.getValue(), equalTo(2.0)),
-                () -> assertThat(expression.getValue(), equalTo(2.0)));
+                () -> assertThat(expression.getValue(), equalTo(2.0)),
+                () -> assertThat(sqlPredicateInConstList.getChildren().size(), equalTo(3)));
     }
 
     @Test
