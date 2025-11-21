@@ -1053,6 +1053,49 @@ class PushDownSqlParserTest {
     }
 
     @Test
+    void testParseSelectWithHaving() {
+
+        final String sqlAsJson =
+                "{" +
+                "    \"aggregationType\":\"single_group\"," +
+                "    \"from\":{" +
+                "        \"name\":\"CUSTOMERS\"," +
+                "        \"type\":\"table\"" +
+                "    }," +
+                "    \"having\":{" +
+                "        \"expression\":{" +
+                "            \"arguments\":[{" +
+                "                \"columnNr\":0," +
+                "                \"name\":\"ID\"," +
+                "                \"tableName\":\"CUSTOMERS\"," +
+                "                \"type\":\"column\"" +
+                "            }]," +
+                "            \"name\":\"max\"," +
+                "            \"type\":\"function_aggregate\"" +
+                "        }," +
+                "        \"type\":\"predicate_is_null\"" +
+                "    }," +
+                "    \"limit\":{\"numElements\":501}," +
+                "    \"selectList\":[{" +
+                "        \"type\":\"literal_exactnumeric\"," +
+                "        \"value\":\"1\"" +
+                "    }]," +
+                "    \"selectListDataTypes\":[{" +
+                "        \"precision\":1," +
+                "        \"scale\":0," +
+                "        \"type\":\"DECIMAL\"" +
+                "    }],\"type\":\"select\"" +
+                "}";
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithTwoTables();
+        final SqlStatementSelect sqlStatementSelect = (SqlStatementSelect) pushdownSqlParser
+                .parseExpression(jsonObject);
+        assertThat(sqlStatementSelect.getChildren().size(), equalTo(4));
+        assertTrue(sqlStatementSelect.hasHaving());
+    }
+
+
+    @Test
     void testParseSelectWithoutSelectList() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"select\", " //
