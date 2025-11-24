@@ -1,5 +1,6 @@
 package com.exasol.adapter.sql;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -62,5 +63,15 @@ public class SqlPredicateInConstList extends SqlPredicate {
     @Override
     public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
+    }
+
+    @Override
+    public List<SqlNode> getChildren() {
+        List<SqlNode> children = new ArrayList<>();
+        if (this.inArguments != null) {
+            children.addAll(this.inArguments);
+        }
+        children.add(this.expression);
+        return children;
     }
 }

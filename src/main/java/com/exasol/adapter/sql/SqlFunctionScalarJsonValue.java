@@ -169,4 +169,8 @@ public class SqlFunctionScalarJsonValue extends SqlNode {
             return Objects.hash(this.behaviorType, this.expression);
         }
     }
+
+    @Override
+    public List<SqlNode> getChildren() { return getArguments(); }
+
 }

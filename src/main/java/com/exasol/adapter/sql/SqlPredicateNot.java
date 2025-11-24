@@ -2,6 +2,9 @@ package com.exasol.adapter.sql;
 
 import com.exasol.adapter.AdapterException;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Not predicate.
  */
@@ -39,4 +42,7 @@ public class SqlPredicateNot extends SqlPredicate {
     public <R> R accept(final SqlNodeVisitor<R> visitor) throws AdapterException {
         return visitor.visit(this);
     }
+
+    @Override
+    public List<SqlNode> getChildren() { return Arrays.asList(this.expression); }
 }
