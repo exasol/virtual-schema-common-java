@@ -1,4 +1,4 @@
-# Common Module of Exasol Virtual Schemas Adapters 17.1.2, released 2025-11-21
+# Common Module of Exasol Virtual Schemas Adapters 17.1.2, released 2025-11-24
 
 Code name: Fix for wrong COUNT and HAVING handling in empty group by.
 
