@@ -6,6 +6,10 @@ Code name: Add feature tracking
 
 This release adds anonymous feature tracking using the [telemetry-java](https://github.com/exasol/telemetry-java) library. When you integrate this new version into another product, please observe the [required user documentation](https://github.com/exasol/telemetry-java/blob/main/doc/integration-guide.md#required-documentation).
 
+## Breaking Changes
+
+* Class `ErrorMessages` and its static method `askForBugReport()` are deprecated now. Replace it with `ErrorMessageBuilder.ticketMitigation()` from [error-reporting-java](https://github.com/exasol/error-reporting-java).
+
 ## Features
 
 * #300: Add anonymous feature tracking
