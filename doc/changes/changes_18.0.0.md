@@ -22,7 +22,7 @@ This release adds anonymous feature tracking using the [telemetry-java](https://
 * Updated `nl.jqno.equalsverifier:equalsverifier:3.16.1` to `3.19.4`
 * Updated `org.hamcrest:hamcrest:2.2` to `3.0`
 * Updated `org.itsallcode:junit5-system-extensions:1.2.0` to `1.2.2`
-* Added `org.junit.jupiter:junit-jupiter-api:5.14.3`
+* Added `org.junit.jupiter:junit-jupiter-params:5.14.3`
 * Removed `org.junit.jupiter:junit-jupiter:5.10.2`
 * Updated `org.mockito:mockito-junit-jupiter:5.11.0` to `5.23.0`
 * Updated `org.skyscreamer:jsonassert:1.5.1` to `1.5.3`

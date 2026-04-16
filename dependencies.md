@@ -15,7 +15,7 @@
 | ------------------------------------------ | ---------------------------------------------- |
 | [Hamcrest][7]                              | [BSD-3-Clause][8]                              |
 | [JSONassert][9]                            | [The Apache Software License, Version 2.0][10] |
-| [JUnit Jupiter API][11]                    | [Eclipse Public License v2.0][12]              |
+| [JUnit Jupiter Params][11]                 | [Eclipse Public License v2.0][12]              |
 | [mockito-junit-jupiter][13]                | [MIT][14]                                      |
 | [JUnit5 System Extensions][15]             | [Eclipse Public License v2.0][16]              |
 | [EqualsVerifier \| release normal jar][17] | [Apache License, Version 2.0][18]              |
