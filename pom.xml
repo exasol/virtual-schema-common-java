@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>virtual-schema-common-java</artifactId>
-    <version>17.1.2</version>
+    <version>18.0.0</version>
     <name>Common module of Exasol Virtual Schemas Adapters</name>
     <description>This is one of the modules of Virtual Schemas Adapters. The libraries provided by this project are the
         foundation of the adapter development, i.e. adapters must be implemented on top of them.</description>
@@ -23,48 +23,50 @@
         <dependency>
             <groupId>com.exasol</groupId>
             <artifactId>udf-api-java</artifactId>
-            <version>1.0.5</version>
+            <version>1.0.8</version>
+        </dependency>
+        <dependency>
+            <groupId>com.exasol</groupId>
+            <artifactId>error-reporting-java</artifactId>
+            <version>1.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest</artifactId>
-            <version>2.2</version>
+            <version>3.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.skyscreamer</groupId>
             <artifactId>jsonassert</artifactId>
-            <version>1.5.1</version>
+            <version>1.5.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>5.10.2</version>
+            <artifactId>junit-jupiter-api</artifactId>
+            <!-- Version 6 requires Java 17 -->
+            <version>5.14.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>5.11.0</version>
+            <version>5.23.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.itsallcode</groupId>
             <artifactId>junit5-system-extensions</artifactId>
-            <version>1.2.0</version>
+            <version>1.2.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>nl.jqno.equalsverifier</groupId>
             <artifactId>equalsverifier</artifactId>
-            <version>3.16.1</version>
+            <!-- Version 4 requires Java 17 -->
+            <version>3.19.4</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.exasol</groupId>
-            <artifactId>error-reporting-java</artifactId>
-            <version>1.0.1</version>
         </dependency>
     </dependencies>
     <build>
@@ -72,7 +74,7 @@
             <plugin>
                 <groupId>com.exasol</groupId>
                 <artifactId>project-keeper-maven-plugin</artifactId>
-                <version>5.4.3</version>
+                <version>5.4.6</version>
                 <executions>
                     <execution>
                         <goals>
@@ -86,7 +88,7 @@
     <parent>
         <artifactId>virtual-schema-common-java-generated-parent</artifactId>
         <groupId>com.exasol</groupId>
-        <version>17.1.2</version>
+        <version>18.0.0</version>
         <relativePath>pk_generated_parent.pom</relativePath>
     </parent>
 </project>

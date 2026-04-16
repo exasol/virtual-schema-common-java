@@ -13,9 +13,9 @@
 
 | Dependency                                 | License                                        |
 | ------------------------------------------ | ---------------------------------------------- |
-| [Hamcrest][7]                              | [BSD License 3][8]                             |
+| [Hamcrest][7]                              | [BSD-3-Clause][8]                              |
 | [JSONassert][9]                            | [The Apache Software License, Version 2.0][10] |
-| [JUnit Jupiter (Aggregator)][11]           | [Eclipse Public License v2.0][12]              |
+| [JUnit Jupiter API][11]                    | [Eclipse Public License v2.0][12]              |
 | [mockito-junit-jupiter][13]                | [MIT][14]                                      |
 | [JUnit5 System Extensions][15]             | [Eclipse Public License v2.0][16]              |
 | [EqualsVerifier \| release normal jar][17] | [Apache License, Version 2.0][18]              |
@@ -46,7 +46,7 @@
 | [Apache Maven Artifact Plugin][34]                      | [Apache-2.0][18]                            |
 | [Apache Maven Deploy Plugin][35]                        | [Apache-2.0][18]                            |
 | [Apache Maven GPG Plugin][36]                           | [Apache-2.0][18]                            |
-| [Apache Maven Source Plugin][37]                        | [Apache License, Version 2.0][18]           |
+| [Apache Maven Source Plugin][37]                        | [Apache-2.0][18]                            |
 | [Apache Maven Javadoc Plugin][38]                       | [Apache-2.0][18]                            |
 | [Central Publishing Maven Plugin][39]                   | [The Apache License, Version 2.0][18]       |
 | [JaCoCo :: Maven Plugin][40]                            | [EPL-2.0][41]                               |
@@ -63,10 +63,10 @@
 [5]: https://github.com/exasol/error-reporting-java/
 [6]: https://github.com/exasol/error-reporting-java/blob/main/LICENSE
 [7]: http://hamcrest.org/JavaHamcrest/
-[8]: http://opensource.org/licenses/BSD-3-Clause
+[8]: https://raw.githubusercontent.com/hamcrest/JavaHamcrest/master/LICENSE
 [9]: https://github.com/skyscreamer/JSONassert
 [10]: http://www.apache.org/licenses/LICENSE-2.0.txt
-[11]: https://junit.org/junit5/
+[11]: https://junit.org/
 [12]: https://www.eclipse.org/legal/epl-v20.html
 [13]: https://github.com/mockito/mockito
 [14]: https://opensource.org/licenses/MIT
@@ -78,7 +78,7 @@
 [20]: https://maven.apache.org/plugins/maven-install-plugin/
 [21]: https://maven.apache.org/plugins/maven-resources-plugin/
 [22]: https://maven.apache.org/plugins/maven-site-plugin/
-[23]: http://docs.sonarqube.org/display/PLUG/Plugin+Library/sonar-scanner-maven/sonar-maven-plugin
+[23]: https://docs.sonarsource.com/sonarqube-server/latest/extension-guide/developing-a-plugin/plugin-basics/sonar-scanner-maven/sonar-maven-plugin/
 [24]: http://www.gnu.org/licenses/lgpl.txt
 [25]: https://maven.apache.org/plugins/maven-toolchains-plugin/
 [26]: https://maven.apache.org/plugins/maven-compiler-plugin/
