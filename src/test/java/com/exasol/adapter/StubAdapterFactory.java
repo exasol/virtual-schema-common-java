@@ -1,8 +1,12 @@
 package com.exasol.adapter;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
+
 public class StubAdapterFactory implements AdapterFactory {
     @Override
     public VirtualSchemaAdapter createAdapter(final AdapterContext context) {
+        assertThat(context.getTelemetryClient(), notNullValue());
         return new StubAdapter(context);
     }
 
