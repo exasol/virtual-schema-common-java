@@ -68,9 +68,11 @@ public final class RequestDispatcher {
         }
     }
 
-    private static TelemetryClient createTelemetryClient(final AdapterFactory factory, final AdapterRequest adapterRequest) {
-        final AdapterTelemetryConfig adapterConfig = AdapterTelemetryConfig.parseFromProperties(adapterRequest.getSchemaMetadataInfo().getProperties());
-        final TelemetryConfig.Builder configBuilder = TelemetryConfig.builder(factory.getAdapterName(), factory.getAdapterVersion());
+    // Visible for testing
+    static TelemetryClient createTelemetryClient(final AdapterFactory factory, final AdapterRequest adapterRequest) {
+        final AdapterTelemetryConfiguration adapterConfig = AdapterTelemetryConfiguration
+                .parseFromProperties(adapterRequest.getSchemaMetadataInfo().getProperties());
+        final TelemetryConfig.Builder configBuilder = TelemetryConfig.builder(factory.getAdapterProjectShortTag(), factory.getAdapterVersion());
         if (adapterConfig.isTelemetryDisabled()) {
             configBuilder.disableTracking();
         }

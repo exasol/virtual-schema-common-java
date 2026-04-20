@@ -5,13 +5,13 @@ import java.util.Map;
 /**
  * This class represents the telemetry configuration for the adapter, which is determined based on the request properties.
  */
-public class AdapterTelemetryConfig {
+public class AdapterTelemetryConfiguration {
 
     public static final String TELEMETRY_PROPERTY = "TELEMETRY";
 
     private final boolean telemetryDisabled;
 
-    private AdapterTelemetryConfig(final boolean telemetryDisabled) {
+    private AdapterTelemetryConfiguration(final boolean telemetryDisabled) {
         this.telemetryDisabled = telemetryDisabled;
     }
 
@@ -21,10 +21,10 @@ public class AdapterTelemetryConfig {
      * @param properties the properties to parse the telemetry configuration from
      * @return the parsed telemetry configuration
      */
-    public static AdapterTelemetryConfig parseFromProperties(final Map<String, String> properties) {
+    public static AdapterTelemetryConfiguration parseFromProperties(final Map<String, String> properties) {
         final String telemetryPropertyValue = properties.get(TELEMETRY_PROPERTY);
         final boolean telemetryDisabled = telemetryPropertyValue != null && !Boolean.parseBoolean(telemetryPropertyValue);
-        return new AdapterTelemetryConfig(telemetryDisabled);
+        return new AdapterTelemetryConfiguration(telemetryDisabled);
     }
 
     /**
