@@ -1,4 +1,4 @@
-# Common Module of Exasol Virtual Schemas Adapters 18.0.0, released 2026-04-??
+# Common Module of Exasol Virtual Schemas Adapters 18.0.0, released 2026-04-20
 
 Code name: Anonymous feature tracking
 
@@ -12,6 +12,8 @@ This release adds anonymous feature tracking using the [telemetry-java](https://
 * `refreshVirtualSchema`
 * `setProperties`
 
+The release also adds support for scalar functions `REGEXP_COUNT` and `DAYOFWEEK`.
+
 ## Breaking Changes
 
 * Class `ErrorMessages` and its static method `askForBugReport()` are deprecated now. Replace it with `ErrorMessageBuilder.ticketMitigation()` from [error-reporting-java](https://github.com/exasol/error-reporting-java).
@@ -22,6 +24,8 @@ This release adds anonymous feature tracking using the [telemetry-java](https://
 ## Features
 
 * #300: Add anonymous feature tracking
+* #290: Add support for scalar function `REGEXP_COUNT`
+* #299: Add support for scalar function `DAYOFWEEK`
 
 ## Dependency Updates
 
