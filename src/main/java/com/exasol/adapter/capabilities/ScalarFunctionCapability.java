@@ -214,6 +214,10 @@ public enum ScalarFunctionCapability {
      */
     OCTET_LENGTH,
     /**
+     * Regexp count scalar function capability.
+     */
+    REGEXP_COUNT,
+    /**
      * Regexp instr scalar function capability.
      */
     REGEXP_INSTR,
@@ -406,6 +410,10 @@ public enum ScalarFunctionCapability {
      * Systimestamp scalar function capability.
      */
     SYSTIMESTAMP,
+    /**
+     * Weekday scalar function capability.
+     */
+    DAYOFWEEK,
     /**
      * Week scalar function capability.
      */
