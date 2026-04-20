@@ -1,6 +1,6 @@
-# Common Module of Exasol Virtual Schemas Adapters 18.0.0, released 2026-04-20
+# Common Module of Exasol Virtual Schemas Adapters 18.0.0, released 2026-04-??
 
-Code name: Add feature tracking
+Code name: Anonymous feature tracking
 
 ## Summary
 
