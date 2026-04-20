@@ -4,7 +4,6 @@ import java.util.Collections;
 
 import com.exasol.adapter.metadata.*;
 import com.exasol.adapter.metadata.DataType.*;
-import com.exasol.errorhandling.ErrorMessages;
 import com.exasol.errorreporting.ExaError;
 
 import jakarta.json.*;
@@ -137,40 +136,40 @@ public final class SchemaMetadataJsonConverter {
         final JsonObjectBuilder typeAsJson = this.factory.createObjectBuilder();
         typeAsJson.add(TYPE_KEY, getExasolDataTypeName(dataType.getExaDataType()));
         switch (dataType.getExaDataType()) {
-        case UNSUPPORTED:
-            throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-1")
-                    .message("Unsupported data type found trying to serialize schema metadata. {{report|uq}}")
-                    .parameter("report", ErrorMessages.askForBugReport()).toString());
-        case DECIMAL:
-            typeAsJson.add(PRECISION_KEY, dataType.getPrecision());
-            typeAsJson.add(SCALE_KEY, dataType.getScale());
-            break;
-        case VARCHAR: // falling through intentionally
-        case CHAR:
-            typeAsJson.add(SIZE_KEY, dataType.getSize());
-            typeAsJson.add(CHARSET_KEY, getCharacterSetName(dataType.getCharset()));
-            break;
-        case TIMESTAMP:
-            typeAsJson.add(WITH_LOCAL_TIMEZONE_KEY, dataType.isWithLocalTimezone()).add(TIMESTAMP_PRECISION_KEY,
-                    dataType.getPrecision());
-            break;
-        case GEOMETRY:
-            typeAsJson.add(SPATIAL_REFERENCE_ID_KEY, dataType.getGeometrySrid());
-            break;
-        case INTERVAL:
-            addIntervalToRoot(dataType, typeAsJson);
-            break;
-        case HASHTYPE:
-            typeAsJson.add(BYTESIZE_KEY, dataType.getByteSize());
-            break;
-        case DOUBLE: // falling through intentionally
-        case DATE:
-        case BOOLEAN:
-            break;
-        default:
-            throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-2")
-                    .message("Unexpected data type {{dataType}} encountered while trying to serialize schema metadata.")
-                    .parameter("dataType", dataType.getExaDataType()).toString());
+            case UNSUPPORTED:
+                throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-1")
+                        .message("Unsupported data type found trying to serialize schema metadata.").ticketMitigation()
+                        .toString());
+            case DECIMAL:
+                typeAsJson.add(PRECISION_KEY, dataType.getPrecision());
+                typeAsJson.add(SCALE_KEY, dataType.getScale());
+                break;
+            case VARCHAR: // falling through intentionally
+            case CHAR:
+                typeAsJson.add(SIZE_KEY, dataType.getSize());
+                typeAsJson.add(CHARSET_KEY, getCharacterSetName(dataType.getCharset()));
+                break;
+            case TIMESTAMP:
+                typeAsJson.add(WITH_LOCAL_TIMEZONE_KEY, dataType.isWithLocalTimezone()).add(TIMESTAMP_PRECISION_KEY,
+                        dataType.getPrecision());
+                break;
+            case GEOMETRY:
+                typeAsJson.add(SPATIAL_REFERENCE_ID_KEY, dataType.getGeometrySrid());
+                break;
+            case INTERVAL:
+                addIntervalToRoot(dataType, typeAsJson);
+                break;
+            case HASHTYPE:
+                typeAsJson.add(BYTESIZE_KEY, dataType.getByteSize());
+                break;
+            case DOUBLE: // falling through intentionally
+            case DATE:
+            case BOOLEAN:
+                break;
+            default:
+                throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-2")
+                        .message("Unexpected data type {{dataType}} encountered while trying to serialize schema metadata.")
+                        .parameter("dataType", dataType.getExaDataType()).toString());
         }
         return typeAsJson.build();
     }
@@ -185,59 +184,59 @@ public final class SchemaMetadataJsonConverter {
 
     private String getExasolDataTypeName(final ExaDataType dataType) {
         switch (dataType) {
-        case UNSUPPORTED:
-            return "unsupported";
-        case DECIMAL:
-            return "decimal";
-        case DOUBLE:
-            return "double";
-        case VARCHAR:
-            return "varchar";
-        case CHAR:
-            return "char";
-        case DATE:
-            return "date";
-        case TIMESTAMP:
-            return "timestamp";
-        case BOOLEAN:
-            return "boolean";
-        case GEOMETRY:
-            return "geometry";
-        case INTERVAL:
-            return "interval";
-        case HASHTYPE:
-            return "hashtype";
-        default:
-            return "unknown";
+            case UNSUPPORTED:
+                return "unsupported";
+            case DECIMAL:
+                return "decimal";
+            case DOUBLE:
+                return "double";
+            case VARCHAR:
+                return "varchar";
+            case CHAR:
+                return "char";
+            case DATE:
+                return "date";
+            case TIMESTAMP:
+                return "timestamp";
+            case BOOLEAN:
+                return "boolean";
+            case GEOMETRY:
+                return "geometry";
+            case INTERVAL:
+                return "interval";
+            case HASHTYPE:
+                return "hashtype";
+            default:
+                return "unknown";
         }
     }
 
     private String getCharacterSetName(final ExaCharset charset) {
         switch (charset) {
-        case UTF8:
-            return UTF8_VALUE;
-        case ASCII:
-            return ASCII_VALUE;
-        default:
-            throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-3")
-                    .message("Unexpected charset {{charset}} encountered while trying to serialize character "
-                            + "string type information. {{report|uq}}")
-                    .parameter("charset", charset) //
-                    .parameter("report", ErrorMessages.askForBugReport()).toString());
+            case UTF8:
+                return UTF8_VALUE;
+            case ASCII:
+                return ASCII_VALUE;
+            default:
+                throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-3")
+                        .message("Unexpected charset {{charset}} encountered while trying to serialize character "
+                                + "string type information.")
+                        .parameter("charset", charset)
+                        .ticketMitigation().toString());
         }
     }
 
     private String intervalTypeAsString(final IntervalType intervalType) {
         switch (intervalType) {
-        case DAY_TO_SECOND:
-            return DAY_TO_SECONDS_VALUE;
-        case YEAR_TO_MONTH:
-            return YEAR_TO_MONTH_VALUE;
-        default:
-            throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-4").message(
-                    "Unexpected interval type {{intervalType}} encountered while trying to serialize an interval. {{report|uq}}")
-                    .parameter("intervalType", intervalType).parameter("report", ErrorMessages.askForBugReport())
-                    .toString());
+            case DAY_TO_SECOND:
+                return DAY_TO_SECONDS_VALUE;
+            case YEAR_TO_MONTH:
+                return YEAR_TO_MONTH_VALUE;
+            default:
+                throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-4").message(
+                        "Unexpected interval type {{intervalType}} encountered while trying to serialize an interval.")
+                        .parameter("intervalType", intervalType).ticketMitigation()
+                        .toString());
         }
     }
 }

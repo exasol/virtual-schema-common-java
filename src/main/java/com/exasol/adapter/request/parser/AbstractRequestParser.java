@@ -47,8 +47,7 @@ class AbstractRequestParser {
     }
 
     private Map<String, String> convertJsonObjectsToPropertyMap(final JsonObject root) {
-        final Map<String, String> properties;
-        properties = new HashMap<>();
+        final Map<String, String> properties = new HashMap<>();
         final JsonObject jsonProperties = root.getJsonObject(PROPERTIES_KEY);
         for (final Entry<String, JsonValue> entry : jsonProperties.entrySet()) {
             addProperty(properties, entry);
@@ -62,26 +61,26 @@ class AbstractRequestParser {
         final ValueType type = value.getValueType();
         final String stringValue;
         switch (type) {
-        case STRING:
-            stringValue = ((JsonString) value).getString();
-            break;
-        case NUMBER:
-            stringValue = ((JsonNumber) value).toString();
-            break;
-        case TRUE:
-            stringValue = "true";
-            break;
-        case FALSE:
-            stringValue = "false";
-            break;
-        case NULL:
-            stringValue = null;
-            break;
-        default:
-            throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-7")
-                    .message("Unable to parse adapter property value of type {{type}}. "
-                            + "Supported types are strings, booleans, numbers and NULL.")
-                    .parameter("type", type).toString());
+            case STRING:
+                stringValue = ((JsonString) value).getString();
+                break;
+            case NUMBER:
+                stringValue = ((JsonNumber) value).toString();
+                break;
+            case TRUE:
+                stringValue = "true";
+                break;
+            case FALSE:
+                stringValue = "false";
+                break;
+            case NULL:
+                stringValue = null;
+                break;
+            default:
+                throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-7")
+                        .message("Unable to parse adapter property value of type {{type}}. "
+                                + "Supported types are strings, booleans, numbers and NULL.")
+                        .parameter("type", type).toString());
         }
         properties.put(key, stringValue);
     }

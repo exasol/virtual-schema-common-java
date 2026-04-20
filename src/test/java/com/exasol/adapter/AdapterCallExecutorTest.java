@@ -2,8 +2,7 @@ package com.exasol.adapter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.util.List;
 
@@ -17,17 +16,20 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.exasol.adapter.metadata.SchemaMetadata;
 import com.exasol.adapter.request.*;
 import com.exasol.adapter.response.*;
+import com.exasol.telemetry.TelemetryClient;
 
 @ExtendWith(MockitoExtension.class)
 class AdapterCallExecutorTest {
     @Mock
     private VirtualSchemaAdapter mockAdapter;
+    @Mock
+    private TelemetryClient mockTelemetryClient;
     private AdapterCallExecutor adapterCallExecutor;
 
     @BeforeEach
     void beforeEach() {
         MockitoAnnotations.openMocks(this);
-        this.adapterCallExecutor = new AdapterCallExecutor(this.mockAdapter);
+        this.adapterCallExecutor = new AdapterCallExecutor(this.mockAdapter, this.mockTelemetryClient);
     }
 
     @Test
@@ -91,5 +93,63 @@ class AdapterCallExecutorTest {
                 null);
         assertEquals("{\"type\":\"pushdown\",\"sql\":\"SELECT * FROM FOOBAR\"}", response);
         verify(this.mockAdapter).pushdown(any(), any(PushDownRequest.class));
+    }
+
+    @Test
+    void testSendTelemetryForCreateVirtualSchemaRequest() throws AdapterException {
+        when(mockAdapter.createVirtualSchema(any(), any()))
+                .thenReturn(CreateVirtualSchemaResponse.builder().schemaMetadata(getSchemaMetadata()).build());
+
+        adapterCallExecutor.executeAdapterCall(new CreateVirtualSchemaRequest(null), null);
+
+        verify(mockTelemetryClient).track("createVirtualSchema");
+    }
+
+    @Test
+    void testSendTelemetryForDropVirtualSchemaRequest() throws AdapterException {
+        when(mockAdapter.dropVirtualSchema(any(), any())).thenReturn(DropVirtualSchemaResponse.builder().build());
+
+        adapterCallExecutor.executeAdapterCall(new DropVirtualSchemaRequest(null), null);
+
+        verify(mockTelemetryClient).track("dropVirtualSchema");
+    }
+
+    @Test
+    void testSendTelemetryForRefreshRequest() throws AdapterException {
+        when(mockAdapter.refresh(any(), any()))
+                .thenReturn(RefreshResponse.builder().schemaMetadata(getSchemaMetadata()).build());
+
+        adapterCallExecutor.executeAdapterCall(new RefreshRequest(null), null);
+
+        verify(mockTelemetryClient).track("refreshVirtualSchema");
+    }
+
+    @Test
+    void testSendTelemetryForSetPropertiesRequest() throws AdapterException {
+        when(mockAdapter.setProperties(any(), any()))
+                .thenReturn(SetPropertiesResponse.builder().schemaMetadata(getSchemaMetadata()).build());
+
+        adapterCallExecutor.executeAdapterCall(new SetPropertiesRequest(null, null), null);
+
+        verify(mockTelemetryClient).track("setProperties");
+    }
+
+    @Test
+    void testDoNotSendTelemetryForGetCapabilitiesRequest() throws AdapterException {
+        when(mockAdapter.getCapabilities(any(), any())).thenReturn(GetCapabilitiesResponse.builder().build());
+
+        adapterCallExecutor.executeAdapterCall(new GetCapabilitiesRequest(null), null);
+
+        verify(mockTelemetryClient, never()).track(any());
+    }
+
+    @Test
+    void testDoNotSendTelemetryForPushDownRequest() throws AdapterException {
+        when(mockAdapter.pushdown(any(), any()))
+                .thenReturn(PushDownResponse.builder().pushDownSql("SELECT * FROM FOOBAR").build());
+
+        adapterCallExecutor.executeAdapterCall(new PushDownRequest(null, null, null, null), null);
+
+        verify(mockTelemetryClient, never()).track(any());
     }
 }
