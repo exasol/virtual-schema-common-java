@@ -2,12 +2,12 @@ package com.exasol.adapter.request;
 
 import java.util.Map;
 
+import com.exasol.adapter.AdapterProperties;
+
 /**
  * This class represents the telemetry configuration for the adapter, which is determined based on the request properties.
  */
 public class AdapterTelemetryConfiguration {
-
-    public static final String TELEMETRY_PROPERTY = "TELEMETRY";
 
     private final boolean telemetryDisabled;
 
@@ -22,7 +22,7 @@ public class AdapterTelemetryConfiguration {
      * @return the parsed telemetry configuration
      */
     public static AdapterTelemetryConfiguration parseFromProperties(final Map<String, String> properties) {
-        final String telemetryPropertyValue = properties.get(TELEMETRY_PROPERTY);
+        final String telemetryPropertyValue = properties.get(AdapterProperties.TELEMETRY_PROPERTY);
         final boolean telemetryDisabled = telemetryPropertyValue != null && !Boolean.parseBoolean(telemetryPropertyValue);
         return new AdapterTelemetryConfiguration(telemetryDisabled);
     }
