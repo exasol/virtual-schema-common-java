@@ -205,6 +205,10 @@ class RequestDispatcherTest {
         when(factoryMock.getAdapterProjectShortTag()).thenReturn("shortTag");
         when(factoryMock.getAdapterVersion()).thenReturn("adapterVersion");
         final TelemetryClient client = RequestDispatcher.createTelemetryClient(factoryMock, adapterRequestMock);
-        assertThat(client.getClass().getSimpleName(), equalTo("AsyncTelemetryClient"));
+        String expectedClassName = "AsyncTelemetryClient";
+        if (System.getenv("EXASOL_TELEMETRY_DISABLE") != null) {
+            expectedClassName = "NoOpTelemetryClient";
+        }
+        assertThat(client.getClass().getSimpleName(), equalTo(expectedClassName));
     }
 }
