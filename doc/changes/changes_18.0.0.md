@@ -1,4 +1,4 @@
-# Common Module of Exasol Virtual Schemas Adapters 18.0.0, released 2026-??-??
+# Common Module of Exasol Virtual Schemas Adapters 18.0.0, released 2026-04-20
 
 Code name: Add feature tracking
 
@@ -6,9 +6,18 @@ Code name: Add feature tracking
 
 This release adds anonymous feature tracking using the [telemetry-java](https://github.com/exasol/telemetry-java) library. When you integrate this new version into another product, please observe the [required user documentation](https://github.com/exasol/telemetry-java/blob/main/doc/integration-guide.md#required-documentation).
 
+`AdapterCallExecutor` was updated to track usage of the following features:
+* `createVirtualSchema`
+* `dropVirtualSchema`
+* `refreshVirtualSchema`
+* `setProperties`
+
 ## Breaking Changes
 
 * Class `ErrorMessages` and its static method `askForBugReport()` are deprecated now. Replace it with `ErrorMessageBuilder.ticketMitigation()` from [error-reporting-java](https://github.com/exasol/error-reporting-java).
+* Interface `AdapterFactory` was updated and implementors need to adapt the following:
+  * Method `createAdapter()` now receives an argument of type `AdapterContext`, giving you access to the `TelemetryClient`. You can use it to send adapter specific feature tracking.
+  * New method `getAdapterProjectShortTag()` must return the adapter's project short tag as defined in `error_code_config.yml`, e.g. `VSMYSQL` or `VSS3`.
 
 ## Features
 
@@ -19,6 +28,7 @@ This release adds anonymous feature tracking using the [telemetry-java](https://
 ### Compile Dependency Updates
 
 * Updated `com.exasol:error-reporting-java:1.0.1` to `1.0.2`
+* Added `com.exasol:telemetry-java:0.2.0`
 * Updated `com.exasol:udf-api-java:1.0.5` to `1.0.8`
 
 ### Test Dependency Updates

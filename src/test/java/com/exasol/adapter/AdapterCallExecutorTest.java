@@ -17,17 +17,20 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.exasol.adapter.metadata.SchemaMetadata;
 import com.exasol.adapter.request.*;
 import com.exasol.adapter.response.*;
+import com.exasol.telemetry.TelemetryClient;
 
 @ExtendWith(MockitoExtension.class)
 class AdapterCallExecutorTest {
     @Mock
     private VirtualSchemaAdapter mockAdapter;
+    @Mock
+    private TelemetryClient mockTelemetryClient;
     private AdapterCallExecutor adapterCallExecutor;
 
     @BeforeEach
     void beforeEach() {
         MockitoAnnotations.openMocks(this);
-        this.adapterCallExecutor = new AdapterCallExecutor(this.mockAdapter);
+        this.adapterCallExecutor = new AdapterCallExecutor(this.mockAdapter, this.mockTelemetryClient);
     }
 
     @Test

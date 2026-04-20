@@ -4,20 +4,24 @@ import com.exasol.ExaMetadata;
 import com.exasol.adapter.request.*;
 import com.exasol.adapter.response.*;
 import com.exasol.adapter.response.converter.ResponseJsonConverter;
+import com.exasol.telemetry.TelemetryClient;
 
 /**
  * Executor for adapter calls issued by the Exasol database.
  */
 public class AdapterCallExecutor {
     private final VirtualSchemaAdapter adapter;
+    private final TelemetryClient telemetryClient;
 
     /**
      * Construct a new {@link AdapterCallExecutor}.
      *
-     * @param adapter an instance of {@link VirtualSchemaAdapter}
+     * @param adapter         an instance of {@link VirtualSchemaAdapter}
+     * @param telemetryClient telemetry client for sending features usage to Exasol's telemetry service
      */
-    public AdapterCallExecutor(final VirtualSchemaAdapter adapter) {
+    public AdapterCallExecutor(final VirtualSchemaAdapter adapter, final TelemetryClient telemetryClient) {
         this.adapter = adapter;
+        this.telemetryClient = telemetryClient;
     }
 
     /**
@@ -44,6 +48,7 @@ public class AdapterCallExecutor {
      */
     public String executeCreateVirtualSchemaRequest(final CreateVirtualSchemaRequest request,
             final ExaMetadata metadata) throws AdapterException {
+        telemetryClient.track("createVirtualSchema");
         final CreateVirtualSchemaResponse response = this.adapter.createVirtualSchema(metadata, request);
         return ResponseJsonConverter.getInstance().convertCreateVirtualSchemaResponse(response);
     }
@@ -58,6 +63,7 @@ public class AdapterCallExecutor {
      */
     public String executeDropVirtualSchemaRequest(final DropVirtualSchemaRequest request, final ExaMetadata metadata)
             throws AdapterException {
+        telemetryClient.track("dropVirtualSchema");
         final DropVirtualSchemaResponse response = this.adapter.dropVirtualSchema(metadata, request);
         return ResponseJsonConverter.getInstance().convertDropVirtualSchemaResponse(response);
     }
@@ -72,6 +78,7 @@ public class AdapterCallExecutor {
      */
     public String executeRefreshRequest(final RefreshRequest request, final ExaMetadata metadata)
             throws AdapterException {
+        telemetryClient.track("refreshVirtualSchema");
         final RefreshResponse response = this.adapter.refresh(metadata, request);
         return ResponseJsonConverter.getInstance().convertRefreshResponse(response);
     }
@@ -86,6 +93,7 @@ public class AdapterCallExecutor {
      */
     public String executeSetPropertiesRequest(final SetPropertiesRequest request, final ExaMetadata metadata)
             throws AdapterException {
+        telemetryClient.track("setProperties");
         final SetPropertiesResponse response = this.adapter.setProperties(metadata, request);
         return ResponseJsonConverter.getInstance().convertSetPropertiesResponse(response);
     }

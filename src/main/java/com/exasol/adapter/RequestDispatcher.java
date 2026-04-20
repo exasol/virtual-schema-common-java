@@ -5,12 +5,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.exasol.ExaMetadata;
-import com.exasol.adapter.request.AdapterRequest;
-import com.exasol.adapter.request.LoggingConfiguration;
+import com.exasol.adapter.request.*;
 import com.exasol.adapter.request.parser.RequestParser;
 import com.exasol.errorreporting.ExaError;
 import com.exasol.logging.RemoteLogManager;
 import com.exasol.logging.VersionCollector;
+import com.exasol.telemetry.TelemetryClient;
+import com.exasol.telemetry.TelemetryConfig;
 
 /**
  * This class is the main entry point for calls to a Virtual Schema. It sets up the application and delegate the control
@@ -32,6 +33,7 @@ public final class RequestDispatcher {
      * @return response resulting from the adapter call
      * @throws AdapterException in case the request type is not recognized
      */
+    @SuppressWarnings("java:S2139") // Re-throwing the exception is intentional, we only want to log it.
     public static String adapterCall(final ExaMetadata metadata, final String rawRequest) throws AdapterException {
         try {
             return processAdapterCall(metadata, rawRequest);
@@ -55,10 +57,24 @@ public final class RequestDispatcher {
         }
         logVersionInformation();
         logRawRequest(rawRequest);
-        final AdapterCallExecutor adapterCallExecutor = getAdapterCallExecutor();
-        final String response = adapterCallExecutor.executeAdapterCall(adapterRequest, metadata);
-        logRawResponse(response);
-        return response;
+        final AdapterFactory adapterFactory = getAdapterFactory();
+        try (TelemetryClient telemetryClient = createTelemetryClient(adapterFactory, adapterRequest)) {
+            final AdapterContext context = new AdapterContext(telemetryClient);
+            final VirtualSchemaAdapter virtualSchemaAdapter = adapterFactory.createAdapter(context);
+            final AdapterCallExecutor adapterCallExecutor = new AdapterCallExecutor(virtualSchemaAdapter, telemetryClient);
+            final String response = adapterCallExecutor.executeAdapterCall(adapterRequest, metadata);
+            logRawResponse(response);
+            return response;
+        }
+    }
+
+    private static TelemetryClient createTelemetryClient(final AdapterFactory factory, final AdapterRequest adapterRequest) {
+        final AdapterTelemetryConfig adapterConfig = AdapterTelemetryConfig.parseFromProperties(adapterRequest.getSchemaMetadataInfo().getProperties());
+        final TelemetryConfig.Builder configBuilder = TelemetryConfig.builder(factory.getAdapterName(), factory.getAdapterVersion());
+        if (adapterConfig.isTelemetryDisabled()) {
+            configBuilder.disableTracking();
+        }
+        return TelemetryClient.create(configBuilder.build());
     }
 
     private static void logVersionInformation() {
@@ -88,14 +104,6 @@ public final class RequestDispatcher {
         } else {
             remoteLogManager.setupConsoleLogger(configuration.getLogLevel());
         }
-    }
-
-    private static AdapterCallExecutor getAdapterCallExecutor() {
-        return new AdapterCallExecutor(getVirtualSchemaAdapter());
-    }
-
-    private static VirtualSchemaAdapter getVirtualSchemaAdapter() {
-        return getAdapterFactory().createAdapter();
     }
 
     private static AdapterFactory getAdapterFactory() {
