@@ -28,10 +28,6 @@ public class AdapterProperties extends AbstractAdapterProperties {
      */
     public static final String CONNECTION_NAME_PROPERTY = "CONNECTION_NAME";
     /**
-     * Name of the property to disable telemetry for the adapter.
-     */
-    public static final String TELEMETRY_PROPERTY = "TELEMETRY";
-    /**
      * The constant DEBUG_ADDRESS_PROPERTY.
      */
     public static final String DEBUG_ADDRESS_PROPERTY = "DEBUG_ADDRESS";
