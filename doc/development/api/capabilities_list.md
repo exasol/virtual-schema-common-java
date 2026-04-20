@@ -176,6 +176,7 @@ Here you can find a list of available Virtual Schema capabilities.
 - `FN_POWER`
 - `FN_RADIANS`
 - `FN_RAND`
+- `FN_REGEXP_COUNT`
 - `FN_REGEXP_INSTR`
 - `FN_REGEXP_REPLACE`
 - `FN_REGEXP_SUBSTR`
@@ -257,6 +258,7 @@ Here you can find a list of available Virtual Schema capabilities.
 - `FN_UNICODE`
 - `FN_UNICODECHR`
 - `FN_UPPER`
+- `FN_DAYOFWEEK`
 - `FN_WEEK`
 - `FN_YEAR`
 - `FN_YEARS_BETWEEN`
