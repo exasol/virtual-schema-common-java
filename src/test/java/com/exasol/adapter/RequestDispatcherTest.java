@@ -5,7 +5,9 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 
+import java.util.Map;
 import java.util.logging.*;
 
 import org.itsallcode.io.Capturable;
@@ -13,11 +15,17 @@ import org.itsallcode.junit.sysextensions.SystemErrGuard;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.exasol.ExaMetadata;
+import com.exasol.adapter.metadata.SchemaMetadataInfo;
+import com.exasol.adapter.request.AdapterRequest;
 import com.exasol.adapter.request.parser.RequestParserException;
+import com.exasol.telemetry.TelemetryClient;
 
 @ExtendWith(SystemErrGuard.class)
+@ExtendWith(MockitoExtension.class)
 class RequestDispatcherTest {
     private static final String DEFAULT_REQUEST_PARTS = "\"schemaMetadataInfo\" :\n" //
             + "    {\n" //
@@ -173,12 +181,34 @@ class RequestDispatcherTest {
     }
 
     @Test
-    void testUnknownRequestTypeThrowsException(final Capturable stream) throws AdapterException {
+    void testUnknownRequestTypeThrowsException(final Capturable stream) {
         final String rawRequest = "{ \"type\" : \"NON_EXISTENT_REQUEST_TYPE\" }";
         stream.capture();
         assertAll(
                 () -> assertThrows(RequestParserException.class,
                         () -> RequestDispatcher.adapterCall(this.metadata, rawRequest)),
                 () -> assertThat(stream.getCapturedData(), containsString("SEVERE")));
+    }
+
+    @Test
+    void testCreateTelemetryClientWithTelemetryDisabled(final @Mock AdapterFactory factoryMock, final @Mock AdapterRequest adapterRequestMock) {
+        when(adapterRequestMock.getSchemaMetadataInfo()).thenReturn(new SchemaMetadataInfo("schema", "notes", Map.of("TELEMETRY", "disabled")));
+        when(factoryMock.getAdapterProjectShortTag()).thenReturn("shortTag");
+        when(factoryMock.getAdapterVersion()).thenReturn("adapterVersion");
+        final TelemetryClient client = RequestDispatcher.createTelemetryClient(factoryMock, adapterRequestMock);
+        assertThat(client.getClass().getSimpleName(), equalTo("NoOpTelemetryClient"));
+    }
+
+    @Test
+    void testCreateTelemetryClientWithTelemetryEnabled(final @Mock AdapterFactory factoryMock, final @Mock AdapterRequest adapterRequestMock) {
+        when(adapterRequestMock.getSchemaMetadataInfo()).thenReturn(new SchemaMetadataInfo("schema", "notes", Map.of()));
+        when(factoryMock.getAdapterProjectShortTag()).thenReturn("shortTag");
+        when(factoryMock.getAdapterVersion()).thenReturn("adapterVersion");
+        final TelemetryClient client = RequestDispatcher.createTelemetryClient(factoryMock, adapterRequestMock);
+        String expectedClassName = "AsyncTelemetryClient";
+        if (System.getenv("EXASOL_TELEMETRY_DISABLE") != null || System.getenv("CI") != null) {
+            expectedClassName = "NoOpTelemetryClient";
+        }
+        assertThat(client.getClass().getSimpleName(), equalTo(expectedClassName));
     }
 }

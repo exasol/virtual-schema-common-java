@@ -11,6 +11,9 @@ import com.exasol.adapter.response.*;
  * This class implements a stub for a VirtualSchemaAdapter
  */
 public class StubAdapter implements VirtualSchemaAdapter {
+    public StubAdapter(final AdapterContext context) {
+    }
+
     @Override
     public CreateVirtualSchemaResponse createVirtualSchema(final ExaMetadata metadata,
             final CreateVirtualSchemaRequest request) {

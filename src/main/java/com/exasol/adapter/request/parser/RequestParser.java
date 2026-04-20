@@ -49,25 +49,25 @@ public class RequestParser extends AbstractRequestParser {
         final JsonObject root = reader.readObject();
         final String type = readRequestType(root);
         final SchemaMetadataInfo metadataInfo = readSchemaMetadataInfo(root);
-        final Map<String, String> adapterProperties = parseProperties(root);
         switch (type) {
-        case REQUEST_TYPE_DROP_VIRTUAL_SCHEMA:
-            return new DropVirtualSchemaRequest(metadataInfo);
-        case REQUEST_TYPE_CREATE_VIRTUAL_SCHEMA:
-            return new CreateVirtualSchemaRequest(metadataInfo);
-        case REQUEST_TYPE_REFRESH:
-            return parseRefreshRequest(root, metadataInfo);
-        case REQUEST_TYPE_SET_PROPERTIES:
-            return new SetPropertiesRequest(metadataInfo, adapterProperties);
-        case REQUEST_TYPE_GET_CAPABILITIES:
-            return new GetCapabilitiesRequest(metadataInfo);
-        case REQUEST_TYPE_PUSHDOWN:
-            return parsePushdownRequest(root, metadataInfo);
-        default:
-            throw new RequestParserException(ExaError.messageBuilder("E-VSCOMJAVA-16")
-                    .message("Could not parse unknown adapter request type identifier {{type}}.")
-                    .mitigation("Check whether versions of Exasol database and Virtual Schema Adapter are compatible.")
-                    .parameter("type", type).toString());
+            case REQUEST_TYPE_DROP_VIRTUAL_SCHEMA:
+                return new DropVirtualSchemaRequest(metadataInfo);
+            case REQUEST_TYPE_CREATE_VIRTUAL_SCHEMA:
+                return new CreateVirtualSchemaRequest(metadataInfo);
+            case REQUEST_TYPE_REFRESH:
+                return parseRefreshRequest(root, metadataInfo);
+            case REQUEST_TYPE_SET_PROPERTIES:
+                final Map<String, String> adapterProperties = parseProperties(root);
+                return new SetPropertiesRequest(metadataInfo, adapterProperties);
+            case REQUEST_TYPE_GET_CAPABILITIES:
+                return new GetCapabilitiesRequest(metadataInfo);
+            case REQUEST_TYPE_PUSHDOWN:
+                return parsePushdownRequest(root, metadataInfo);
+            default:
+                throw new RequestParserException(ExaError.messageBuilder("E-VSCOMJAVA-16")
+                        .message("Could not parse unknown adapter request type identifier {{type}}.")
+                        .mitigation("Check whether versions of Exasol database and Virtual Schema Adapter are compatible.")
+                        .parameter("type", type).toString());
         }
     }
 
