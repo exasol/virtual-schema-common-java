@@ -4,6 +4,7 @@ import static com.exasol.adapter.capabilities.CapabilityAssertions.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -84,6 +85,26 @@ class CapabilitiesTest {
                 () -> assertEmptyPredicateCapabilities(capabilities), //
                 () -> assertEmptyScalarFunctionCapabilities(capabilities), //
                 () -> assertCapabilitesContainAllOf(capabilities, expectedCapabilities));
+    }
+
+    @Test
+    void gettersReturnUnmodifiableSets() {
+        final Capabilities capabilities = this.builder.addMain(MainCapability.AGGREGATE_GROUP_BY_COLUMN)
+                .addLiteral(LiteralCapability.DATE).addPredicate(PredicateCapability.EQUAL)
+                .addScalarFunction(ScalarFunctionCapability.ABS).addAggregateFunction(AggregateFunctionCapability.AVG)
+                .build();
+
+        assertAll(
+                () -> assertThrows(UnsupportedOperationException.class,
+                        () -> capabilities.getMainCapabilities().add(MainCapability.AGGREGATE_GROUP_BY_EXPRESSION)),
+                () -> assertThrows(UnsupportedOperationException.class,
+                        () -> capabilities.getLiteralCapabilities().add(LiteralCapability.DOUBLE)),
+                () -> assertThrows(UnsupportedOperationException.class,
+                        () -> capabilities.getPredicateCapabilities().add(PredicateCapability.BETWEEN)),
+                () -> assertThrows(UnsupportedOperationException.class,
+                        () -> capabilities.getScalarFunctionCapabilities().add(ScalarFunctionCapability.ACOS)),
+                () -> assertThrows(UnsupportedOperationException.class, () -> capabilities
+                        .getAggregateFunctionCapabilities().add(AggregateFunctionCapability.COUNT)));
     }
 
     @Test

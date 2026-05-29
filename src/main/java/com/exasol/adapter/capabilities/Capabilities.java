@@ -1,5 +1,7 @@
 package com.exasol.adapter.capabilities;
 
+import static java.util.Collections.unmodifiableSet;
+
 import java.util.*;
 
 /**
@@ -13,11 +15,11 @@ public final class Capabilities {
     private final Set<AggregateFunctionCapability> aggregateFunctionCapabilities;
 
     private Capabilities(final Builder builder) {
-        this.mainCapabilities = EnumSet.copyOf(builder.mainCapabilities);
-        this.literalCapabilities = EnumSet.copyOf(builder.literalCapabilities);
-        this.predicateCapabilities = EnumSet.copyOf(builder.predicateCapabilities);
-        this.scalarFunctionCapabilities = EnumSet.copyOf(builder.scalarFunctionCapabilities);
-        this.aggregateFunctionCapabilities = EnumSet.copyOf(builder.aggregateFunctionCapabilities);
+        this.mainCapabilities = unmodifiableSet(EnumSet.copyOf(builder.mainCapabilities));
+        this.literalCapabilities = unmodifiableSet(EnumSet.copyOf(builder.literalCapabilities));
+        this.predicateCapabilities = unmodifiableSet(EnumSet.copyOf(builder.predicateCapabilities));
+        this.scalarFunctionCapabilities = unmodifiableSet(EnumSet.copyOf(builder.scalarFunctionCapabilities));
+        this.aggregateFunctionCapabilities = unmodifiableSet(EnumSet.copyOf(builder.aggregateFunctionCapabilities));
     }
 
     /**
