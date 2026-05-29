@@ -59,12 +59,12 @@ class SchemaMetadataJsonConverterTest {
                 + "}";
         final List<TableMetadata> tables = new ArrayList<>();
         final List<ColumnMetadata> columnsA = new ArrayList<>();
-        columnsA.add(new ColumnMetadata.Builder().name("column_A1").comment("comment A1").type(DataType.createDouble())
+        columnsA.add(ColumnMetadata.builder().name("column_A1").comment("comment A1").type(DataType.createDouble())
                 .adapterNotes("notes A1").nullable(false).build());
-        columnsA.add(new ColumnMetadata.Builder().name("column_A2").type(DataType.createDate())
+        columnsA.add(ColumnMetadata.builder().name("column_A2").type(DataType.createDate())
                 .defaultValue("default A2").identity(true).build());
         final List<ColumnMetadata> columnsB = new ArrayList<>();
-        columnsB.add(new ColumnMetadata.Builder().name("COLUMN_B1").type(DataType.createBool()).build());
+        columnsB.add(ColumnMetadata.builder().name("COLUMN_B1").type(DataType.createBool()).build());
         tables.add(new TableMetadata("table_A", "notes A", columnsA, "comment A"));
         tables.add(new TableMetadata("TABLE_B", null, columnsB, null));
         final SchemaMetadata schemaMetadata = new SchemaMetadata(SCHEMA_NAME, tables);
