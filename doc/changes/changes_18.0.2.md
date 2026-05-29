@@ -10,8 +10,7 @@ Code name:
 
 ## Bugfixes
 
-* #306: Fixed `TablesMetadataParser` so omitted `isIdentity` values default to `false` while omitted
-  `isNullable` values still default to `true`.
+* #306: Fixed `TablesMetadataParser` so omitted `isIdentity` values default to `false` while omitted `isNullable` values still default to `true`.
 
 ## Dependency Updates
 
