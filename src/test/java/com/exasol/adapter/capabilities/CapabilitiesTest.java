@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import nl.jqno.equalsverifier.EqualsVerifier;
+
 class CapabilitiesTest {
     private Capabilities.Builder builder;
 
@@ -156,5 +158,10 @@ class CapabilitiesTest {
                 () -> assertThat(capabilities.getMainCapabilities(),
                         containsInAnyOrder(MainCapability.AGGREGATE_GROUP_BY_COLUMN)),
                 () -> assertThat(capabilities.getLiteralCapabilities(), containsInAnyOrder(LiteralCapability.DATE)));
+    }
+
+    @Test
+    void testEqualsContract() {
+        EqualsVerifier.forClass(Capabilities.class).verify();
     }
 }

@@ -252,4 +252,26 @@ public final class Capabilities {
             return this;
         }
     }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Capabilities)) {
+            return false;
+        }
+        final Capabilities that = (Capabilities) o;
+        return Objects.equals(this.mainCapabilities, that.mainCapabilities)
+                && Objects.equals(this.literalCapabilities, that.literalCapabilities)
+                && Objects.equals(this.predicateCapabilities, that.predicateCapabilities)
+                && Objects.equals(this.scalarFunctionCapabilities, that.scalarFunctionCapabilities)
+                && Objects.equals(this.aggregateFunctionCapabilities, that.aggregateFunctionCapabilities);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.mainCapabilities, this.literalCapabilities, this.predicateCapabilities,
+                this.scalarFunctionCapabilities, this.aggregateFunctionCapabilities);
+    }
 }
