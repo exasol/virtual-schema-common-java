@@ -1,0 +1,25 @@
+# Common Module of Exasol Virtual Schemas Adapters 18.0.2, released 2026-??-??
+
+Code name: Improve code quality
+
+## Summary
+
+## Features
+
+* ISSUE_NUMBER: description
+
+## Dependency Updates
+
+### Compile Dependency Updates
+
+* Updated `com.exasol:udf-api-java:1.0.8` to `1.0.9`
+
+### Test Dependency Updates
+
+* Updated `nl.jqno.equalsverifier:equalsverifier:3.19.4` to `4.5`
+* Updated `org.itsallcode:junit5-system-extensions:1.2.2` to `1.2.3`
+* Updated `org.junit.jupiter:junit-jupiter-params:5.14.3` to `6.1.0`
+
+### Plugin Dependency Updates
+
+* Updated `com.exasol:project-keeper-maven-plugin:5.5.2` to `5.6.2`
