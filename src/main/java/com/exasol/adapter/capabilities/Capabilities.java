@@ -74,24 +74,23 @@ public final class Capabilities {
      * @return supported capabilities
      */
     public Capabilities subtract(final Capabilities capabilitiesToExclude) {
-        final Builder builder = builder();
-        final Set<MainCapability> mainCapabilitiesWithExclusions = EnumSet.copyOf(this.mainCapabilities);
-        mainCapabilitiesWithExclusions.removeAll(capabilitiesToExclude.getMainCapabilities());
-        final Set<LiteralCapability> literalCapabilitiesWithExclusions = EnumSet.copyOf(this.literalCapabilities);
-        literalCapabilitiesWithExclusions.removeAll(capabilitiesToExclude.getLiteralCapabilities());
-        final Set<PredicateCapability> predicateCapabilitiesWithExclusions = EnumSet.copyOf(this.predicateCapabilities);
-        predicateCapabilitiesWithExclusions.removeAll(capabilitiesToExclude.getPredicateCapabilities());
-        final Set<ScalarFunctionCapability> scalarCapabilitiesWithExclusions = EnumSet
-                .copyOf(this.scalarFunctionCapabilities);
-        scalarCapabilitiesWithExclusions.removeAll(capabilitiesToExclude.getScalarFunctionCapabilities());
-        final Set<AggregateFunctionCapability> aggregateCapabilitiesWithExclusions = EnumSet
-                .copyOf(this.aggregateFunctionCapabilities);
-        aggregateCapabilitiesWithExclusions.removeAll(capabilitiesToExclude.getAggregateFunctionCapabilities());
+        return builder()
+                .addMain(subtract(this.mainCapabilities, capabilitiesToExclude.getMainCapabilities(), MainCapability.class))
+                .addPredicate(subtract(this.predicateCapabilities, capabilitiesToExclude.getPredicateCapabilities(), PredicateCapability.class))
+                .addLiteral(subtract(this.literalCapabilities, capabilitiesToExclude.getLiteralCapabilities(), LiteralCapability.class))
+                .addScalarFunction(
+                        subtract(this.scalarFunctionCapabilities, capabilitiesToExclude.getScalarFunctionCapabilities(), ScalarFunctionCapability.class))
+                .addAggregateFunction(subtract(this.aggregateFunctionCapabilities, capabilitiesToExclude.getAggregateFunctionCapabilities(),
+                        AggregateFunctionCapability.class))
+                .build();
+    }
 
-        builder.addMain(mainCapabilitiesWithExclusions).addPredicate(predicateCapabilitiesWithExclusions)
-                .addLiteral(literalCapabilitiesWithExclusions).addScalarFunction(scalarCapabilitiesWithExclusions)
-                .addAggregateFunction(aggregateCapabilitiesWithExclusions);
-        return builder.build();
+    private static <T extends Enum<T>> Set<T> subtract(final Set<T> capabilities, final Set<T> capabilitiesToExclude,
+            final Class<T> capabilityType) {
+        final Set<T> capabilitiesWithExclusions = EnumSet.noneOf(capabilityType);
+        capabilitiesWithExclusions.addAll(capabilities);
+        capabilitiesWithExclusions.removeAll(capabilitiesToExclude);
+        return capabilitiesWithExclusions;
     }
 
     /**
