@@ -7,11 +7,13 @@ Code name: Improve code quality
 ## Breaking Changes
 
 * `Capabilities.subtractCapabilities()` is now deprecated for removal and delegates to the new pure `Capabilities.subtract()` implementation. Code that relied on the previous side effect of mutating the receiver must be adapted (#305).
+* Constructor `ColumnMetadata.Builder()` is now deprecated for removal. Use `ColumnMetadata.builder()` to create a new instance (#306).
 * Constructor `Capabilities.Builder()` is now deprecated for removal. Use `Capabilities.builder()` to create a new instance (#305).
 
 ## Bugfixes
 
 * #305: Fixed `Capabilities.subtractCapabilities()` so it no longer mutates the receiver. Added the pure `Capabilities.subtract()` method.
+* #306: Fixed `TablesMetadataParser` so omitted `isIdentity` values default to `false` while omitted `isNullable` values still default to `true`.
 
 ## Dependency Updates
 

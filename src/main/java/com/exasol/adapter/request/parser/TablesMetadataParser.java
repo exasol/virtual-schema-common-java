@@ -57,8 +57,8 @@ public class TablesMetadataParser {
         final String adapterNotes = readAdapterNotes(column);
         final String comment = column.getString(TABLE_COMMENT_KEY, "");
         final String defaultValue = column.getString("default", "");
-        final boolean isNullable = applyBooleanValue(column, "isNullable");
-        final boolean isIdentity = applyBooleanValue(column, "isIdentity");
+        final boolean isNullable = applyBooleanValue(column, "isNullable", true);
+        final boolean isIdentity = applyBooleanValue(column, "isIdentity", false);
         final JsonObject dataType = column.getJsonObject(DATA_TYPE);
         final DataType type = getDataType(dataType);
         return ColumnMetadata.builder().name(columnName).adapterNotes(adapterNotes).type(type).nullable(isNullable)
@@ -81,11 +81,12 @@ public class TablesMetadataParser {
         }
     }
 
-    private boolean applyBooleanValue(final JsonObject column, final String bolleanName) {
-        if (column.containsKey(bolleanName)) {
-            return column.getBoolean(bolleanName);
+    private boolean applyBooleanValue(final JsonObject column, final String booleanName,
+            final boolean defaultValue) {
+        if (column.containsKey(booleanName)) {
+            return column.getBoolean(booleanName);
         }
-        return true;
+        return defaultValue;
     }
 
     private static DataType.ExaCharset charSetFromString(final String charset) {
