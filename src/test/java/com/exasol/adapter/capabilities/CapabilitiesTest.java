@@ -94,23 +94,41 @@ class CapabilitiesTest {
     }
 
     @Test
-    void gettersReturnUnmodifiableSets() {
-        final Capabilities capabilities = this.builder.addMain(MainCapability.AGGREGATE_GROUP_BY_COLUMN)
-                .addLiteral(LiteralCapability.DATE).addPredicate(PredicateCapability.EQUAL)
-                .addScalarFunction(ScalarFunctionCapability.ABS).addAggregateFunction(AggregateFunctionCapability.AVG)
-                .build();
+    void getMainCapabilitiesReturnsUnmodifiableSet() {
+        final var mainCapabilities = this.builder.addMain(MainCapability.AGGREGATE_GROUP_BY_COLUMN).build().getMainCapabilities();
 
-        assertAll(
-                () -> assertThrows(UnsupportedOperationException.class,
-                        () -> capabilities.getMainCapabilities().add(MainCapability.AGGREGATE_GROUP_BY_EXPRESSION)),
-                () -> assertThrows(UnsupportedOperationException.class,
-                        () -> capabilities.getLiteralCapabilities().add(LiteralCapability.DOUBLE)),
-                () -> assertThrows(UnsupportedOperationException.class,
-                        () -> capabilities.getPredicateCapabilities().add(PredicateCapability.BETWEEN)),
-                () -> assertThrows(UnsupportedOperationException.class,
-                        () -> capabilities.getScalarFunctionCapabilities().add(ScalarFunctionCapability.ACOS)),
-                () -> assertThrows(UnsupportedOperationException.class, () -> capabilities
-                        .getAggregateFunctionCapabilities().add(AggregateFunctionCapability.COUNT)));
+        assertThrows(UnsupportedOperationException.class,
+                () -> mainCapabilities.add(MainCapability.AGGREGATE_GROUP_BY_EXPRESSION));
+    }
+
+    @Test
+    void getLiteralCapabilitiesReturnsUnmodifiableSet() {
+        final var literalCapabilities = this.builder.addLiteral(LiteralCapability.DATE).build().getLiteralCapabilities();
+
+        assertThrows(UnsupportedOperationException.class, () -> literalCapabilities.add(LiteralCapability.DOUBLE));
+    }
+
+    @Test
+    void getPredicateCapabilitiesReturnsUnmodifiableSet() {
+        final var predicateCapabilities = this.builder.addPredicate(PredicateCapability.EQUAL).build().getPredicateCapabilities();
+
+        assertThrows(UnsupportedOperationException.class, () -> predicateCapabilities.add(PredicateCapability.BETWEEN));
+    }
+
+    @Test
+    void getScalarFunctionCapabilitiesReturnsUnmodifiableSet() {
+        final var scalarFunctionCapabilities = this.builder.addScalarFunction(ScalarFunctionCapability.ABS).build().getScalarFunctionCapabilities();
+
+        assertThrows(UnsupportedOperationException.class,
+                () -> scalarFunctionCapabilities.add(ScalarFunctionCapability.ACOS));
+    }
+
+    @Test
+    void getAggregateFunctionCapabilitiesReturnsUnmodifiableSet() {
+        final var aggregateFunctionCapabilities = this.builder.addAggregateFunction(AggregateFunctionCapability.AVG).build().getAggregateFunctionCapabilities();
+
+        assertThrows(UnsupportedOperationException.class,
+                () -> aggregateFunctionCapabilities.add(AggregateFunctionCapability.COUNT));
     }
 
     @Test
