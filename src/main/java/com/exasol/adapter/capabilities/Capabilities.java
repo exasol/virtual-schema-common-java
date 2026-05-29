@@ -1,5 +1,7 @@
 package com.exasol.adapter.capabilities;
 
+import static java.util.Collections.unmodifiableSet;
+
 import java.util.*;
 
 /**
@@ -13,11 +15,11 @@ public final class Capabilities {
     private final Set<AggregateFunctionCapability> aggregateFunctionCapabilities;
 
     private Capabilities(final Builder builder) {
-        this.mainCapabilities = EnumSet.copyOf(builder.mainCapabilities);
-        this.literalCapabilities = EnumSet.copyOf(builder.literalCapabilities);
-        this.predicateCapabilities = EnumSet.copyOf(builder.predicateCapabilities);
-        this.scalarFunctionCapabilities = EnumSet.copyOf(builder.scalarFunctionCapabilities);
-        this.aggregateFunctionCapabilities = EnumSet.copyOf(builder.aggregateFunctionCapabilities);
+        this.mainCapabilities = unmodifiableSet(EnumSet.copyOf(builder.mainCapabilities));
+        this.literalCapabilities = unmodifiableSet(EnumSet.copyOf(builder.literalCapabilities));
+        this.predicateCapabilities = unmodifiableSet(EnumSet.copyOf(builder.predicateCapabilities));
+        this.scalarFunctionCapabilities = unmodifiableSet(EnumSet.copyOf(builder.scalarFunctionCapabilities));
+        this.aggregateFunctionCapabilities = unmodifiableSet(EnumSet.copyOf(builder.aggregateFunctionCapabilities));
     }
 
     /**
@@ -66,28 +68,41 @@ public final class Capabilities {
     }
 
     /**
-     * Removes unsupported capabilities
+     * Removes unsupported capabilities without mutating this instance.
      *
      * @param capabilitiesToExclude unsupported capabilities
      * @return supported capabilities
      */
-    public Capabilities subtractCapabilities(final Capabilities capabilitiesToExclude) {
-        final Builder builder = builder();
-        final Set<MainCapability> mainCapabilitiesWithExclusions = this.mainCapabilities;
-        mainCapabilitiesWithExclusions.removeAll(capabilitiesToExclude.getMainCapabilities());
-        final Set<LiteralCapability> literalCapabilitiesWithExclusions = this.literalCapabilities;
-        literalCapabilitiesWithExclusions.removeAll(capabilitiesToExclude.getLiteralCapabilities());
-        final Set<PredicateCapability> predicateCapabilitiesWithExclusions = this.predicateCapabilities;
-        predicateCapabilitiesWithExclusions.removeAll(capabilitiesToExclude.getPredicateCapabilities());
-        final Set<ScalarFunctionCapability> scalarCapabilitiesWithExclusions = this.scalarFunctionCapabilities;
-        scalarCapabilitiesWithExclusions.removeAll(capabilitiesToExclude.getScalarFunctionCapabilities());
-        final Set<AggregateFunctionCapability> aggregateCapabilitiesWithExclusions = this.aggregateFunctionCapabilities;
-        aggregateCapabilitiesWithExclusions.removeAll(capabilitiesToExclude.getAggregateFunctionCapabilities());
+    public Capabilities subtract(final Capabilities capabilitiesToExclude) {
+        return builder()
+                .addMain(subtract(this.mainCapabilities, capabilitiesToExclude.getMainCapabilities(), MainCapability.class))
+                .addPredicate(subtract(this.predicateCapabilities, capabilitiesToExclude.getPredicateCapabilities(), PredicateCapability.class))
+                .addLiteral(subtract(this.literalCapabilities, capabilitiesToExclude.getLiteralCapabilities(), LiteralCapability.class))
+                .addScalarFunction(
+                        subtract(this.scalarFunctionCapabilities, capabilitiesToExclude.getScalarFunctionCapabilities(), ScalarFunctionCapability.class))
+                .addAggregateFunction(subtract(this.aggregateFunctionCapabilities, capabilitiesToExclude.getAggregateFunctionCapabilities(),
+                        AggregateFunctionCapability.class))
+                .build();
+    }
 
-        builder.addMain(mainCapabilitiesWithExclusions).addPredicate(predicateCapabilitiesWithExclusions)
-                .addLiteral(literalCapabilitiesWithExclusions).addScalarFunction(scalarCapabilitiesWithExclusions)
-                .addAggregateFunction(aggregateCapabilitiesWithExclusions);
-        return builder.build();
+    private static <T extends Enum<T>> Set<T> subtract(final Set<T> capabilities, final Set<T> capabilitiesToExclude,
+            final Class<T> capabilityType) {
+        final Set<T> capabilitiesWithExclusions = EnumSet.noneOf(capabilityType);
+        capabilitiesWithExclusions.addAll(capabilities);
+        capabilitiesWithExclusions.removeAll(capabilitiesToExclude);
+        return capabilitiesWithExclusions;
+    }
+
+    /**
+     * @deprecated Use {@link #subtract(Capabilities)}. This method previously mutated the receiver and now delegates to
+     *             the pure implementation.
+     *
+     * @param capabilitiesToExclude unsupported capabilities
+     * @return supported capabilities
+     */
+    @Deprecated(since = "18.0.2", forRemoval = true)
+    public Capabilities subtractCapabilities(final Capabilities capabilitiesToExclude) {
+        return subtract(capabilitiesToExclude);
     }
 
     /**
@@ -118,6 +133,14 @@ public final class Capabilities {
         final Set<ScalarFunctionCapability> scalarFunctionCapabilities = EnumSet.noneOf(ScalarFunctionCapability.class);
         final Set<AggregateFunctionCapability> aggregateFunctionCapabilities = EnumSet
                 .noneOf(AggregateFunctionCapability.class);
+
+        /**
+         * @deprecated Use {@link #builder()}. This constructor is public for technical reasons but should not be used directly.
+         */
+        @Deprecated(since = "18.0.2", forRemoval = true)
+        public Builder() {
+            // intentionally left blank
+        }
 
         /**
          * Create new capability instance
@@ -237,5 +260,34 @@ public final class Capabilities {
             this.aggregateFunctionCapabilities.addAll(capabilities);
             return this;
         }
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Capabilities)) {
+            return false;
+        }
+        final Capabilities that = (Capabilities) o;
+        return Objects.equals(this.mainCapabilities, that.mainCapabilities)
+                && Objects.equals(this.literalCapabilities, that.literalCapabilities)
+                && Objects.equals(this.predicateCapabilities, that.predicateCapabilities)
+                && Objects.equals(this.scalarFunctionCapabilities, that.scalarFunctionCapabilities)
+                && Objects.equals(this.aggregateFunctionCapabilities, that.aggregateFunctionCapabilities);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.mainCapabilities, this.literalCapabilities, this.predicateCapabilities,
+                this.scalarFunctionCapabilities, this.aggregateFunctionCapabilities);
+    }
+
+    @Override
+    public String toString() {
+        return "Capabilities [mainCapabilities=" + mainCapabilities + ", literalCapabilities=" + literalCapabilities + ", predicateCapabilities="
+                + predicateCapabilities + ", scalarFunctionCapabilities=" + scalarFunctionCapabilities + ", aggregateFunctionCapabilities="
+                + aggregateFunctionCapabilities + "]";
     }
 }
