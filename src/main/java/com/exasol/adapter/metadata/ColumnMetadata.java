@@ -193,6 +193,14 @@ public final class ColumnMetadata {
         private String comment = "";
 
         /**
+         * @deprecated use {@link ColumnMetadata#builder()} instead.
+         */
+        @Deprecated(since = "18.0.2", forRemoval = true)
+        public Builder() {
+            // intentionally left blank
+        }
+
+        /**
          * Set the column name
          *
          * @param name column name
