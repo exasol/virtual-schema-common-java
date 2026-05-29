@@ -21,9 +21,8 @@ Code name: Improve code quality
 
 ### Test Dependency Updates
 
-* Updated `nl.jqno.equalsverifier:equalsverifier:3.19.4` to `4.5`
 * Updated `org.itsallcode:junit5-system-extensions:1.2.2` to `1.2.3`
-* Updated `org.junit.jupiter:junit-jupiter-params:5.14.3` to `6.1.0`
+* Updated `org.junit.jupiter:junit-jupiter-params:5.14.3` to `5.14.4`
 
 ### Plugin Dependency Updates
 
