@@ -3,6 +3,7 @@ package com.exasol.adapter.request.parser;
 import static com.exasol.adapter.metadata.DataType.ExaCharset.ASCII;
 import static com.exasol.adapter.metadata.DataType.ExaCharset.UTF8;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 
 import java.io.*;
@@ -136,14 +137,14 @@ class TablesMetadataParserTest {
 
         final List<TableMetadata> tables = TablesMetadataParser.create().parse(tablesAsJson);
 
-        final List<ColumnMetadata> expectedColumns = new ArrayList<>();
-        expectedColumns.add(ColumnMetadata.builder().name("DEFAULTS").adapterNotes("")
-                .type(DataType.createDecimal(18, 0)).nullable(true).identity(false).defaultValue("").comment("")
-                .build());
-        expectedColumns.add(ColumnMetadata.builder().name("EXPLICIT_VALUES").adapterNotes("")
-                .type(DataType.createDecimal(18, 0)).nullable(false).identity(true).defaultValue("").comment("")
-                .build());
+        final List<ColumnMetadata> expectedColumns = List.of(
+                ColumnMetadata.builder().name("DEFAULTS").adapterNotes("")
+                        .type(DataType.createDecimal(18, 0)).nullable(true).identity(false).defaultValue("").comment("")
+                        .build(),
+                ColumnMetadata.builder().name("EXPLICIT_VALUES").adapterNotes("")
+                        .type(DataType.createDecimal(18, 0)).nullable(false).identity(true).defaultValue("").comment("")
+                        .build());
 
-        assertThat(tables, equalTo(List.of(new TableMetadata("T1", "", expectedColumns, ""))));
+        assertThat(tables, contains(new TableMetadata("T1", "", expectedColumns, "")));
     }
 }
