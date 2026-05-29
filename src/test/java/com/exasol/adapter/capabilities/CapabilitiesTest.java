@@ -26,7 +26,8 @@ class CapabilitiesTest {
                 () -> assertEmptyLiteralCapabilities(capabilities), //
                 () -> assertEmptyPredicateCapabilities(capabilities), //
                 () -> assertEmptyScalarFunctionCapabilities(capabilities), //
-                () -> assertEmptyAggregateFunctionCapatilities(capabilities));
+                () -> assertEmptyAggregateFunctionCapatilities(capabilities),
+                () -> assertThat(capabilities.isEmpty(), is(true)));
     }
 
     @Test
@@ -38,7 +39,8 @@ class CapabilitiesTest {
                 () -> assertEmptyLiteralCapabilities(capabilities), //
                 () -> assertEmptyPredicateCapabilities(capabilities), //
                 () -> assertEmptyScalarFunctionCapabilities(capabilities), //
-                () -> assertEmptyAggregateFunctionCapatilities(capabilities));
+                () -> assertEmptyAggregateFunctionCapatilities(capabilities),
+                () -> assertThat(capabilities.isEmpty(), is(false)));
     }
 
     @Test
@@ -49,7 +51,8 @@ class CapabilitiesTest {
                 () -> assertCapabilitesContainAllOf(capabilities, expectedCapabilities), //
                 () -> assertEmptyPredicateCapabilities(capabilities), //
                 () -> assertEmptyScalarFunctionCapabilities(capabilities), //
-                () -> assertEmptyAggregateFunctionCapatilities(capabilities));
+                () -> assertEmptyAggregateFunctionCapatilities(capabilities),
+                () -> assertThat(capabilities.isEmpty(), is(false)));
     }
 
     @Test
@@ -60,7 +63,8 @@ class CapabilitiesTest {
                 () -> assertEmptyLiteralCapabilities(capabilities), //
                 () -> assertCapabilitesContainAllOf(capabilities, expectedCapabilities), //
                 () -> assertEmptyScalarFunctionCapabilities(capabilities), //
-                () -> assertEmptyAggregateFunctionCapatilities(capabilities));
+                () -> assertEmptyAggregateFunctionCapatilities(capabilities),
+                () -> assertThat(capabilities.isEmpty(), is(false)));
     }
 
     @Test
@@ -72,7 +76,8 @@ class CapabilitiesTest {
                 () -> assertEmptyLiteralCapabilities(capabilities), //
                 () -> assertEmptyPredicateCapabilities(capabilities), //
                 () -> assertCapabilitesContainAllOf(capabilities, expectedCapabilities), //
-                () -> assertEmptyAggregateFunctionCapatilities(capabilities));
+                () -> assertEmptyAggregateFunctionCapatilities(capabilities),
+                () -> assertThat(capabilities.isEmpty(), is(false)));
     }
 
     @Test
@@ -84,7 +89,8 @@ class CapabilitiesTest {
                 () -> assertEmptyLiteralCapabilities(capabilities), //
                 () -> assertEmptyPredicateCapabilities(capabilities), //
                 () -> assertEmptyScalarFunctionCapabilities(capabilities), //
-                () -> assertCapabilitesContainAllOf(capabilities, expectedCapabilities));
+                () -> assertCapabilitesContainAllOf(capabilities, expectedCapabilities),
+                () -> assertThat(capabilities.isEmpty(), is(false)));
     }
 
     @Test
