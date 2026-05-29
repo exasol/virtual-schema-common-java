@@ -182,7 +182,7 @@ class CapabilitiesTest {
     }
 
     @Test
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("removal")
     void subtractCapabilitiesDelegatesToSubtract() {
         final Capabilities capabilities = this.builder.addMain(MainCapability.AGGREGATE_GROUP_BY_COLUMN)
                 .addLiteral(LiteralCapability.DATE).build();
