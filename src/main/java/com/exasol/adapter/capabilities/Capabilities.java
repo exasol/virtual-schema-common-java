@@ -135,6 +135,14 @@ public final class Capabilities {
                 .noneOf(AggregateFunctionCapability.class);
 
         /**
+         * @deprecated Use {@link #builder()}. This constructor is public for technical reasons but should not be used directly.
+         */
+        @Deprecated(since = "18.0.2", forRemoval = true)
+        public Builder() {
+            // intentionally left blank
+        }
+
+        /**
          * Create new capability instance
          *
          * @return new capability instance
@@ -274,5 +282,12 @@ public final class Capabilities {
     public int hashCode() {
         return Objects.hash(this.mainCapabilities, this.literalCapabilities, this.predicateCapabilities,
                 this.scalarFunctionCapabilities, this.aggregateFunctionCapabilities);
+    }
+
+    @Override
+    public String toString() {
+        return "Capabilities [mainCapabilities=" + mainCapabilities + ", literalCapabilities=" + literalCapabilities + ", predicateCapabilities="
+                + predicateCapabilities + ", scalarFunctionCapabilities=" + scalarFunctionCapabilities + ", aggregateFunctionCapabilities="
+                + aggregateFunctionCapabilities + "]";
     }
 }

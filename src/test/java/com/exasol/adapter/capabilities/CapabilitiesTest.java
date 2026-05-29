@@ -171,6 +171,17 @@ class CapabilitiesTest {
     }
 
     @Test
+    void subtractEmptyCapabilities() {
+        final Capabilities capabilities = this.builder.addMain(MainCapability.AGGREGATE_GROUP_BY_COLUMN)
+                .addLiteral(LiteralCapability.DATE).build();
+        final Capabilities capabilitiesToExclude = Capabilities.builder().build();
+
+        final Capabilities result = capabilities.subtract(capabilitiesToExclude);
+        assertAll(() -> assertThat(result, equalTo(capabilities)),
+                () -> assertThat(result, not(sameInstance(capabilities))));
+    }
+
+    @Test
     @SuppressWarnings("deprecation")
     void subtractCapabilitiesDelegatesToSubtract() {
         final Capabilities capabilities = this.builder.addMain(MainCapability.AGGREGATE_GROUP_BY_COLUMN)
