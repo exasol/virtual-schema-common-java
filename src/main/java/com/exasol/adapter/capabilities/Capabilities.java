@@ -66,28 +66,42 @@ public final class Capabilities {
     }
 
     /**
-     * Removes unsupported capabilities
+     * Removes unsupported capabilities without mutating this instance.
      *
      * @param capabilitiesToExclude unsupported capabilities
      * @return supported capabilities
      */
-    public Capabilities subtractCapabilities(final Capabilities capabilitiesToExclude) {
+    public Capabilities subtract(final Capabilities capabilitiesToExclude) {
         final Builder builder = builder();
-        final Set<MainCapability> mainCapabilitiesWithExclusions = this.mainCapabilities;
+        final Set<MainCapability> mainCapabilitiesWithExclusions = EnumSet.copyOf(this.mainCapabilities);
         mainCapabilitiesWithExclusions.removeAll(capabilitiesToExclude.getMainCapabilities());
-        final Set<LiteralCapability> literalCapabilitiesWithExclusions = this.literalCapabilities;
+        final Set<LiteralCapability> literalCapabilitiesWithExclusions = EnumSet.copyOf(this.literalCapabilities);
         literalCapabilitiesWithExclusions.removeAll(capabilitiesToExclude.getLiteralCapabilities());
-        final Set<PredicateCapability> predicateCapabilitiesWithExclusions = this.predicateCapabilities;
+        final Set<PredicateCapability> predicateCapabilitiesWithExclusions = EnumSet.copyOf(this.predicateCapabilities);
         predicateCapabilitiesWithExclusions.removeAll(capabilitiesToExclude.getPredicateCapabilities());
-        final Set<ScalarFunctionCapability> scalarCapabilitiesWithExclusions = this.scalarFunctionCapabilities;
+        final Set<ScalarFunctionCapability> scalarCapabilitiesWithExclusions = EnumSet
+                .copyOf(this.scalarFunctionCapabilities);
         scalarCapabilitiesWithExclusions.removeAll(capabilitiesToExclude.getScalarFunctionCapabilities());
-        final Set<AggregateFunctionCapability> aggregateCapabilitiesWithExclusions = this.aggregateFunctionCapabilities;
+        final Set<AggregateFunctionCapability> aggregateCapabilitiesWithExclusions = EnumSet
+                .copyOf(this.aggregateFunctionCapabilities);
         aggregateCapabilitiesWithExclusions.removeAll(capabilitiesToExclude.getAggregateFunctionCapabilities());
 
         builder.addMain(mainCapabilitiesWithExclusions).addPredicate(predicateCapabilitiesWithExclusions)
                 .addLiteral(literalCapabilitiesWithExclusions).addScalarFunction(scalarCapabilitiesWithExclusions)
                 .addAggregateFunction(aggregateCapabilitiesWithExclusions);
         return builder.build();
+    }
+
+    /**
+     * @deprecated Use {@link #subtract(Capabilities)}. This method previously mutated the receiver and now delegates to
+     *             the pure implementation.
+     *
+     * @param capabilitiesToExclude unsupported capabilities
+     * @return supported capabilities
+     */
+    @Deprecated(since = "18.0.2", forRemoval = true)
+    public Capabilities subtractCapabilities(final Capabilities capabilitiesToExclude) {
+        return subtract(capabilitiesToExclude);
     }
 
     /**

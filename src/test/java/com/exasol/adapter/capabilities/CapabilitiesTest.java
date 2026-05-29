@@ -1,13 +1,12 @@
 package com.exasol.adapter.capabilities;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import static com.exasol.adapter.capabilities.CapabilityAssertions.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 class CapabilitiesTest {
     private Capabilities.Builder builder;
@@ -86,7 +85,7 @@ class CapabilitiesTest {
     }
 
     @Test
-    void substractCapabilities() {
+    void subtract() {
         final MainCapability[] mainCapabilities = { MainCapability.AGGREGATE_GROUP_BY_COLUMN,
                 MainCapability.AGGREGATE_GROUP_BY_EXPRESSION };
         final LiteralCapability[] literalCapabilities = { LiteralCapability.DATE, LiteralCapability.DOUBLE };
@@ -111,7 +110,7 @@ class CapabilitiesTest {
                 .addScalarFunction(scalarFunctionCapabilitiesToExclude)
                 .addAggregateFunction(aggregateFunctionCapabilitiesToExclude).build();
 
-        final Capabilities capabilitiesWithExclusion = capabilities.subtractCapabilities(capabilitiesToExclude);
+        final Capabilities capabilitiesWithExclusion = capabilities.subtract(capabilitiesToExclude);
         assertAll(
                 () -> assertThat(capabilitiesWithExclusion.getMainCapabilities(),
                         contains(MainCapability.AGGREGATE_GROUP_BY_EXPRESSION)),
@@ -122,6 +121,40 @@ class CapabilitiesTest {
                 () -> assertThat(capabilitiesWithExclusion.getScalarFunctionCapabilities(),
                         containsInAnyOrder(ScalarFunctionCapability.ABS)),
                 () -> assertThat(capabilitiesWithExclusion.getAggregateFunctionCapabilities(),
-                        containsInAnyOrder(AggregateFunctionCapability.AVG)));
+                        containsInAnyOrder(AggregateFunctionCapability.AVG)),
+                () -> assertThat(capabilities.getMainCapabilities(), containsInAnyOrder(mainCapabilities)),
+                () -> assertThat(capabilities.getLiteralCapabilities(), containsInAnyOrder(literalCapabilities)),
+                () -> assertThat(capabilities.getPredicateCapabilities(), containsInAnyOrder(predicateCapabilities)),
+                () -> assertThat(capabilities.getScalarFunctionCapabilities(),
+                        containsInAnyOrder(scalarFunctionCapabilities)),
+                () -> assertThat(capabilities.getAggregateFunctionCapabilities(),
+                        containsInAnyOrder(aggregateFunctionCapabilities)));
+    }
+
+    @Test
+    void subtractFromEmptyCapabilities() {
+        final Capabilities emptyCapabilities = this.builder.build();
+        final Capabilities capabilitiesToExclude = this.builder.addMain(MainCapability.AGGREGATE_GROUP_BY_COLUMN)
+                .addLiteral(LiteralCapability.DATE).build();
+
+        final Capabilities result = emptyCapabilities.subtract(capabilitiesToExclude);
+        assertThat(result.isEmpty(), is(true));
+    }
+
+    @Test
+    @SuppressWarnings("deprecation")
+    void subtractCapabilitiesDelegatesToSubtract() {
+        final Capabilities capabilities = this.builder.addMain(MainCapability.AGGREGATE_GROUP_BY_COLUMN)
+                .addLiteral(LiteralCapability.DATE).build();
+        final Capabilities capabilitiesToExclude = Capabilities.builder()
+                .addMain(MainCapability.AGGREGATE_GROUP_BY_COLUMN).build();
+
+        final Capabilities result = capabilities.subtractCapabilities(capabilitiesToExclude);
+
+        assertAll(() -> assertEmptyMainCapabilities(result),
+                () -> assertThat(result.getLiteralCapabilities(), containsInAnyOrder(LiteralCapability.DATE)),
+                () -> assertThat(capabilities.getMainCapabilities(),
+                        containsInAnyOrder(MainCapability.AGGREGATE_GROUP_BY_COLUMN)),
+                () -> assertThat(capabilities.getLiteralCapabilities(), containsInAnyOrder(LiteralCapability.DATE)));
     }
 }
