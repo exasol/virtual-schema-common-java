@@ -13,6 +13,7 @@
         <sonar.organization>exasol</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <test.excludeTags/>
+        <ossindexSkip>false</ossindexSkip>
         <gpg.skip>true</gpg.skip>
         <central-publishing.autoPublish>false</central-publishing.autoPublish>
         <central-publishing.skipPublishing>false</central-publishing.skipPublishing>
@@ -168,6 +169,8 @@
                 <version>3.2.0</version>
                 <configuration>
                     <authId>ossindex</authId>
+                    <!-- [impl->dsn~dependency-vulnerabilities~1] -->
+                    <skip>${ossindexSkip}</skip>
                 </configuration>
                 <executions>
                     <execution>
