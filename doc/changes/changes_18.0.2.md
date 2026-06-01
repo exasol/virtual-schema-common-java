@@ -15,6 +15,7 @@ Code name: Improve code quality
 
 * #305: Fixed `Capabilities.subtractCapabilities()` so it no longer mutates the receiver. Added the pure `Capabilities.subtract()` method.
 * #306: Fixed `TablesMetadataParser` so omitted `isIdentity` values default to `false` while omitted `isNullable` values still default to `true`.
+* #309: Fixed the `SqlNodeVisitor` API documentation and parameter names for `SqlPredicateIsNotNull` and `SqlPredicateIsNull`.
 * #308: Fixed `SqlLimit` so `limit` and `offset` stay non-negative for the full object lifetime by making the node immutable and aligning the validation message with the accepted zero values.
 * #307: Fixed `PushdownSqlRenderer` so `HASHTYPE` data types include `bytesize` in rendered pushdown SQL JSON.
 
