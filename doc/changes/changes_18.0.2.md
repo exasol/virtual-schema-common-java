@@ -16,6 +16,7 @@ Code name: Improve code quality
 * #305: Fixed `Capabilities.subtractCapabilities()` so it no longer mutates the receiver. Added the pure `Capabilities.subtract()` method.
 * #306: Fixed `TablesMetadataParser` so omitted `isIdentity` values default to `false` while omitted `isNullable` values still default to `true`.
 * #310: Fixed `SqlStatementSelect.Builder.build()` so empty and partial builders no longer fail with a raw `NullPointerException`.
+* #307: Fixed `PushdownSqlRenderer` so `HASHTYPE` data types include `bytesize` in rendered pushdown SQL JSON.
 
 ## Dependency Updates
 
