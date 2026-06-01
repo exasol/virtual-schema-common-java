@@ -181,6 +181,9 @@ public class PushdownSqlRenderer {
             case GEOMETRY:
                 builder.add(SRID, dataType.getGeometrySrid());
                 break;
+            case HASHTYPE:
+                builder.add(BYTE_SIZE, dataType.getByteSize());
+                break;
             default:
                 break;
             }
