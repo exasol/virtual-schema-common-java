@@ -19,6 +19,7 @@ import com.exasol.telemetry.TelemetryConfig;
  */
 public final class RequestDispatcher {
     private static final Logger LOGGER = Logger.getLogger(RequestDispatcher.class.getName());
+    private static final String VSCOMMON_JAVA_VERSION_PROPERTIES = "META-INF/maven/com.exasol/virtual-schema-common-java/pom.properties";
 
     private RequestDispatcher() {
         // Not instantiable
@@ -80,7 +81,7 @@ public final class RequestDispatcher {
     }
 
     private static void logVersionInformation() {
-        final VersionCollector versionCollector = new VersionCollector();
+        final VersionCollector versionCollector = new VersionCollector(VSCOMMON_JAVA_VERSION_PROPERTIES);
         LOGGER.info("Loaded versions: virtual-schema-common-java " + versionCollector.getVersionNumber());
     }
 

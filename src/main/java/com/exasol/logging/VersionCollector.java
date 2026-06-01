@@ -25,7 +25,11 @@ public class VersionCollector {
 
     /**
      * Instantiates a new Version collector.
+     * 
+     * @deprecated use {@link #VersionCollector(String)} instead to specify the path to the version file. The default path is
+     *             {@code "META-INF/maven/com.exasol/virtual-schema-common-java/pom.properties"}.
      */
+    @Deprecated(since = "18.0.2", forRemoval = true)
     public VersionCollector() {
         this.path = DEFAULT_PATH;
     }
