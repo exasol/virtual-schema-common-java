@@ -14,6 +14,8 @@ import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.DataType;
 import com.exasol.mocking.MockUtils;
 
+import nl.jqno.equalsverifier.EqualsVerifier;
+
 class SqlFunctionScalarJsonValueTest {
     private SqlFunctionScalarJsonValue sqlFunctionScalarJsonValue;
     private SqlFunctionScalarJsonValue.Behavior emptyBehavior;
@@ -66,6 +68,16 @@ class SqlFunctionScalarJsonValueTest {
     }
 
     @Test
+    void testConstructorRejectsUnsupportedFunctionName() {
+        final List<SqlNode> arguments = List.of();
+        final DataType dataType = DataType.createVarChar(1000, DataType.ExaCharset.UTF8);
+        final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> new SqlFunctionScalarJsonValue(ScalarFunction.ABS, arguments, dataType, this.emptyBehavior, this.errorBehavior));
+        assertThat(exception.getMessage(),
+                equalTo("E-VSCOMJAVA-26: Invalid function name for function_scalar_json_value: 'ABS'. Only JSON_VALUE is supported."));
+    }
+
+    @Test
     void testCopiesArgumentsDefensively() {
         final List<SqlNode> arguments = new ArrayList<>();
         arguments.add(new SqlLiteralString("{\"a\": 1}"));
@@ -87,5 +99,11 @@ class SqlFunctionScalarJsonValueTest {
         final SqlFunctionScalarJsonValue function = new SqlFunctionScalarJsonValue(ScalarFunction.JSON_VALUE, null,
                 DataType.createVarChar(1000, DataType.ExaCharset.UTF8), this.emptyBehavior, this.errorBehavior);
         assertThat(function.getArguments(), equalTo(Collections.emptyList()));
+    }
+
+    @Test
+    void testEqualsContract() {
+        EqualsVerifier.forClass(SqlFunctionScalarJsonValue.Behavior.class)
+                .withPrefabValues(Optional.class, Optional.empty(), Optional.of(new SqlLiteralString("dummy"))).verify();
     }
 }

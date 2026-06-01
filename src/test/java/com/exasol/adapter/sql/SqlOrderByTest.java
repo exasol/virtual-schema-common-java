@@ -1,7 +1,10 @@
 package com.exasol.adapter.sql;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
@@ -20,9 +23,9 @@ class SqlOrderByTest {
         expressions.add(new SqlLiteralBool(false));
         isAsc.add(false);
         nullsLast.add(true);
-        assertThat(orderBy.getExpressions().size(), equalTo(1));
-        assertThat(orderBy.isAscending().size(), equalTo(1));
-        assertThat(orderBy.nullsLast().size(), equalTo(1));
+        assertAll(() -> assertThat(orderBy.getExpressions().size(), equalTo(1)),
+                () -> assertThat(orderBy.isAscending().size(), equalTo(1)),
+                () -> assertThat(orderBy.nullsLast().size(), equalTo(1)));
     }
 
     @Test
@@ -32,17 +35,17 @@ class SqlOrderByTest {
         final List<Boolean> isAscending = orderBy.isAscending();
         final List<Boolean> nullsLast = orderBy.nullsLast();
         final SqlLiteralBool literal = new SqlLiteralBool(false);
-        assertThrows(UnsupportedOperationException.class, () -> expressions.add(literal));
-        assertThrows(UnsupportedOperationException.class, () -> isAscending.add(false));
-        assertThrows(UnsupportedOperationException.class, () -> nullsLast.add(true));
+        assertAll(() -> assertThrows(UnsupportedOperationException.class, () -> expressions.add(literal)),
+                () -> assertThrows(UnsupportedOperationException.class, () -> isAscending.add(false)),
+                () -> assertThrows(UnsupportedOperationException.class, () -> nullsLast.add(true)));
     }
 
     @Test
     void testTreatsNullListsAsEmpty() {
         final SqlOrderBy orderBy = new SqlOrderBy(null, null, null);
-        assertThat(orderBy.getExpressions(), empty());
-        assertThat(orderBy.isAscending(), empty());
-        assertThat(orderBy.nullsLast(), empty());
+        assertAll(() -> assertThat(orderBy.getExpressions(), empty()),
+                () -> assertThat(orderBy.isAscending(), empty()),
+                () -> assertThat(orderBy.nullsLast(), empty()));
     }
 
     @Test

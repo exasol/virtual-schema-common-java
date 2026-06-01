@@ -121,7 +121,7 @@ public class SqlFunctionScalarJsonValue extends SqlNode {
     /**
      * This class represent behavior of {@link SqlFunctionScalarJsonValue} on error or empty.
      */
-    public static class Behavior {
+    public static final class Behavior {
         private final BehaviorType behaviorType;
         private final Optional<SqlNode> expression;
 

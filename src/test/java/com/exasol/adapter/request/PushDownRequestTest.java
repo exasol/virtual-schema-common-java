@@ -1,8 +1,9 @@
 package com.exasol.adapter.request;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
@@ -22,8 +23,8 @@ class PushDownRequestTest {
         final PushDownRequest request = new PushDownRequest(null, null, tables, dataTypes);
         tables.add(new TableMetadata("T2", "", List.of(), ""));
         dataTypes.add(DataType.createDouble());
-        assertThat(request.getInvolvedTablesMetadata().size(), equalTo(1));
-        assertThat(request.getSelectListDataTypes().size(), equalTo(1));
+        assertAll(() -> assertThat(request.getInvolvedTablesMetadata().size(), equalTo(1)),
+                () -> assertThat(request.getSelectListDataTypes().size(), equalTo(1)));
     }
 
     @Test
@@ -34,15 +35,15 @@ class PushDownRequestTest {
         final List<TableMetadata> involvedTablesMetadata = request.getInvolvedTablesMetadata();
         final List<DataType> selectListDataTypes = request.getSelectListDataTypes();
         final TableMetadata table = new TableMetadata("T2", "", List.of(), "");
-        assertThrows(UnsupportedOperationException.class, () -> involvedTablesMetadata.add(table));
         final DataType type = DataType.createDouble();
-        assertThrows(UnsupportedOperationException.class, () -> selectListDataTypes.add(type));
+        assertAll(() -> assertThrows(UnsupportedOperationException.class, () -> involvedTablesMetadata.add(table)),
+                () -> assertThrows(UnsupportedOperationException.class, () -> selectListDataTypes.add(type)));
     }
 
     @Test
     void testTreatsNullListsAsEmpty() {
         final PushDownRequest request = new PushDownRequest(null, null, null, null);
-        assertThat(request.getInvolvedTablesMetadata(), empty());
-        assertThat(request.getSelectListDataTypes(), empty());
+        assertAll(() -> assertThat(request.getInvolvedTablesMetadata(), empty()),
+                () -> assertThat(request.getSelectListDataTypes(), empty()));
     }
 }
