@@ -1,9 +1,9 @@
 package com.exasol.adapter.sql;
 
-import com.exasol.adapter.AdapterException;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.exasol.adapter.AdapterException;
 
 /**
  * We could consider to apply builder pattern here (if time)
@@ -25,8 +25,12 @@ public class SqlStatementSelect extends SqlStatement {
         this.having = builder.having;
         this.orderBy = builder.orderBy;
         this.limit = builder.limit;
-        this.fromClause.setParent(this);
-        this.selectList.setParent(this);
+        if (this.fromClause != null) {
+            this.fromClause.setParent(this);
+        }
+        if (this.selectList != null) {
+            this.selectList.setParent(this);
+        }
 
         if (this.whereClause != null) {
             this.whereClause.setParent(this);
@@ -177,6 +181,7 @@ public class SqlStatementSelect extends SqlStatement {
      *
      * @return builder instance
      */
+    @SuppressWarnings("removal")
     public static Builder builder() {
         return new Builder();
     }
@@ -192,6 +197,14 @@ public class SqlStatementSelect extends SqlStatement {
         private SqlNode having;
         private SqlOrderBy orderBy;
         private SqlLimit limit;
+
+        /**
+         * @deprecated use {@link #builder()} instead
+         */
+        @Deprecated(since = "18.0.2", forRemoval = true)
+        public Builder() {
+            // empty constructor
+        }
 
         /**
          * Set the from clause of the SQL Select Statement.
@@ -284,7 +297,7 @@ public class SqlStatementSelect extends SqlStatement {
     public List<SqlNode> getChildren() {
         // This method is not super efficient, but it is not used at the moment and needed
         // only for consistency with SqlNode interface.
-        ArrayList<SqlNode> children = new ArrayList<>();
+        final List<SqlNode> children = new ArrayList<>();
         if (this.fromClause != null) {
             children.add(this.fromClause);
         }

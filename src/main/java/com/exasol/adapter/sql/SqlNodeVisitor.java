@@ -333,20 +333,20 @@ public interface SqlNodeVisitor<R> {
     /**
      * Visit.
      *
-     * @param sqlPredicateOr the sql predicate or
+     * @param sqlPredicateIsNotNull the sql predicate is not null
      * @return the result
      * @throws AdapterException the adapter exception
      */
-    public R visit(SqlPredicateIsNotNull sqlPredicateOr) throws AdapterException;
+    public R visit(SqlPredicateIsNotNull sqlPredicateIsNotNull) throws AdapterException;
 
     /**
      * Visit.
      *
-     * @param sqlPredicateOr the sql predicate or
+     * @param sqlPredicateIsNull the sql predicate is null
      * @return the result
      * @throws AdapterException the adapter exception
      */
-    public R visit(SqlPredicateIsNull sqlPredicateOr) throws AdapterException;
+    public R visit(SqlPredicateIsNull sqlPredicateIsNull) throws AdapterException;
 
     /**
      * Visit.
