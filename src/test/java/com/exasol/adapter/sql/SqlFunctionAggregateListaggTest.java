@@ -49,4 +49,24 @@ class SqlFunctionAggregateListaggTest {
                 .withPrefabValues(SqlLiteralString.class, new SqlLiteralString("red"), new SqlLiteralString("blue"))
                 .verify();
     }
+
+    @Test
+    @SuppressWarnings("removal")
+    void testSetTruncationTypeFailsForImmutableBehavior() {
+        final SqlFunctionAggregateListagg.Behavior behavior = new SqlFunctionAggregateListagg.Behavior(
+                SqlFunctionAggregateListagg.BehaviorType.TRUNCATE);
+        final UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
+                () -> behavior.setTruncationType(SqlFunctionAggregateListagg.Behavior.TruncationType.WITH_COUNT));
+        assertThat(exception.getMessage(), equalTo("LISTAGG overflow behavior is immutable."));
+    }
+
+    @Test
+    @SuppressWarnings("removal")
+    void testSetTruncationFillerFailsForImmutableBehavior() {
+        final SqlFunctionAggregateListagg.Behavior behavior = new SqlFunctionAggregateListagg.Behavior(
+                SqlFunctionAggregateListagg.BehaviorType.TRUNCATE);
+        final SqlLiteralString filler = new SqlLiteralString("...");
+        final UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class, () -> behavior.setTruncationFiller(filler));
+        assertThat(exception.getMessage(), equalTo("LISTAGG overflow behavior is immutable."));
+    }
 }
