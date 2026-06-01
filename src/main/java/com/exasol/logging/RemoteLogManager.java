@@ -35,6 +35,15 @@ public class RemoteLogManager {
     private void removeExistingHandlers() {
         for (final Handler handler : ROOT_LOGGER.getHandlers()) {
             ROOT_LOGGER.removeHandler(handler);
+            closeHandler(handler);
+        }
+    }
+
+    private void closeHandler(final Handler handler) {
+        try {
+            handler.close();
+        } catch (final RuntimeException exception) {
+            LOGGER.fine(() -> "Ignoring exception while closing handler " + handler.getClass().getName() + ".");
         }
     }
 
@@ -73,6 +82,7 @@ public class RemoteLogManager {
     public void close() {
         if (this.socketHandler != null) {
             this.socketHandler.close();
+            this.socketHandler = null;
         }
     }
 }
