@@ -12,6 +12,7 @@ Code name: Improve code quality
 * Constructor `SqlStatementSelect.Builder()` is now deprecated for removal. Use `SqlStatementSelect.builder()` to create a new instance (#306).
 * Methods `SqlLimit.setLimit(int)` and `SqlLimit.setOffset(int)` are deprecated for removal.
 * Constructor `VersionCollector()` is now deprecated for removal. Use `VersionCollector(final String path)` to create a new instance (#312)
+* Methods `SqlFunctionAggregateListagg.Behavior.setTruncationType(TruncationType)` and `SqlFunctionAggregateListagg.Behavior.setTruncationFiller(SqlLiteralString)` are deprecated for removal.
 
 ## Bugfixes
 
