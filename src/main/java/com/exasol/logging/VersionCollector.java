@@ -46,8 +46,8 @@ public class VersionCollector {
         if (stream == null) {
             return "UNKNOWN";
         }
-        try (final InputStream resourceStream = stream) {
-            properties.load(resourceStream);
+        try (stream) {
+            properties.load(stream);
         } catch (final IOException exception) {
             throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-31")
                     .message("Unable to read the version from the file: {{path}}.") //
