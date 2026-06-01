@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.List;
 import java.util.Map;
 
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -111,7 +110,7 @@ class RequestParserTest {
                 .render();
         final RefreshRequest request = (RefreshRequest) this.parser.parse(rawRequest);
         assertAll(() -> assertThat(request.refreshesOnlySelectedTables(), equalTo(false)),
-                () -> assertThat(request.getTables(), Matchers.nullValue()));
+                () -> assertThat(request.getTables(), empty()));
     }
 
     @Test

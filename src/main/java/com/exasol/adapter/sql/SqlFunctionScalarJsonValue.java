@@ -1,5 +1,7 @@
 package com.exasol.adapter.sql;
 
+import static java.util.Collections.emptyList;
+
 import java.util.*;
 
 import com.exasol.adapter.AdapterException;
@@ -29,7 +31,7 @@ public class SqlFunctionScalarJsonValue extends SqlNode {
             final DataType returningDataType, final Behavior emptyBehavior, final Behavior errorBehavior) {
         validateFunctionName(scalarFunction);
         this.scalarFunction = scalarFunction;
-        this.arguments = arguments;
+        this.arguments = arguments == null ? emptyList() : List.copyOf(arguments);
         this.returningDataType = returningDataType;
         this.emptyBehavior = emptyBehavior;
         this.errorBehavior = errorBehavior;
@@ -171,6 +173,7 @@ public class SqlFunctionScalarJsonValue extends SqlNode {
     }
 
     @Override
-    public List<SqlNode> getChildren() { return getArguments(); }
-
+    public List<SqlNode> getChildren() {
+        return getArguments();
+    }
 }

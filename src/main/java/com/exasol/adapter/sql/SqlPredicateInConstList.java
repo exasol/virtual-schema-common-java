@@ -1,7 +1,8 @@
 package com.exasol.adapter.sql;
 
+import static java.util.Collections.emptyList;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.exasol.adapter.AdapterException;
@@ -22,14 +23,12 @@ public class SqlPredicateInConstList extends SqlPredicate {
     public SqlPredicateInConstList(final SqlNode expression, final List<SqlNode> inArguments) {
         super(Predicate.IN_CONSTLIST);
         this.expression = expression;
-        this.inArguments = inArguments;
+        this.inArguments = inArguments == null ? emptyList() : List.copyOf(inArguments);
         if (this.expression != null) {
             this.expression.setParent(this);
         }
-        if (this.inArguments != null) {
-            for (final SqlNode node : this.inArguments) {
-                node.setParent(this);
-            }
+        for (final SqlNode node : this.inArguments) {
+            node.setParent(this);
         }
     }
 
@@ -48,11 +47,7 @@ public class SqlPredicateInConstList extends SqlPredicate {
      * @return the in arguments
      */
     public List<SqlNode> getInArguments() {
-        if (this.inArguments == null) {
-            return Collections.emptyList();
-        } else {
-            return Collections.unmodifiableList(this.inArguments);
-        }
+        return this.inArguments;
     }
 
     @Override
@@ -67,10 +62,8 @@ public class SqlPredicateInConstList extends SqlPredicate {
 
     @Override
     public List<SqlNode> getChildren() {
-        List<SqlNode> children = new ArrayList<>();
-        if (this.inArguments != null) {
-            children.addAll(this.inArguments);
-        }
+        final List<SqlNode> children = new ArrayList<>();
+        children.addAll(this.inArguments);
         children.add(this.expression);
         return children;
     }

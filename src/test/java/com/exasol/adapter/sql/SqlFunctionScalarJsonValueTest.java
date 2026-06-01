@@ -2,20 +2,18 @@ package com.exasol.adapter.sql;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import java.util.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.DataType;
 import com.exasol.mocking.MockUtils;
 
-@ExtendWith(MockitoExtension.class)
 class SqlFunctionScalarJsonValueTest {
     private SqlFunctionScalarJsonValue sqlFunctionScalarJsonValue;
     private SqlFunctionScalarJsonValue.Behavior emptyBehavior;
@@ -65,5 +63,28 @@ class SqlFunctionScalarJsonValueTest {
     @Test
     void testGetErrorBehavior() {
         assertThat(this.sqlFunctionScalarJsonValue.getErrorBehavior(), equalTo(this.errorBehavior));
+    }
+
+    @Test
+    void testCopiesArgumentsDefensively() {
+        final List<SqlNode> arguments = new ArrayList<>();
+        arguments.add(new SqlLiteralString("{\"a\": 1}"));
+        final SqlFunctionScalarJsonValue function = new SqlFunctionScalarJsonValue(ScalarFunction.JSON_VALUE, arguments,
+                DataType.createVarChar(1000, DataType.ExaCharset.UTF8), this.emptyBehavior, this.errorBehavior);
+        arguments.add(new SqlLiteralString("$.a"));
+        assertThat(function.getArguments().size(), equalTo(1));
+    }
+
+    @Test
+    void testGetArgumentsReturnsUnmodifiableList() {
+        assertThrows(UnsupportedOperationException.class,
+                () -> this.sqlFunctionScalarJsonValue.getArguments().add(new SqlLiteralString("MUTATED")));
+    }
+
+    @Test
+    void testTreatsNullArgumentsAsEmptyList() {
+        final SqlFunctionScalarJsonValue function = new SqlFunctionScalarJsonValue(ScalarFunction.JSON_VALUE, null,
+                DataType.createVarChar(1000, DataType.ExaCharset.UTF8), this.emptyBehavior, this.errorBehavior);
+        assertThat(function.getArguments(), equalTo(Collections.emptyList()));
     }
 }

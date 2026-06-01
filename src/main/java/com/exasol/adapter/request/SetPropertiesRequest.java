@@ -1,5 +1,9 @@
 package com.exasol.adapter.request;
 
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.unmodifiableMap;
+
+import java.util.HashMap;
 import java.util.Map;
 
 import com.exasol.ExaMetadata;
@@ -21,7 +25,7 @@ public class SetPropertiesRequest extends AbstractAdapterRequest {
      */
     public SetPropertiesRequest(final SchemaMetadataInfo schemaMetadataInfo, final Map<String, String> properties) {
         super(schemaMetadataInfo, AdapterRequestType.SET_PROPERTIES);
-        this.properties = properties;
+        this.properties = properties == null ? emptyMap() : unmodifiableMap(new HashMap<>(properties));
     }
 
     /**

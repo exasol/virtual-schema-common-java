@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.equalTo;
 import java.util.*;
 
 import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.exasol.adapter.metadata.DataType.ExaCharset;
 
@@ -33,5 +34,25 @@ class TableMetadataTest {
                         + "columns=[ColumnMetadata{name=\"C1\", adapterNotes=\"\", type=BOOLEAN, "
                         + "isNullable=true, isIdentity=false}, ColumnMetadata{name=\"C2\", adapterNotes=\"\", "
                         + "type=VARCHAR(70) ASCII, isNullable=true, isIdentity=false}], comment=}\n"));
+    }
+
+    @Test
+    void testCopiesColumnsDefensively() {
+        final List<ColumnMetadata> columns = new ArrayList<>();
+        columns.add(ColumnMetadata.builder().name("C1").type(DataType.createBool()).build());
+        final TableMetadata metadata = new TableMetadata("FooBar", "", columns, "");
+        columns.add(ColumnMetadata.builder().name("C2").type(DataType.createBool()).build());
+        assertThat(metadata.getColumns().size(), equalTo(1));
+    }
+
+    @Test
+    void testGetColumnsReturnsUnmodifiableList() {
+        assertThrows(UnsupportedOperationException.class,
+                () -> this.tableMetadata.getColumns().add(ColumnMetadata.builder().name("C3").type(DataType.createBool()).build()));
+    }
+
+    @Test
+    void testTreatsNullColumnsAsEmptyList() {
+        assertThat(new TableMetadata("FooBar", "", null, "").getColumns(), equalTo(Collections.emptyList()));
     }
 }

@@ -1,9 +1,11 @@
 package com.exasol.adapter.sql;
 
-import java.util.Collections;
+import static java.util.Collections.emptyList;
+
 import java.util.List;
 
 import com.exasol.adapter.AdapterException;
+import com.exasol.errorreporting.ExaError;
 
 /**
  * {@code ORDER BY} clause.
@@ -21,13 +23,27 @@ public class SqlOrderBy extends SqlNode {
      * @param nullsFirst  the nulls first
      */
     public SqlOrderBy(final List<SqlNode> expressions, final List<Boolean> isAsc, final List<Boolean> nullsFirst) {
-        this.expressions = expressions;
-        this.isAsc = isAsc;
-        this.nullsLast = nullsFirst;
+        this.expressions = copyList(expressions);
+        this.isAsc = copyList(isAsc);
+        this.nullsLast = copyList(nullsFirst);
+        validateListSizes();
         if (this.expressions != null) {
             for (final SqlNode node : this.expressions) {
                 node.setParent(this);
             }
+        }
+    }
+
+    private <T> List<T> copyList(final List<T> values) {
+        return values == null ? emptyList() : List.copyOf(values);
+    }
+
+    private void validateListSizes() {
+        final int expressionsSize = this.expressions.size();
+        if (expressionsSize != this.isAsc.size() || expressionsSize != this.nullsLast.size()) {
+            throw new IllegalArgumentException(ExaError.messageBuilder("F-VSCOMJAVA-46")
+                    .message("Can not create SqlOrderBy with an invalid format. The size of the three lists must be equal.")
+                    .ticketMitigation().toString());
         }
     }
 
@@ -37,11 +53,7 @@ public class SqlOrderBy extends SqlNode {
      * @return the expressions
      */
     public List<SqlNode> getExpressions() {
-        if (this.expressions == null) {
-            return Collections.emptyList();
-        } else {
-            return Collections.unmodifiableList(this.expressions);
-        }
+        return this.expressions;
     }
 
     /**
@@ -50,11 +62,7 @@ public class SqlOrderBy extends SqlNode {
      * @return the list
      */
     public List<Boolean> isAscending() {
-        if (this.isAsc == null) {
-            return Collections.emptyList();
-        } else {
-            return Collections.unmodifiableList(this.isAsc);
-        }
+        return this.isAsc;
     }
 
     /**
@@ -63,11 +71,7 @@ public class SqlOrderBy extends SqlNode {
      * @return the list
      */
     public List<Boolean> nullsLast() {
-        if (this.nullsLast == null) {
-            return Collections.emptyList();
-        } else {
-            return Collections.unmodifiableList(this.nullsLast);
-        }
+        return this.nullsLast;
     }
 
     @Override
@@ -81,6 +85,7 @@ public class SqlOrderBy extends SqlNode {
     }
 
     @Override
-    public List<SqlNode> getChildren() { return getExpressions(); }
-
+    public List<SqlNode> getChildren() {
+        return getExpressions();
+    }
 }
