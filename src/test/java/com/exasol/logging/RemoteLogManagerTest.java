@@ -1,12 +1,12 @@
 package com.exasol.logging;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.matchesPattern;
 
 import java.io.*;
 import java.net.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 import org.hamcrest.Matcher;
 import org.itsallcode.io.Capturable;
@@ -30,13 +30,13 @@ class RemoteLogManagerTest {
 
     static String linefeedPattern() {
         switch (System.lineSeparator()) {
-        case "\r\n":
-            return "\\r\\n";
-        case "\r":
-            return "\\r";
-        case "\n": // falling through intentionally
-        default:
-            return "\\n";
+            case "\r\n":
+                return "\\r\\n";
+            case "\r":
+                return "\\r";
+            case "\n": // falling through intentionally
+            default:
+                return "\\n";
         }
     }
 
@@ -51,7 +51,7 @@ class RemoteLogManagerTest {
     }
 
     @Test
-    void testSetupConsoleLogging(final Capturable stream) throws IOException {
+    void testSetupConsoleLogging(final Capturable stream) {
         this.logManager.setupConsoleLogger(Level.INFO);
         stream.capture();
         LOGGER.info("Hello.");
@@ -59,7 +59,7 @@ class RemoteLogManagerTest {
     }
 
     @Test
-    void testSetupConsoleLoggingWithMoreDetailedLogLevel(final Capturable stream) throws IOException {
+    void testSetupConsoleLoggingWithMoreDetailedLogLevel(final Capturable stream) {
         this.logManager.setupConsoleLogger(Level.ALL);
         stream.capture();
         LOGGER.finest(() -> "Hello.");
@@ -67,7 +67,7 @@ class RemoteLogManagerTest {
     }
 
     @Test
-    void testRemoteSocketLogging() throws UnknownHostException, IOException {
+    void testRemoteSocketLogging() throws IOException {
         final InetAddress loop = InetAddress.getLoopbackAddress();
         String received = null;
         try (final ServerSocket server = new ServerSocket(0, 1, loop)) {
@@ -123,5 +123,34 @@ class RemoteLogManagerTest {
         stream.capture();
         this.logManager.setupRemoteLogger("this.hostname.should.not.exist.exasol.com", 3000, Level.ALL);
         assertThat(stream.getCapturedData(), matchesPattern(".*Falling back to console log." + System.lineSeparator()));
+    }
+
+    @Test
+    void testSetupConsoleLoggerClosesRemovedHandlers() {
+        final TrackingHandler oldHandler = new TrackingHandler();
+        Logger.getLogger("").addHandler(oldHandler);
+
+        this.logManager.setupConsoleLogger(Level.INFO);
+
+        assertThat(oldHandler.closed, equalTo(true));
+    }
+
+    private static final class TrackingHandler extends Handler {
+        private boolean closed;
+
+        @Override
+        public void publish(final LogRecord logRecord) {
+            // Not needed for this test.
+        }
+
+        @Override
+        public void flush() {
+            // Nothing to flush.
+        }
+
+        @Override
+        public void close() {
+            this.closed = true;
+        }
     }
 }
