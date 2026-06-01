@@ -23,6 +23,7 @@ Code name: Improve code quality
 * #308: Fixed `SqlLimit` so `limit` and `offset` stay non-negative for the full object lifetime by making the node immutable and aligning the validation message with the accepted zero values.
 * #307: Fixed `PushdownSqlRenderer` so `HASHTYPE` data types include `bytesize` in rendered pushdown SQL JSON.
 * #312: Fixed logging utility resource and handler lifecycle issues by closing version metadata streams, falling back when the thread context class loader is missing, defaulting absent version properties to `UNKNOWN`, closing replaced root log handlers, and resetting closed remote socket handlers before reuse.
+* #314: Fixed `SqlFunctionAggregateListagg.Behavior` so LISTAGG overflow behavior is null-safe, value-based, and constructed immutably by the parser.
 
 ## Dependency Updates
 

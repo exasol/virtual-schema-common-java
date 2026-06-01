@@ -6,11 +6,13 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.List;
+import nl.jqno.equalsverifier.EqualsVerifier;
 
 class SqlFunctionAggregateListaggTest {
     @Test
@@ -32,5 +34,19 @@ class SqlFunctionAggregateListaggTest {
         final SqlFunctionAggregateListagg.Behavior behaviour = new SqlFunctionAggregateListagg.Behavior(SqlFunctionAggregateListagg.BehaviorType.TRUNCATE);
         final SqlFunctionAggregateListagg listagg = SqlFunctionAggregateListagg.builder(argument, behaviour).build();
         assertThat(listagg.getChildren(), equalTo(List.of(argument)));
+    }
+
+    @Test
+    void testErrorBehaviorHasNoTruncationType() {
+        final SqlFunctionAggregateListagg.Behavior behavior = new SqlFunctionAggregateListagg.Behavior(
+                SqlFunctionAggregateListagg.BehaviorType.ERROR);
+        assertThat(behavior.getTruncationType(), equalTo(null));
+    }
+
+    @Test
+    void testBehaviorEqualityAndHashCode() {
+        EqualsVerifier.forClass(SqlFunctionAggregateListagg.Behavior.class)
+                .withPrefabValues(SqlLiteralString.class, new SqlLiteralString("red"), new SqlLiteralString("blue"))
+                .verify();
     }
 }
