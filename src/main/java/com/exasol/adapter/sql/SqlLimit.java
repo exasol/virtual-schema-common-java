@@ -7,8 +7,8 @@ import com.exasol.errorreporting.ExaError;
  * {@code LIMIT} sql node.
  */
 public class SqlLimit extends SqlNode {
-    private int limit;
-    private int offset;
+    private final int limit;
+    private final int offset;
 
     /**
      * Instantiates a new SQL limit.
@@ -28,7 +28,7 @@ public class SqlLimit extends SqlNode {
     public SqlLimit(final int limit, final int offset) {
         if (offset < 0 || limit < 0) {
             throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-27")
-                    .message("SqlLimit constructor expects offset and limit values to be greater than zero")
+                    .message("SqlLimit constructor expects offset and limit values to be greater than or equal to zero")
                     .toString());
         }
         this.limit = limit;
@@ -45,12 +45,15 @@ public class SqlLimit extends SqlNode {
     }
 
     /**
-     * Sets limit.
+     * @deprecated `SqlLimit` is immutable. Create a new instance instead.
      *
-     * @param limit the limit
+     * @param limit ignored
      */
+    @Deprecated(since = "18.0.2", forRemoval = true)
     public void setLimit(final int limit) {
-        this.limit = limit;
+        throw new UnsupportedOperationException(
+                ExaError.messageBuilder("E-VSCOMJAVA-42").message("SqlLimit is immutable. Create a new instance instead.")
+                        .toString());
     }
 
     /**
@@ -63,12 +66,15 @@ public class SqlLimit extends SqlNode {
     }
 
     /**
-     * Sets offset.
+     * @deprecated `SqlLimit` is immutable. Create a new instance instead.
      *
-     * @param offset the offset
+     * @param offset ignored
      */
+    @Deprecated(since = "18.0.2", forRemoval = true)
     public void setOffset(final int offset) {
-        this.offset = offset;
+        throw new UnsupportedOperationException(
+                ExaError.messageBuilder("E-VSCOMJAVA-43").message("SqlLimit is immutable. Create a new instance instead.")
+                        .toString());
     }
 
     /**
