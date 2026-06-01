@@ -14,6 +14,7 @@ Code name: Improve code quality
 
 * #305: Fixed `Capabilities.subtractCapabilities()` so it no longer mutates the receiver. Added the pure `Capabilities.subtract()` method.
 * #306: Fixed `TablesMetadataParser` so omitted `isIdentity` values default to `false` while omitted `isNullable` values still default to `true`.
+* #311: Fixed metadata parsing and conversion diagnostics for missing JSON fields and nullable notes/comments, and made `SqlFunctionScalarCast` tolerate a null argument consistently with related SQL AST nodes.
 
 ## Dependency Updates
 

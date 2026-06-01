@@ -76,7 +76,9 @@ public final class SchemaMetadataJsonConverter {
     public JsonObject convert(final SchemaMetadata schemaMetadata) {
         final JsonObjectBuilder root = this.factory.createObjectBuilder();
         root.add(TABLES_KEY, convertTables(schemaMetadata));
-        root.add(ADAPTER_NOTES_KEY, schemaMetadata.getAdapterNotes());
+        if (schemaMetadata.getAdapterNotes() != null) {
+            root.add(ADAPTER_NOTES_KEY, schemaMetadata.getAdapterNotes());
+        }
         return root.build();
     }
 
@@ -109,7 +111,9 @@ public final class SchemaMetadataJsonConverter {
     private JsonObjectBuilder convertColumnMetadata(final ColumnMetadata column) {
         final JsonObjectBuilder columnBuilder = this.factory.createObjectBuilder();
         columnBuilder.add(TABLE_NAME_KEY, column.getName());
-        columnBuilder.add(ADAPTER_NOTES_KEY, column.getAdapterNotes());
+        if (column.getAdapterNotes() != null) {
+            columnBuilder.add(ADAPTER_NOTES_KEY, column.getAdapterNotes());
+        }
         columnBuilder.add(DATA_TYPE_KEY, convertType(column.getType()));
         if (!column.isNullable()) {
             columnBuilder.add(NULLABLE_KEY, false);

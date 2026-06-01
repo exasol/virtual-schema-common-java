@@ -5,14 +5,19 @@ import static com.exasol.adapter.metadata.DataType.ExaCharset.UTF8;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import com.exasol.adapter.metadata.*;
 
@@ -146,5 +151,41 @@ class TablesMetadataParserTest {
                         .build());
 
         assertThat(tables, contains(new TableMetadata("T1", "", expectedColumns, "")));
+    }
+
+    @ParameterizedTest
+    @MethodSource("invalidTableMetadata")
+    void testParseMetadataThrowsExceptionWithCompleteErrorMessage(final JsonArray tablesAsJson,
+            final String expectedErrorMessage) {
+        final TablesMetadataParser parser = TablesMetadataParser.create();
+        final RequestParserException exception = assertThrows(RequestParserException.class, () -> parser.parse(tablesAsJson));
+        assertThat(exception.getMessage(), equalTo(expectedErrorMessage));
+    }
+
+    private static Stream<Arguments> invalidTableMetadata() {
+        return Stream.of(
+                Arguments.of(Json.createArrayBuilder().add(Json.createObjectBuilder().add("name", "T1")).build(),
+                        "E-VSCOMJAVA-44: Failed to parse 'table 'T1'' because mandatory field 'columns' is missing."),
+                Arguments.of(Json.createArrayBuilder().add(Json.createObjectBuilder()
+                        .add("name", "T1")
+                        .add("columns", Json.createArrayBuilder()
+                                .add(Json.createObjectBuilder()
+                                        .add("dataType", Json.createObjectBuilder().add("type", "DECIMAL")
+                                                .add("precision", 18).add("scale", 0)))))
+                        .build(),
+                        "E-VSCOMJAVA-44: Failed to parse 'column #0 of table 'T1'' because mandatory field 'name' is missing."),
+                Arguments.of(Json.createArrayBuilder().add(Json.createObjectBuilder()
+                        .add("name", "T1")
+                        .add("columns", Json.createArrayBuilder().add(Json.createObjectBuilder().add("name", "C1"))))
+                        .build(),
+                        "E-VSCOMJAVA-44: Failed to parse 'column 'C1' of table 'T1'' because mandatory field 'dataType' is missing."),
+                Arguments.of(Json.createArrayBuilder().add(Json.createObjectBuilder()
+                        .add("name", "T1")
+                        .add("columns", Json.createArrayBuilder()
+                                .add(Json.createObjectBuilder().add("name", "C1")
+                                        .add("dataType",
+                                                Json.createObjectBuilder().add("precision", 18).add("scale", 0)))))
+                        .build(),
+                        "E-VSCOMJAVA-44: Failed to parse 'column 'C1' of table 'T1' data type' because mandatory field 'type' is missing."));
     }
 }

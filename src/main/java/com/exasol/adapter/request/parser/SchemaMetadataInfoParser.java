@@ -30,7 +30,13 @@ public class SchemaMetadataInfoParser extends AbstractRequestParser {
     }
 
     private String parseSchemaName(final JsonObject schemaMetadataInfo) {
-        return schemaMetadataInfo.getString(SCHEMA_NAME_KEY);
+        final String schemaName = schemaMetadataInfo.getString(SCHEMA_NAME_KEY, null);
+        if (schemaName == null) {
+            throw new RequestParserException(ExaError.messageBuilder("E-VSCOMJAVA-43")
+                    .message("Failed to parse schema metadata because mandatory field {{field}} is missing.")
+                    .parameter("field", SCHEMA_NAME_KEY).toString());
+        }
+        return schemaName;
     }
 
     private String parseAdapterNotes(final JsonObject schemaMetadataInfo) {

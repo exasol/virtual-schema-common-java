@@ -22,7 +22,9 @@ public class SqlFunctionScalarCast extends SqlNode {
     public SqlFunctionScalarCast(final DataType dataType, final SqlNode argument) {
         this.argument = argument;
         this.dataType = dataType;
-        argument.setParent(this);
+        if (this.argument != null) {
+            this.argument.setParent(this);
+        }
     }
 
     /**
