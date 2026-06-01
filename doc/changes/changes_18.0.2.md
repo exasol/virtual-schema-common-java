@@ -22,6 +22,7 @@ Code name: Improve code quality
 * #309: Fixed the `SqlNodeVisitor` API documentation and parameter names for `SqlPredicateIsNotNull` and `SqlPredicateIsNull`.
 * #308: Fixed `SqlLimit` so `limit` and `offset` stay non-negative for the full object lifetime by making the node immutable and aligning the validation message with the accepted zero values.
 * #307: Fixed `PushdownSqlRenderer` so `HASHTYPE` data types include `bytesize` in rendered pushdown SQL JSON.
+* #315: Improved `PushdownSqlParser` lookup and traversal performance by caching involved table metadata, defensively copying the metadata list, and replacing `Stack`-based traversals with `ArrayDeque`.
 * #312: Fixed logging utility resource and handler lifecycle issues by closing version metadata streams, falling back when the thread context class loader is missing, defaulting absent version properties to `UNKNOWN`, closing replaced root log handlers, and resetting closed remote socket handlers before reuse.
 
 ## Dependency Updates

@@ -1055,8 +1055,7 @@ class PushDownSqlParserTest {
     @Test
     void testParseSelectWithHaving() {
 
-        final String sqlAsJson =
-                "{" +
+        final String sqlAsJson = "{" +
                 "    \"aggregationType\":\"single_group\"," +
                 "    \"from\":{" +
                 "        \"name\":\"CUSTOMERS\"," +
@@ -1109,13 +1108,14 @@ class PushDownSqlParserTest {
         final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithTwoTables();
         final SqlStatementSelect sqlStatementSelect = (SqlStatementSelect) pushdownSqlParser
                 .parseExpression(jsonObject);
-        assertThat(sqlStatementSelect.getChildren().size(), equalTo(6));
-        assertTrue(sqlStatementSelect.hasHaving());
-        assertTrue(sqlStatementSelect.hasLimit());
-        assertTrue(sqlStatementSelect.hasFilter());
-        assertTrue(sqlStatementSelect.hasOrderBy());
+        assertAll(
+                () -> assertThat(sqlStatementSelect.getChildren().size(), equalTo(6)),
+                () -> assertTrue(sqlStatementSelect.hasHaving()),
+                () -> assertFalse(sqlStatementSelect.hasGroupBy()),
+                () -> assertTrue(sqlStatementSelect.hasLimit()),
+                () -> assertTrue(sqlStatementSelect.hasFilter()),
+                () -> assertTrue(sqlStatementSelect.hasOrderBy()));
     }
-
 
     @Test
     void testParseSelectWithoutSelectList() {
@@ -1305,6 +1305,23 @@ class PushDownSqlParserTest {
     }
 
     @Test
+    void testParserCopiesInvolvedTablesMetadata() {
+        final List<TableMetadata> tables = new ArrayList<>();
+        tables.add(new TableMetadata("CUSTOMERS", "", List.of(
+                ColumnMetadata.builder().name("ID").adapterNotes("").type(createVarChar(200, UTF8)).build()), ""));
+        final PushdownSqlParser pushdownSqlParser = PushdownSqlParser.createWithTablesMetadata(tables);
+        tables.clear();
+        final JsonObject jsonObject = createJsonObjectFromString("{"
+                + "   \"type\" : \"table\", "
+                + "   \"name\" :  \"CUSTOMERS\" "
+                + "}");
+        final SqlTable sqlTable = (SqlTable) pushdownSqlParser.parseExpression(jsonObject);
+        assertAll(() -> assertThat(sqlTable.getType(), equalTo(TABLE)),
+                () -> assertThat(sqlTable.getName(), equalTo("CUSTOMERS")),
+                () -> assertThat(sqlTable.getMetadata().getName(), equalTo("CUSTOMERS")));
+    }
+
+    @Test
     void testParseInvalidExpressionType() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"limit\"" //
@@ -1381,5 +1398,14 @@ class PushDownSqlParserTest {
                 .parseExpression(jsonObject);
         assertFalse(sqlStatementSelect.hasGroupBy());
         assertThat(sqlStatementSelect.getChildren().size(), equalTo(2));
+    }
+
+    @Test
+    void testHasAggregateFunctionIgnoresNullValues() {
+        final SqlFunctionAggregate aggregate = new SqlFunctionAggregate(AggregateFunction.SUM,
+                List.of(new SqlLiteralExactnumeric(BigDecimal.ONE)), false);
+        assertAll(
+                () -> assertThat(PushdownSqlParser.hasAggregateFunction(Collections.singletonList(null)), equalTo(false)),
+                () -> assertThat(PushdownSqlParser.hasAggregateFunction(Arrays.asList(null, aggregate)), equalTo(true)));
     }
 }
