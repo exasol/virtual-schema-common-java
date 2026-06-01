@@ -30,7 +30,13 @@ public class SchemaMetadataInfoParser extends AbstractRequestParser {
     }
 
     private String parseSchemaName(final JsonObject schemaMetadataInfo) {
-        return schemaMetadataInfo.getString(SCHEMA_NAME_KEY);
+        final String schemaName = schemaMetadataInfo.getString(SCHEMA_NAME_KEY, null);
+        if (schemaName == null) {
+            throw new RequestParserException(ExaError.messageBuilder("E-VSCOMJAVA-45")
+                    .message("Failed to parse schema metadata because mandatory field {{field}} is missing.")
+                    .parameter("field", SCHEMA_NAME_KEY).toString());
+        }
+        return schemaName;
     }
 
     private String parseAdapterNotes(final JsonObject schemaMetadataInfo) {
@@ -38,14 +44,14 @@ public class SchemaMetadataInfoParser extends AbstractRequestParser {
             final JsonValue adapterNotes = schemaMetadataInfo.get(ADAPTER_NOTES_KEY);
             final ValueType type = adapterNotes.getValueType();
             switch (type) {
-            case STRING:
-                return ((JsonString) adapterNotes).getString();
-            case OBJECT:
-                return adapterNotes.toString();
-            default:
-                throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-17").message(
-                        "Error parsing adapter notes. The adapter notes must be a JSON string or a JSON object but were of type {{type}}")
-                        .parameter("type", type).toString());
+                case STRING:
+                    return ((JsonString) adapterNotes).getString();
+                case OBJECT:
+                    return adapterNotes.toString();
+                default:
+                    throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-17").message(
+                            "Error parsing adapter notes. The adapter notes must be a JSON string or a JSON object but were of type {{type}}")
+                            .parameter("type", type).toString());
             }
         } else {
             return "";

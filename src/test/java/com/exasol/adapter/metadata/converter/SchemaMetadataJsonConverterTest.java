@@ -73,6 +73,21 @@ class SchemaMetadataJsonConverterTest {
     }
 
     @Test
+    void testConvertOmitsNullAdapterNotes() {
+        final ColumnMetadata column = ColumnMetadata.builder().name("COLUMN_A").adapterNotes(null)
+                .type(DataType.createBool()).build();
+        final SchemaMetadata schemaMetadata = new SchemaMetadata(null,
+                List.of(new TableMetadata("TABLE_A", null, List.of(column), null)));
+
+        final JsonObject actual = CONVERTER.convert(schemaMetadata);
+        final JsonObject actualColumn = actual.getJsonArray("tables").getJsonObject(0).getJsonArray("columns")
+                .getJsonObject(0);
+
+        assertAll(() -> assertThat(actual.containsKey("adapterNotes"), equalTo(false)),
+                () -> assertThat(actualColumn.containsKey("adapterNotes"), equalTo(false)));
+    }
+
+    @Test
     void testConvertTypeDecimal() {
         final int precision = 5;
         final int scale = 3;

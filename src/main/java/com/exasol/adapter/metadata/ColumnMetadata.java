@@ -99,7 +99,7 @@ public final class ColumnMetadata {
      * @return <code>true</code> if the column has a comment
      */
     public boolean hasComment() {
-        return !this.comment.isEmpty();
+        return (this.comment != null) && !this.comment.isEmpty();
     }
 
     /**

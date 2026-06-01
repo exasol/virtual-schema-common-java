@@ -4,14 +4,15 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
+import static java.util.Arrays.asList;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.DataType;
 import com.exasol.mocking.MockUtils;
-
-import java.util.List;
 
 class SqlFunctionScalarCastTest {
     private SqlFunctionScalarCast sqlFunctionScalarCast;
@@ -50,5 +51,13 @@ class SqlFunctionScalarCastTest {
     @Test
     void testGetChildren() {
         assertThat(this.sqlFunctionScalarCast.getChildren(), equalTo(List.of(this.argument)));
+    }
+
+    @Test
+    void testNullArgumentDoesNotThrowAndHasNoParent() {
+        final SqlFunctionScalarCast cast = new SqlFunctionScalarCast(this.dataType, null);
+
+        assertThat(cast.getArgument(), equalTo(null));
+        assertThat(cast.getChildren(), equalTo(asList((SqlNode) null)));
     }
 }

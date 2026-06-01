@@ -44,25 +44,79 @@ public class TablesMetadataParser {
             final String tableAdapterNotes = readAdapterNotes(table);
             final String tableComment = table.getString(TABLE_COMMENT_KEY, "");
             final List<ColumnMetadata> columns = new ArrayList<>();
-            for (final JsonObject column : table.getJsonArray(TABLE_COLUMNS_KEY).getValuesAs(JsonObject.class)) {
-                columns.add(parseColumnMetadata(column));
+            final JsonArray columnsAsJson = requireJsonArray(table, TABLE_COLUMNS_KEY,
+                    describeTable(tableName));
+            int columnIndex = 0;
+            for (final JsonObject column : columnsAsJson.getValuesAs(JsonObject.class)) {
+                columns.add(parseColumnMetadata(column, tableName, columnIndex));
+                columnIndex++;
             }
             tables.add(new TableMetadata(tableName, tableAdapterNotes, columns, tableComment));
         }
         return tables;
     }
 
-    private ColumnMetadata parseColumnMetadata(final JsonObject column) {
-        final String columnName = column.getString(TABLE_NAME_KEY);
+    private ColumnMetadata parseColumnMetadata(final JsonObject column, final String tableName, final int columnIndex) {
+        final String columnDescription = describeColumn(tableName, columnIndex, column.getString(TABLE_NAME_KEY, null));
+        final String columnName = requireString(column, TABLE_NAME_KEY, columnDescription);
         final String adapterNotes = readAdapterNotes(column);
         final String comment = column.getString(TABLE_COMMENT_KEY, "");
         final String defaultValue = column.getString("default", "");
         final boolean isNullable = applyBooleanValue(column, "isNullable", true);
         final boolean isIdentity = applyBooleanValue(column, "isIdentity", false);
-        final JsonObject dataType = column.getJsonObject(DATA_TYPE);
-        final DataType type = getDataType(dataType);
+        final JsonObject dataType = requireJsonObject(column, DATA_TYPE, columnDescription);
+        final DataType type = getDataType(dataType, columnDescription);
         return ColumnMetadata.builder().name(columnName).adapterNotes(adapterNotes).type(type).nullable(isNullable)
                 .identity(isIdentity).defaultValue(defaultValue).comment(comment).build();
+    }
+
+    private JsonArray requireJsonArray(final JsonObject root, final String key, final String context) {
+        final JsonArray jsonArray = root.getJsonArray(key);
+        if (jsonArray == null) {
+            throw missingRequiredField(key, context);
+        }
+        return jsonArray;
+    }
+
+    private JsonObject requireJsonObject(final JsonObject root, final String key, final String context) {
+        final JsonObject jsonObject = root.getJsonObject(key);
+        if (jsonObject == null) {
+            throw missingRequiredField(key, context);
+        }
+        return jsonObject;
+    }
+
+    private String requireString(final JsonObject root, final String key, final String context) {
+        final String value = root.getString(key, null);
+        if (value == null) {
+            throw missingRequiredField(key, context);
+        }
+        return value;
+    }
+
+    private RequestParserException missingRequiredField(final String key, final String context) {
+        return new RequestParserException(ExaError.messageBuilder("E-VSCOMJAVA-44")
+                .message("Failed to parse {{context}} because mandatory field {{field}} is missing.")
+                .parameter("context", context)
+                .parameter("field", key)
+                .toString());
+    }
+
+    private String describeTable(final String tableName) {
+        return tableName.isEmpty() ? "table metadata" : "table '" + tableName + "'";
+    }
+
+    private String describeColumn(final String tableName, final int columnIndex, final String columnName) {
+        final StringBuilder description = new StringBuilder("column ");
+        if (columnName != null) {
+            description.append('\'').append(columnName).append('\'');
+        } else {
+            description.append('#').append(columnIndex);
+        }
+        if ((tableName != null) && !tableName.isEmpty()) {
+            description.append(" of table '").append(tableName).append('\'');
+        }
+        return description.toString();
     }
 
     private String readAdapterNotes(final JsonObject root) {
@@ -167,33 +221,33 @@ public class TablesMetadataParser {
         }
     }
 
-    private DataType getDataType(final JsonObject dataType) {
-        final String typeName = dataType.getString("type").toUpperCase();
+    private DataType getDataType(final JsonObject dataType, final String columnDescription) {
+        final String typeName = requireString(dataType, "type", columnDescription + " data type").toUpperCase();
         switch (typeName) {
-        case "DECIMAL":
-            return getDecimalDataType(dataType);
-        case "DOUBLE":
-            return getDoubleDataType();
-        case "VARCHAR":
-            return getVarcharDataType(dataType);
-        case "CHAR":
-            return getCharDataType(dataType);
-        case "BOOLEAN":
-            return getBooleanDataType();
-        case "DATE":
-            return getDateDataType();
-        case "TIMESTAMP":
-            return getTimestampDataType(dataType);
-        case "INTERVAL":
-            return getIntervalDataType(dataType);
-        case "GEOMETRY":
-            return getGeometryDataType(dataType);
-        case "HASHTYPE":
-            return getHashtypeDataType(dataType);
-        default:
-            throw new RequestParserException(ExaError.messageBuilder("E-VSCOMJAVA-18")
-                    .message("Unsupported data type encountered: {{typeName}}.") //
-                    .parameter("typeName", typeName).toString());
+            case "DECIMAL":
+                return getDecimalDataType(dataType);
+            case "DOUBLE":
+                return getDoubleDataType();
+            case "VARCHAR":
+                return getVarcharDataType(dataType);
+            case "CHAR":
+                return getCharDataType(dataType);
+            case "BOOLEAN":
+                return getBooleanDataType();
+            case "DATE":
+                return getDateDataType();
+            case "TIMESTAMP":
+                return getTimestampDataType(dataType);
+            case "INTERVAL":
+                return getIntervalDataType(dataType);
+            case "GEOMETRY":
+                return getGeometryDataType(dataType);
+            case "HASHTYPE":
+                return getHashtypeDataType(dataType);
+            default:
+                throw new RequestParserException(ExaError.messageBuilder("E-VSCOMJAVA-18")
+                        .message("Unsupported data type encountered: {{typeName}}.") //
+                        .parameter("typeName", typeName).toString());
         }
     }
 }

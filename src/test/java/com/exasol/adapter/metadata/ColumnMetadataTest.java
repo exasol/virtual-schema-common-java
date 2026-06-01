@@ -103,6 +103,11 @@ class ColumnMetadataTest {
     }
 
     @Test
+    void testHasCommentFalseIfCommentIsNull() {
+        assertThat(this.builder.comment(null).build().hasComment(), equalTo(false));
+    }
+
+    @Test
     void testGetComment() {
         assertThat(this.builder.comment("another comment").build().getComment(), equalTo("another comment"));
     }
