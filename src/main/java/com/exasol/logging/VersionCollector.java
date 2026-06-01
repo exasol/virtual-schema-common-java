@@ -37,18 +37,26 @@ public class VersionCollector {
      */
     public String getVersionNumber() {
         final Properties properties = new Properties();
-        final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        final ClassLoader loader = getClassLoader();
         final InputStream stream = loader.getResourceAsStream(this.path);
         if (stream == null) {
             return "UNKNOWN";
         }
-        try {
-            properties.load(stream);
+        try (final InputStream resourceStream = stream) {
+            properties.load(resourceStream);
         } catch (final IOException exception) {
             throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-31")
                     .message("Unable to read the version from the file: {{path}}.") //
                     .parameter("path", this.path).toString(), exception);
         }
-        return properties.getProperty(VERSION);
+        return properties.getProperty(VERSION, "UNKNOWN");
+    }
+
+    private ClassLoader getClassLoader() {
+        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        if (contextClassLoader != null) {
+            return contextClassLoader;
+        }
+        return VersionCollector.class.getClassLoader();
     }
 }
