@@ -2,11 +2,12 @@ package com.exasol.adapter.metadata;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.*;
 
-import org.junit.jupiter.api.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.exasol.adapter.metadata.DataType.ExaCharset;
 
@@ -47,8 +48,9 @@ class TableMetadataTest {
 
     @Test
     void testGetColumnsReturnsUnmodifiableList() {
-        assertThrows(UnsupportedOperationException.class,
-                () -> this.tableMetadata.getColumns().add(ColumnMetadata.builder().name("C3").type(DataType.createBool()).build()));
+        final List<ColumnMetadata> columns = this.tableMetadata.getColumns();
+        final ColumnMetadata metadata = ColumnMetadata.builder().name("C3").type(DataType.createBool()).build();
+        assertThrows(UnsupportedOperationException.class, () -> columns.add(metadata));
     }
 
     @Test

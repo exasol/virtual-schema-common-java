@@ -26,8 +26,9 @@ class SqlPredicateInConstListTest {
     void testGetArgumentsReturnsUnmodifiableList() {
         final SqlPredicateInConstList predicate = new SqlPredicateInConstList(
                 new SqlLiteralExactnumeric(BigDecimal.ZERO), List.of(new SqlLiteralExactnumeric(BigDecimal.ONE)));
-        assertThrows(UnsupportedOperationException.class,
-                () -> predicate.getInArguments().add(new SqlLiteralExactnumeric(BigDecimal.valueOf(2L))));
+        final List<SqlNode> arguments = predicate.getInArguments();
+        final SqlLiteralExactnumeric literal = new SqlLiteralExactnumeric(BigDecimal.valueOf(2L));
+        assertThrows(UnsupportedOperationException.class, () -> arguments.add(literal));
     }
 
     @Test

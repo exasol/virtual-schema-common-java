@@ -23,8 +23,9 @@ class SchemaMetadataTest {
     @Test
     void testGetTablesReturnsUnmodifiableList() {
         final SchemaMetadata schemaMetadata = new SchemaMetadata("", List.of(new TableMetadata("T1", "", List.of(), "")));
-        assertThrows(UnsupportedOperationException.class,
-                () -> schemaMetadata.getTables().add(new TableMetadata("T2", "", List.of(), "")));
+        final List<TableMetadata> tables = schemaMetadata.getTables();
+        final TableMetadata table = new TableMetadata("T2", "", List.of(), "");
+        assertThrows(UnsupportedOperationException.class, () -> tables.add(table));
     }
 
     @Test

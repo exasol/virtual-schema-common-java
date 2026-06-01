@@ -28,9 +28,13 @@ class SqlOrderByTest {
     @Test
     void testGettersReturnUnmodifiableLists() {
         final SqlOrderBy orderBy = new SqlOrderBy(List.of(new SqlLiteralBool(true)), List.of(true), List.of(false));
-        assertThrows(UnsupportedOperationException.class, () -> orderBy.getExpressions().add(new SqlLiteralBool(false)));
-        assertThrows(UnsupportedOperationException.class, () -> orderBy.isAscending().add(false));
-        assertThrows(UnsupportedOperationException.class, () -> orderBy.nullsLast().add(true));
+        final List<SqlNode> expressions = orderBy.getExpressions();
+        final List<Boolean> isAscending = orderBy.isAscending();
+        final List<Boolean> nullsLast = orderBy.nullsLast();
+        final SqlLiteralBool literal = new SqlLiteralBool(false);
+        assertThrows(UnsupportedOperationException.class, () -> expressions.add(literal));
+        assertThrows(UnsupportedOperationException.class, () -> isAscending.add(false));
+        assertThrows(UnsupportedOperationException.class, () -> nullsLast.add(true));
     }
 
     @Test
@@ -43,8 +47,10 @@ class SqlOrderByTest {
 
     @Test
     void testValidatesParallelListSizesInConstructor() {
-        final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> new SqlOrderBy(List.of(new SqlLiteralBool(true)), List.of(true, false), List.of(false)));
+        final List<SqlNode> expressions = List.of(new SqlLiteralBool(true));
+        final List<Boolean> isAsc = List.of(true, false);
+        final List<Boolean> nullsFirst = List.of(false);
+        final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> new SqlOrderBy(expressions, isAsc, nullsFirst));
         assertThat(exception.getMessage(), equalTo(
                 "F-VSCOMJAVA-46: Can not create SqlOrderBy with an invalid format. The size of the three lists must be equal. "
                         + "This is an internal error that should not happen. Please report it by opening a GitHub issue."));

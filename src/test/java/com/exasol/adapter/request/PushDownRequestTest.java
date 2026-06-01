@@ -10,9 +10,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.exasol.adapter.metadata.ColumnMetadata;
-import com.exasol.adapter.metadata.DataType;
-import com.exasol.adapter.metadata.TableMetadata;
+import com.exasol.adapter.metadata.*;
 
 class PushDownRequestTest {
     @Test
@@ -33,10 +31,12 @@ class PushDownRequestTest {
         final PushDownRequest request = new PushDownRequest(null, null,
                 List.of(new TableMetadata("T1", "", List.of(ColumnMetadata.builder().name("C1").type(DataType.createBool()).build()), "")),
                 List.of(DataType.createBool()));
-        assertThrows(UnsupportedOperationException.class,
-                () -> request.getInvolvedTablesMetadata().add(new TableMetadata("T2", "", List.of(), "")));
-        assertThrows(UnsupportedOperationException.class,
-                () -> request.getSelectListDataTypes().add(DataType.createDouble()));
+        final List<TableMetadata> involvedTablesMetadata = request.getInvolvedTablesMetadata();
+        final List<DataType> selectListDataTypes = request.getSelectListDataTypes();
+        final TableMetadata table = new TableMetadata("T2", "", List.of(), "");
+        assertThrows(UnsupportedOperationException.class, () -> involvedTablesMetadata.add(table));
+        final DataType type = DataType.createDouble();
+        assertThrows(UnsupportedOperationException.class, () -> selectListDataTypes.add(type));
     }
 
     @Test

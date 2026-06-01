@@ -23,7 +23,8 @@ class SetPropertiesRequestTest {
     @Test
     void testGetPropertiesReturnsUnmodifiableMap() {
         final SetPropertiesRequest request = new SetPropertiesRequest(null, Map.of("A", "B"));
-        assertThrows(UnsupportedOperationException.class, () -> request.getProperties().put("A", "CHANGED"));
+        final Map<String, String> properties = request.getProperties();
+        assertThrows(UnsupportedOperationException.class, () -> properties.put("A", "CHANGED"));
     }
 
     @Test

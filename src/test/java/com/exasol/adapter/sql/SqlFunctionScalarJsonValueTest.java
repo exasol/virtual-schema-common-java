@@ -77,8 +77,9 @@ class SqlFunctionScalarJsonValueTest {
 
     @Test
     void testGetArgumentsReturnsUnmodifiableList() {
-        assertThrows(UnsupportedOperationException.class,
-                () -> this.sqlFunctionScalarJsonValue.getArguments().add(new SqlLiteralString("MUTATED")));
+        final List<SqlNode> arguments = this.sqlFunctionScalarJsonValue.getArguments();
+        final SqlLiteralString literal = new SqlLiteralString("MUTATED");
+        assertThrows(UnsupportedOperationException.class, () -> arguments.add(literal));
     }
 
     @Test

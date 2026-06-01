@@ -47,8 +47,8 @@ class SchemaMetadataInfoTest {
 
     @Test
     void testGetPropertiesReturnsUnmodifiableMap() {
-        assertThrows(UnsupportedOperationException.class,
-                () -> this.schemaMetadataInfo.getProperties().put("A", "B"));
+        final Map<String, String> properties = this.schemaMetadataInfo.getProperties();
+        assertThrows(UnsupportedOperationException.class, () -> properties.put("A", "B"));
     }
 
     @Test

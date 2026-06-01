@@ -45,7 +45,8 @@ class RefreshRequestTest {
 
     @Test
     void testGetTablesReturnsUnmodifiableList() {
-        assertThrows(UnsupportedOperationException.class, () -> this.refreshRequest.getTables().add("MUTATED"));
+        final List<String> selectedTables = this.refreshRequest.getTables();
+        assertThrows(UnsupportedOperationException.class, () -> selectedTables.add("MUTATED"));
     }
 
     @Test
