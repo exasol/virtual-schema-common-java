@@ -611,7 +611,7 @@ class PushdownSqlRendererTest {
                 + "   ], " //
                 + "   \"returningDataType\" : { " //
                 + "        \"type\" : \"HASHTYPE\", " //
-                + "        \"bytesize\" : 16 " //
+                + "        \"bytesize\" : 24 " //
                 + "   }, " //
                 + "   \"emptyBehavior\" : " //
                 + "   { " //
