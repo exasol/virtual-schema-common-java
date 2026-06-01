@@ -457,6 +457,25 @@ class PushdownSqlRendererTest {
     }
 
     @Test
+    void testParseFunctionScalarCastWithHashtype() throws JSONException {
+        final String sqlAsJson = "{" //
+                + "   \"type\" : \"function_scalar_cast\", " //
+                + "   \"name\" : \"CAST\", " //
+                + "   \"dataType\" : { " //
+                + "        \"type\" : \"HASHTYPE\", " //
+                + "        \"bytesize\" : 16 " //
+                + "   }, " //
+                + "   \"arguments\" : [ " //
+                + "   { " //
+                + "        \"type\" : \"literal_double\", " //
+                + "        \"value\" : \"1.234\" " //
+                + "   } " //
+                + "   ] " //
+                + "}";
+        assertParseAndRenderGeneratesSameJson(sqlAsJson);
+    }
+
+    @Test
     void testParsePredicateInConstlist() throws JSONException {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"predicate_in_constlist\", " //
@@ -557,6 +576,42 @@ class PushdownSqlRendererTest {
                 + "   \"returningDataType\" : { " //
                 + "        \"type\" : \"VARCHAR\", " //
                 + "        \"size\" : 10000 " //
+                + "   }, " //
+                + "   \"emptyBehavior\" : " //
+                + "   { " //
+                + "        \"type\" : \"NULL\" " //
+                + "   }, " //
+                + "   \"errorBehavior\" : " //
+                + "   { " //
+                + "        \"type\" : \"DEFAULT\", " //
+                + "         \"expression\" : " //
+                + "     { " //
+                + "            \"type\" : \"literal_string\", " //
+                + "            \"value\" : \"*** error ***\" " //
+                + "      } " //
+                + "   } " //
+                + "}";
+        assertParseAndRenderGeneratesSameJson(sqlAsJson);
+    }
+
+    @Test
+    void testParseFunctionScalarJsonValueWithHashtypeReturningType() throws JSONException {
+        final String sqlAsJson = "{" //
+                + "   \"type\" : \"function_scalar_json_value\", " //
+                + "   \"name\" : \"JSON_VALUE\", " //
+                + "   \"arguments\" : [ " //
+                + "   { " //
+                + "        \"type\" : \"literal_string\", " //
+                + "        \"value\" : \"'first argument'\"" //
+                + "   }, " //
+                + "   { " //
+                + "        \"type\" : \"literal_string\", " //
+                + "        \"value\" : \"'second argument'\"" //
+                + "   } " //
+                + "   ], " //
+                + "   \"returningDataType\" : { " //
+                + "        \"type\" : \"HASHTYPE\", " //
+                + "        \"bytesize\" : 16 " //
                 + "   }, " //
                 + "   \"emptyBehavior\" : " //
                 + "   { " //
