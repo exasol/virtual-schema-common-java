@@ -74,6 +74,6 @@ class SchemaMetadataParserTest {
     void testParseThrowsExceptionIfSchemaNameIsMissing() {
         final RequestParserException exception = assertThrows(RequestParserException.class,
                 () -> parseSchemaMetadata("{\"adapterNotes\":\"notes\"}"));
-        assertThat(exception.getMessage(), equalTo("E-VSCOMJAVA-43: Failed to parse schema metadata because mandatory field 'name' is missing."));
+        assertThat(exception.getMessage(), equalTo("E-VSCOMJAVA-45: Failed to parse schema metadata because mandatory field 'name' is missing."));
     }
 }
