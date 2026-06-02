@@ -1,5 +1,7 @@
 package com.exasol.adapter.request;
 
+import static com.exasol.adapter.CollectionUtils.copyOfOrEmpty;
+
 import java.util.Map;
 
 import com.exasol.ExaMetadata;
@@ -21,7 +23,7 @@ public class SetPropertiesRequest extends AbstractAdapterRequest {
      */
     public SetPropertiesRequest(final SchemaMetadataInfo schemaMetadataInfo, final Map<String, String> properties) {
         super(schemaMetadataInfo, AdapterRequestType.SET_PROPERTIES);
-        this.properties = properties;
+        this.properties = copyOfOrEmpty(properties);
     }
 
     /**
