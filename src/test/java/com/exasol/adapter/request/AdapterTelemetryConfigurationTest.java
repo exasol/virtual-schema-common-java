@@ -5,10 +5,11 @@ import static org.hamcrest.Matchers.equalTo;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.*;
 
 class AdapterTelemetryConfigurationTest {
     private final Map<String, String> properties = new HashMap<>();
@@ -36,6 +37,21 @@ class AdapterTelemetryConfigurationTest {
     void testTelemetryIsDisabledWhenPropertyHasNonBooleanValue() {
         this.properties.put(AdapterTelemetryConfiguration.TELEMETRY_PROPERTY, "disabled");
         assertThat(createConfiguration().isTelemetryDisabled(), equalTo(true));
+    }
+
+    @ParameterizedTest
+    @MethodSource("trimmedTelemetryValues")
+    void testTelemetryPropertyValueIsTrimmedBeforeParsing(final String value, final boolean expectedDisabled) {
+        this.properties.put(AdapterTelemetryConfiguration.TELEMETRY_PROPERTY, value);
+        assertThat(createConfiguration().isTelemetryDisabled(), equalTo(expectedDisabled));
+    }
+
+    private static Stream<Arguments> trimmedTelemetryValues() {
+        return Stream.of(
+                Arguments.of(" true ", false),
+                Arguments.of(" false ", true),
+                Arguments.of("\ttrue\t", false),
+                Arguments.of("\nfalse\n", true));
     }
 
     private AdapterTelemetryConfiguration createConfiguration() {

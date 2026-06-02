@@ -26,7 +26,8 @@ public class AdapterTelemetryConfiguration {
      */
     public static AdapterTelemetryConfiguration parseFromProperties(final Map<String, String> properties) {
         final String telemetryPropertyValue = properties.get(TELEMETRY_PROPERTY);
-        final boolean telemetryDisabled = telemetryPropertyValue != null && !Boolean.parseBoolean(telemetryPropertyValue);
+        final boolean telemetryDisabled = telemetryPropertyValue != null
+                && !Boolean.parseBoolean(telemetryPropertyValue.trim());
         return new AdapterTelemetryConfiguration(telemetryDisabled);
     }
 

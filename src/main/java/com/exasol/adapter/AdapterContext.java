@@ -13,7 +13,7 @@ public class AdapterContext {
     /**
      * Create a new AdapterContext.
      *
-     * @param telemetryClient telemetry client to be used by the adapter for reportin feature usage.
+     * @param telemetryClient telemetry client to be used by the adapter for reporting feature usage.
      */
     public AdapterContext(final TelemetryClient telemetryClient) {
         this.telemetryClient = telemetryClient;
@@ -26,7 +26,7 @@ public class AdapterContext {
      * <ul>
      * <li>Class {@link AdapterCallExecutor} already reports the following events: {@code createVirtualSchema}, {@code dropVirtualSchema},
      * {@code refreshVirtualSchema}, {@code setProperties}. The adapter must not report these events again</li>
-     * <li>Adapters must keep not report high frequency features, e.g. for every pushdown.</li>
+     * <li>Adapters must not report high frequency features, e.g. for every pushdown.</li>
      * </ul>
      * 
      * @return telemetry client
