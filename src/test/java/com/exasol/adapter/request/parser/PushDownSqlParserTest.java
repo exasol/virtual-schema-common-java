@@ -507,6 +507,27 @@ class PushDownSqlParserTest {
     }
 
     @Test
+    void testParsePredicateIsNullUsesLocaleIndependentUppercaseConversion() {
+        final Locale defaultLocale = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.forLanguageTag("tr"));
+            final String sqlAsJson = "{" //
+                    + "   \"type\" : \"predicate_is_null\", " //
+                    + "   \"expression\" : { " //
+                    + "        \"type\" : \"literal_double\", " //
+                    + "        \"value\" : \"0.0\" " //
+                    + "   } " //
+                    + "}";
+            final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+            final SqlPredicateIsNull sqlPredicateIsNull = (SqlPredicateIsNull) this.defaultParser
+                    .parseExpression(jsonObject);
+            assertThat(sqlPredicateIsNull.getType(), equalTo(PREDICATE_IS_NULL));
+        } finally {
+            Locale.setDefault(defaultLocale);
+        }
+    }
+
+    @Test
     void testParsePredicateIsNotNull() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"predicate_is_not_null\", " //
