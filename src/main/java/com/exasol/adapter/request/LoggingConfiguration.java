@@ -117,7 +117,7 @@ public final class LoggingConfiguration implements Serializable {
         try {
             return Level.parse(configuredLogLevel);
         } catch (final IllegalArgumentException exception) {
-            throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-46")
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-47")
                     .message("Invalid value {{log_level_value}} for property {{log_level_property}}.")
                     .mitigation("Available log levels are: {{available_log_levels}}.")
                     .parameter("log_level_value", configuredLogLevel)

@@ -69,7 +69,7 @@ class LoggingConfigurationTest {
         final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> createLoggingConfiguration(this.properties));
         assertThat(exception.getMessage(), equalTo(
-                "E-VSCOMJAVA-46: Invalid value 'invalid' for property 'LOG_LEVEL'. "
+                "E-VSCOMJAVA-47: Invalid value 'invalid' for property 'LOG_LEVEL'. "
                         + "Available log levels are: [OFF, SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST, ALL]."));
     }
 
