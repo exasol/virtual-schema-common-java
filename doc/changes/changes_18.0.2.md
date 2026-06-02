@@ -24,6 +24,7 @@ Code name: Improve code quality
 * #317: Applied small allocation cleanups in request parsing, logging timestamp formatting, and schema metadata JSON conversion.
 * #308: Fixed `SqlLimit` so `limit` and `offset` stay non-negative for the full object lifetime by making the node immutable and aligning the validation message with the accepted zero values.
 * #307: Fixed `PushdownSqlRenderer` so `HASHTYPE` data types include `bytesize` in rendered pushdown SQL JSON.
+* #313: Fixed mutable DTO and SQL AST collection handling by adding defensive copies, unmodifiable getters, null-to-empty normalization, and constructor-time `SqlOrderBy` validation.
 * #312: Fixed logging utility resource and handler lifecycle issues by closing version metadata streams, falling back when the thread context class loader is missing, defaulting absent version properties to `UNKNOWN`, closing replaced root log handlers, and resetting closed remote socket handlers before reuse.
 * #316: Fixed `LoggingConfiguration` so invalid `LOG_LEVEL` values now fail with a structured error message that names the invalid value and lists the available log levels.
 * #318: Fixed several small naming, Javadoc, message, and parsing robustness issues, including locale-independent SQL parser uppercasing and trimmed telemetry property parsing.

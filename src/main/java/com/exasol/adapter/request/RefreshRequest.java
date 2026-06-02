@@ -1,5 +1,7 @@
 package com.exasol.adapter.request;
 
+import static java.util.Collections.emptyList;
+
 import java.util.List;
 
 import com.exasol.ExaMetadata;
@@ -13,20 +15,21 @@ import com.exasol.errorreporting.ExaError;
  */
 public class RefreshRequest extends AbstractAdapterRequest {
     private final boolean refreshSelectedTablesOnly;
-    private List<String> tables;
+    private final List<String> tables;
 
     /**
-     * Create a new request of type {@link RefreshRequest} for the whole Virtual Schema
+     * Create a new request of type {@link RefreshRequest} for the whole Virtual Schema.
      *
      * @param schemaMetadataInfo schema metadata
      */
     public RefreshRequest(final SchemaMetadataInfo schemaMetadataInfo) {
         super(schemaMetadataInfo, AdapterRequestType.REFRESH);
         this.refreshSelectedTablesOnly = false;
+        this.tables = emptyList();
     }
 
     /**
-     * Create a new request of type {@link RefreshRequest} for selected tables
+     * Create a new request of type {@link RefreshRequest} for selected tables.
      *
      * @param schemaMetadataInfo schema metadata
      * @param tables             tables for which the metadata should be refreshed
@@ -40,7 +43,7 @@ public class RefreshRequest extends AbstractAdapterRequest {
                     .toString());
         }
         this.refreshSelectedTablesOnly = true;
-        this.tables = tables;
+        this.tables = List.copyOf(tables);
     }
 
     /**
