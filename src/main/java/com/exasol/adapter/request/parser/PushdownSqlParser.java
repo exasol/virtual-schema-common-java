@@ -1,6 +1,7 @@
 package com.exasol.adapter.request.parser;
 
 import static com.exasol.adapter.request.RequestJsonKeys.*;
+import static java.util.Collections.unmodifiableMap;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -22,13 +23,21 @@ import jakarta.json.*;
  * Parser for the JSON query AST.
  */
 public final class PushdownSqlParser extends AbstractRequestParser {
-    private final List<TableMetadata> involvedTablesMetadata;
+    private final Map<String, TableMetadata> involvedTablesMetadataMap;
 
     private PushdownSqlParser(final List<TableMetadata> involvedTablesMetadata) {
-        this.involvedTablesMetadata = involvedTablesMetadata;
+        involvedTablesMetadataMap = buildInvolvedTablesMetadataMap(involvedTablesMetadata);
     }
 
-    private static ExaCharset charSetFromString(final String charset) {
+    private static Map<String, TableMetadata> buildInvolvedTablesMetadataMap(final List<TableMetadata> involvedTablesMetadata) {
+        final Map<String, TableMetadata> map = new HashMap<>((int) (involvedTablesMetadata.size() / 0.75f) + 1);
+        for (final TableMetadata involvedTableMeta : involvedTablesMetadata) {
+            map.put(involvedTableMeta.getName(), involvedTableMeta);
+        }
+        return unmodifiableMap(map);
+    }
+
+    static ExaCharset charSetFromString(final String charset) {
         if (charset.equals("UTF8")) {
             return ExaCharset.UTF8;
         } else if (charset.equals("ASCII")) {
@@ -141,17 +150,21 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         }
     }
 
-    private boolean hasAggregateFunction(final List<SqlNode> nodesList) {
-        // Stack is less efficient than ArrayDeque, but ArrayDeque doesn't support null elements.
-        @java.lang.SuppressWarnings("java:S1149")
-        final Stack<SqlNode> expressions = new Stack<>();
-        expressions.addAll(nodesList);
+    static boolean hasAggregateFunction(final List<SqlNode> nodesList) {
+        final Deque<SqlNode> expressions = new ArrayDeque<>();
+        for (final SqlNode node : nodesList) {
+            if (node != null) {
+                expressions.push(node);
+            }
+        }
         while (!expressions.isEmpty()) {
             final SqlNode expression = expressions.pop();
-            if (expression != null) {
-                expressions.addAll(expression.getChildren());
-                if (expression.getType().equals(SqlNodeType.FUNCTION_AGGREGATE)) {
-                    return true;
+            if (expression.getType().equals(SqlNodeType.FUNCTION_AGGREGATE)) {
+                return true;
+            }
+            for (final SqlNode child : expression.getChildren()) {
+                if (child != null) {
+                    expressions.push(child);
                 }
             }
         }
@@ -177,7 +190,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         }
     }
 
-    private static IntervalType intervalTypeFromString(final String intervalType) {
+    static IntervalType intervalTypeFromString(final String intervalType) {
         if (intervalType.equals("DAY TO SECONDS")) {
             return IntervalType.DAY_TO_SECOND;
         } else if (intervalType.equals("YEAR TO MONTH")) {
@@ -276,14 +289,6 @@ public final class PushdownSqlParser extends AbstractRequestParser {
                         .message("Unknown node type: {{typeName}}") //
                         .parameter("typeName", typeName).toString());
         }
-    }
-
-    private Map<String, TableMetadata> getInvolvedTablesMetadataMap() {
-        final Map<String, TableMetadata> tableMetadataMap = new HashMap<>(this.involvedTablesMetadata.size());
-        for (final TableMetadata involvedTableMeta : this.involvedTablesMetadata) {
-            tableMetadataMap.put(involvedTableMeta.getName(), involvedTableMeta);
-        }
-        return tableMetadataMap;
     }
 
     private SqlColumn createColumn(final int index, final SqlTable table, final ColumnMetadata columnMetadata) {
@@ -394,14 +399,13 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     @SuppressWarnings("java:S1192") // tableName is duplicated but that's ok since it's a parameter
-    private List<SqlNode> collectAllInvolvedColumns(final SqlNode from) {
+    List<SqlNode> collectAllInvolvedColumns(final SqlNode from) {
         final List<SqlTable> involvedTables = collectInvolvedTables(from);
-        final Map<String, TableMetadata> tableMetadataMap = getInvolvedTablesMetadataMap();
         final List<SqlNode> selectListElements = new ArrayList<>();
         for (final SqlTable table : involvedTables) {
             final String tableName = table.getName();
-            if (tableMetadataMap.containsKey(tableName)) {
-                final List<ColumnMetadata> columns = tableMetadataMap.get(tableName).getColumns();
+            if (involvedTablesMetadataMap.containsKey(tableName)) {
+                final List<ColumnMetadata> columns = involvedTablesMetadataMap.get(tableName).getColumns();
                 for (int i = 0, columnsSize = columns.size(); i < columnsSize; ++i) {
                     selectListElements.add(createColumn(i, table, columns.get(i)));
                 }
@@ -414,29 +418,29 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         return selectListElements;
     }
 
-    private DataType getHashtype(final JsonObject dataType) {
+    private static DataType getHashtype(final JsonObject dataType) {
         final int byteSize = dataType.getInt(BYTE_SIZE);
         return DataType.createHashtype(byteSize);
     }
 
-    private DataType getVarchar(final JsonObject dataType) {
+    private static DataType getVarchar(final JsonObject dataType) {
         final String charSet = dataType.getString(CHARACTER_SET, "UTF8");
         return DataType.createVarChar(dataType.getInt(SIZE), charSetFromString(charSet));
     }
 
-    private DataType getChar(final JsonObject dataType) {
+    private static DataType getChar(final JsonObject dataType) {
         final String charSet = dataType.getString(CHARACTER_SET, "UTF8");
         return DataType.createChar(dataType.getInt(SIZE), charSetFromString(charSet));
     }
 
-    private DataType getTimestamp(final JsonObject dataType) {
+    private static DataType getTimestamp(final JsonObject dataType) {
         final boolean withLocalTimezone = dataType.getBoolean(WITH_LOCAL_TIME_ZONE, false);
         final int precision = dataType.getInt(SchemaMetadataJsonConverter.TIMESTAMP_PRECISION_KEY,
                 DataTypeParser.DEFAULT_TIMESTAMP_PRECISION);
         return DataType.createTimestamp(withLocalTimezone, precision);
     }
 
-    private DataType getInterval(final JsonObject dataType) {
+    private static DataType getInterval(final JsonObject dataType) {
         final int precision = dataType.getInt(PRECISION, 2);
         final IntervalType intervalType = intervalTypeFromString(dataType.getString(FROM_TO));
         if (intervalType == IntervalType.DAY_TO_SECOND) {
@@ -447,7 +451,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         }
     }
 
-    private DataType getGeometry(final JsonObject dataType) {
+    private static DataType getGeometry(final JsonObject dataType) {
         final int srid = dataType.getInt(SRID);
         return DataType.createGeometry(srid);
     }
@@ -458,8 +462,8 @@ public final class PushdownSqlParser extends AbstractRequestParser {
      */
     private List<SqlTable> collectInvolvedTables(final SqlNode from) {
         final List<SqlTable> involvedTables = new ArrayList<>();
-        final Stack<SqlNode> nodes = new Stack<>();
-        nodes.add(from);
+        final Deque<SqlNode> nodes = new ArrayDeque<>();
+        nodes.push(from);
         while (!nodes.isEmpty()) {
             final SqlNode node = nodes.pop();
             switch (node.getType()) {
@@ -467,8 +471,8 @@ public final class PushdownSqlParser extends AbstractRequestParser {
                     involvedTables.add((SqlTable) node);
                     break;
                 case JOIN:
-                    nodes.add(((SqlJoin) node).getRight());
-                    nodes.add(((SqlJoin) node).getLeft());
+                    nodes.push(((SqlJoin) node).getRight());
+                    nodes.push(((SqlJoin) node).getLeft());
                     break;
                 default:
                     throw new IllegalStateException(ExaError.messageBuilder("E-VSCOMJAVA-10")
@@ -479,7 +483,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         return involvedTables;
     }
 
-    private DataType getDataType(final JsonObject dataType) {
+    static DataType getDataType(final JsonObject dataType) {
         final String typeName = dataType.getString(TYPE).toUpperCase(Locale.ROOT);
         switch (typeName) {
             case "DECIMAL":
@@ -725,15 +729,14 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private TableMetadata findInvolvedTableMetadata(final String tableName) {
-        assert this.involvedTablesMetadata != null;
-        for (final TableMetadata tableMetadata : this.involvedTablesMetadata) {
-            if (tableMetadata.getName().equals(tableName)) {
-                return tableMetadata;
-            }
+        final TableMetadata tableMetadata = involvedTablesMetadataMap.get(tableName);
+        if (tableMetadata != null) {
+            return tableMetadata;
         }
         throw new IllegalStateException(ExaError.messageBuilder("E-VSCOMJAVA-14").message(
                 "Could not find table metadata for involved table \"{{tableName|uq}}\". All involved tables: {{involvedTables}}")
-                .parameter("tableName", tableName).parameter("involvedTables", this.involvedTablesMetadata.toString())
+                .parameter("tableName", tableName)
+                .parameter("involvedTables", this.involvedTablesMetadataMap.toString())
                 .toString());
     }
 
@@ -747,8 +750,10 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         throw new IllegalStateException(ExaError.messageBuilder("E-VSCOMJAVA-15").message(
                 "Could not find column metadata for involved table \"{{tableName|uq}}\" and column \"{{columnName|uq}}\". "
                         + "All involved tables: {{involvedTables}}.")
-                .parameter("tableName", tableName).parameter("columnName", columnName)
-                .parameter("involvedTables", this.involvedTablesMetadata.toString()).toString());
+                .parameter("tableName", tableName)
+                .parameter("columnName", columnName)
+                .parameter("involvedTables", this.involvedTablesMetadataMap.toString())
+                .toString());
     }
 
     /**

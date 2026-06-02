@@ -8,6 +8,8 @@ import static com.exasol.adapter.sql.SqlNodeType.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -438,6 +440,34 @@ class PushDownSqlParserTest {
     }
 
     @Test
+    void testParsePredicateLikeWithEscapeChar() {
+        final String sqlAsJson = "{"
+                + "   \"type\" : \"predicate_like\", "
+                + "   \"expression\" : { "
+                + "        \"type\" : \"literal_string\", "
+                + "        \"value\" : \"abcd\" "
+                + "   }, "
+                + "   \"pattern\" : { "
+                + "        \"type\" : \"literal_string\", "
+                + "        \"value\" : \"a!_d\" "
+                + "   }, "
+                + "   \"escapeChar\" : { "
+                + "        \"type\" : \"literal_string\", "
+                + "        \"value\" : \"!\" "
+                + "   } "
+                + "}";
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlPredicateLike sqlPredicateLike = (SqlPredicateLike) this.defaultParser.parseExpression(jsonObject);
+        final SqlLiteralString left = (SqlLiteralString) sqlPredicateLike.getLeft();
+        final SqlLiteralString pattern = (SqlLiteralString) sqlPredicateLike.getPattern();
+        final SqlLiteralString escapeChar = (SqlLiteralString) sqlPredicateLike.getEscapeChar();
+        assertAll(() -> assertThat(sqlPredicateLike.getType(), equalTo(PREDICATE_LIKE)),
+                () -> assertThat(left.getValue(), equalTo("abcd")), //
+                () -> assertThat(pattern.getValue(), equalTo("a!_d")), //
+                () -> assertThat(escapeChar.getValue(), equalTo("!")));
+    }
+
+    @Test
     void testParsePredicateLikeRegexp() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"predicate_like_regexp\", " //
@@ -631,6 +661,61 @@ class PushDownSqlParserTest {
         final SqlFunctionScalarCast sqlFunctionScalarCast = (SqlFunctionScalarCast) this.defaultParser
                 .parseExpression(jsonObject);
         assertThat(sqlFunctionScalarCast.getDataType().toString(), equalTo("TIMESTAMP(5)"));
+    }
+
+    @Test
+    void testGetDataTypeDecimal() {
+        assertThat(getDataType("{" 
+                + "   \"type\" : \"DECIMAL\", " 
+                + "   \"precision\" : 31, " 
+                + "   \"scale\" : 41 " 
+                + "}"), equalTo(createDecimal(31, 41)));
+    }
+
+    @Test
+    void testGetDataTypeDouble() {
+        assertThat(getDataType("{" 
+                + "   \"type\" : \"DOUBLE\" " 
+                + "}"), equalTo(DataType.createDouble()));
+    }
+
+    @Test
+    void testGetDataTypeChar() {
+        assertThat(getDataType("{" 
+                + "   \"type\" : \"CHAR\", " 
+                + "   \"size\" : 22 " 
+                + "}"), equalTo(DataType.createChar(22, UTF8)));
+    }
+
+    @Test
+    void testGetDataTypeBoolean() {
+        assertThat(getDataType("{" 
+                + "   \"type\" : \"BOOLEAN\" " 
+                + "}"), equalTo(DataType.createBool()));
+    }
+
+    @Test
+    void testGetDataTypeDate() {
+        assertThat(getDataType("{" 
+                + "   \"type\" : \"DATE\" " 
+                + "}"), equalTo(DataType.createDate()));
+    }
+
+    @Test
+    void testGetDataTypeGeometry() {
+        assertThat(getDataType("{" 
+                + "   \"type\" : \"GEOMETRY\", " 
+                + "   \"srid\" : 42 " 
+                + "}"), equalTo(DataType.createGeometry(42)));
+    }
+
+    @Test
+    void testGetDataTypeUnsupportedType() {
+        final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> getDataType("{"
+                        + "   \"type\" : \"UNSUPPORTED\" "
+                        + "}"));
+        assertThat(exception.getMessage(), equalTo("E-VSCOMJAVA-11: Unsupported data type encountered: 'UNSUPPORTED'."));
     }
 
     @Test
@@ -1155,11 +1240,13 @@ class PushDownSqlParserTest {
         final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithTwoTables();
         final SqlStatementSelect sqlStatementSelect = (SqlStatementSelect) pushdownSqlParser
                 .parseExpression(jsonObject);
-        assertThat(sqlStatementSelect.getChildren().size(), equalTo(6));
-        assertTrue(sqlStatementSelect.hasHaving());
-        assertTrue(sqlStatementSelect.hasLimit());
-        assertTrue(sqlStatementSelect.hasFilter());
-        assertTrue(sqlStatementSelect.hasOrderBy());
+        assertAll(
+                () -> assertThat(sqlStatementSelect.getChildren().size(), equalTo(6)),
+                () -> assertTrue(sqlStatementSelect.hasHaving()),
+                () -> assertFalse(sqlStatementSelect.hasGroupBy()),
+                () -> assertTrue(sqlStatementSelect.hasLimit()),
+                () -> assertTrue(sqlStatementSelect.hasFilter()),
+                () -> assertTrue(sqlStatementSelect.hasOrderBy()));
     }
 
     @Test
@@ -1350,6 +1437,34 @@ class PushDownSqlParserTest {
     }
 
     @Test
+    void testCollectAllInvolvedColumnsWithMissingMetadata() {
+        final PushdownSqlParser parser = PushdownSqlParser.createWithTablesMetadata(Collections.emptyList());
+        final SqlTable table = mock(SqlTable.class);
+        when(table.getType()).thenReturn(TABLE);
+        when(table.getName()).thenReturn("MISSING_TABLE");
+        final IllegalStateException exception = assertThrows(IllegalStateException.class,
+                () -> parser.collectAllInvolvedColumns(table));
+        assertThat(exception.getMessage(), equalTo("E-VSCOMJAVA-9: Unable to find metadata for table \"MISSING_TABLE\" during collecting involved columns."));
+    }
+
+    @Test
+    void testParserCopiesInvolvedTablesMetadata() {
+        final List<TableMetadata> tables = new ArrayList<>();
+        tables.add(new TableMetadata("CUSTOMERS", "", List.of(
+                ColumnMetadata.builder().name("ID").adapterNotes("").type(createVarChar(200, UTF8)).build()), ""));
+        final PushdownSqlParser pushdownSqlParser = PushdownSqlParser.createWithTablesMetadata(tables);
+        tables.clear();
+        final JsonObject jsonObject = createJsonObjectFromString("{"
+                + "   \"type\" : \"table\", "
+                + "   \"name\" :  \"CUSTOMERS\" "
+                + "}");
+        final SqlTable sqlTable = (SqlTable) pushdownSqlParser.parseExpression(jsonObject);
+        assertAll(() -> assertThat(sqlTable.getType(), equalTo(TABLE)),
+                () -> assertThat(sqlTable.getName(), equalTo("CUSTOMERS")),
+                () -> assertThat(sqlTable.getMetadata().getName(), equalTo("CUSTOMERS")));
+    }
+
+    @Test
     void testParseInvalidExpressionType() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"limit\"" //
@@ -1426,5 +1541,42 @@ class PushDownSqlParserTest {
                 .parseExpression(jsonObject);
         assertFalse(sqlStatementSelect.hasGroupBy());
         assertThat(sqlStatementSelect.getChildren().size(), equalTo(2));
+    }
+
+    @Test
+    void testHasAggregateFunctionIgnoresNullValues() {
+        final SqlFunctionAggregate aggregate = new SqlFunctionAggregate(AggregateFunction.SUM,
+                List.of(new SqlLiteralExactnumeric(BigDecimal.ONE)), false);
+        assertAll(
+                () -> assertThat(PushdownSqlParser.hasAggregateFunction(Collections.singletonList(null)), equalTo(false)),
+                () -> assertThat(PushdownSqlParser.hasAggregateFunction(Arrays.asList(null, aggregate)), equalTo(true)));
+    }
+
+    @Test
+    void testCharSetFromStringAscii() {
+        assertThat(PushdownSqlParser.charSetFromString("ASCII"), equalTo(DataType.ExaCharset.ASCII));
+    }
+
+    @Test
+    void testCharSetFromStringUnsupportedCharset() {
+        final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> PushdownSqlParser.charSetFromString("EBCDIC"));
+        assertThat(exception.getMessage(), equalTo("E-VSCOMJAVA-12: Unsupported charset encountered: 'EBCDIC'. Supported charsets are 'UTF8' and 'ASCII'."));
+    }
+
+    @Test
+    void testIntervalTypeFromStringYearToMonth() {
+        assertThat(PushdownSqlParser.intervalTypeFromString("YEAR TO MONTH"), equalTo(DataType.IntervalType.YEAR_TO_MONTH));
+    }
+
+    @Test
+    void testIntervalTypeFromStringUnsupportedInterval() {
+        final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> PushdownSqlParser.intervalTypeFromString("HOUR"));
+        assertThat(exception.getMessage(),
+                equalTo("E-VSCOMJAVA-13: Unsupported interval data type encountered: 'HOUR'. Supported intervals are 'DAY TO SECONDS' and 'YEAR TO MONTH'."));
+    }
+
+    private DataType getDataType(final String dataTypeJson) {
+        return PushdownSqlParser.getDataType(createJsonObjectFromString(dataTypeJson));
     }
 }
