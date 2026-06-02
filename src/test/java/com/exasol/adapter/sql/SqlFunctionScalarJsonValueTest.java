@@ -2,6 +2,8 @@ package com.exasol.adapter.sql;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
@@ -99,6 +101,16 @@ class SqlFunctionScalarJsonValueTest {
         final SqlFunctionScalarJsonValue function = new SqlFunctionScalarJsonValue(ScalarFunction.JSON_VALUE, null,
                 DataType.createVarChar(1000, DataType.ExaCharset.UTF8), this.emptyBehavior, this.errorBehavior);
         assertThat(function.getArguments(), equalTo(Collections.emptyList()));
+    }
+
+    @Test
+    void testGetChildrenReturnsArgumentsInOriginalOrder() {
+        final SqlNode firstArgument = new SqlLiteralString("{\"a\": 1}");
+        final SqlNode secondArgument = new SqlLiteralString("$.a");
+        final SqlFunctionScalarJsonValue function = new SqlFunctionScalarJsonValue(ScalarFunction.JSON_VALUE,
+                List.of(firstArgument, secondArgument), DataType.createVarChar(1000, DataType.ExaCharset.UTF8),
+                this.emptyBehavior, this.errorBehavior);
+        assertThat(function.getChildren(), contains(sameInstance(firstArgument), sameInstance(secondArgument)));
     }
 
     @Test
