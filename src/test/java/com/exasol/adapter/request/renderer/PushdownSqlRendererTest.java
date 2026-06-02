@@ -739,6 +739,28 @@ class PushdownSqlRendererTest {
         assertParseAndRenderGeneratesSameJson(sqlAsJson);
     }
 
+    @Test
+    void testParseFunctionAggregateListaggWithOverflowError() throws JSONException {
+        final String sqlAsJson = "{" //
+                + "    \"type\": \"function_aggregate_listagg\"," //
+                + "    \"name\": \"LISTAGG\"," //
+                + "    \"distinct\": false," //
+                + "    \"arguments\": [" //
+                + "    {" //
+                + "        \"type\": \"column\"," //
+                + "        \"columnNr\": 1," //
+                + "        \"name\": \"USER_ID\"," //
+                + "        \"tableName\": \"CLICKS\"" //
+                + "    }" //
+                + "    ]," //
+                + "    \"overflowBehavior\":" //
+                + "    {" //
+                + "        \"type\": \"ERROR\"" //
+                + "    }" //
+                + "}";
+        assertParseAndRenderGeneratesSameJson(sqlAsJson);
+    }
+
     @ParameterizedTest
     @ValueSource(strings = { "pushdown_request_simple_inner_join_with_select_list.json",
             "pushdown_request_simple_inner_join_without_select_list.json",

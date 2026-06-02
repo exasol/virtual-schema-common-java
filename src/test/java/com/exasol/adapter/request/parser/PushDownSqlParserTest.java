@@ -1028,6 +1028,32 @@ class PushDownSqlParserTest {
         assertThat(listagg.getChildren().size(), equalTo(1));
     }
 
+    @Test
+    void testParseFunctionAggregateListaggWithOverflowError() {
+        final String sqlAsJson = "{" //
+                + "    \"type\": \"function_aggregate_listagg\"," //
+                + "    \"name\": \"LISTAGG\"," //
+                + "    \"arguments\": [" //
+                + "    {" //
+                + "        \"type\": \"column\"," //
+                + "        \"columnNr\": 1," //
+                + "        \"name\": \"USER_ID\"," //
+                + "        \"tableName\": \"CLICKS\"" //
+                + "    }" //
+                + "    ]," //
+                + "    \"overflowBehavior\":" //
+                + "    {" //
+                + "        \"type\": \"ERROR\"" //
+                + "    }" //
+                + "}";
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlFunctionAggregateListagg listagg = (SqlFunctionAggregateListagg) this.defaultParser
+                .parseExpression(jsonObject);
+        assertAll(() -> assertThat(listagg.getOverflowBehavior().getBehaviorType(), equalTo(SqlFunctionAggregateListagg.BehaviorType.ERROR)),
+                () -> assertThat(listagg.getOverflowBehavior().getTruncationType(), equalTo(null)),
+                () -> assertThat(listagg.getOverflowBehavior().getTruncationFiller(), equalTo(null)));
+    }
+
     @ParameterizedTest
     @CsvSource({ "0, 0, ID, CUSTOMERS", //
             "1, 1, NAME, CUSTOMERS", //
@@ -1076,8 +1102,7 @@ class PushDownSqlParserTest {
     @Test
     void testParseSelectWithHaving() {
 
-        final String sqlAsJson =
-                "{" +
+        final String sqlAsJson = "{" +
                 "    \"aggregationType\":\"single_group\"," +
                 "    \"from\":{" +
                 "        \"name\":\"CUSTOMERS\"," +
@@ -1136,7 +1161,6 @@ class PushDownSqlParserTest {
         assertTrue(sqlStatementSelect.hasFilter());
         assertTrue(sqlStatementSelect.hasOrderBy());
     }
-
 
     @Test
     void testParseSelectWithoutSelectList() {
