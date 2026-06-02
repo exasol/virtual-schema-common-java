@@ -37,7 +37,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         return unmodifiableMap(map);
     }
 
-    private static ExaCharset charSetFromString(final String charset) {
+    static ExaCharset charSetFromString(final String charset) {
         if (charset.equals("UTF8")) {
             return ExaCharset.UTF8;
         } else if (charset.equals("ASCII")) {
@@ -190,7 +190,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         }
     }
 
-    private static IntervalType intervalTypeFromString(final String intervalType) {
+    static IntervalType intervalTypeFromString(final String intervalType) {
         if (intervalType.equals("DAY TO SECONDS")) {
             return IntervalType.DAY_TO_SECOND;
         } else if (intervalType.equals("YEAR TO MONTH")) {
@@ -399,7 +399,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     @SuppressWarnings("java:S1192") // tableName is duplicated but that's ok since it's a parameter
-    private List<SqlNode> collectAllInvolvedColumns(final SqlNode from) {
+    List<SqlNode> collectAllInvolvedColumns(final SqlNode from) {
         final List<SqlTable> involvedTables = collectInvolvedTables(from);
         final List<SqlNode> selectListElements = new ArrayList<>();
         for (final SqlTable table : involvedTables) {
@@ -418,29 +418,29 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         return selectListElements;
     }
 
-    private DataType getHashtype(final JsonObject dataType) {
+    private static DataType getHashtype(final JsonObject dataType) {
         final int byteSize = dataType.getInt(BYTE_SIZE);
         return DataType.createHashtype(byteSize);
     }
 
-    private DataType getVarchar(final JsonObject dataType) {
+    private static DataType getVarchar(final JsonObject dataType) {
         final String charSet = dataType.getString(CHARACTER_SET, "UTF8");
         return DataType.createVarChar(dataType.getInt(SIZE), charSetFromString(charSet));
     }
 
-    private DataType getChar(final JsonObject dataType) {
+    private static DataType getChar(final JsonObject dataType) {
         final String charSet = dataType.getString(CHARACTER_SET, "UTF8");
         return DataType.createChar(dataType.getInt(SIZE), charSetFromString(charSet));
     }
 
-    private DataType getTimestamp(final JsonObject dataType) {
+    private static DataType getTimestamp(final JsonObject dataType) {
         final boolean withLocalTimezone = dataType.getBoolean(WITH_LOCAL_TIME_ZONE, false);
         final int precision = dataType.getInt(SchemaMetadataJsonConverter.TIMESTAMP_PRECISION_KEY,
                 DataTypeParser.DEFAULT_TIMESTAMP_PRECISION);
         return DataType.createTimestamp(withLocalTimezone, precision);
     }
 
-    private DataType getInterval(final JsonObject dataType) {
+    private static DataType getInterval(final JsonObject dataType) {
         final int precision = dataType.getInt(PRECISION, 2);
         final IntervalType intervalType = intervalTypeFromString(dataType.getString(FROM_TO));
         if (intervalType == IntervalType.DAY_TO_SECOND) {
@@ -451,7 +451,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         }
     }
 
-    private DataType getGeometry(final JsonObject dataType) {
+    private static DataType getGeometry(final JsonObject dataType) {
         final int srid = dataType.getInt(SRID);
         return DataType.createGeometry(srid);
     }
@@ -483,7 +483,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         return involvedTables;
     }
 
-    private DataType getDataType(final JsonObject dataType) {
+    static DataType getDataType(final JsonObject dataType) {
         final String typeName = dataType.getString(TYPE).toUpperCase(Locale.ROOT);
         switch (typeName) {
             case "DECIMAL":
