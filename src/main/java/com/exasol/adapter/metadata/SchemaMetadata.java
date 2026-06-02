@@ -1,6 +1,6 @@
 package com.exasol.adapter.metadata;
 
-import static java.util.Collections.emptyList;
+import static com.exasol.adapter.CollectionUtils.copyOfOrEmpty;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class SchemaMetadata {
      */
     public SchemaMetadata(final String adapterNotes, final List<TableMetadata> tables) {
         this.adapterNotes = adapterNotes;
-        this.tables = tables == null ? emptyList() : List.copyOf(tables);
+        this.tables = copyOfOrEmpty(tables);
     }
 
     /**

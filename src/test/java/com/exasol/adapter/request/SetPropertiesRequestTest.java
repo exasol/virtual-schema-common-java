@@ -1,12 +1,10 @@
 package com.exasol.adapter.request;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.anEmptyMap;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import org.junit.jupiter.api.Test;
 
@@ -30,5 +28,15 @@ class SetPropertiesRequestTest {
     @Test
     void testTreatsNullPropertiesAsEmptyMap() {
         assertThat(new SetPropertiesRequest(null, null).getProperties(), anEmptyMap());
+    }
+
+    @Test
+    void testGetPropertiesPreservesOrder() {
+        final Map<String, String> properties = new LinkedHashMap<>();
+        properties.put("B", "2");
+        properties.put("A", "1");
+        properties.put("C", "3");
+        final SetPropertiesRequest request = new SetPropertiesRequest(null, properties);
+        assertThat(request.getProperties().keySet(), contains("B", "A", "C"));
     }
 }

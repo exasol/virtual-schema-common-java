@@ -1,6 +1,7 @@
 package com.exasol.adapter.sql;
 
-import static java.util.Collections.emptyList;
+import static com.exasol.adapter.CollectionUtils.copyOfOrEmpty;
+import static java.util.Collections.unmodifiableList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ public class SqlPredicateInConstList extends SqlPredicate {
     public SqlPredicateInConstList(final SqlNode expression, final List<SqlNode> inArguments) {
         super(Predicate.IN_CONSTLIST);
         this.expression = expression;
-        this.inArguments = inArguments == null ? emptyList() : List.copyOf(inArguments);
+        this.inArguments = copyOfOrEmpty(inArguments);
         if (this.expression != null) {
             this.expression.setParent(this);
         }
@@ -64,7 +65,9 @@ public class SqlPredicateInConstList extends SqlPredicate {
     public List<SqlNode> getChildren() {
         final List<SqlNode> children = new ArrayList<>();
         children.addAll(this.inArguments);
-        children.add(this.expression);
-        return children;
+        if (this.expression != null) {
+            children.add(this.expression);
+        }
+        return unmodifiableList(children);
     }
 }

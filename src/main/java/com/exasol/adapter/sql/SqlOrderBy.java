@@ -1,6 +1,6 @@
 package com.exasol.adapter.sql;
 
-import static java.util.Collections.emptyList;
+import static com.exasol.adapter.CollectionUtils.copyOfOrEmpty;
 
 import java.util.List;
 
@@ -23,19 +23,13 @@ public class SqlOrderBy extends SqlNode {
      * @param nullsFirst  the nulls first
      */
     public SqlOrderBy(final List<SqlNode> expressions, final List<Boolean> isAsc, final List<Boolean> nullsFirst) {
-        this.expressions = copyList(expressions);
-        this.isAsc = copyList(isAsc);
-        this.nullsLast = copyList(nullsFirst);
+        this.expressions = copyOfOrEmpty(expressions);
+        this.isAsc = copyOfOrEmpty(isAsc);
+        this.nullsLast = copyOfOrEmpty(nullsFirst);
         validateListSizes();
-        if (this.expressions != null) {
-            for (final SqlNode node : this.expressions) {
-                node.setParent(this);
-            }
+        for (final SqlNode node : this.expressions) {
+            node.setParent(this);
         }
-    }
-
-    private <T> List<T> copyList(final List<T> values) {
-        return values == null ? emptyList() : List.copyOf(values);
     }
 
     private void validateListSizes() {

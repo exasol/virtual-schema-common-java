@@ -1,6 +1,6 @@
 package com.exasol.adapter.metadata;
 
-import static java.util.Collections.emptyList;
+import static com.exasol.adapter.CollectionUtils.copyOfOrEmpty;
 
 import java.util.*;
 
@@ -25,7 +25,7 @@ public class TableMetadata {
             final String comment) {
         this.name = name;
         this.adapterNotes = adapterNotes;
-        this.columns = columns == null ? emptyList() : List.copyOf(columns);
+        this.columns = copyOfOrEmpty(columns);
         this.comment = comment;
     }
 

@@ -1,6 +1,6 @@
 package com.exasol.adapter.request;
 
-import static java.util.Collections.emptyList;
+import static com.exasol.adapter.CollectionUtils.copyOfOrEmpty;
 
 import java.util.List;
 
@@ -31,12 +31,8 @@ public class PushDownRequest extends AbstractAdapterRequest {
             final List<TableMetadata> involvedTablesMetadata, final List<DataType> selectListDataType) {
         super(schemaMetadataInfo, AdapterRequestType.PUSHDOWN);
         this.select = select;
-        this.involvedTablesMetadata = copyList(involvedTablesMetadata);
-        this.selectListDataTypes = copyList(selectListDataType);
-    }
-
-    private static <T> List<T> copyList(final List<T> values) {
-        return values == null ? emptyList() : List.copyOf(values);
+        this.involvedTablesMetadata = copyOfOrEmpty(involvedTablesMetadata);
+        this.selectListDataTypes = copyOfOrEmpty(selectListDataType);
     }
 
     /**

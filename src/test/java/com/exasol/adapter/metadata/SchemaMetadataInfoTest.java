@@ -2,6 +2,7 @@ package com.exasol.adapter.metadata;
 
 import static java.util.Collections.emptyMap;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -55,6 +56,16 @@ class SchemaMetadataInfoTest {
     void testTreatsNullPropertiesAsEmptyMap() {
         assertThat(new SchemaMetadataInfo(TEST_NAME, TEST_ADAPTER_NOTES, null).getProperties(),
                 equalTo(emptyMap()));
+    }
+
+    @Test
+    void testGetPropertiesPreservesOrder() {
+        final Map<String, String> properties = new LinkedHashMap<>();
+        properties.put("B", "2");
+        properties.put("A", "1");
+        properties.put("C", "3");
+        final SchemaMetadataInfo metadataInfo = new SchemaMetadataInfo(TEST_NAME, TEST_ADAPTER_NOTES, properties);
+        assertThat(metadataInfo.getProperties().keySet(), contains("B", "A", "C"));
     }
 
     @Test
