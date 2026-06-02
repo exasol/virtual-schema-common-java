@@ -1,5 +1,7 @@
 package com.exasol.adapter.request;
 
+import static com.exasol.adapter.CollectionUtils.copyOfOrEmpty;
+
 import java.util.List;
 
 import com.exasol.ExaMetadata;
@@ -29,8 +31,8 @@ public class PushDownRequest extends AbstractAdapterRequest {
             final List<TableMetadata> involvedTablesMetadata, final List<DataType> selectListDataType) {
         super(schemaMetadataInfo, AdapterRequestType.PUSHDOWN);
         this.select = select;
-        this.involvedTablesMetadata = involvedTablesMetadata;
-        this.selectListDataTypes = selectListDataType;
+        this.involvedTablesMetadata = copyOfOrEmpty(involvedTablesMetadata);
+        this.selectListDataTypes = copyOfOrEmpty(selectListDataType);
     }
 
     /**

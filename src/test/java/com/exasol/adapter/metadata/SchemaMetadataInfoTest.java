@@ -1,12 +1,16 @@
 package com.exasol.adapter.metadata;
 
+import static java.util.Collections.emptyMap;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.Collections;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 class SchemaMetadataInfoTest {
     private static final String TEST_NAME = "test name";
@@ -31,6 +35,37 @@ class SchemaMetadataInfoTest {
     @Test
     void testGetProperties() {
         assertThat(this.schemaMetadataInfo.getProperties(), equalTo(Collections.emptyMap()));
+    }
+
+    @Test
+    void testCopiesPropertiesDefensively() {
+        final Map<String, String> properties = new HashMap<>();
+        properties.put("A", "B");
+        final SchemaMetadataInfo metadataInfo = new SchemaMetadataInfo(TEST_NAME, TEST_ADAPTER_NOTES, properties);
+        properties.put("A", "CHANGED");
+        assertThat(metadataInfo.getProperties(), hasEntry("A", "B"));
+    }
+
+    @Test
+    void testGetPropertiesReturnsUnmodifiableMap() {
+        final Map<String, String> properties = this.schemaMetadataInfo.getProperties();
+        assertThrows(UnsupportedOperationException.class, () -> properties.put("A", "B"));
+    }
+
+    @Test
+    void testTreatsNullPropertiesAsEmptyMap() {
+        assertThat(new SchemaMetadataInfo(TEST_NAME, TEST_ADAPTER_NOTES, null).getProperties(),
+                equalTo(emptyMap()));
+    }
+
+    @Test
+    void testGetPropertiesPreservesOrder() {
+        final Map<String, String> properties = new LinkedHashMap<>();
+        properties.put("B", "2");
+        properties.put("A", "1");
+        properties.put("C", "3");
+        final SchemaMetadataInfo metadataInfo = new SchemaMetadataInfo(TEST_NAME, TEST_ADAPTER_NOTES, properties);
+        assertThat(metadataInfo.getProperties().keySet(), contains("B", "A", "C"));
     }
 
     @Test
