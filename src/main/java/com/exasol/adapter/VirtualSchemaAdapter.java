@@ -6,12 +6,11 @@ import com.exasol.adapter.response.*;
 
 /**
  * Interface for Virtual Schema Adapters.
- *
  * <p>
  * This interface provides a number of handler functions for different types of requests a virtual schema adapter can
  * receive from the Exasol core database.
  */
-public interface VirtualSchemaAdapter {
+public interface VirtualSchemaAdapter extends AutoCloseable {
     /**
      * Create a Virtual Schema
      *
@@ -75,4 +74,9 @@ public interface VirtualSchemaAdapter {
      * @throws AdapterException if the adapter can't handle the request
      */
     public PushDownResponse pushdown(final ExaMetadata metadata, final PushDownRequest request) throws AdapterException;
+
+    @Override
+    public default void close() {
+        // By default, there are no resources to be closed. Adapters can override this method if needed.
+    }
 }

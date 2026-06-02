@@ -37,6 +37,8 @@ class RequestDispatcherTest {
     @BeforeEach
     void beforeEach() {
         resetRootLogger();
+        StubAdapterFactory.resetClosed();
+        StubAdapter.resetClosed();
     }
 
     /**
@@ -119,6 +121,24 @@ class RequestDispatcherTest {
                 + "    ]\n" //
                 + "}";
         adapterCall(rawRequest).withResponse("{\"type\":\"pushdown\",\"sql\":\"SELECT * FROM FOOBAR\"}").verify();
+    }
+
+    @Test
+    void testFactoryIsClosedAfterDispatch() throws AdapterException {
+        adapterCall("{ \"type\" : \"createVirtualSchema\", " + DEFAULT_REQUEST_PARTS + "}")
+                .withResponse(
+                        "{\"type\":\"createVirtualSchema\",\"schemaMetadata\":{\"tables\":[],\"adapterNotes\":\"\"}}")
+                .verify();
+        assertThat(StubAdapterFactory.wasClosed(), equalTo(true));
+    }
+
+    @Test
+    void testAdapterIsClosedAfterDispatch() throws AdapterException {
+        adapterCall("{ \"type\" : \"createVirtualSchema\", " + DEFAULT_REQUEST_PARTS + "}")
+                .withResponse(
+                        "{\"type\":\"createVirtualSchema\",\"schemaMetadata\":{\"tables\":[],\"adapterNotes\":\"\"}}")
+                .verify();
+        assertThat(StubAdapter.wasClosed(), equalTo(true));
     }
 
     private AdapterCallVerifier adapterCall(final String rawRequest) {

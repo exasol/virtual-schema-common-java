@@ -3,7 +3,7 @@ package com.exasol.adapter;
 /**
  * Factory that creates a {@link VirtualSchemaAdapter}
  */
-public interface AdapterFactory {
+public interface AdapterFactory extends AutoCloseable {
     /**
      * Create a new {@link VirtualSchemaAdapter}
      *
@@ -48,4 +48,9 @@ public interface AdapterFactory {
      * @return short tag for the adapter project
      */
     public String getAdapterProjectShortTag();
+
+    @Override
+    public default void close() {
+        // By default, there are no resources to be closed. Adapters can override this method if needed.
+    }
 }
