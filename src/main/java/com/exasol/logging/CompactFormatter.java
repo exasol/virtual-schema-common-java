@@ -25,14 +25,14 @@ public class CompactFormatter extends Formatter {
      * <code>yyyy-MM-dd HH:mm:ss.SSS LEVEL   [c.e.ClassName] The message.</code>
      */
     @Override
-    public String format(final LogRecord record) {
+    public String format(final LogRecord logRecord) {
         final StringBuilder builder = new StringBuilder();
-        builder.append(formatTimestamp(record.getMillis()));
+        builder.append(formatTimestamp(logRecord.getMillis()));
         builder.append(" ");
-        builder.append(String.format(LOG_LEVEL_FORMAT, record.getLevel()));
-        appendClassName(record.getSourceClassName(), builder);
-        builder.append(formatMessage(record));
-        formatException(record, builder);
+        builder.append(String.format(LOG_LEVEL_FORMAT, logRecord.getLevel()));
+        appendClassName(logRecord.getSourceClassName(), builder);
+        builder.append(formatMessage(logRecord));
+        formatException(logRecord, builder);
         builder.append(System.lineSeparator());
         return builder.toString();
     }
@@ -65,8 +65,8 @@ public class CompactFormatter extends Formatter {
         return this.dateTimeFormatter.format(instant);
     }
 
-    private void formatException(final LogRecord record, final StringBuilder builder) {
-        final Throwable thrown = record.getThrown();
+    private void formatException(final LogRecord logRecord, final StringBuilder builder) {
+        final Throwable thrown = logRecord.getThrown();
         if (thrown != null) {
             builder.append("\n\t");
             final StringWriter errors = new StringWriter();
