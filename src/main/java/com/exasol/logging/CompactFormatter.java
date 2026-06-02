@@ -3,7 +3,7 @@ package com.exasol.logging;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.Instant;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
@@ -13,7 +13,8 @@ import java.util.logging.LogRecord;
  */
 public class CompactFormatter extends Formatter {
     private static final String LOG_LEVEL_FORMAT = "%-8s";
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
+            .withZone(ZoneOffset.UTC);
 
     /**
      * Formats a log record according in a compact manner.
@@ -24,14 +25,14 @@ public class CompactFormatter extends Formatter {
      * <code>yyyy-MM-dd HH:mm:ss.SSS LEVEL   [c.e.ClassName] The message.</code>
      */
     @Override
-    public String format(final LogRecord record) {
+    public String format(final LogRecord logRecord) {
         final StringBuilder builder = new StringBuilder();
-        builder.append(formatTimestamp(record.getMillis()));
+        builder.append(formatTimestamp(logRecord.getMillis()));
         builder.append(" ");
-        builder.append(String.format(LOG_LEVEL_FORMAT, record.getLevel()));
-        appendClassName(record.getSourceClassName(), builder);
-        builder.append(formatMessage(record));
-        formatException(record, builder);
+        builder.append(String.format(LOG_LEVEL_FORMAT, logRecord.getLevel()));
+        appendClassName(logRecord.getSourceClassName(), builder);
+        builder.append(formatMessage(logRecord));
+        formatException(logRecord, builder);
         builder.append(System.lineSeparator());
         return builder.toString();
     }
@@ -61,11 +62,11 @@ public class CompactFormatter extends Formatter {
 
     private String formatTimestamp(final long millis) {
         final Instant instant = Instant.ofEpochMilli(millis);
-        return this.dateTimeFormatter.format(instant.atZone(ZoneId.of("Z")));
+        return this.dateTimeFormatter.format(instant);
     }
 
-    private void formatException(final LogRecord record, final StringBuilder builder) {
-        final Throwable thrown = record.getThrown();
+    private void formatException(final LogRecord logRecord, final StringBuilder builder) {
+        final Throwable thrown = logRecord.getThrown();
         if (thrown != null) {
             builder.append("\n\t");
             final StringWriter errors = new StringWriter();

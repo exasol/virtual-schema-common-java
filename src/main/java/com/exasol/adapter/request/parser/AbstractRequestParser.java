@@ -2,8 +2,7 @@ package com.exasol.adapter.request.parser;
 
 import static com.exasol.adapter.request.parser.RequestParserConstants.PROPERTIES_KEY;
 
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
+import java.io.StringReader;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -27,9 +26,7 @@ class AbstractRequestParser {
      * @return JSON reader
      */
     protected JsonReader createJsonReader(final String rawRequest) {
-        final ByteArrayInputStream rawRequestStream = new ByteArrayInputStream(
-                rawRequest.getBytes(StandardCharsets.UTF_8));
-        return Json.createReader(rawRequestStream);
+        return Json.createReader(new StringReader(rawRequest));
     }
 
     /**
