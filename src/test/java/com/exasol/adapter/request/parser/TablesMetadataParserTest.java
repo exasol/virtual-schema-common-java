@@ -10,8 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
@@ -24,6 +23,8 @@ import com.exasol.adapter.metadata.*;
 import jakarta.json.*;
 
 class TablesMetadataParserTest {
+    private static final JsonBuilderFactory JSON = Json.createBuilderFactory(Collections.emptyMap());
+
     @Test
     void testParseMetadata() throws IOException {
         final List<ColumnMetadata> tableColumns = new ArrayList<>();
@@ -126,17 +127,25 @@ class TablesMetadataParserTest {
         return expectedInvolvedTablesMetadata;
     }
 
+    private static JsonArrayBuilder arrayBuilder() {
+        return JSON.createArrayBuilder();
+    }
+
+    private static JsonObjectBuilder objectBuilder() {
+        return JSON.createObjectBuilder();
+    }
+
     @Test
     void testParseColumnMetadataUsesBooleanDefaults() {
-        final JsonArray tablesAsJson = Json.createArrayBuilder().add(Json.createObjectBuilder()
+        final JsonArray tablesAsJson = arrayBuilder().add(objectBuilder()
                 .add("name", "T1")
-                .add("columns", Json.createArrayBuilder()
-                        .add(Json.createObjectBuilder().add("name", "DEFAULTS")
-                                .add("dataType", Json.createObjectBuilder().add("type", "DECIMAL").add("precision", 18)
+                .add("columns", arrayBuilder()
+                        .add(objectBuilder().add("name", "DEFAULTS")
+                                .add("dataType", objectBuilder().add("type", "DECIMAL").add("precision", 18)
                                         .add("scale", 0)))
-                        .add(Json.createObjectBuilder().add("name", "EXPLICIT_VALUES").add("isNullable", false)
+                        .add(objectBuilder().add("name", "EXPLICIT_VALUES").add("isNullable", false)
                                 .add("isIdentity", true)
-                                .add("dataType", Json.createObjectBuilder().add("type", "DECIMAL").add("precision", 18)
+                                .add("dataType", objectBuilder().add("type", "DECIMAL").add("precision", 18)
                                         .add("scale", 0)))))
                 .build();
 
@@ -155,18 +164,18 @@ class TablesMetadataParserTest {
 
     @Test
     void testParseMetadataReadsAdapterNotes() {
-        final JsonArray tablesAsJson = Json.createArrayBuilder().add(Json.createObjectBuilder()
+        final JsonArray tablesAsJson = arrayBuilder().add(objectBuilder()
                 .add("name", "T1")
-                .add("adapterNotes", Json.createObjectBuilder().add("table", true))
-                .add("columns", Json.createArrayBuilder()
-                        .add(Json.createObjectBuilder().add("name", "C1")
+                .add("adapterNotes", objectBuilder().add("table", true))
+                .add("columns", arrayBuilder()
+                        .add(objectBuilder().add("name", "C1")
                                 .add("adapterNotes", "column notes")
-                                .add("dataType", Json.createObjectBuilder().add("type", "BOOLEAN")))
-                        .add(Json.createObjectBuilder().add("name", "C2")
-                                .add("adapterNotes", Json.createObjectBuilder().add("nested", 1))
-                                .add("dataType", Json.createObjectBuilder().add("type", "DATE")))
-                        .add(Json.createObjectBuilder().add("name", "C3")
-                                .add("dataType", Json.createObjectBuilder().add("type", "DOUBLE")))))
+                                .add("dataType", objectBuilder().add("type", "BOOLEAN")))
+                        .add(objectBuilder().add("name", "C2")
+                                .add("adapterNotes", objectBuilder().add("nested", 1))
+                                .add("dataType", objectBuilder().add("type", "DATE")))
+                        .add(objectBuilder().add("name", "C3")
+                                .add("dataType", objectBuilder().add("type", "DOUBLE")))))
                 .build();
 
         final List<TableMetadata> tables = TablesMetadataParser.create().parse(tablesAsJson);
@@ -193,50 +202,50 @@ class TablesMetadataParserTest {
 
     private static Stream<Arguments> invalidTableMetadata() {
         return Stream.of(
-                Arguments.of(Json.createArrayBuilder().add(Json.createObjectBuilder().add("name", "T1")).build(),
+                Arguments.of(arrayBuilder().add(objectBuilder().add("name", "T1")).build(),
                         "E-VSCOMJAVA-44: Failed to parse 'table 'T1'' because mandatory field 'columns' is missing."),
-                Arguments.of(Json.createArrayBuilder().add(Json.createObjectBuilder()
+                Arguments.of(arrayBuilder().add(objectBuilder()
                         .add("name", "T1")
-                        .add("columns", Json.createArrayBuilder()
-                                .add(Json.createObjectBuilder()
-                                        .add("dataType", Json.createObjectBuilder().add("type", "DECIMAL")
+                        .add("columns", arrayBuilder()
+                                .add(objectBuilder()
+                                        .add("dataType", objectBuilder().add("type", "DECIMAL")
                                                 .add("precision", 18).add("scale", 0)))))
                         .build(),
                         "E-VSCOMJAVA-44: Failed to parse 'column #0 of table 'T1'' because mandatory field 'name' is missing."),
-                Arguments.of(Json.createArrayBuilder().add(Json.createObjectBuilder()
+                Arguments.of(arrayBuilder().add(objectBuilder()
                         .add("name", "T1")
-                        .add("columns", Json.createArrayBuilder().add(Json.createObjectBuilder().add("name", "C1"))))
+                        .add("columns", arrayBuilder().add(objectBuilder().add("name", "C1"))))
                         .build(),
                         "E-VSCOMJAVA-44: Failed to parse 'column 'C1' of table 'T1'' because mandatory field 'dataType' is missing."),
-                Arguments.of(Json.createArrayBuilder().add(Json.createObjectBuilder()
+                Arguments.of(arrayBuilder().add(objectBuilder()
                         .add("name", "T1")
-                        .add("columns", Json.createArrayBuilder()
-                                .add(Json.createObjectBuilder().add("name", "C1")
+                        .add("columns", arrayBuilder()
+                                .add(objectBuilder().add("name", "C1")
                                         .add("dataType",
-                                                Json.createObjectBuilder().add("precision", 18).add("scale", 0)))))
+                                                objectBuilder().add("precision", 18).add("scale", 0)))))
                         .build(),
                         "E-VSCOMJAVA-44: Failed to parse 'column 'C1' of table 'T1' data type' because mandatory field 'type' is missing."),
 
                 // Unsupported data types
                 Arguments.of(createSingleColumnTable("VARCHAR",
-                        Json.createObjectBuilder().add("size", 10).add("characterSet", "INVALID").build()),
+                        objectBuilder().add("size", 10).add("characterSet", "INVALID").build()),
                         "E-VSCOMJAVA-19: Unsupported charset encountered: 'INVALID'."),
                 Arguments.of(createSingleColumnTable("INTERVAL",
-                        Json.createObjectBuilder().add("fromTo", "CENTURY TO MINUTE").build()),
+                        objectBuilder().add("fromTo", "CENTURY TO MINUTE").build()),
                         "E-VSCOMJAVA-20: Unsupported interval data type encountered: 'CENTURY TO MINUTE'."),
-                Arguments.of(createSingleColumnTable("UNSUPPORTED_TYPE", Json.createObjectBuilder().build()),
+                Arguments.of(createSingleColumnTable("UNSUPPORTED_TYPE", objectBuilder().build()),
                         "E-VSCOMJAVA-18: Unsupported data type encountered: 'UNSUPPORTED_TYPE'."));
     }
 
     private static JsonArray createSingleColumnTable(final String type, final JsonObject typeAttributes) {
-        final JsonObjectBuilder dataType = Json.createObjectBuilder().add("type", type);
+        final JsonObjectBuilder dataType = objectBuilder().add("type", type);
         for (final String key : typeAttributes.keySet()) {
             dataType.add(key, typeAttributes.get(key));
         }
-        return Json.createArrayBuilder().add(Json.createObjectBuilder()
+        return arrayBuilder().add(objectBuilder()
                 .add("name", "T1")
-                .add("columns", Json.createArrayBuilder()
-                        .add(Json.createObjectBuilder().add("name", "C1").add("dataType", dataType))))
+                .add("columns", arrayBuilder()
+                        .add(objectBuilder().add("name", "C1").add("dataType", dataType))))
                 .build();
     }
 }

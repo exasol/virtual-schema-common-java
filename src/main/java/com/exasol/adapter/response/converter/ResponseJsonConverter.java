@@ -1,5 +1,7 @@
 package com.exasol.adapter.response.converter;
 
+import static java.util.Collections.emptyMap;
+
 import com.exasol.adapter.capabilities.*;
 import com.exasol.adapter.metadata.converter.SchemaMetadataJsonConverter;
 import com.exasol.adapter.response.*;
@@ -16,6 +18,7 @@ public final class ResponseJsonConverter {
     private static final String LITERAL_PREFIX = "LITERAL_";
     private static final String SCHEMA_METADATA = "schemaMetadata";
     private static final ResponseJsonConverter responseJsonConverter = new ResponseJsonConverter();
+    private final JsonBuilderFactory factory = Json.createBuilderFactory(emptyMap());
 
     private ResponseJsonConverter() {
     }
@@ -37,7 +40,7 @@ public final class ResponseJsonConverter {
      */
     @SuppressWarnings("squid:S1172")
     public String convertDropVirtualSchemaResponse(final DropVirtualSchemaResponse dropResponse) {
-        return Json.createObjectBuilder() //
+        return this.factory.createObjectBuilder() //
                 .add("type", "dropVirtualSchema") //
                 .build() //
                 .toString();
@@ -50,7 +53,7 @@ public final class ResponseJsonConverter {
      * @return string representation of a JSON Object
      */
     public String convertCreateVirtualSchemaResponse(final CreateVirtualSchemaResponse createResponse) {
-        return Json.createObjectBuilder() //
+        return this.factory.createObjectBuilder() //
                 .add("type", "createVirtualSchema") //
                 .add(SCHEMA_METADATA,
                         SchemaMetadataJsonConverter.getInstance().convert(createResponse.getSchemaMetadata())) //
@@ -65,7 +68,7 @@ public final class ResponseJsonConverter {
      * @return string representation of a JSON Object
      */
     public String convertPushDownResponse(final PushDownResponse pushDownResponse) {
-        return Json.createObjectBuilder() //
+        return this.factory.createObjectBuilder() //
                 .add("type", "pushdown") //
                 .add("sql", pushDownResponse.getPushDownSql()) //
                 .build() //
@@ -79,8 +82,8 @@ public final class ResponseJsonConverter {
      * @return string representation of a JSON Object
      */
     public String convertGetCapabilitiesResponse(final GetCapabilitiesResponse getCapabilitiesResponse) {
-        final JsonObjectBuilder builder = Json.createObjectBuilder().add("type", "getCapabilities");
-        final JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+        final JsonObjectBuilder builder = this.factory.createObjectBuilder().add("type", "getCapabilities");
+        final JsonArrayBuilder arrayBuilder = this.factory.createArrayBuilder();
         final Capabilities capabilities = getCapabilitiesResponse.getCapabilities();
         addMainCapabilitiesToBuilder(capabilities, arrayBuilder);
         addScalarFunctionCapabilitiesToBuilder(capabilities, arrayBuilder);
@@ -136,7 +139,7 @@ public final class ResponseJsonConverter {
      * @return string representation of a JSON Object
      */
     public String convertRefreshResponse(final RefreshResponse refreshResponse) {
-        return Json.createObjectBuilder() //
+        return this.factory.createObjectBuilder() //
                 .add("type", "refresh") //
                 .add(SCHEMA_METADATA,
                         SchemaMetadataJsonConverter.getInstance().convert(refreshResponse.getSchemaMetadata())) //
@@ -151,7 +154,7 @@ public final class ResponseJsonConverter {
      * @return string representation of a JSON Object
      */
     public String convertSetPropertiesResponse(final SetPropertiesResponse setPropertiesResponse) {
-        final JsonObjectBuilder builder = Json.createObjectBuilder();
+        final JsonObjectBuilder builder = this.factory.createObjectBuilder();
         builder.add("type", "setProperties");
         if (setPropertiesResponse.getSchemaMetadata() != null) {
             builder.add(SCHEMA_METADATA,
