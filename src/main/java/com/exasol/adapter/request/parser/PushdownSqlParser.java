@@ -1,6 +1,7 @@
 package com.exasol.adapter.request.parser;
 
 import static com.exasol.adapter.request.RequestJsonKeys.*;
+import static java.util.Collections.unmodifiableMap;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -22,11 +23,18 @@ import jakarta.json.*;
  * Parser for the JSON query AST.
  */
 public final class PushdownSqlParser extends AbstractRequestParser {
-    private final List<TableMetadata> involvedTablesMetadata;
-    private Map<String, TableMetadata> involvedTablesMetadataMap;
+    private final Map<String, TableMetadata> involvedTablesMetadataMap;
 
     private PushdownSqlParser(final List<TableMetadata> involvedTablesMetadata) {
-        this.involvedTablesMetadata = new ArrayList<>(involvedTablesMetadata);
+        involvedTablesMetadataMap = buildInvolvedTablesMetadataMap(involvedTablesMetadata);
+    }
+
+    private static Map<String, TableMetadata> buildInvolvedTablesMetadataMap(final List<TableMetadata> involvedTablesMetadata) {
+        final Map<String, TableMetadata> map = new HashMap<>(involvedTablesMetadata.size());
+        for (final TableMetadata involvedTableMeta : involvedTablesMetadata) {
+            map.put(involvedTableMeta.getName(), involvedTableMeta);
+        }
+        return unmodifiableMap(map);
     }
 
     private static ExaCharset charSetFromString(final String charset) {
@@ -283,16 +291,6 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         }
     }
 
-    private Map<String, TableMetadata> getInvolvedTablesMetadataMap() {
-        if (this.involvedTablesMetadataMap == null) {
-            this.involvedTablesMetadataMap = new HashMap<>(this.involvedTablesMetadata.size());
-            for (final TableMetadata involvedTableMeta : this.involvedTablesMetadata) {
-                this.involvedTablesMetadataMap.put(involvedTableMeta.getName(), involvedTableMeta);
-            }
-        }
-        return this.involvedTablesMetadataMap;
-    }
-
     private SqlColumn createColumn(final int index, final SqlTable table, final ColumnMetadata columnMetadata) {
         if (table.hasAlias()) {
             return new SqlColumn(index, columnMetadata, table.getName(), table.getAlias());
@@ -403,12 +401,11 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     @SuppressWarnings("java:S1192") // tableName is duplicated but that's ok since it's a parameter
     private List<SqlNode> collectAllInvolvedColumns(final SqlNode from) {
         final List<SqlTable> involvedTables = collectInvolvedTables(from);
-        final Map<String, TableMetadata> tableMetadataMap = getInvolvedTablesMetadataMap();
         final List<SqlNode> selectListElements = new ArrayList<>();
         for (final SqlTable table : involvedTables) {
             final String tableName = table.getName();
-            if (tableMetadataMap.containsKey(tableName)) {
-                final List<ColumnMetadata> columns = tableMetadataMap.get(tableName).getColumns();
+            if (involvedTablesMetadataMap.containsKey(tableName)) {
+                final List<ColumnMetadata> columns = involvedTablesMetadataMap.get(tableName).getColumns();
                 for (int i = 0, columnsSize = columns.size(); i < columnsSize; ++i) {
                     selectListElements.add(createColumn(i, table, columns.get(i)));
                 }
@@ -732,14 +729,14 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private TableMetadata findInvolvedTableMetadata(final String tableName) {
-        assert this.involvedTablesMetadata != null;
-        final TableMetadata tableMetadata = getInvolvedTablesMetadataMap().get(tableName);
+        final TableMetadata tableMetadata = involvedTablesMetadataMap.get(tableName);
         if (tableMetadata != null) {
             return tableMetadata;
         }
         throw new IllegalStateException(ExaError.messageBuilder("E-VSCOMJAVA-14").message(
                 "Could not find table metadata for involved table \"{{tableName|uq}}\". All involved tables: {{involvedTables}}")
-                .parameter("tableName", tableName).parameter("involvedTables", this.involvedTablesMetadata.toString())
+                .parameter("tableName", tableName)
+                .parameter("involvedTables", this.involvedTablesMetadataMap.toString())
                 .toString());
     }
 
@@ -753,8 +750,10 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         throw new IllegalStateException(ExaError.messageBuilder("E-VSCOMJAVA-15").message(
                 "Could not find column metadata for involved table \"{{tableName|uq}}\" and column \"{{columnName|uq}}\". "
                         + "All involved tables: {{involvedTables}}.")
-                .parameter("tableName", tableName).parameter("columnName", columnName)
-                .parameter("involvedTables", this.involvedTablesMetadata.toString()).toString());
+                .parameter("tableName", tableName)
+                .parameter("columnName", columnName)
+                .parameter("involvedTables", this.involvedTablesMetadataMap.toString())
+                .toString());
     }
 
     /**
