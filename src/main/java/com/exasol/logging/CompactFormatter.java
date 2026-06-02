@@ -3,7 +3,7 @@ package com.exasol.logging;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.Instant;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
@@ -13,7 +13,8 @@ import java.util.logging.LogRecord;
  */
 public class CompactFormatter extends Formatter {
     private static final String LOG_LEVEL_FORMAT = "%-8s";
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
+            .withZone(ZoneOffset.UTC);
 
     /**
      * Formats a log record according in a compact manner.
@@ -61,7 +62,7 @@ public class CompactFormatter extends Formatter {
 
     private String formatTimestamp(final long millis) {
         final Instant instant = Instant.ofEpochMilli(millis);
-        return this.dateTimeFormatter.format(instant.atZone(ZoneId.of("Z")));
+        return this.dateTimeFormatter.format(instant);
     }
 
     private void formatException(final LogRecord record, final StringBuilder builder) {

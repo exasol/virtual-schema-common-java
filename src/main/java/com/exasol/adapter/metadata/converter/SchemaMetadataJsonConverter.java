@@ -53,6 +53,7 @@ public final class SchemaMetadataJsonConverter {
     private static final String COMMENT_KEY = "comment";
     private static final String IDENTITY_KEY = "isIdentity";
     private static final String DEFAULT_KEY = "default";
+    private static final String COLUMNS_KEY = "columns";
     private final JsonBuilderFactory factory = Json.createBuilderFactory(Collections.emptyMap());
 
     /**
@@ -94,7 +95,7 @@ public final class SchemaMetadataJsonConverter {
         final JsonObjectBuilder tableBuilder = this.factory.createObjectBuilder();
         tableBuilder.add(TYPE_KEY, "table");
         tableBuilder.add(TABLE_NAME_KEY, table.getName());
-        final JsonArrayBuilder columnsBuilder = Json.createArrayBuilder();
+        final JsonArrayBuilder columnsBuilder = this.factory.createArrayBuilder();
         for (final ColumnMetadata column : table.getColumns()) {
             columnsBuilder.add(convertColumnMetadata(column));
         }
@@ -104,7 +105,7 @@ public final class SchemaMetadataJsonConverter {
         if (table.hasComment()) {
             tableBuilder.add(COMMENT_KEY, table.getComment());
         }
-        tableBuilder.add("columns", columnsBuilder);
+        tableBuilder.add(COLUMNS_KEY, columnsBuilder);
         return tableBuilder;
     }
 
