@@ -1,8 +1,15 @@
 package com.exasol.adapter.request.renderer;
 
-import static com.exasol.adapter.metadata.DataType.createDecimal;
-import static com.exasol.adapter.metadata.DataType.createVarChar;
+import static com.exasol.adapter.metadata.DataType.*;
 import static com.exasol.adapter.metadata.DataType.ExaCharset.UTF8;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -17,10 +24,11 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.skyscreamer.jsonassert.JSONAssert;
 
+import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.ColumnMetadata;
 import com.exasol.adapter.metadata.TableMetadata;
 import com.exasol.adapter.request.parser.PushdownSqlParser;
-import com.exasol.adapter.sql.SqlNode;
+import com.exasol.adapter.sql.*;
 
 import jakarta.json.*;
 
@@ -879,4 +887,86 @@ class PushdownSqlRendererTest {
                 + "}";
         assertParseAndRenderGeneratesSameJson(sqlAsJson);
     }
+
+    @Test
+    void testRenderWrapsAdapterException() throws AdapterException {
+        final SqlNode failingNode = mock(SqlNode.class);
+        when(failingNode.accept(any())).thenThrow(new AdapterException("Adapter error"));
+        final PushdownSqlRenderer renderer = new PushdownSqlRenderer();
+        final IllegalStateException exception = assertThrows(IllegalStateException.class, () -> renderer.render(failingNode));
+        assertAll(() -> assertThat(exception.getMessage(), equalTo(
+                "F-VSCOMJAVA-34: An unexpected error occurred during request serialization: 'Adapter error'. "
+                        + "This is an internal error that should not happen. Please report it by opening a GitHub issue.")),
+                () -> assertThat(exception.getCause(), instanceOf(AdapterException.class)));
+    }
+
+    @Test
+    void testRenderFunctionAggregateWithDistinct() {
+        final SqlFunctionAggregate node = new SqlFunctionAggregate(AggregateFunction.SUM,
+                List.of(new SqlLiteralString("1")), true);
+        final JsonObject rendered = renderToJsonObject(node);
+
+        assertAll(() -> assertThat(rendered.getString("type"), equalTo("function_aggregate")),
+                () -> assertThat(rendered.getString("name"), equalTo("SUM")),
+                () -> assertThat(rendered.getBoolean("distinct"), equalTo(true)));
+    }
+
+    @Test
+    void testRenderFunctionAggregateGroupConcatWithoutDistinct() {
+        final SqlFunctionAggregateGroupConcat node = SqlFunctionAggregateGroupConcat.builder(new SqlLiteralString("x"))
+                .separator(new SqlLiteralString(", ")).build();
+        final JsonObject rendered = renderToJsonObject(node);
+
+        assertAll(() -> assertThat(rendered.getString("type"), equalTo("function_aggregate_group_concat")),
+                () -> assertThat(rendered.getString("name"), equalTo("GROUP_CONCAT")),
+                () -> assertThat(rendered.containsKey("distinct"), equalTo(false)),
+                () -> assertThat(rendered.getJsonObject("separator").getString("type"), equalTo("literal_string")),
+                () -> assertThat(rendered.getJsonObject("separator").getString("value"), equalTo(", ")));
+    }
+
+    @Test
+    void testRenderDataTypeDecimal() {
+        final JsonObject rendered = renderToJsonObject(new SqlFunctionScalarCast(createDecimal(9, 2),
+                new SqlLiteralString("dummy")));
+
+        assertAll(() -> assertThat(rendered.getJsonObject("dataType").getString("type"), equalTo("DECIMAL")),
+                () -> assertThat(rendered.getJsonObject("dataType").getJsonNumber("precision").intValue(),
+                        equalTo(9)),
+                () -> assertThat(rendered.getJsonObject("dataType").getJsonNumber("scale").intValue(), equalTo(2)));
+    }
+
+    @Test
+    void testRenderDataTypeTimestamp() {
+        final JsonObject rendered = renderToJsonObject(new SqlFunctionScalarCast(createTimestamp(true, 5),
+                new SqlLiteralString("dummy")));
+
+        assertAll(() -> assertThat(rendered.getJsonObject("dataType").getString("type"), equalTo("TIMESTAMP")),
+                () -> assertThat(rendered.getJsonObject("dataType").getBoolean("withLocalTimeZone"),
+                        equalTo(true)));
+    }
+
+    @Test
+    void testRenderDataTypeGeometry() {
+        final JsonObject rendered = renderToJsonObject(new SqlFunctionScalarCast(createGeometry(4326),
+                new SqlLiteralString("dummy")));
+
+        assertAll(() -> assertThat(rendered.getJsonObject("dataType").getString("type"), equalTo("GEOMETRY")),
+                () -> assertThat(rendered.getJsonObject("dataType").getJsonNumber("srid").intValue(),
+                        equalTo(4326)));
+    }
+
+    @Test
+    void testRenderDataTypeIntervalYearToMonth() {
+        final JsonObject rendered = renderToJsonObject(new SqlFunctionScalarCast(createIntervalYearMonth(7),
+                new SqlLiteralString("dummy")));
+
+        assertAll(() -> assertThat(rendered.getJsonObject("dataType").getString("type"), equalTo("INTERVAL")),
+                () -> assertThat(rendered.getJsonObject("dataType").getJsonNumber("precision").intValue(), equalTo(7)),
+                () -> assertThat(rendered.getJsonObject("dataType").getString("fromTo"), equalTo("YEAR TO MONTH")));
+    }
+
+    private JsonObject renderToJsonObject(final SqlNode node) {
+        return (JsonObject) new PushdownSqlRenderer().render(node);
+    }
+
 }
