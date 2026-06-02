@@ -4,8 +4,11 @@ import static com.exasol.adapter.AdapterProperties.DEBUG_ADDRESS_PROPERTY;
 import static com.exasol.adapter.AdapterProperties.LOG_LEVEL_PROPERTY;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+
+import com.exasol.errorreporting.ExaError;
 
 /**
  * This class represents the logging configuration set in the request properties
@@ -14,6 +17,8 @@ public final class LoggingConfiguration implements Serializable {
     private static final long serialVersionUID = 1930189191497837644L;
     private static final int DEFAULT_REMOTE_LOGGING_PORT = 3000;
     private static final Level DEFAULT_LOG_LEVEL = Level.INFO;
+    private static final List<Level> AVAILABLE_LOG_LEVELS = List.of(Level.OFF, Level.SEVERE, Level.WARNING, Level.INFO, Level.CONFIG, Level.FINE, Level.FINER,
+            Level.FINEST, Level.ALL);
     /** {@code true} if the adapter should send its log messages to a remote log receiver */
     private final boolean logRemotely;
     /** Name host name where the log receiver listens */
@@ -105,13 +110,20 @@ public final class LoggingConfiguration implements Serializable {
     }
 
     private static Level parseLogLevel(final Map<String, String> properties) {
-        final Level level;
-        if (properties.containsKey(LOG_LEVEL_PROPERTY)) {
-            level = Level.parse(properties.get(LOG_LEVEL_PROPERTY));
-        } else {
-            level = DEFAULT_LOG_LEVEL;
+        if (!properties.containsKey(LOG_LEVEL_PROPERTY)) {
+            return DEFAULT_LOG_LEVEL;
         }
-        return level;
+        final String configuredLogLevel = properties.get(LOG_LEVEL_PROPERTY);
+        try {
+            return Level.parse(configuredLogLevel);
+        } catch (final IllegalArgumentException exception) {
+            throw new IllegalArgumentException(ExaError.messageBuilder("E-VSCOMJAVA-47")
+                    .message("Invalid value {{log_level_value}} for property {{log_level_property}}.")
+                    .mitigation("Available log levels are: {{available_log_levels}}.")
+                    .parameter("log_level_value", configuredLogLevel)
+                    .parameter("log_level_property", LOG_LEVEL_PROPERTY)
+                    .parameter("available_log_levels", AVAILABLE_LOG_LEVELS).toString(), exception);
+        }
     }
 
     /**
