@@ -1,7 +1,6 @@
 package com.exasol.adapter.sql;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.exasol.adapter.AdapterException;
@@ -202,10 +201,10 @@ public class SqlFunctionAggregateListagg extends SqlNode {
     /**
      * This class represent behavior of {@link SqlFunctionAggregateListagg}.
      */
-    public static class Behavior {
+    public static final class Behavior {
         private final BehaviorType behaviorType;
-        private TruncationType truncationType = null;
-        private SqlLiteralString truncationFiller = null;
+        private final TruncationType truncationType;
+        private final SqlLiteralString truncationFiller;
 
         /**
          * Create a new instance of {@link Behavior}.
@@ -213,7 +212,21 @@ public class SqlFunctionAggregateListagg extends SqlNode {
          * @param behaviorType behavior type
          */
         public Behavior(final BehaviorType behaviorType) {
+            this(behaviorType, null, null);
+        }
+
+        /**
+         * Create a new fully initialized instance of {@link Behavior}.
+         *
+         * @param behaviorType     behavior type
+         * @param truncationType   truncation type
+         * @param truncationFiller truncation filler
+         */
+        public Behavior(final BehaviorType behaviorType, final TruncationType truncationType,
+                final SqlLiteralString truncationFiller) {
             this.behaviorType = behaviorType;
+            this.truncationType = truncationType;
+            this.truncationFiller = truncationFiller;
         }
 
         /**
@@ -222,16 +235,18 @@ public class SqlFunctionAggregateListagg extends SqlNode {
          * @return truncation type
          */
         public String getTruncationType() {
-            return this.truncationType.toString();
+            return this.truncationType == null ? null : this.truncationType.toString();
         }
 
         /**
          * Set a truncation type.
          *
          * @param truncationType truncation type
+         * @deprecated The behavior of the LISTAGG function is immutable and can not be changed after the creation of the object.
          */
+        @Deprecated(since = "18.0.2", forRemoval = true)
         public void setTruncationType(final TruncationType truncationType) {
-            this.truncationType = truncationType;
+            throw new UnsupportedOperationException("LISTAGG overflow behavior is immutable.");
         }
 
         /**
@@ -247,9 +262,11 @@ public class SqlFunctionAggregateListagg extends SqlNode {
          * Set a truncation filler.
          *
          * @param truncationFiller truncation filler
+         * @deprecated The behavior of the LISTAGG function is immutable and can not be changed after the creation of the object.
          */
+        @Deprecated(since = "18.0.2", forRemoval = true)
         public void setTruncationFiller(final SqlLiteralString truncationFiller) {
-            this.truncationFiller = truncationFiller;
+            throw new UnsupportedOperationException("LISTAGG overflow behavior is immutable.");
         }
 
         /**
@@ -268,6 +285,25 @@ public class SqlFunctionAggregateListagg extends SqlNode {
          */
         public BehaviorType getBehaviorType() {
             return this.behaviorType;
+        }
+
+        @Override
+        public boolean equals(final Object object) {
+            if (this == object) {
+                return true;
+            }
+            if (!(object instanceof Behavior)) {
+                return false;
+            }
+            final Behavior behavior = (Behavior) object;
+            return this.behaviorType == behavior.behaviorType
+                    && this.truncationType == behavior.truncationType
+                    && Objects.equals(this.truncationFiller, behavior.truncationFiller);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(this.behaviorType, this.truncationType, this.truncationFiller);
         }
 
         /**
@@ -313,5 +349,7 @@ public class SqlFunctionAggregateListagg extends SqlNode {
     }
 
     @Override
-    public List<SqlNode> getChildren() { return Arrays.asList(this.argument); }
+    public List<SqlNode> getChildren() {
+        return Arrays.asList(this.argument);
+    }
 }

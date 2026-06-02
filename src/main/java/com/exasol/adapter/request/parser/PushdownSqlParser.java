@@ -682,17 +682,17 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     private Behavior parseOverflowBehavior(final JsonObject expression) {
         final JsonObject overflowBehaviorJson = expression.getJsonObject(OVERFLOW_BEHAVIOUR);
         final BehaviorType behaviorType = BehaviorType.valueOf(overflowBehaviorJson.getString(TYPE).toUpperCase());
-        final Behavior overflowBehavior = new Behavior(behaviorType);
         if (behaviorType == BehaviorType.TRUNCATE) {
-            overflowBehavior.setTruncationType(
-                    TruncationType.parseTruncationType(overflowBehaviorJson.getString(TRUNCATION_TYPE)));
+            final TruncationType truncationType = TruncationType
+                    .parseTruncationType(overflowBehaviorJson.getString(TRUNCATION_TYPE));
+            SqlLiteralString truncationFiller = null;
             if (overflowBehaviorJson.containsKey(TRUNCATION_FILLER)) {
-                final SqlLiteralString truncationFiller = (SqlLiteralString) parseExpression(
+                truncationFiller = (SqlLiteralString) parseExpression(
                         overflowBehaviorJson.getJsonObject(TRUNCATION_FILLER));
-                overflowBehavior.setTruncationFiller(truncationFiller);
             }
+            return new Behavior(behaviorType, truncationType, truncationFiller);
         }
-        return overflowBehavior;
+        return new Behavior(behaviorType);
     }
 
     /**
