@@ -64,6 +64,17 @@ class RequestParserTest {
     }
 
     @Test
+    void setPropertiesRequestPreservesUtf8Characters() {
+        final String rawRequest = JsonEntry.object(
+                entry("type", "setProperties"),
+                entry("properties", object(entry("CITY", "München"))),
+                SCHEMA_METADATA_INFO).render();
+        final AdapterRequest request = this.parser.parse(rawRequest);
+        final Map<String, String> properties = ((SetPropertiesRequest) request).getProperties();
+        assertThat(properties, hasEntry(equalTo("CITY"), equalTo("München")));
+    }
+
+    @Test
     void unsupportedPropertyType() {
         final String rawRequest = JsonEntry.object(//
                 entry("type", "setProperties"), //
