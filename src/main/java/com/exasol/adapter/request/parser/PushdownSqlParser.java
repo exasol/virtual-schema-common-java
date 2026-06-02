@@ -30,7 +30,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private static Map<String, TableMetadata> buildInvolvedTablesMetadataMap(final List<TableMetadata> involvedTablesMetadata) {
-        final Map<String, TableMetadata> map = new HashMap<>(involvedTablesMetadata.size());
+        final Map<String, TableMetadata> map = new HashMap<>((int) (involvedTablesMetadata.size() / 0.75f) + 1);
         for (final TableMetadata involvedTableMeta : involvedTablesMetadata) {
             map.put(involvedTableMeta.getName(), involvedTableMeta);
         }
@@ -159,13 +159,13 @@ public final class PushdownSqlParser extends AbstractRequestParser {
         }
         while (!expressions.isEmpty()) {
             final SqlNode expression = expressions.pop();
+            if (expression.getType().equals(SqlNodeType.FUNCTION_AGGREGATE)) {
+                return true;
+            }
             for (final SqlNode child : expression.getChildren()) {
                 if (child != null) {
                     expressions.push(child);
                 }
-            }
-            if (expression.getType().equals(SqlNodeType.FUNCTION_AGGREGATE)) {
-                return true;
             }
         }
         return false;
