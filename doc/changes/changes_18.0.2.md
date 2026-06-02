@@ -1,4 +1,4 @@
-# Common Module of Exasol Virtual Schemas Adapters 18.0.2, released 2026-??-??
+# Common Module of Exasol Virtual Schemas Adapters 18.0.2, released 2026-06-02
 
 Code name: Improve code quality
 
