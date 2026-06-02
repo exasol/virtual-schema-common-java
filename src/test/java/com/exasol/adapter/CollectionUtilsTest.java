@@ -2,18 +2,15 @@ package com.exasol.adapter;
 
 import static com.exasol.adapter.CollectionUtils.copyOfOrEmpty;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class CollectionUtilsTest {
     @Test
@@ -33,6 +30,14 @@ class CollectionUtilsTest {
     @Test
     void testCopyListOfOrEmptyPreservesOrder() {
         assertThat(copyOfOrEmpty(List.of("b", "a", "c")), contains("b", "a", "c"));
+    }
+
+    @Test
+    void testCopyListOfOrEmptyWithNullElement() {
+        final List<String> source = new ArrayList<>();
+        source.add("a");
+        source.add(null);
+        assertThat(copyOfOrEmpty(source), contains("a", (String) null));
     }
 
     @Test
@@ -58,5 +63,13 @@ class CollectionUtilsTest {
         source.put("c", "3");
         final Map<String, String> copy = copyOfOrEmpty(source);
         assertThat(new ArrayList<>(copy.keySet()), contains("b", "a", "c"));
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = { "a,<null>", "<null>,a", "<null>,<null>", "a,b" }, nullValues = "<null>")
+    void testCopyMapOfOrEmptyWithNullKeyOrValue(final String key, final String value) {
+        final Map<String, String> source = new LinkedHashMap<>();
+        source.put(key, value);
+        assertThat(copyOfOrEmpty(source), equalTo(source));
     }
 }

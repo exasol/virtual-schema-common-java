@@ -14,19 +14,19 @@ public final class CollectionUtils {
 
     /**
      * Create an unmodifiable copy of a list or return an empty list if the input is {@code null}.
-     * List elements must not be {@code null}.
+     * List elements may be {@code null}.
      *
      * @param <T>    element type
      * @param values source list
      * @return unmodifiable list copy or empty list
      */
     public static <T> List<T> copyOfOrEmpty(final List<T> values) {
-        return values == null ? emptyList() : List.copyOf(values);
+        return values == null ? emptyList() : unmodifiableList(new ArrayList<>(values));
     }
 
     /**
      * Create an unmodifiable copy of a map or return an empty map if the input is {@code null}.
-     * Map keys and values must not be {@code null}.
+     * Map keys and values may be {@code null}.
      * <p>
      * Preserves the iteration order of the input map.
      *

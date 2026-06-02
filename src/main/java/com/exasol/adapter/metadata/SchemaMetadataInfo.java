@@ -2,7 +2,8 @@ package com.exasol.adapter.metadata;
 
 import static com.exasol.adapter.CollectionUtils.copyOfOrEmpty;
 
-import java.util.*;
+import java.util.Map;
+import java.util.StringJoiner;
 
 /**
  * Represents the metadata of an EXASOL Virtual Schema which are sent with each request. The metadata are just "for
@@ -20,7 +21,7 @@ public class SchemaMetadataInfo {
      * @param adapterNotes the adapter notes
      * @param properties   the properties
      */
-    public SchemaMetadataInfo(final String schemaName, final String adapterNotes,            final Map<String, String> properties) {
+    public SchemaMetadataInfo(final String schemaName, final String adapterNotes, final Map<String, String> properties) {
         this.schemaName = schemaName;
         this.adapterNotes = adapterNotes;
         this.properties = copyOfOrEmpty(properties);
