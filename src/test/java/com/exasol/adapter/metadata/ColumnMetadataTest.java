@@ -133,6 +133,12 @@ class ColumnMetadataTest {
     }
 
     @Test
+    void assertToStringWithDefaultValueWithoutComment() {
+        assertThat(this.builder.defaultValue("default").build().toString(),
+                equalTo("ColumnMetadata{name=\"COLUMN_NAME\", adapterNotes=\"\", type=DOUBLE, isNullable=true, isIdentity=false, defaultValue=\"default\"}"));
+    }
+
+    @Test
     void testEqualsAndHashContract() {
         EqualsVerifier.forClass(ColumnMetadata.class).verify();
     }

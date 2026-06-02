@@ -136,9 +136,10 @@ public final class ColumnMetadata {
         if (this.hasDefault()) {
             builder.append(", defaultValue=\"");
             builder.append(this.defaultValue);
+            builder.append("\"");
         }
         if (this.hasComment()) {
-            builder.append("\", comment=\"");
+            builder.append(", comment=\"");
             builder.append(this.comment);
             builder.append("\"");
         }

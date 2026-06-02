@@ -34,7 +34,7 @@ public class PushdownSqlRenderer {
             return node.accept(new ConvertVisitor());
         } catch (final AdapterException exception) {
             throw new IllegalStateException(ExaError.messageBuilder("F-VSCOMJAVA-34")
-                    .message("n unexpected error occurred during request serialization.").ticketMitigation().toString(),
+                    .message("An unexpected error occurred during request serialization.").ticketMitigation().toString(),
                     exception);
         }
     }
