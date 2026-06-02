@@ -11,6 +11,8 @@ import com.exasol.adapter.response.*;
  * This class implements a stub for a VirtualSchemaAdapter
  */
 public class StubAdapter implements VirtualSchemaAdapter {
+    private static boolean closed = false;
+
     public StubAdapter(final AdapterContext context) {
     }
 
@@ -44,5 +46,18 @@ public class StubAdapter implements VirtualSchemaAdapter {
     @Override
     public PushDownResponse pushdown(final ExaMetadata metadata, final PushDownRequest request) {
         return PushDownResponse.builder().pushDownSql("SELECT * FROM FOOBAR").build();
+    }
+
+    @Override
+    public void close() {
+        closed = true;
+    }
+
+    static void resetClosed() {
+        closed = false;
+    }
+
+    static boolean wasClosed() {
+        return closed;
     }
 }

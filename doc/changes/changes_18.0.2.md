@@ -4,7 +4,11 @@ Code name: Improve code quality
 
 ## Summary
 
-## Breaking Changes
+This release includes many small bugfixes and code improvements. Some methods are now deprecated and will be removed in a future release.
+
+The release also makes interfaces `VirtualSchemaAdapter` and `AdapterFactory` `AutoCloseable`. This allows adapters to cleanup resources after processing a request. The interfaces provide a `default` implementation of `close()`, so that users of the interface don't need to change.
+
+## Deprecations
 
 * `Capabilities.subtractCapabilities()` is now deprecated for removal and delegates to the new pure `Capabilities.subtract()` implementation. Code that relied on the previous side effect of mutating the receiver must be adapted (#305).
 * Constructor `ColumnMetadata.Builder()` is now deprecated for removal. Use `ColumnMetadata.builder()` to create a new instance (#306).
@@ -13,6 +17,10 @@ Code name: Improve code quality
 * Methods `SqlLimit.setLimit(int)` and `SqlLimit.setOffset(int)` are deprecated for removal.
 * Constructor `VersionCollector()` is now deprecated for removal. Use `VersionCollector(final String path)` to create a new instance (#312)
 * Methods `SqlFunctionAggregateListagg.Behavior.setTruncationType(TruncationType)` and `SqlFunctionAggregateListagg.Behavior.setTruncationFiller(SqlLiteralString)` are deprecated for removal.
+
+## Features
+
+* #333: Make `VirtualSchemaAdapter` and `AdapterFactory` `AutoCloseable`
 
 ## Bugfixes
 

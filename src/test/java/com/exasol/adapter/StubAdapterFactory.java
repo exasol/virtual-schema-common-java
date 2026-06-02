@@ -4,6 +4,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 
 public class StubAdapterFactory implements AdapterFactory {
+    private static boolean closed = false;
+
     @Override
     public VirtualSchemaAdapter createAdapter(final AdapterContext context) {
         assertThat(context.getTelemetryClient(), notNullValue());
@@ -23,5 +25,18 @@ public class StubAdapterFactory implements AdapterFactory {
     @Override
     public String getAdapterProjectShortTag() {
         return "VSSTUB";
+    }
+
+    @Override
+    public void close() {
+        closed = true;
+    }
+
+    static void resetClosed() {
+        closed = false;
+    }
+
+    static boolean wasClosed() {
+        return closed;
     }
 }

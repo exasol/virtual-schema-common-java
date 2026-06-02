@@ -58,14 +58,15 @@ public final class RequestDispatcher {
         }
         logVersionInformation();
         logRawRequest(rawRequest);
-        final AdapterFactory adapterFactory = getAdapterFactory();
-        try (TelemetryClient telemetryClient = createTelemetryClient(adapterFactory, adapterRequest)) {
+        try (final AdapterFactory adapterFactory = getAdapterFactory();
+                TelemetryClient telemetryClient = createTelemetryClient(adapterFactory, adapterRequest)) {
             final AdapterContext context = new AdapterContext(telemetryClient);
-            final VirtualSchemaAdapter virtualSchemaAdapter = adapterFactory.createAdapter(context);
-            final AdapterCallExecutor adapterCallExecutor = new AdapterCallExecutor(virtualSchemaAdapter, telemetryClient);
-            final String response = adapterCallExecutor.executeAdapterCall(adapterRequest, metadata);
-            logRawResponse(response);
-            return response;
+            try (final VirtualSchemaAdapter virtualSchemaAdapter = adapterFactory.createAdapter(context)) {
+                final AdapterCallExecutor adapterCallExecutor = new AdapterCallExecutor(virtualSchemaAdapter, telemetryClient);
+                final String response = adapterCallExecutor.executeAdapterCall(adapterRequest, metadata);
+                logRawResponse(response);
+                return response;
+            }
         }
     }
 
