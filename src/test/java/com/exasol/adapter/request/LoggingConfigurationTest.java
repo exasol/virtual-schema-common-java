@@ -5,6 +5,7 @@ import static com.exasol.adapter.AdapterProperties.LOG_LEVEL_PROPERTY;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -60,6 +61,16 @@ class LoggingConfigurationTest {
     void testGetLogLevel() {
         this.properties.put(LOG_LEVEL_PROPERTY, "FINEST");
         assertThat(createLoggingConfiguration(this.properties).getLogLevel(), equalTo(Level.FINEST));
+    }
+
+    @Test
+    void testInvalidLogLevelThrowsHelpfulException() {
+        this.properties.put(LOG_LEVEL_PROPERTY, "invalid");
+        final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> createLoggingConfiguration(this.properties));
+        assertThat(exception.getMessage(), equalTo(
+                "E-VSCOMJAVA-46: Invalid value 'invalid' for property 'LOG_LEVEL'. "
+                        + "Available log levels are: [OFF, SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST, ALL]."));
     }
 
     @Test
