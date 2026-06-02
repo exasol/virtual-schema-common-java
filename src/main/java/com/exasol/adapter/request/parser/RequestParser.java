@@ -84,7 +84,7 @@ public class RequestParser extends AbstractRequestParser {
     }
 
     private AbstractAdapterRequest parsePushdownRequest(final JsonObject root, final SchemaMetadataInfo metadataInfo) {
-        final JsonObject pushdownJson = root.getJsonObject(PUSHDOW_REQUEST_KEY);
+        final JsonObject pushdownJson = root.getJsonObject(PUSHDOWN_REQUEST_KEY);
         final List<TableMetadata> involvedTables = parseInvolvedTables(root);
         final SqlStatement statement = parsePushdownStatement(pushdownJson, involvedTables);
         final List<DataType> dataTypes = parseDataTypes(pushdownJson);

@@ -487,7 +487,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     }
 
     private DataType getDataType(final JsonObject dataType) {
-        final String typeName = dataType.getString(TYPE).toUpperCase();
+        final String typeName = dataType.getString(TYPE).toUpperCase(Locale.ROOT);
         switch (typeName) {
             case "DECIMAL":
                 return DataType.createDecimal(dataType.getInt(PRECISION), dataType.getInt(SCALE));
@@ -552,7 +552,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     private SqlNode parsePredicateIsJson(final JsonObject jsonExpression) {
         final SqlNode expression = parseExpression(jsonExpression.getJsonObject(EXPRESSION));
         final TypeConstraints typeConstraint = TypeConstraints
-                .valueOf(jsonExpression.getString(TYPE_CONSTRAINT).toUpperCase());
+                .valueOf(jsonExpression.getString(TYPE_CONSTRAINT).toUpperCase(Locale.ROOT));
         final KeyUniquenessConstraint keyUniquenessConstraint = KeyUniquenessConstraint
                 .of(jsonExpression.getString(KEY_UNIQUENESS_CONSTRAINT));
         return new SqlPredicateIsJson(expression, typeConstraint, keyUniquenessConstraint);
@@ -561,7 +561,7 @@ public final class PushdownSqlParser extends AbstractRequestParser {
     private SqlNode parsePredicateIsNotJson(final JsonObject jsonExpression) {
         final SqlNode expression = parseExpression(jsonExpression.getJsonObject(EXPRESSION));
         final TypeConstraints typeConstraint = TypeConstraints
-                .valueOf(jsonExpression.getString(TYPE_CONSTRAINT).toUpperCase());
+                .valueOf(jsonExpression.getString(TYPE_CONSTRAINT).toUpperCase(Locale.ROOT));
         final KeyUniquenessConstraint keyUniquenessConstraint = KeyUniquenessConstraint
                 .of(jsonExpression.getString(KEY_UNIQUENESS_CONSTRAINT));
         return new SqlPredicateIsNotJson(expression, typeConstraint, keyUniquenessConstraint);
@@ -688,7 +688,8 @@ public final class PushdownSqlParser extends AbstractRequestParser {
 
     private Behavior parseOverflowBehavior(final JsonObject expression) {
         final JsonObject overflowBehaviorJson = expression.getJsonObject(OVERFLOW_BEHAVIOUR);
-        final BehaviorType behaviorType = BehaviorType.valueOf(overflowBehaviorJson.getString(TYPE).toUpperCase());
+        final BehaviorType behaviorType = BehaviorType
+                .valueOf(overflowBehaviorJson.getString(TYPE).toUpperCase(Locale.ROOT));
         if (behaviorType == BehaviorType.TRUNCATE) {
             final TruncationType truncationType = TruncationType
                     .parseTruncationType(overflowBehaviorJson.getString(TRUNCATION_TYPE));
@@ -706,28 +707,28 @@ public final class PushdownSqlParser extends AbstractRequestParser {
      * Mapping from join type name (as in json api) to enum
      */
     private static JoinType fromJoinTypeName(final String typeName) {
-        return Enum.valueOf(JoinType.class, typeName.toUpperCase());
+        return Enum.valueOf(JoinType.class, typeName.toUpperCase(Locale.ROOT));
     }
 
     /**
      * Mapping from scalar function name (as in json api) to enum
      */
     private static ScalarFunction fromScalarFunctionName(final String functionName) {
-        return Enum.valueOf(ScalarFunction.class, functionName.toUpperCase());
+        return Enum.valueOf(ScalarFunction.class, functionName.toUpperCase(Locale.ROOT));
     }
 
     /**
      * Mapping from aggregate function name (as in json api) to enum
      */
     private static AggregateFunction fromAggregationFunctionName(final String functionName) {
-        return Enum.valueOf(AggregateFunction.class, functionName.toUpperCase());
+        return Enum.valueOf(AggregateFunction.class, functionName.toUpperCase(Locale.ROOT));
     }
 
     /**
      * Mapping from type name (as in json api) to enum
      */
     private static SqlNodeType fromTypeName(final String typeName) {
-        return Enum.valueOf(SqlNodeType.class, typeName.toUpperCase());
+        return Enum.valueOf(SqlNodeType.class, typeName.toUpperCase(Locale.ROOT));
     }
 
     private TableMetadata findInvolvedTableMetadata(final String tableName) {

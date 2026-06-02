@@ -34,7 +34,9 @@ public class PushdownSqlRenderer {
             return node.accept(new ConvertVisitor());
         } catch (final AdapterException exception) {
             throw new IllegalStateException(ExaError.messageBuilder("F-VSCOMJAVA-34")
-                    .message("n unexpected error occurred during request serialization.").ticketMitigation().toString(),
+                    .message("An unexpected error occurred during request serialization: {{error message}}.")
+                    .parameter("error message", exception.getMessage())
+                    .ticketMitigation().toString(),
                     exception);
         }
     }
@@ -159,46 +161,46 @@ public class PushdownSqlRenderer {
             final DataType.ExaDataType type = dataType.getExaDataType();
             builder.add(TYPE, type.name().toUpperCase());
             switch (type) {
-            case DECIMAL:
-                builder.add(PRECISION, dataType.getPrecision());
-                builder.add(SCALE, dataType.getScale());
-                break;
-            case VARCHAR:
-            case CHAR:
-                builder.add(CHARACTER_SET, dataType.getCharset().name().toLowerCase());
-                builder.add(SIZE, dataType.getSize());
-                break;
-            case TIMESTAMP:
-                builder.add(WITH_LOCAL_TIME_ZONE, dataType.isWithLocalTimezone());
-                break;
-            case INTERVAL:
-                builder.add(PRECISION, dataType.getPrecision());
-                builder.add(FROM_TO, render(dataType.getIntervalType()));
-                if (dataType.getIntervalType().equals(DataType.IntervalType.DAY_TO_SECOND)) {
-                    builder.add(FRACTION, dataType.getIntervalFraction());
-                }
-                break;
-            case GEOMETRY:
-                builder.add(SRID, dataType.getGeometrySrid());
-                break;
-            case HASHTYPE:
-                builder.add(BYTE_SIZE, dataType.getByteSize());
-                break;
-            default:
-                break;
+                case DECIMAL:
+                    builder.add(PRECISION, dataType.getPrecision());
+                    builder.add(SCALE, dataType.getScale());
+                    break;
+                case VARCHAR:
+                case CHAR:
+                    builder.add(CHARACTER_SET, dataType.getCharset().name().toLowerCase());
+                    builder.add(SIZE, dataType.getSize());
+                    break;
+                case TIMESTAMP:
+                    builder.add(WITH_LOCAL_TIME_ZONE, dataType.isWithLocalTimezone());
+                    break;
+                case INTERVAL:
+                    builder.add(PRECISION, dataType.getPrecision());
+                    builder.add(FROM_TO, render(dataType.getIntervalType()));
+                    if (dataType.getIntervalType().equals(DataType.IntervalType.DAY_TO_SECOND)) {
+                        builder.add(FRACTION, dataType.getIntervalFraction());
+                    }
+                    break;
+                case GEOMETRY:
+                    builder.add(SRID, dataType.getGeometrySrid());
+                    break;
+                case HASHTYPE:
+                    builder.add(BYTE_SIZE, dataType.getByteSize());
+                    break;
+                default:
+                    break;
             }
             return builder.build();
         }
 
         private String render(final DataType.IntervalType intervalType) {
             switch (intervalType) {
-            case DAY_TO_SECOND:
-                return "DAY TO SECONDS";
-            case YEAR_TO_MONTH:
-                return "YEAR TO MONTH";
-            default:
-                throw new IllegalStateException(ExaError.messageBuilder("F-VSCOMJAVA-35")
-                        .message("Unimplemented interval type {{type}}.", intervalType).ticketMitigation().toString());
+                case DAY_TO_SECOND:
+                    return "DAY TO SECONDS";
+                case YEAR_TO_MONTH:
+                    return "YEAR TO MONTH";
+                default:
+                    throw new IllegalStateException(ExaError.messageBuilder("F-VSCOMJAVA-35")
+                            .message("Unimplemented interval type {{type}}.", intervalType).ticketMitigation().toString());
             }
         }
 

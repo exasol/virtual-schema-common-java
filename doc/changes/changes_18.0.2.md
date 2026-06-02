@@ -26,6 +26,8 @@ Code name: Improve code quality
 * #307: Fixed `PushdownSqlRenderer` so `HASHTYPE` data types include `bytesize` in rendered pushdown SQL JSON.
 * #315: Improved `PushdownSqlParser` lookup and traversal performance by caching involved table metadata, defensively copying the metadata list, and replacing `Stack`-based traversals with `ArrayDeque`.
 * #312: Fixed logging utility resource and handler lifecycle issues by closing version metadata streams, falling back when the thread context class loader is missing, defaulting absent version properties to `UNKNOWN`, closing replaced root log handlers, and resetting closed remote socket handlers before reuse.
+* #318: Fixed several small naming, Javadoc, message, and parsing robustness issues, including locale-independent SQL parser uppercasing and trimmed telemetry property parsing.
+* Fixed `ColumnMetadata.toString()` so `defaultValue` quotes stay balanced even when no comment is set.
 * #314: Fixed `SqlFunctionAggregateListagg.Behavior` so LISTAGG overflow behavior is null-safe, value-based, and constructed immutably by the parser.
 
 ## Dependency Updates
