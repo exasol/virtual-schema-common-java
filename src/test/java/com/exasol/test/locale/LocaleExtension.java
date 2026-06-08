@@ -1,11 +1,8 @@
 package com.exasol.test.locale;
 
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 
-import org.junit.jupiter.api.extension.AfterEachCallback;
-import org.junit.jupiter.api.extension.BeforeEachCallback;
-import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.*;
 
 public class LocaleExtension implements BeforeEachCallback, AfterEachCallback {
     private static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(LocaleExtension.class);
@@ -30,14 +27,14 @@ public class LocaleExtension implements BeforeEachCallback, AfterEachCallback {
     private Optional<String> findLocaleTag(final ExtensionContext context) {
         final Optional<String> methodLocaleTag = context.getTestMethod()
                 .map(method -> method.getAnnotation(WithLocale.class))
-                .filter(annotation -> annotation != null)
+                .filter(Objects::nonNull)
                 .map(WithLocale::value);
         if (methodLocaleTag.isPresent()) {
             return methodLocaleTag;
         }
         return context.getTestClass()
                 .map(testClass -> testClass.getAnnotation(WithLocale.class))
-                .filter(annotation -> annotation != null)
+                .filter(Objects::nonNull)
                 .map(WithLocale::value);
     }
 }
