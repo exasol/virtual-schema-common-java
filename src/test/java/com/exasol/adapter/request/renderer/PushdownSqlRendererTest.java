@@ -1,6 +1,7 @@
 package com.exasol.adapter.request.renderer;
 
 import static com.exasol.adapter.metadata.DataType.*;
+import static com.exasol.adapter.metadata.DataType.ExaCharset.ASCII;
 import static com.exasol.adapter.metadata.DataType.ExaCharset.UTF8;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -16,6 +17,7 @@ import java.io.StringReader;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
@@ -985,6 +987,75 @@ class PushdownSqlRendererTest {
         assertAll(() -> assertThat(rendered.getJsonObject("dataType").getString("type"), equalTo("INTERVAL")),
                 () -> assertThat(rendered.getJsonObject("dataType").getJsonNumber("precision").intValue(), equalTo(7)),
                 () -> assertThat(rendered.getJsonObject("dataType").getString("fromTo"), equalTo("YEAR TO MONTH")));
+    }
+
+    @Test
+    void testRenderUsesLocaleIndependentLowercaseForJoinTypes() {
+        final Locale defaultLocale = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.forLanguageTag("tr"));
+
+            final JsonObject rendered = renderToJsonObject(new SqlJoin(new SqlTable("A", null), new SqlTable("B", null),
+                    new SqlLiteralBool(true), JoinType.INNER));
+
+            assertAll(() -> assertThat(rendered.getString("type"), equalTo("join")),
+                    () -> assertThat(rendered.getString("join_type"), equalTo("inner")));
+        } finally {
+            Locale.setDefault(defaultLocale);
+        }
+    }
+
+    @Test
+    void testRenderUsesLocaleIndependentCharacterSetAndDataTypeNames() {
+        final Locale defaultLocale = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.forLanguageTag("tr"));
+
+            final JsonObject rendered = renderToJsonObject(new SqlFunctionScalarCast(
+                    createVarChar(10, ASCII), new SqlLiteralString("dummy")));
+            final JsonObject dataType = rendered.getJsonObject("dataType");
+
+            assertAll(() -> assertThat(dataType.getString("type"), equalTo("VARCHAR")),
+                    () -> assertThat(dataType.getString("characterSet"), equalTo("ascii")));
+        } finally {
+            Locale.setDefault(defaultLocale);
+        }
+    }
+
+    @Test
+    void testRenderUsesLocaleIndependentUppercaseForDataTypeNames() {
+        final Locale defaultLocale = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.forLanguageTag("tr"));
+
+            final JsonObject rendered = renderToJsonObject(new SqlFunctionScalarCast(createIntervalYearMonth(7),
+                    new SqlLiteralString("dummy")));
+            final JsonObject dataType = rendered.getJsonObject("dataType");
+
+            assertAll(() -> assertThat(dataType.getString("type"), equalTo("INTERVAL")),
+                    () -> assertThat(dataType.getJsonNumber("precision").intValue(), equalTo(7)),
+                    () -> assertThat(dataType.getString("fromTo"), equalTo("YEAR TO MONTH")));
+        } finally {
+            Locale.setDefault(defaultLocale);
+        }
+    }
+
+    @Test
+    void testRenderUsesLocaleIndependentLowercaseForPredicateTypes() {
+        final Locale defaultLocale = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.forLanguageTag("tr"));
+
+            final JsonObject rendered = renderToJsonObject(new SqlPredicateIsJson(new SqlLiteralString("x"),
+                    AbstractSqlPredicateJson.TypeConstraints.OBJECT,
+                    AbstractSqlPredicateJson.KeyUniquenessConstraint.WITH_UNIQUE_KEYS));
+
+            assertAll(() -> assertThat(rendered.getString("type"), equalTo("predicate_is_json")),
+                    () -> assertThat(rendered.getString("typeConstraint"), equalTo("OBJECT")),
+                    () -> assertThat(rendered.getString("keyUniquenessConstraint"), equalTo("WITH UNIQUE KEYS")));
+        } finally {
+            Locale.setDefault(defaultLocale);
+        }
     }
 
     private JsonObject renderToJsonObject(final SqlNode node) {

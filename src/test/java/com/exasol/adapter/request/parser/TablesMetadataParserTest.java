@@ -191,6 +191,31 @@ class TablesMetadataParserTest {
                         .identity(false).defaultValue("").comment("").build()));
     }
 
+    @Test
+    void testParseMetadataUsesLocaleIndependentUppercaseConversion() {
+        final Locale defaultLocale = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.forLanguageTag("tr"));
+            final JsonArray tablesAsJson = arrayBuilder().add(objectBuilder()
+                    .add("name", "T1")
+                    .add("columns", arrayBuilder()
+                            .add(objectBuilder().add("name", "INTERVAL_COL")
+                                    .add("dataType", objectBuilder().add("type", "interval").add("fromTo",
+                                            "YEAR TO MONTH")))))
+                    .build();
+
+            final List<TableMetadata> tables = TablesMetadataParser.create().parse(tablesAsJson);
+
+            final List<ColumnMetadata> expectedColumns = List.of(ColumnMetadata.builder().name("INTERVAL_COL")
+                    .adapterNotes("").type(DataType.createIntervalYearMonth(2)).nullable(true).identity(false)
+                    .defaultValue("").comment("").build());
+
+            assertThat(tables, contains(new TableMetadata("T1", "", expectedColumns, "")));
+        } finally {
+            Locale.setDefault(defaultLocale);
+        }
+    }
+
     @ParameterizedTest
     @MethodSource("invalidTableMetadata")
     void testParseMetadataThrowsException(final JsonArray tablesAsJson,
