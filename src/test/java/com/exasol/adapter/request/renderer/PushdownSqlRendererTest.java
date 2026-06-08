@@ -17,7 +17,6 @@ import java.io.StringReader;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +30,7 @@ import com.exasol.adapter.metadata.ColumnMetadata;
 import com.exasol.adapter.metadata.TableMetadata;
 import com.exasol.adapter.request.parser.PushdownSqlParser;
 import com.exasol.adapter.sql.*;
+import com.exasol.test.locale.WithLocale;
 
 import jakarta.json.*;
 
@@ -990,72 +990,48 @@ class PushdownSqlRendererTest {
     }
 
     @Test
+    @WithLocale("tr")
     void testRenderUsesLocaleIndependentLowercaseForJoinTypes() {
-        final Locale defaultLocale = Locale.getDefault();
-        try {
-            Locale.setDefault(Locale.forLanguageTag("tr"));
+        final JsonObject rendered = renderToJsonObject(new SqlJoin(new SqlTable("A", null), new SqlTable("B", null),
+                new SqlLiteralBool(true), JoinType.INNER));
 
-            final JsonObject rendered = renderToJsonObject(new SqlJoin(new SqlTable("A", null), new SqlTable("B", null),
-                    new SqlLiteralBool(true), JoinType.INNER));
-
-            assertAll(() -> assertThat(rendered.getString("type"), equalTo("join")),
-                    () -> assertThat(rendered.getString("join_type"), equalTo("inner")));
-        } finally {
-            Locale.setDefault(defaultLocale);
-        }
+        assertAll(() -> assertThat(rendered.getString("type"), equalTo("join")),
+                () -> assertThat(rendered.getString("join_type"), equalTo("inner")));
     }
 
     @Test
+    @WithLocale("tr")
     void testRenderUsesLocaleIndependentCharacterSetAndDataTypeNames() {
-        final Locale defaultLocale = Locale.getDefault();
-        try {
-            Locale.setDefault(Locale.forLanguageTag("tr"));
+        final JsonObject rendered = renderToJsonObject(
+                new SqlFunctionScalarCast(createVarChar(10, ASCII), new SqlLiteralString("dummy")));
+        final JsonObject dataType = rendered.getJsonObject("dataType");
 
-            final JsonObject rendered = renderToJsonObject(new SqlFunctionScalarCast(
-                    createVarChar(10, ASCII), new SqlLiteralString("dummy")));
-            final JsonObject dataType = rendered.getJsonObject("dataType");
-
-            assertAll(() -> assertThat(dataType.getString("type"), equalTo("VARCHAR")),
-                    () -> assertThat(dataType.getString("characterSet"), equalTo("ascii")));
-        } finally {
-            Locale.setDefault(defaultLocale);
-        }
+        assertAll(() -> assertThat(dataType.getString("type"), equalTo("VARCHAR")),
+                () -> assertThat(dataType.getString("characterSet"), equalTo("ascii")));
     }
 
     @Test
+    @WithLocale("tr")
     void testRenderUsesLocaleIndependentUppercaseForDataTypeNames() {
-        final Locale defaultLocale = Locale.getDefault();
-        try {
-            Locale.setDefault(Locale.forLanguageTag("tr"));
+        final JsonObject rendered = renderToJsonObject(
+                new SqlFunctionScalarCast(createIntervalYearMonth(7), new SqlLiteralString("dummy")));
+        final JsonObject dataType = rendered.getJsonObject("dataType");
 
-            final JsonObject rendered = renderToJsonObject(new SqlFunctionScalarCast(createIntervalYearMonth(7),
-                    new SqlLiteralString("dummy")));
-            final JsonObject dataType = rendered.getJsonObject("dataType");
-
-            assertAll(() -> assertThat(dataType.getString("type"), equalTo("INTERVAL")),
-                    () -> assertThat(dataType.getJsonNumber("precision").intValue(), equalTo(7)),
-                    () -> assertThat(dataType.getString("fromTo"), equalTo("YEAR TO MONTH")));
-        } finally {
-            Locale.setDefault(defaultLocale);
-        }
+        assertAll(() -> assertThat(dataType.getString("type"), equalTo("INTERVAL")),
+                () -> assertThat(dataType.getJsonNumber("precision").intValue(), equalTo(7)),
+                () -> assertThat(dataType.getString("fromTo"), equalTo("YEAR TO MONTH")));
     }
 
     @Test
+    @WithLocale("tr")
     void testRenderUsesLocaleIndependentLowercaseForPredicateTypes() {
-        final Locale defaultLocale = Locale.getDefault();
-        try {
-            Locale.setDefault(Locale.forLanguageTag("tr"));
+        final JsonObject rendered = renderToJsonObject(new SqlPredicateIsJson(new SqlLiteralString("x"),
+                AbstractSqlPredicateJson.TypeConstraints.OBJECT,
+                AbstractSqlPredicateJson.KeyUniquenessConstraint.WITH_UNIQUE_KEYS));
 
-            final JsonObject rendered = renderToJsonObject(new SqlPredicateIsJson(new SqlLiteralString("x"),
-                    AbstractSqlPredicateJson.TypeConstraints.OBJECT,
-                    AbstractSqlPredicateJson.KeyUniquenessConstraint.WITH_UNIQUE_KEYS));
-
-            assertAll(() -> assertThat(rendered.getString("type"), equalTo("predicate_is_json")),
-                    () -> assertThat(rendered.getString("typeConstraint"), equalTo("OBJECT")),
-                    () -> assertThat(rendered.getString("keyUniquenessConstraint"), equalTo("WITH UNIQUE KEYS")));
-        } finally {
-            Locale.setDefault(defaultLocale);
-        }
+        assertAll(() -> assertThat(rendered.getString("type"), equalTo("predicate_is_json")),
+                () -> assertThat(rendered.getString("typeConstraint"), equalTo("OBJECT")),
+                () -> assertThat(rendered.getString("keyUniquenessConstraint"), equalTo("WITH UNIQUE KEYS")));
     }
 
     private JsonObject renderToJsonObject(final SqlNode node) {

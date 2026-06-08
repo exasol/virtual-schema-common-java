@@ -4,8 +4,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
-import java.util.Locale;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,8 +12,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.exasol.adapter.AdapterException;
 import com.exasol.mocking.MockUtils;
+import com.exasol.test.locale.WithLocale;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith({ MockitoExtension.class })
 class SqlPredicateIsJsonTest {
     private SqlPredicateIsJson sqlPredicateIsJson;
     @Mock
@@ -56,17 +55,11 @@ class SqlPredicateIsJsonTest {
     }
 
     @Test
+    @WithLocale("tr")
     void testKeyUniquenessConstraintOfUsesLocaleIndependentUppercaseConversion() {
-        final Locale defaultLocale = Locale.getDefault();
-        try {
-            Locale.setDefault(Locale.forLanguageTag("tr"));
+        final AbstractSqlPredicateJson.KeyUniquenessConstraint result = AbstractSqlPredicateJson.KeyUniquenessConstraint
+                .of("without unique keys");
 
-            final AbstractSqlPredicateJson.KeyUniquenessConstraint result = AbstractSqlPredicateJson.KeyUniquenessConstraint
-                    .of("without unique keys");
-
-            assertThat(result, equalTo(AbstractSqlPredicateJson.KeyUniquenessConstraint.WITHOUT_UNIQUE_KEYS));
-        } finally {
-            Locale.setDefault(defaultLocale);
-        }
+        assertThat(result, equalTo(AbstractSqlPredicateJson.KeyUniquenessConstraint.WITHOUT_UNIQUE_KEYS));
     }
 }
