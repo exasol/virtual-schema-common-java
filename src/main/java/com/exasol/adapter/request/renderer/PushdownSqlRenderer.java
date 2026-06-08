@@ -3,6 +3,7 @@ package com.exasol.adapter.request.renderer;
 import static com.exasol.adapter.request.RequestJsonKeys.*;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import com.exasol.adapter.AdapterException;
@@ -58,7 +59,7 @@ public class PushdownSqlRenderer {
         }
 
         private JsonObjectBuilder createObjectBuilderFor(final SqlNode type) {
-            return JSON.createObjectBuilder().add(TYPE, type.getType().name().toLowerCase());
+            return JSON.createObjectBuilder().add(TYPE, type.getType().name().toLowerCase(Locale.ROOT));
         }
 
         private void addIfPresent(final SqlNode node, final String key, final JsonObjectBuilder builder)
@@ -159,7 +160,7 @@ public class PushdownSqlRenderer {
         private JsonObject render(final DataType dataType) {
             final JsonObjectBuilder builder = JSON.createObjectBuilder();
             final DataType.ExaDataType type = dataType.getExaDataType();
-            builder.add(TYPE, type.name().toUpperCase());
+            builder.add(TYPE, type.name().toUpperCase(Locale.ROOT));
             switch (type) {
                 case DECIMAL:
                     builder.add(PRECISION, dataType.getPrecision());
@@ -167,7 +168,7 @@ public class PushdownSqlRenderer {
                     break;
                 case VARCHAR:
                 case CHAR:
-                    builder.add(CHARACTER_SET, dataType.getCharset().name().toLowerCase());
+                    builder.add(CHARACTER_SET, dataType.getCharset().name().toLowerCase(Locale.ROOT));
                     builder.add(SIZE, dataType.getSize());
                     break;
                 case TIMESTAMP:
@@ -462,7 +463,7 @@ public class PushdownSqlRenderer {
             builder.add(LEFT, sqlJoin.getLeft().accept(this));
             builder.add(RIGHT, sqlJoin.getRight().accept(this));
             builder.add(CONDITION, sqlJoin.getCondition().accept(this));
-            builder.add(JOIN_TYPE, sqlJoin.getJoinType().name().toLowerCase());
+            builder.add(JOIN_TYPE, sqlJoin.getJoinType().name().toLowerCase(Locale.ROOT));
             return builder.build();
         }
 

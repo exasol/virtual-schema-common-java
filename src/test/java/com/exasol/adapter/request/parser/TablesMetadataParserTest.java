@@ -19,6 +19,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import com.exasol.adapter.metadata.*;
+import com.exasol.test.locale.WithLocale;
 
 import jakarta.json.*;
 
@@ -189,6 +190,26 @@ class TablesMetadataParserTest {
                         .nullable(true).identity(false).defaultValue("").comment("").build(),
                 ColumnMetadata.builder().name("C3").adapterNotes("").type(DataType.createDouble()).nullable(true)
                         .identity(false).defaultValue("").comment("").build()));
+    }
+
+    @Test
+    @WithLocale("tr")
+    void testParseMetadataUsesLocaleIndependentUppercaseConversion() {
+        final JsonArray tablesAsJson = arrayBuilder().add(objectBuilder()
+                .add("name", "T1")
+                .add("columns", arrayBuilder()
+                        .add(objectBuilder().add("name", "INTERVAL_COL")
+                                .add("dataType", objectBuilder().add("type", "interval").add("fromTo",
+                                        "YEAR TO MONTH")))))
+                .build();
+
+        final List<TableMetadata> tables = TablesMetadataParser.create().parse(tablesAsJson);
+
+        final List<ColumnMetadata> expectedColumns = List.of(ColumnMetadata.builder().name("INTERVAL_COL")
+                .adapterNotes("").type(DataType.createIntervalYearMonth(2)).nullable(true).identity(false)
+                .defaultValue("").comment("").build());
+
+        assertThat(tables, contains(new TableMetadata("T1", "", expectedColumns, "")));
     }
 
     @ParameterizedTest

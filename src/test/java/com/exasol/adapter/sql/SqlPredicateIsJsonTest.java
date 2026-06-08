@@ -12,8 +12,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.exasol.adapter.AdapterException;
 import com.exasol.mocking.MockUtils;
+import com.exasol.test.locale.WithLocale;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith({ MockitoExtension.class })
 class SqlPredicateIsJsonTest {
     private SqlPredicateIsJson sqlPredicateIsJson;
     @Mock
@@ -51,5 +52,14 @@ class SqlPredicateIsJsonTest {
     @Test
     void testGetKeyUniquenessConstraint() {
         assertThat(this.sqlPredicateIsJson.getKeyUniquenessConstraint(), equalTo("WITH UNIQUE KEYS"));
+    }
+
+    @Test
+    @WithLocale("tr")
+    void testKeyUniquenessConstraintOfUsesLocaleIndependentUppercaseConversion() {
+        final AbstractSqlPredicateJson.KeyUniquenessConstraint result = AbstractSqlPredicateJson.KeyUniquenessConstraint
+                .of("without unique keys");
+
+        assertThat(result, equalTo(AbstractSqlPredicateJson.KeyUniquenessConstraint.WITHOUT_UNIQUE_KEYS));
     }
 }

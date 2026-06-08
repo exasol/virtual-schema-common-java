@@ -2,8 +2,7 @@ package com.exasol.adapter.request.parser;
 
 import static com.exasol.adapter.request.parser.RequestParserConstants.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import com.exasol.adapter.metadata.*;
 import com.exasol.adapter.metadata.converter.SchemaMetadataJsonConverter;
@@ -222,7 +221,7 @@ public class TablesMetadataParser {
     }
 
     private DataType getDataType(final JsonObject dataType, final String columnDescription) {
-        final String typeName = requireString(dataType, "type", columnDescription + " data type").toUpperCase();
+        final String typeName = requireString(dataType, "type", columnDescription + " data type").toUpperCase(Locale.ROOT);
         switch (typeName) {
             case "DECIMAL":
                 return getDecimalDataType(dataType);

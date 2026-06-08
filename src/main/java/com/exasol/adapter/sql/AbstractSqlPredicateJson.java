@@ -1,7 +1,6 @@
 package com.exasol.adapter.sql;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * This class contains a common behavior for the {@link SqlNodeType#PREDICATE_IS_JSON} and
@@ -15,11 +14,11 @@ public abstract class AbstractSqlPredicateJson extends SqlPredicate {
     /**
      * The Type constraint.
      */
-    protected final SqlPredicateIsJson.TypeConstraints typeConstraint;
+    protected final TypeConstraints typeConstraint;
     /**
      * The Key uniqueness constraint.
      */
-    protected final SqlPredicateIsJson.KeyUniquenessConstraint keyUniquenessConstraint;
+    protected final KeyUniquenessConstraint keyUniquenessConstraint;
 
     /**
      * Instantiates a new Abstract sql predicate json.
@@ -29,9 +28,8 @@ public abstract class AbstractSqlPredicateJson extends SqlPredicate {
      * @param typeConstraint          the type constraint
      * @param keyUniquenessConstraint the key uniqueness constraint
      */
-    public AbstractSqlPredicateJson(final Predicate predicate, final SqlNode expression,
-            final SqlPredicateIsJson.TypeConstraints typeConstraint,
-            final SqlPredicateIsJson.KeyUniquenessConstraint keyUniquenessConstraint) {
+    protected AbstractSqlPredicateJson(final Predicate predicate, final SqlNode expression, final TypeConstraints typeConstraint,
+            final KeyUniquenessConstraint keyUniquenessConstraint) {
         super(predicate);
         this.expression = expression;
         this.typeConstraint = typeConstraint;
@@ -117,12 +115,14 @@ public abstract class AbstractSqlPredicateJson extends SqlPredicate {
          * @param value the value
          * @return the sql predicate is json . key uniqueness constraint
          */
-        public static SqlPredicateIsJson.KeyUniquenessConstraint of(final String value) {
-            final String formattedValue = String.join("_", value.split(" ")).toUpperCase();
-            return SqlPredicateIsJson.KeyUniquenessConstraint.valueOf(formattedValue);
+        public static KeyUniquenessConstraint of(final String value) {
+            final String formattedValue = String.join("_", value.split(" ")).toUpperCase(Locale.ROOT);
+            return KeyUniquenessConstraint.valueOf(formattedValue);
         }
     }
 
     @Override
-    public List<SqlNode> getChildren() { return Arrays.asList(this.expression); }
+    public List<SqlNode> getChildren() {
+        return Arrays.asList(this.expression);
+    }
 }

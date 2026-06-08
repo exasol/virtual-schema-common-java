@@ -25,6 +25,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import com.exasol.adapter.metadata.*;
 import com.exasol.adapter.sql.*;
+import com.exasol.test.locale.WithLocale;
 
 import jakarta.json.*;
 
@@ -537,24 +538,19 @@ class PushDownSqlParserTest {
     }
 
     @Test
+    @WithLocale("tr")
     void testParsePredicateIsNullUsesLocaleIndependentUppercaseConversion() {
-        final Locale defaultLocale = Locale.getDefault();
-        try {
-            Locale.setDefault(Locale.forLanguageTag("tr"));
-            final String sqlAsJson = "{" //
-                    + "   \"type\" : \"predicate_is_null\", " //
-                    + "   \"expression\" : { " //
-                    + "        \"type\" : \"literal_double\", " //
-                    + "        \"value\" : \"0.0\" " //
-                    + "   } " //
-                    + "}";
-            final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
-            final SqlPredicateIsNull sqlPredicateIsNull = (SqlPredicateIsNull) this.defaultParser
-                    .parseExpression(jsonObject);
-            assertThat(sqlPredicateIsNull.getType(), equalTo(PREDICATE_IS_NULL));
-        } finally {
-            Locale.setDefault(defaultLocale);
-        }
+        final String sqlAsJson = "{" //
+                + "   \"type\" : \"predicate_is_null\", " //
+                + "   \"expression\" : { " //
+                + "        \"type\" : \"literal_double\", " //
+                + "        \"value\" : \"0.0\" " //
+                + "   } " //
+                + "}";
+        final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
+        final SqlPredicateIsNull sqlPredicateIsNull = (SqlPredicateIsNull) this.defaultParser
+                .parseExpression(jsonObject);
+        assertThat(sqlPredicateIsNull.getType(), equalTo(PREDICATE_IS_NULL));
     }
 
     @Test
@@ -665,47 +661,47 @@ class PushDownSqlParserTest {
 
     @Test
     void testGetDataTypeDecimal() {
-        assertThat(getDataType("{" 
-                + "   \"type\" : \"DECIMAL\", " 
-                + "   \"precision\" : 31, " 
-                + "   \"scale\" : 41 " 
+        assertThat(getDataType("{"
+                + "   \"type\" : \"DECIMAL\", "
+                + "   \"precision\" : 31, "
+                + "   \"scale\" : 41 "
                 + "}"), equalTo(createDecimal(31, 41)));
     }
 
     @Test
     void testGetDataTypeDouble() {
-        assertThat(getDataType("{" 
-                + "   \"type\" : \"DOUBLE\" " 
+        assertThat(getDataType("{"
+                + "   \"type\" : \"DOUBLE\" "
                 + "}"), equalTo(DataType.createDouble()));
     }
 
     @Test
     void testGetDataTypeChar() {
-        assertThat(getDataType("{" 
-                + "   \"type\" : \"CHAR\", " 
-                + "   \"size\" : 22 " 
+        assertThat(getDataType("{"
+                + "   \"type\" : \"CHAR\", "
+                + "   \"size\" : 22 "
                 + "}"), equalTo(DataType.createChar(22, UTF8)));
     }
 
     @Test
     void testGetDataTypeBoolean() {
-        assertThat(getDataType("{" 
-                + "   \"type\" : \"BOOLEAN\" " 
+        assertThat(getDataType("{"
+                + "   \"type\" : \"BOOLEAN\" "
                 + "}"), equalTo(DataType.createBool()));
     }
 
     @Test
     void testGetDataTypeDate() {
-        assertThat(getDataType("{" 
-                + "   \"type\" : \"DATE\" " 
+        assertThat(getDataType("{"
+                + "   \"type\" : \"DATE\" "
                 + "}"), equalTo(DataType.createDate()));
     }
 
     @Test
     void testGetDataTypeGeometry() {
-        assertThat(getDataType("{" 
-                + "   \"type\" : \"GEOMETRY\", " 
-                + "   \"srid\" : 42 " 
+        assertThat(getDataType("{"
+                + "   \"type\" : \"GEOMETRY\", "
+                + "   \"srid\" : 42 "
                 + "}"), equalTo(DataType.createGeometry(42)));
     }
 
