@@ -9,9 +9,14 @@ Fixed `TablesMetadataParser` so an explicit JSON `null` for optional boolean met
 
 ## Bugfixes
 
-* #337: Handle null isNullable metadata after DB upgrade to 2025.1.12
+* #337: Handle `null` in `isNullable` metadata after DB upgrade to 2025.1.12
 
 ## Dependency Updates
+
+### Compile Dependency Updates
+
+* Updated `com.exasol:telemetry-java:0.2.1` to `0.2.2`
+* Updated `com.exasol:udf-api-java:1.0.9` to `1.0.11`
 
 ### Plugin Dependency Updates
 
