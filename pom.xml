@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>virtual-schema-common-java</artifactId>
-    <version>18.0.3</version>
+    <version>18.0.4</version>
     <name>Common module of Exasol Virtual Schemas Adapters</name>
     <description>This is one of the modules of Virtual Schemas Adapters. The libraries provided by this project are the
         foundation of the adapter development, i.e. adapters must be implemented on top of them.</description>
@@ -23,7 +23,7 @@
         <dependency>
             <groupId>com.exasol</groupId>
             <artifactId>udf-api-java</artifactId>
-            <version>1.0.9</version>
+            <version>1.0.11</version>
         </dependency>
         <dependency>
             <groupId>com.exasol</groupId>
@@ -33,7 +33,7 @@
         <dependency>
             <groupId>com.exasol</groupId>
             <artifactId>telemetry-java</artifactId>
-            <version>0.2.1</version>
+            <version>0.2.2</version>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
@@ -50,7 +50,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
-            <!-- Version 6 requires Java 17 -->
+            <!-- Keep JUnit 5 because version 6 requires Java 17 while this project targets Java 11. -->
             <version>5.14.4</version>
             <scope>test</scope>
         </dependency>
@@ -69,7 +69,7 @@
         <dependency>
             <groupId>nl.jqno.equalsverifier</groupId>
             <artifactId>equalsverifier</artifactId>
-            <!-- Version 4 requires Java 17 -->
+            <!-- Keep version 3 because version 4 requires Java 17 while this project targets Java 11. -->
             <version>3.19.4</version>
             <scope>test</scope>
         </dependency>
@@ -79,7 +79,7 @@
             <plugin>
                 <groupId>com.exasol</groupId>
                 <artifactId>project-keeper-maven-plugin</artifactId>
-                <version>5.6.2</version>
+                <version>5.7.4</version>
                 <executions>
                     <execution>
                         <goals>
@@ -93,7 +93,7 @@
     <parent>
         <artifactId>virtual-schema-common-java-generated-parent</artifactId>
         <groupId>com.exasol</groupId>
-        <version>18.0.3</version>
+        <version>18.0.4</version>
         <relativePath>pk_generated_parent.pom</relativePath>
     </parent>
 </project>

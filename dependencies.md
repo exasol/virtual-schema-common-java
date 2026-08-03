@@ -29,32 +29,33 @@
 
 ## Plugin Dependencies
 
-| Dependency                                              | License                                     |
-| ------------------------------------------------------- | ------------------------------------------- |
-| [SonarQube Scanner for Maven][21]                       | [GNU LGPL 3][22]                            |
-| [Apache Maven Toolchains Plugin][23]                    | [Apache-2.0][20]                            |
-| [Apache Maven Compiler Plugin][24]                      | [Apache-2.0][20]                            |
-| [Apache Maven Enforcer Plugin][25]                      | [Apache-2.0][20]                            |
-| [Maven Flatten Plugin][26]                              | [Apache Software License][20]               |
-| [org.sonatype.ossindex.maven:ossindex-maven-plugin][27] | [ASL2][12]                                  |
-| [Maven Surefire Plugin][28]                             | [Apache-2.0][20]                            |
-| [Versions Maven Plugin][29]                             | [Apache License, Version 2.0][20]           |
-| [duplicate-finder-maven-plugin Maven Mojo][30]          | [Apache License 2.0][31]                    |
-| [Apache Maven Artifact Plugin][32]                      | [Apache-2.0][20]                            |
-| [Apache Maven Deploy Plugin][33]                        | [Apache-2.0][20]                            |
-| [Apache Maven GPG Plugin][34]                           | [Apache-2.0][20]                            |
-| [Apache Maven Source Plugin][35]                        | [Apache-2.0][20]                            |
-| [Apache Maven Javadoc Plugin][36]                       | [Apache-2.0][20]                            |
-| [Central Publishing Maven Plugin][37]                   | [The Apache License, Version 2.0][20]       |
-| [JaCoCo :: Maven Plugin][38]                            | [EPL-2.0][39]                               |
-| [Quality Summarizer Maven Plugin][40]                   | [MIT License][41]                           |
-| [error-code-crawler-maven-plugin][42]                   | [MIT License][43]                           |
-| [Git Commit Id Maven Plugin][44]                        | [GNU Lesser General Public License 3.0][45] |
-| [Project Keeper Maven plugin][46]                       | [The MIT License][47]                       |
-| [Apache Maven Clean Plugin][48]                         | [Apache-2.0][20]                            |
-| [Apache Maven Resources Plugin][49]                     | [Apache-2.0][20]                            |
-| [Apache Maven Install Plugin][50]                       | [Apache-2.0][20]                            |
-| [Apache Maven Site Plugin][51]                          | [Apache-2.0][20]                            |
+| Dependency                                              | License                                        |
+| ------------------------------------------------------- | ---------------------------------------------- |
+| [SonarQube Scanner for Maven][21]                       | [GNU LGPL 3][22]                               |
+| [Apache Maven Toolchains Plugin][23]                    | [Apache-2.0][20]                               |
+| [Apache Maven Compiler Plugin][24]                      | [Apache-2.0][20]                               |
+| [Apache Maven Enforcer Plugin][25]                      | [Apache-2.0][20]                               |
+| [Maven Flatten Plugin][26]                              | [Apache Software License][20]                  |
+| [org.sonatype.ossindex.maven:ossindex-maven-plugin][27] | [ASL2][12]                                     |
+| [Maven Surefire Plugin][28]                             | [Apache-2.0][20]                               |
+| [Versions Maven Plugin][29]                             | [Apache License, Version 2.0][20]              |
+| [duplicate-finder-maven-plugin Maven Mojo][30]          | [Apache License 2.0][31]                       |
+| [Apache Maven Artifact Plugin][32]                      | [Apache-2.0][20]                               |
+| [Apache Maven Deploy Plugin][33]                        | [Apache-2.0][20]                               |
+| [Apache Maven Source Plugin][34]                        | [Apache-2.0][20]                               |
+| [Apache Maven Javadoc Plugin][35]                       | [Apache-2.0][20]                               |
+| [spdx-maven-plugin Maven Plugin][36]                    | [The Apache Software License, Version 2.0][12] |
+| [Build Helper Maven Plugin][37]                         | [The MIT License][38]                          |
+| [Apache Maven GPG Plugin][39]                           | [Apache-2.0][20]                               |
+| [Central Publishing Maven Plugin][40]                   | [The Apache License, Version 2.0][20]          |
+| [JaCoCo :: Maven Plugin][41]                            | [EPL-2.0][42]                                  |
+| [error-code-crawler-maven-plugin][43]                   | [MIT License][44]                              |
+| [Git Commit Id Maven Plugin][45]                        | [GNU Lesser General Public License 3.0][46]    |
+| [Project Keeper Maven plugin][47]                       | [The MIT License][48]                          |
+| [Apache Maven Clean Plugin][49]                         | [Apache-2.0][20]                               |
+| [Apache Maven Resources Plugin][50]                     | [Apache-2.0][20]                               |
+| [Apache Maven Install Plugin][51]                       | [Apache-2.0][20]                               |
+| [Apache Maven Site Plugin][52]                          | [Apache-2.0][20]                               |
 
 [0]: https://github.com/eclipse-ee4j/jsonp
 [1]: https://projects.eclipse.org/license/epl-2.0
@@ -90,21 +91,22 @@
 [31]: http://www.apache.org/licenses/LICENSE-2.0.html
 [32]: https://maven.apache.org/plugins/maven-artifact-plugin/
 [33]: https://maven.apache.org/plugins/maven-deploy-plugin/
-[34]: https://maven.apache.org/plugins/maven-gpg-plugin/
-[35]: https://maven.apache.org/plugins/maven-source-plugin/
-[36]: https://maven.apache.org/plugins/maven-javadoc-plugin/
-[37]: https://central.sonatype.org
-[38]: https://www.jacoco.org/jacoco/trunk/doc/maven.html
-[39]: https://www.eclipse.org/legal/epl-2.0/
-[40]: https://github.com/exasol/quality-summarizer-maven-plugin/
-[41]: https://github.com/exasol/quality-summarizer-maven-plugin/blob/main/LICENSE
-[42]: https://github.com/exasol/error-code-crawler-maven-plugin/
-[43]: https://github.com/exasol/error-code-crawler-maven-plugin/blob/main/LICENSE
-[44]: https://github.com/git-commit-id/git-commit-id-maven-plugin
-[45]: http://www.gnu.org/licenses/lgpl-3.0.txt
-[46]: https://github.com/exasol/project-keeper/
-[47]: https://github.com/exasol/project-keeper/blob/main/LICENSE
-[48]: https://maven.apache.org/plugins/maven-clean-plugin/
-[49]: https://maven.apache.org/plugins/maven-resources-plugin/
-[50]: https://maven.apache.org/plugins/maven-install-plugin/
-[51]: https://maven.apache.org/plugins/maven-site-plugin/
+[34]: https://maven.apache.org/plugins/maven-source-plugin/
+[35]: https://maven.apache.org/plugins/maven-javadoc-plugin/
+[36]: https://github.com/spdx/spdx-maven-plugin
+[37]: https://www.mojohaus.org/build-helper-maven-plugin/
+[38]: https://spdx.org/licenses/MIT.txt
+[39]: https://maven.apache.org/plugins/maven-gpg-plugin/
+[40]: https://central.sonatype.org
+[41]: https://www.jacoco.org/jacoco/trunk/doc/maven.html
+[42]: https://www.eclipse.org/legal/epl-2.0/
+[43]: https://github.com/exasol/error-code-crawler-maven-plugin/
+[44]: https://github.com/exasol/error-code-crawler-maven-plugin/blob/main/LICENSE
+[45]: https://github.com/git-commit-id/git-commit-id-maven-plugin
+[46]: http://www.gnu.org/licenses/lgpl-3.0.txt
+[47]: https://github.com/exasol/project-keeper/
+[48]: https://github.com/exasol/project-keeper/blob/main/LICENSE
+[49]: https://maven.apache.org/plugins/maven-clean-plugin/
+[50]: https://maven.apache.org/plugins/maven-resources-plugin/
+[51]: https://maven.apache.org/plugins/maven-install-plugin/
+[52]: https://maven.apache.org/plugins/maven-site-plugin/

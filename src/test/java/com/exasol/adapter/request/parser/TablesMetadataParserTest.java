@@ -164,6 +164,23 @@ class TablesMetadataParserTest {
     }
 
     @Test
+    void testParseColumnMetadataUsesBooleanDefaultsForJsonNullValues() {
+        final JsonArray tablesAsJson = arrayBuilder().add(objectBuilder()
+                .add("name", "T1")
+                .add("columns", arrayBuilder()
+                        .add(objectBuilder().add("name", "LEGACY_COLUMN").addNull("isNullable")
+                                .addNull("isIdentity")
+                                .add("dataType", objectBuilder().add("type", "BOOLEAN")))))
+                .build();
+
+        final List<TableMetadata> tables = TablesMetadataParser.create().parse(tablesAsJson);
+
+        final ColumnMetadata expectedColumn = ColumnMetadata.builder().name("LEGACY_COLUMN").adapterNotes("")
+                .type(DataType.createBool()).nullable(true).identity(false).defaultValue("").comment("").build();
+        assertThat(tables, contains(new TableMetadata("T1", "", List.of(expectedColumn), "")));
+    }
+
+    @Test
     void testParseMetadataReadsAdapterNotes() {
         final JsonArray tablesAsJson = arrayBuilder().add(objectBuilder()
                 .add("name", "T1")

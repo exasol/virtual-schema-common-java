@@ -136,7 +136,7 @@ public class TablesMetadataParser {
 
     private boolean applyBooleanValue(final JsonObject column, final String booleanName,
             final boolean defaultValue) {
-        if (column.containsKey(booleanName)) {
+        if (column.containsKey(booleanName) && !column.isNull(booleanName)) {
             return column.getBoolean(booleanName);
         }
         return defaultValue;
