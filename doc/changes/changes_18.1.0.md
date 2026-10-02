@@ -1,12 +1,14 @@
-# Common Module of Exasol Virtual Schemas Adapters 18.1.0, released 2026-??-??
+# Common Module of Exasol Virtual Schemas Adapters 18.1.0, released 2026-10-??
 
-Code name:
+Code name: Extended Virtual Schema Capabilities
 
 ## Summary
 
+This release adds support for additional aggregate and scalar function capabilities used by Virtual Schema adapters.
+
 ## Features
 
-* ISSUE_NUMBER: description
+* #339: Added the `FN_AGG_CORR`, `FN_AGG_GROUPING`, `FN_AGG_GROUPING_ID`, `FN_LAST_DAY`, and `FN_LEFT` capabilities.
 
 ## Dependency Updates
 
@@ -16,8 +18,6 @@ Code name:
 
 ### Test Dependency Updates
 
-* Updated `nl.jqno.equalsverifier:equalsverifier:3.19.4` to `4.5.2`
-* Updated `org.junit.jupiter:junit-jupiter-params:5.14.4` to `6.1.3`
 * Updated `org.mockito:mockito-junit-jupiter:5.23.0` to `5.24.0`
 
 ### Plugin Dependency Updates
