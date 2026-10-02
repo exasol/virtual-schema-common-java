@@ -298,7 +298,7 @@ Here you can find a list of available Virtual Schema capabilities.
 - `FN_AGG_MIN`
 - `FN_AGG_MUL`
 - `FN_AGG_MUL_DISTINCT`
-- `FN_AGG_SOME`
+- `FN_AGG_SOME` (synonym: `FN_AGG_ANY`)
 - `FN_AGG_STDDEV`
 - `FN_AGG_STDDEV_DISTINCT`
 - `FN_AGG_STDDEV_POP`
