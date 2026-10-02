@@ -94,6 +94,8 @@ public enum AggregateFunction {
     EVERY,
     /**
      * Some aggregate function.
+     * <p>
+     * {@code FN_AGG_ANY} is an synonym for {@code FN_AGG_SOME}.
      */
     SOME,
     /**
