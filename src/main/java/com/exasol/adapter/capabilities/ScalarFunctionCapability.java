@@ -194,6 +194,14 @@ public enum ScalarFunctionCapability {
      */
     LENGTH,
     /**
+     * Last day scalar function capability.
+     */
+    LAST_DAY,
+    /**
+     * Left scalar function capability.
+     */
+    LEFT,
+    /**
      * Locate scalar function capability.
      */
     LOCATE,

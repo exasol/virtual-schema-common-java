@@ -151,7 +151,9 @@ Here you can find a list of available Virtual Schema capabilities.
 - `FN_IS_TIMESTAMP`
 - `FN_IS_YMINTERVAL`
 - `FN_JSON_VALUE`
+- `FN_LAST_DAY`
 - `FN_LEAST`
+- `FN_LEFT`
 - `FN_LENGTH`
 - `FN_LN`
 - `FN_LPAD`
@@ -275,12 +277,15 @@ Here you can find a list of available Virtual Schema capabilities.
 - `FN_AGG_COUNT_DISTINCT`
 - `FN_AGG_COUNT_STAR`
 - `FN_AGG_COUNT_TUPLE`
+- `FN_AGG_CORR`
 - `FN_AGG_EVERY`
 - `FN_AGG_FIRST_VALUE`
 - `FN_AGG_GROUP_CONCAT`
 - `FN_AGG_GROUP_CONCAT_DISTINCT`
 - `FN_AGG_GROUP_CONCAT_ORDER_BY`
 - `FN_AGG_GROUP_CONCAT_SEPARATOR`
+- `FN_AGG_GROUPING`
+- `FN_AGG_GROUPING_ID`
 - `FN_AGG_LAST_VALUE`
 - `FN_AGG_LISTAGG`
 - `FN_AGG_LISTAGG_DISTINCT`
@@ -293,7 +298,7 @@ Here you can find a list of available Virtual Schema capabilities.
 - `FN_AGG_MIN`
 - `FN_AGG_MUL`
 - `FN_AGG_MUL_DISTINCT`
-- `FN_AGG_SOME`
+- `FN_AGG_SOME` (synonym: `FN_AGG_ANY`)
 - `FN_AGG_STDDEV`
 - `FN_AGG_STDDEV_DISTINCT`
 - `FN_AGG_STDDEV_POP`
@@ -331,5 +336,5 @@ The following capabilities were deprecated:
 
 | Deprecated Capability               | Superseded by                      | Since Database version |
 |-------------------------------------|------------------------------------|------------------------|
-| `FN_AGG_GEO_INTERSECTION_AGGREGATE` | `FN_AGG_ST_INTERSECTION_AGGREGATE` | 7.1.alpha1             |
-| `FN_AGG_GEO_UNION_AGGREGATE`        | `FN_AGG_ST_UNION_AGGREGATE`        | 7.1.alpha1             |
+| `FN_AGG_GEO_INTERSECTION_AGGREGATE` | `FN_AGG_ST_INTERSECTION`           | 7.1.alpha1             |
+| `FN_AGG_GEO_UNION_AGGREGATE`        | `FN_AGG_ST_UNION`                  | 7.1.alpha1             |

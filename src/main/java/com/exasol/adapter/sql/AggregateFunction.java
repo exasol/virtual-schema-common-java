@@ -9,6 +9,10 @@ public enum AggregateFunction {
      */
     COUNT,
     /**
+     * Corr aggregate function.
+     */
+    CORR,
+    /**
      * Sum aggregate function.
      */
     SUM,
@@ -65,6 +69,14 @@ public enum AggregateFunction {
      */
     GROUP_CONCAT(false, "GROUP_CONCAT"),
     /**
+     * Grouping aggregate function.
+     */
+    GROUPING,
+    /**
+     * Grouping id aggregate function.
+     */
+    GROUPING_ID,
+    /**
      * Approximate count distinct aggregate function.
      */
     APPROXIMATE_COUNT_DISTINCT,
@@ -94,6 +106,8 @@ public enum AggregateFunction {
     EVERY,
     /**
      * Some aggregate function.
+     * <p>
+     * {@code FN_AGG_ANY} is an synonym for {@code FN_AGG_SOME}.
      */
     SOME,
     /**

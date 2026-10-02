@@ -25,7 +25,7 @@ class ScalarFunctionCapabilityTest {
     @Test
     void testConsistentNaming() {
         for (final ScalarFunctionCapability cap : ScalarFunctionCapability.values()) {
-            assertEquals(cap.name(), cap.getFunction().name());
+            assertEquals(cap.name(), cap.getFunction().name(), "invalid function name for capability");
         }
     }
 }

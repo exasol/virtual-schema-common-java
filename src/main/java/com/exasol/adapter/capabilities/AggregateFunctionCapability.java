@@ -11,6 +11,10 @@ public enum AggregateFunctionCapability {
      */
     COUNT,
     /**
+     * Corr aggregate function capability.
+     */
+    CORR,
+    /**
      * Required only for COUNT(*).
      */
     COUNT_STAR(AggregateFunction.COUNT),
@@ -122,6 +126,14 @@ public enum AggregateFunctionCapability {
      * Group concat order by aggregate function capability.
      */
     GROUP_CONCAT_ORDER_BY(AggregateFunction.GROUP_CONCAT),
+    /**
+     * Grouping aggregate function capability.
+     */
+    GROUPING,
+    /**
+     * Grouping id aggregate function capability.
+     */
+    GROUPING_ID,
     /**
      * Geo intersection aggregate aggregate function capability.
      * @deprecated The {@code FN_AGG_GEO_INTERSECTION} capability was renamed to {@code FN_AGG_ST_INTERSECTION} in
