@@ -1,4 +1,4 @@
-# Common Module of Exasol Virtual Schemas Adapters 18.1.0, released 2026-10-??
+# Common Module of Exasol Virtual Schemas Adapters 18.1.0, released 2026-10-02
 
 Code name: Extended Virtual Schema Capabilities
 
