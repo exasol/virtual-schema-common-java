@@ -331,5 +331,5 @@ The following capabilities were deprecated:
 
 | Deprecated Capability               | Superseded by                      | Since Database version |
 |-------------------------------------|------------------------------------|------------------------|
-| `FN_AGG_GEO_INTERSECTION_AGGREGATE` | `FN_AGG_ST_INTERSECTION_AGGREGATE` | 7.1.alpha1             |
-| `FN_AGG_GEO_UNION_AGGREGATE`        | `FN_AGG_ST_UNION_AGGREGATE`        | 7.1.alpha1             |
+| `FN_AGG_GEO_INTERSECTION_AGGREGATE` | `FN_AGG_ST_INTERSECTION`           | 7.1.alpha1             |
+| `FN_AGG_GEO_UNION_AGGREGATE`        | `FN_AGG_ST_UNION`                  | 7.1.alpha1             |
