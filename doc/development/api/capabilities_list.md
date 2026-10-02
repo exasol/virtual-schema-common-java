@@ -151,7 +151,9 @@ Here you can find a list of available Virtual Schema capabilities.
 - `FN_IS_TIMESTAMP`
 - `FN_IS_YMINTERVAL`
 - `FN_JSON_VALUE`
+- `FN_LAST_DAY`
 - `FN_LEAST`
+- `FN_LEFT`
 - `FN_LENGTH`
 - `FN_LN`
 - `FN_LPAD`

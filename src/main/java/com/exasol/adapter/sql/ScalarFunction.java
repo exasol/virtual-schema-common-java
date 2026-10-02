@@ -191,6 +191,14 @@ public enum ScalarFunction {
      */
     LENGTH,
     /**
+     * Last day scalar function.
+     */
+    LAST_DAY,
+    /**
+     * Left scalar function.
+     */
+    LEFT,
+    /**
      * Locate scalar function.
      */
     LOCATE,
