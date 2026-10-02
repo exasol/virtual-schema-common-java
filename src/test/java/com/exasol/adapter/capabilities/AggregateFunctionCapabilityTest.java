@@ -23,7 +23,8 @@ class AggregateFunctionCapabilityTest {
     @Test
     void testConsistentNaming() {
         for (final AggregateFunctionCapability cap : AggregateFunctionCapability.values()) {
-            assertTrue(cap.name().startsWith(cap.getFunction().name()));
+            assertTrue(cap.name().startsWith(cap.getFunction().name()),
+                    "Capability '" + cap.name() + "' must start with its aggregate function name '" + cap.getFunction().name() + "'.");
         }
     }
 }

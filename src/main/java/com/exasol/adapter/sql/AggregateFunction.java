@@ -9,6 +9,10 @@ public enum AggregateFunction {
      */
     COUNT,
     /**
+     * Corr aggregate function.
+     */
+    CORR,
+    /**
      * Sum aggregate function.
      */
     SUM,
@@ -64,6 +68,14 @@ public enum AggregateFunction {
      * Group concat aggregate function.
      */
     GROUP_CONCAT(false, "GROUP_CONCAT"),
+    /**
+     * Grouping aggregate function.
+     */
+    GROUPING,
+    /**
+     * Grouping id aggregate function.
+     */
+    GROUPING_ID,
     /**
      * Approximate count distinct aggregate function.
      */
