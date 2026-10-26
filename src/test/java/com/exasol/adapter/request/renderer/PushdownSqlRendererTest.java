@@ -1,5 +1,6 @@
 package com.exasol.adapter.request.renderer;
 
+import static com.exasol.adapter.JsonAssertions.assertJsonMatches;
 import static com.exasol.adapter.metadata.DataType.*;
 import static com.exasol.adapter.metadata.DataType.ExaCharset.ASCII;
 import static com.exasol.adapter.metadata.DataType.ExaCharset.UTF8;
@@ -18,12 +19,10 @@ import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.skyscreamer.jsonassert.JSONAssert;
 
 import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.metadata.ColumnMetadata;
@@ -62,7 +61,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParseSelectWithGroupBy() throws JSONException {
+    void testParseSelectWithGroupBy() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"select\", " //
                 + "    \"from\" : " //
@@ -83,20 +82,19 @@ class PushdownSqlRendererTest {
         assertParseAndRenderGeneratesSameJson(sqlAsJson);
     }
 
-    private void assertParseAndRenderGeneratesSameJson(final String sqlAsJson) throws JSONException {
+    private void assertParseAndRenderGeneratesSameJson(final String sqlAsJson) {
         assertParseAndRenderGeneratesSameJson(sqlAsJson, this.defaultParser);
     }
 
-    private void assertParseAndRenderGeneratesSameJson(final String sqlAsJson, final PushdownSqlParser parser)
-            throws JSONException {
+    private void assertParseAndRenderGeneratesSameJson(final String sqlAsJson, final PushdownSqlParser parser) {
         final JsonObject jsonObject = createJsonObjectFromString(sqlAsJson);
         final SqlNode parsed = parser.parseExpression(jsonObject);
         final String rendered = new PushdownSqlRenderer().render(parsed).toString();
-        JSONAssert.assertEquals(sqlAsJson, rendered, false);
+        assertJsonMatches(sqlAsJson, rendered);
     }
 
     @Test
-    void testParseSelectWithLimit() throws JSONException {
+    void testParseSelectWithLimit() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"select\", " //
                 + "    \"from\" : " //
@@ -113,7 +111,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParseColumn() throws JSONException {
+    void testParseColumn() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"column\"," //
                 + "   \"name\" : \"USER_ID\"," //
@@ -125,7 +123,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParseLiteralBool() throws JSONException {
+    void testParseLiteralBool() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"literal_bool\", " //
                 + "   \"value\" : true " //
@@ -134,7 +132,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParseLiteralNull() throws JSONException {
+    void testParseLiteralNull() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"literal_null\"" //
                 + "}";
@@ -142,7 +140,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParseLiteralDate() throws JSONException {
+    void testParseLiteralDate() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"literal_date\", " //
                 + "   \"value\" : \"2015-12-01\" " //
@@ -151,7 +149,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParseLiteralIntervalDayToSeconds() throws JSONException {
+    void testParseLiteralIntervalDayToSeconds() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"literal_interval\", " //
                 + "   \"dataType\" : { " //
@@ -164,7 +162,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParseLiteralTimestamp() throws JSONException {
+    void testParseLiteralTimestamp() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"literal_timestamp\", " //
                 + "   \"value\" : \"2015-12-01 12:01:01.1234\" " //
@@ -173,7 +171,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParseLiteralTimestamputc() throws JSONException {
+    void testParseLiteralTimestamputc() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"literal_timestamputc\", " //
                 + "   \"value\" : \"2015-12-01 12:01:01.1234\" " //
@@ -182,7 +180,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParseLiteralDouble() throws JSONException {
+    void testParseLiteralDouble() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"literal_double\", " //
                 + "   \"value\" : \"1.234\" " //
@@ -191,7 +189,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParseLiteralExactNumeric() throws JSONException {
+    void testParseLiteralExactNumeric() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"literal_exactnumeric\", " //
                 + "   \"value\" : \"100000\" " //
@@ -200,7 +198,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParseLiteralString() throws JSONException {
+    void testParseLiteralString() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"literal_string\", " //
                 + "   \"value\" : \"my string\" " //
@@ -209,7 +207,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParsePredicateAnd() throws JSONException {
+    void testParsePredicateAnd() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"predicate_and\", " //
                 + "   \"expressions\" : [ " //
@@ -227,7 +225,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParsePredicateAndEmptyExpressions() throws JSONException {
+    void testParsePredicateAndEmptyExpressions() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"predicate_and\", " //
                 + "   \"expressions\" : [ " //
@@ -237,7 +235,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParsePredicateOr() throws JSONException {
+    void testParsePredicateOr() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"predicate_or\", " //
                 + "   \"expressions\" : [ " //
@@ -255,7 +253,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParsePredicateOrEmptyExpressions() throws JSONException {
+    void testParsePredicateOrEmptyExpressions() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"predicate_or\", " //
                 + "   \"expressions\" : [ " //
@@ -265,7 +263,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParsePredicateNot() throws JSONException {
+    void testParsePredicateNot() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"predicate_not\", " //
                 + "   \"expression\" : { " //
@@ -276,7 +274,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParsePredicateEqual() throws JSONException {
+    void testParsePredicateEqual() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"predicate_equal\", " //
                 + "   \"left\" : { " //
@@ -292,7 +290,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParsePredicateNotEqual() throws JSONException {
+    void testParsePredicateNotEqual() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"predicate_notequal\", " //
                 + "   \"left\" : { " //
@@ -308,7 +306,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParsePredicateLess() throws JSONException {
+    void testParsePredicateLess() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"predicate_less\", " //
                 + "   \"left\" : { " //
@@ -324,7 +322,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParsePredicateLessEqual() throws JSONException {
+    void testParsePredicateLessEqual() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"predicate_lessequal\", " //
                 + "   \"left\" : { " //
@@ -340,7 +338,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParsePredicateLike() throws JSONException {
+    void testParsePredicateLike() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"predicate_like\", " //
                 + "   \"expression\" : { " //
@@ -356,7 +354,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParsePredicateLikeRegexp() throws JSONException {
+    void testParsePredicateLikeRegexp() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"predicate_like_regexp\", " //
                 + "   \"expression\" : { " //
@@ -372,7 +370,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParsePredicateBetween() throws JSONException {
+    void testParsePredicateBetween() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"predicate_between\", " //
                 + "   \"expression\" : { " //
@@ -392,7 +390,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParsePredicateIsNull() throws JSONException {
+    void testParsePredicateIsNull() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"predicate_is_null\", " //
                 + "   \"expression\" : { " //
@@ -404,7 +402,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParsePredicateIsNotNull() throws JSONException {
+    void testParsePredicateIsNotNull() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"predicate_is_not_null\", " //
                 + "   \"expression\" : { " //
@@ -416,7 +414,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParseFunctionScalar() throws JSONException {
+    void testParseFunctionScalar() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"function_scalar\", " //
                 + "   \"numArgs\" : 1, " //
@@ -432,7 +430,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParseFunctionScalarExtract() throws JSONException {
+    void testParseFunctionScalarExtract() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"function_scalar_extract\", " //
                 + "   \"name\" : \"EXTRACT\", " //
@@ -448,7 +446,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParseFunctionScalarCast() throws JSONException {
+    void testParseFunctionScalarCast() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"function_scalar_cast\", " //
                 + "   \"name\" : \"CAST\", " //
@@ -467,7 +465,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParseFunctionScalarCastWithHashtype() throws JSONException {
+    void testParseFunctionScalarCastWithHashtype() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"function_scalar_cast\", " //
                 + "   \"name\" : \"CAST\", " //
@@ -486,7 +484,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParsePredicateInConstlist() throws JSONException {
+    void testParsePredicateInConstlist() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"predicate_in_constlist\", " //
                 + "   \"expression\" : { " //
@@ -508,7 +506,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParsePredicateIsJson() throws JSONException {
+    void testParsePredicateIsJson() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"predicate_is_json\", " //
                 + "   \"expression\" : { " //
@@ -521,7 +519,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParsePredicateIsNotJson() throws JSONException {
+    void testParsePredicateIsNotJson() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"predicate_is_not_json\", " //
                 + "   \"expression\" : { " //
@@ -534,7 +532,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParseFunctionScalarCase() throws JSONException {
+    void testParseFunctionScalarCase() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"function_scalar_case\", " //
                 + "   \"name\" : \"CASE\", " //
@@ -569,7 +567,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParseFunctionScalarJsonValue() throws JSONException {
+    void testParseFunctionScalarJsonValue() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"function_scalar_json_value\", " //
                 + "   \"name\" : \"JSON_VALUE\", " //
@@ -605,7 +603,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParseFunctionScalarJsonValueWithHashtypeReturningType() throws JSONException {
+    void testParseFunctionScalarJsonValueWithHashtypeReturningType() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"function_scalar_json_value\", " //
                 + "   \"name\" : \"JSON_VALUE\", " //
@@ -641,7 +639,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParseFunctionAggregate() throws JSONException {
+    void testParseFunctionAggregate() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"function_aggregate\", " //
                 + "   \"name\" : \"SUM\", " //
@@ -660,7 +658,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParseFunctionAggregateGroupConcatNewApi() throws JSONException {
+    void testParseFunctionAggregateGroupConcatNewApi() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"function_aggregate_group_concat\", " //
                 + "   \"name\" : \"GROUP_CONCAT\", " //
@@ -695,7 +693,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParseFunctionAggregateGroupListagg() throws JSONException {
+    void testParseFunctionAggregateGroupListagg() {
         final String sqlAsJson = "{" //
                 + "    \"type\": \"function_aggregate_listagg\"," //
                 + "    \"name\": \"LISTAGG\"," //
@@ -742,7 +740,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParseFunctionAggregateListaggWithOverflowError() throws JSONException {
+    void testParseFunctionAggregateListaggWithOverflowError() {
         final String sqlAsJson = "{" //
                 + "    \"type\": \"function_aggregate_listagg\"," //
                 + "    \"name\": \"LISTAGG\"," //
@@ -767,7 +765,7 @@ class PushdownSqlRendererTest {
     @ValueSource(strings = { "pushdown_request_simple_inner_join_with_select_list.json",
             "pushdown_request_simple_inner_join_without_select_list.json",
             "pushdown_request_nested_join_with_repeated_table_without_select_list.json" })
-    void testJoin(final String testFile) throws IOException, JSONException {
+    void testJoin(final String testFile) throws IOException {
         final String sqlAsJson = new String(Files.readAllBytes(Path.of("src/test/resources/json/", testFile)));
         final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithTwoTables();
         assertParseAndRenderGeneratesSameJson(sqlAsJson, pushdownSqlParser);
@@ -787,7 +785,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParseSelectWithoutSelectList() throws JSONException {
+    void testParseSelectWithoutSelectList() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"select\", " //
                 + "    \"from\" : " //
@@ -801,7 +799,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParseSelectWithEmptySelectList() throws JSONException {
+    void testParseSelectWithEmptySelectList() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"select\", " //
                 + "    \"from\" : " //
@@ -815,7 +813,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testNestedJoinRequestWithoutSelectList() throws IOException, JSONException {
+    void testNestedJoinRequestWithoutSelectList() throws IOException {
         final String sqlAsJson = new String(Files.readAllBytes(
                 Paths.get("src/test/resources/json/pushdown_request_nested_join_without_select_list.json")));
         final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithThreeTables();
@@ -840,7 +838,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testNestedJoinRequestWithoutSelectListReversed() throws IOException, JSONException {
+    void testNestedJoinRequestWithoutSelectListReversed() throws IOException {
         final String sqlAsJson = new String(Files.readAllBytes(
                 Paths.get("src/test/resources/json/pushdown_request_nested_join_without_select_list_reversed.json")));
         final PushdownSqlParser pushdownSqlParser = getCustomPushdownSqlParserWithThreeTables();
@@ -848,7 +846,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParseSelectWithSingleGroupAggregation() throws JSONException {
+    void testParseSelectWithSingleGroupAggregation() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"select\", " //
                 + "   \"aggregationType\" : \"single_group\", " //
@@ -867,7 +865,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParseSelectWithSingleGroupAggregationWithAggregateFunction() throws JSONException {
+    void testParseSelectWithSingleGroupAggregationWithAggregateFunction() {
         final String sqlAsJson = "{" //
                 + "   \"selectList\":[" //
                 + "      {" //
@@ -891,7 +889,7 @@ class PushdownSqlRendererTest {
     }
 
     @Test
-    void testParseGroupByWithSingleGroupColumnName() throws JSONException {
+    void testParseGroupByWithSingleGroupColumnName() {
         final String sqlAsJson = "{" //
                 + "   \"type\" : \"select\", " //
                 + "    \"from\" : " //

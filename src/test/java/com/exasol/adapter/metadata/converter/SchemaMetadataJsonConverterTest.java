@@ -1,5 +1,6 @@
 package com.exasol.adapter.metadata.converter;
 
+import static com.exasol.adapter.JsonAssertions.assertJsonMatches;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -10,12 +11,10 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mockito;
-import org.skyscreamer.jsonassert.JSONAssert;
 
 import com.exasol.adapter.metadata.*;
 import com.exasol.adapter.metadata.DataType.ExaCharset;
@@ -27,7 +26,7 @@ class SchemaMetadataJsonConverterTest {
     private static final String SCHEMA_NAME = "TEST_SCHEMA";
 
     @Test
-    void testConvert() throws JSONException {
+    void testConvert() {
         final String expected = "{\n" //
                 + "  \"tables\" : [ {\n" //
                 + "      \"type\" : \"table\",\n" //
@@ -39,7 +38,7 @@ class SchemaMetadataJsonConverterTest {
                 + "          \"adapterNotes\" : \"notes A1\",\n" //
                 + "          \"dataType\" : { \"type\" : \"double\" },\n" //
                 + "          \"isNullable\" : false,\n" //
-                + "          \"comment\" = \"comment A1\"\n" //
+                + "          \"comment\" : \"comment A1\"\n" //
                 + "         }, {\n" //
                 + "          \"name\" : \"column_A2\",\n" //
                 + "          \"dataType\" : { \"type\" : \"date\" },\n" //
@@ -69,7 +68,7 @@ class SchemaMetadataJsonConverterTest {
         tables.add(new TableMetadata("TABLE_B", null, columnsB, null));
         final SchemaMetadata schemaMetadata = new SchemaMetadata(SCHEMA_NAME, tables);
         final JsonObject actual = CONVERTER.convert(schemaMetadata);
-        JSONAssert.assertEquals(expected, actual.toString(), false);
+        assertJsonMatches(expected, actual.toString());
     }
 
     @Test
