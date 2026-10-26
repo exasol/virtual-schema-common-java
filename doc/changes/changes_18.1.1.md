@@ -31,6 +31,10 @@ com.vaadin.external.google:android-json / 0.0.20131108.vaadin1 / none
 
 ## Dependency Updates
 
+### Test Dependency Updates
+
+* Removed `org.skyscreamer:jsonassert:1.5.3`
+
 ### Plugin Dependency Updates
 
 * Updated `com.exasol:project-keeper-maven-plugin:5.7.7` to `5.8.1`
