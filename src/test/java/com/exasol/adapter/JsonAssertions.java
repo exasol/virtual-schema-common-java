@@ -5,11 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.StringReader;
 import java.util.Map;
 
-import jakarta.json.Json;
-import jakarta.json.JsonArray;
-import jakarta.json.JsonObject;
-import jakarta.json.JsonReader;
-import jakarta.json.JsonValue;
+import jakarta.json.*;
 
 public final class JsonAssertions {
     private JsonAssertions() {
@@ -29,12 +25,12 @@ public final class JsonAssertions {
             return false;
         }
         switch (expected.getValueType()) {
-        case OBJECT:
-            return matchesObject(expected.asJsonObject(), actual.asJsonObject());
-        case ARRAY:
-            return matchesArray(expected.asJsonArray(), actual.asJsonArray(), 0, new boolean[actual.asJsonArray().size()]);
-        default:
-            return expected.equals(actual);
+            case OBJECT:
+                return matchesObject(expected.asJsonObject(), actual.asJsonObject());
+            case ARRAY:
+                return matchesArray(expected.asJsonArray(), actual.asJsonArray(), 0, new boolean[actual.asJsonArray().size()]);
+            default:
+                return expected.equals(actual);
         }
     }
 
