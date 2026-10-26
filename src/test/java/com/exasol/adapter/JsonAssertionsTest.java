@@ -14,6 +14,11 @@ class JsonAssertionsTest {
     }
 
     @Test
+    void matchesNumbersWithDifferentScales() {
+        assertJsonMatches("{\"value\":1}", "{\"value\":1.0}");
+    }
+
+    @Test
     void rejectsReusingAnArrayElement() {
         assertThrows(AssertionFailedError.class,
                 () -> assertJsonMatches("[{\"id\":1},{\"id\":1}]", "[{\"id\":1},{\"id\":2}]"));

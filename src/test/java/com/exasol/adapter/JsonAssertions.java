@@ -29,6 +29,8 @@ public final class JsonAssertions {
                 return matchesObject(expected.asJsonObject(), actual.asJsonObject());
             case ARRAY:
                 return matchesArray(expected.asJsonArray(), actual.asJsonArray(), 0, new boolean[actual.asJsonArray().size()]);
+            case NUMBER:
+                return ((JsonNumber) expected).bigDecimalValue().compareTo(((JsonNumber) actual).bigDecimalValue()) == 0;
             default:
                 return expected.equals(actual);
         }
